@@ -1,0 +1,8 @@
+@CHARSET "ISO-8859-1";
+
+table.form-table td label {
+    height: 53px;
+    line-height: 25px;
+    padding: 0 5px 5px;
+    width: 64px;
+}
