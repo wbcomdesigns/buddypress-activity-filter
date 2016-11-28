@@ -11,19 +11,19 @@ License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	wp_die('Direct Access is not Allowed');
 }
 /**
  *  Checking for buddypress whether it is active or not
  */
-if ( ! in_array( 'buddypress/bp-loader.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-	 add_action( 'admin_notices', 'buddypress_not_active_notice' );
-	 return ;
+if (!in_array('buddypress/bp-loader.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+	 add_action('admin_notices', 'buddypress_not_active_notice');
+	 return;
 }
 function buddypress_not_active_notice() { ?>
     <div class="error notice">
-        <p><?php _e( 'To work BP Activity Filter, Buddypress should be activated', 'buddypress' ); ?></p>
+        <p><?php _e('To work BP Activity Filter, Buddypress should be activated', 'buddypress'); ?></p>
     </div>
     <?php 
 }
@@ -36,32 +36,32 @@ if (!class_exists('WbCom_BP_Activity_Filter')) {
 			/**
 			 * Adding setting link on plugin listing page
 			 */
-			add_filter('plugin_action_links_' . plugin_basename(__FILE__), array(&$this, 'bp_activity_filter_plugin_actions'), 10, 2 );
+			add_filter('plugin_action_links_' . plugin_basename(__FILE__), array(&$this, 'bp_activity_filter_plugin_actions'), 10, 2);
 			
 			/**
 			 * Including scripts files for admin setting
 			 */
-			require_once plugin_dir_path( __FILE__ ) . 'admin/class-bp-activity-filter-admin-script-includer.php';
+			require_once plugin_dir_path(__FILE__) . 'admin/class-bp-activity-filter-admin-script-includer.php';
 			
 			/**
 			 * Including file for admin setting
 			 */
-			require_once plugin_dir_path( __FILE__ ) . 'admin/class-bp-activity-filter-admin-setting.php';
+			require_once plugin_dir_path(__FILE__) . 'admin/class-bp-activity-filter-admin-setting.php';
 			
 			/**
 			 * Including file for saving admin setting
 			 */
-			require_once plugin_dir_path( __FILE__ ) . 'admin/class-bp-activity-filter-admin-setting-save.php';
+			require_once plugin_dir_path(__FILE__) . 'admin/class-bp-activity-filter-admin-setting-save.php';
 															
 			/**
 			 * Including file for dropdown option filter setting on front-end 
 			 */
-			require_once plugin_dir_path( __FILE__ ) . 'templates/class-bp-activity-filter-dropdown.php';
+			require_once plugin_dir_path(__FILE__) . 'templates/class-bp-activity-filter-dropdown.php';
 			
 			/**
 			 * Including file for dropdown option filter setting on front-end 
 			 */
-			require_once plugin_dir_path( __FILE__ ) . 'templates/class-bp-activity-filter-query.php';
+			require_once plugin_dir_path(__FILE__) . 'templates/class-bp-activity-filter-query.php';
 			
 		}
 		
@@ -69,7 +69,7 @@ if (!class_exists('WbCom_BP_Activity_Filter')) {
 		 * @desc Adds the Settings link to the plugin activate/deactivate page
 		 */
 		public function bp_activity_filter_plugin_actions($links, $file) { //die('here');
-			$settings_link = '<a href="'.admin_url("admin.php?page=bp-settings#bp_activity_filter").'">' . __('Settings', 'buddypress') . '</a>';
+			$settings_link = '<a href="' . admin_url("admin.php?page=bp-settings#bp_activity_filter") . '">' . __('Settings', 'buddypress') . '</a>';
 			array_unshift($links, $settings_link); // before other links
 			return $links;
 		}
