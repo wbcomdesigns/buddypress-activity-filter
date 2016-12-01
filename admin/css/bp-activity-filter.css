@@ -16,3 +16,6 @@ table.form-table tbody tr td table caption.description {
 table.form-table td.filter-option {
     padding: 0 !important;
 }
+.form-table table {
+    width: 100% !important;
+}
