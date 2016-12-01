@@ -6,3 +6,13 @@ table.form-table td label {
     padding: 0 5px 5px;
     width: 64px;
 }
+
+table.form-table tbody tr td table caption.description {
+    margin: 1% 0;
+    text-align: left;
+    width: 100%;
+}
+
+table.form-table td.filter-option {
+    padding: 0 !important;
+}

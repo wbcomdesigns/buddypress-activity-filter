@@ -178,62 +178,75 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * This is the display function for your field
 		 */
 		public function bp_activity_filter_filed_1_callback($labels) {  ?>
-		
-			<p class="description">
+			<table>		
+			<caption class="description">
 		    	<?php _e( 'Select activity you want to list on activity page by default.', 'buddypress' );?>
-		    </p>
+		    </caption>   
 		    
 			<?php 
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 			
 			$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' ); 
 			$bp_hidden_filters_value = bp_get_option( 'bp-hidden-filters-name' ); 
-		    
-			//print_r($bp_hidden_filters_value); die('here');
-		    
+		  		    
 			if  ( is_array($bp_hidden_filters_value) && in_array( $bp_default_activity_value, $bp_hidden_filters_value) ) 
 				bp_update_option( 'bp-default-filter-name', '-1' );
-		    	
-			$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' ); ?>
-		    
-		    <input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php  echo ($bp_default_activity_value == -1) ? "checked=checked": " ";?>/>
-			<label for="bp-default-filter-name"><?php _e( "Everything", 'buddypress' ); ?></label>
+						    	
+			$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' ); 
 			
+			if(empty($bp_default_activity_value))
+				$bp_default_activity_value=-1;?>
+		    <tr>
+		    	<td class="filter-option">
+		    		<input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php  echo ($bp_default_activity_value == -1) ? "checked=checked": " ";?>/>
+					<label for="bp-default-filter-name"><?php _e( "Everything", 'buddypress' ); ?></label>	</td>
+					</tr>
 		    <?php foreach ( $labels as $key => $value ) : 
-		    
 							if ( !empty($value) ) { ?>
-							    <input id="<?php echo $key."_radio";?>" name="bp-default-filter-name" type="radio" value="<?php echo $key;?>" <?php  echo ($bp_default_activity_value == $key) ? "checked=checked ": " "; if  ( !empty ( $bp_hidden_filters_value ) && is_array( $bp_hidden_filters_value ) ) { echo ( in_array( $key, $bp_hidden_filters_value ) ) ? "disabled=disabled" : " "; }?>  />
-							    <label for="<?php echo $key;?>"><?php _e( $value, 'buddypress' ); ?></label>
-						    <?php }?>
-						    
-		   	<?php endforeach;	    
+								<tr>
+									<td class="filter-option">
+							    		<input id="<?php echo $key."_radio";?>" name="bp-default-filter-name" type="radio" value="<?php echo $key;?>" <?php  echo ($bp_default_activity_value == $key) ? "checked=checked ": " "; if  ( !empty ( $bp_hidden_filters_value ) && is_array( $bp_hidden_filters_value ) ) { echo ( in_array( $key, $bp_hidden_filters_value ) ) ? "disabled=disabled" : " "; }?>  />
+							    		<label for="<?php echo $key;?>"><?php _e( $value, 'buddypress' ); ?></label>
+							    	</td>
+							    </tr>
+						    <?php }
+		   			 	endforeach;	 ?>		   		
+		   	</table>
+		   	<?php    
 		}
 		
 		/**
 		 * This is the display function for your field
 		 */
 		public function bp_activity_filter_filed_2_callback( $labels ) { ?>
-		
-			<p class="description">
+		 <table>
+			<caption class="description">
 		    	<?php _e( 'Select activity/activities you want to hide from dropdown list on activity front page.', 'buddypress' );?>
-		    </p>
+		    </caption>
 			
 			<?php 
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 			
 			$bp_hidden_filters_value = bp_get_option( 'bp-hidden-filters-name' );  ?>
-		    
-		    <input id="bp-activity-filter-everything-checkbox" name="bp-hidden-filters-name[]" type="checkbox" value="-1"  disabled="disabled" />
-			<label for="bp-hidden-filters-name"><?php _e( 'Everything', 'buddypress' ); ?></label>
+		    <tr>
+		    	<td class="filter-option">
+		    		<input id="bp-activity-filter-everything-checkbox" name="bp-hidden-filters-name[]" type="checkbox" value="-1"  disabled="disabled" />
+					<label for="bp-hidden-filters-name"><?php _e( 'Everything', 'buddypress' ); ?></label>
+				</td>
+			</tr>
 			
 		    <?php foreach ( $labels as $key => $value  ) : 
 					if ( !empty( $value)) { ?>
-		    		
-					    <input id="<?php echo $key."-checkbox"?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key;?>" <?php  echo ( (!empty($bp_hidden_filters_value) && is_array( $bp_hidden_filters_value )) && in_array($key, $bp_hidden_filters_value)) ? "checked" : " "; ?> />
-					    <label for="bp-hidden-filters-name"><?php _e( $value, 'buddypress' ); ?></label>
-					    
+						<tr>
+							<td class="filter-option">	    		
+					    		<input id="<?php echo $key."-checkbox"?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key;?>" <?php  echo ( (!empty($bp_hidden_filters_value) && is_array( $bp_hidden_filters_value )) && in_array($key, $bp_hidden_filters_value)) ? "checked" : " "; ?> />
+					    		<label for="bp-hidden-filters-name"><?php _e( $value, 'buddypress' ); ?></label>
+					    	</td>
+					    </tr>					    
 		    	<?php }
-				endforeach;
+				endforeach; ?>
+				</table>
+				<?php 
 		}
 	}
 }
