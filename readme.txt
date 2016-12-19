@@ -1,4 +1,4 @@
-=== Buddypress Activity Filter ===
+=== BuddyPress Activity Filter ===
 Contributors: vapvarun,wbcomdesigns
 Tags: buddypress,activity-filter, activity, filter
 Donate link: https://wbcomdesigns.com/donate/
@@ -11,7 +11,8 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 It will help to set default filter option with BuddyPress Activity and It will also allow removing some specific activity types from activities.
 
 == Description ==
-Admin can set default and customized activities to be listed on front-end. 
+Admin can set default and customised activities to be listed on front-end. 
+It will also allow to set your default option for activities. You can change default from everything to Post Updates.
 
 If you need additional help you can contact us for [Custom Development](https://wbcomdesigns.com/contact/).
 
@@ -24,14 +25,15 @@ If you need additional help you can contact us for [Custom Development](https://
 
 
 == Frequently Asked Questions ==
-= Will it work with BP2.6 lower version =
-No
+= Compatible BuddyPress Version =
+Greater than BP v2.6+
 
 == Screenshots ==
 
-The screenshots are present in the root of the plugin folder.
-1. screenshot-1 - is the screen that shows the plugin name displayed in plugin listing page.
-2. screenshot-2 - is the screen that shows actual settings screen in buddypress options.
+1. Plugin Listing- is the screen that shows the plugin name displayed in plugin listing page. 
+screenshot-1.png
+2. Plugin Options - is the screen that shows actual settings screen in buddypress options.
+   screenshot-2.png
 
 == Changelog ==
 = 1.0.0 =

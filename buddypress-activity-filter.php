@@ -39,7 +39,12 @@ else if (!class_exists('WbCom_BP_Activity_Filter')) {
 		/**
 		 * Constructor
 		 */
-		public function __construct() {						
+		public function __construct() {			
+			/**
+			 * Adding text domain
+			 */
+			$this->bp_activity_filter_load_textdomain();
+			
 			/**
 			 * Adding setting link on plugin listing page
 			 */
@@ -72,11 +77,19 @@ else if (!class_exists('WbCom_BP_Activity_Filter')) {
 			
 		}
 		
+		//Load plugin textdomain.
+		public function bp_activity_filter_load_textdomain() {
+		    $domain = "bp-activity-filter";
+		    $locale = apply_filters('plugin_locale', get_locale(), $domain);
+		    load_textdomain($domain, 'languages/'.$domain.'-'.$locale.'.mo');
+		    $var = load_plugin_textdomain($domain, false, plugin_basename(dirname(__FILE__)).'/languages');
+		}
+		
 		/**
 		 * @desc Adds the Settings link to the plugin activate/deactivate page
 		 */
-		public function bp_activity_filter_plugin_actions($links, $file) { //die('here');
-			$settings_link = '<a href="' . admin_url("admin.php?page=bp-settings#bp_activity_filter") . '">' . __('Settings', 'buddypress') . '</a>';
+		public function bp_activity_filter_plugin_actions($links, $file) {
+			$settings_link = '<a href="' . admin_url("admin.php?page=bp-settings#bp_activity_filter") . '">' . __('Settings', 'bp-activity-filter') . '</a>';
 			array_unshift($links, $settings_link); // before other links
 			return $links;
 		}
@@ -88,7 +101,7 @@ if (class_exists('WbCom_BP_Activity_Filter')) {
 }
 function buddypress_not_active_notice() { ?>
     <div class="error notice">
-        <p><?php _e('To work BuddyPress  Activity Filter, Buddypress should be activated', 'buddypress'); ?></p>
+        <p><?php _e('To work BuddyPress  Activity Filter, Buddypress should be activated', 'bp-activity-filter'); ?></p>
     </div>
     <?php
 }

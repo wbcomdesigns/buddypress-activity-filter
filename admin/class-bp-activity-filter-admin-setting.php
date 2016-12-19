@@ -99,7 +99,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				'bp_activity_filter_section',
 		 
 				/* the title of your section */
-				__( 'Activity Filter Settings',  'buddypress' ),
+				__( 'Activity Filter Settings',  'bp-activity-filter' ),
 		 
 				/* the display function for your section's description */
 				array(&$this,'bp_activity_filter_section_callback'),
@@ -114,7 +114,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				'bp_activity_filter_filed_1',
 		 
 				/* The title for your setting */
-				__( 'Default Activity Filter', 'buddypress' ),
+				__( 'Default Activity Filter', 'bp-activity-filter' ),
 		 
 				/* Display function */
 				array(&$this,'bp_activity_filter_filed_1_callback'),
@@ -135,7 +135,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				'bp_activity_filter_filed_2',
 		 
 				/* The title for your setting */
-				__( 'Hide  Activity Filter(s)', 'buddypress' ),
+				__( 'Hide  Activity Filter(s)', 'bp-activity-filter' ),
 		 
 				/* Display function */
 				array(&$this,'bp_activity_filter_filed_2_callback'),
@@ -169,7 +169,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 */
 		public function bp_activity_filter_section_callback() { ?>
 		    <p id="bp_activity_filter" class="description">
-		    	<?php _e('You can set here which type of activity will be shown on front-end by default on launching activity page and also can set which filter(s) to appear in dropdown list.', 'buddypress'); ?>
+		    	<?php _e('You can set here which type of activity will be shown on front-end by default on launching activity page and also can set which filter(s) to appear in dropdown list.', 'bp-activity-filter'); ?>
 		    </p>
 		    <?php
 		}
@@ -178,9 +178,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * This is the display function for your field
 		 */
 		public function bp_activity_filter_filed_1_callback($labels) {  ?>
-			<table>		
-			<caption class="description">
-		    	<?php _e( 'Select activity you want to list on activity page by default.', 'buddypress' );?>
+			<table class="filter-table">		
+			<caption class="filter-description">
+		    	<?php _e( 'Select activity you want to list on activity page by default.', 'bp-activity-filter' );?>
 		    </caption>   
 		    
 			<?php 
@@ -199,14 +199,14 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		    <tr>
 		    	<td class="filter-option">
 		    		<input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php  echo ($bp_default_activity_value == -1) ? "checked=checked": " ";?>/>
-					<label for="bp-default-filter-name"><?php _e( "Everything", 'buddypress' ); ?></label>	</td>
+					<label for="bp-default-filter-name"><?php _e( "Everything", 'bp-activity-filter' ); ?></label>	</td>
 					</tr>
 		    <?php foreach ( $labels as $key => $value ) : 
 							if ( !empty($value) ) { ?>
 								<tr>
 									<td class="filter-option">
 							    		<input id="<?php echo $key."_radio";?>" name="bp-default-filter-name" type="radio" value="<?php echo $key;?>" <?php  echo ($bp_default_activity_value == $key) ? "checked=checked ": " "; if  ( !empty ( $bp_hidden_filters_value ) && is_array( $bp_hidden_filters_value ) ) { echo ( in_array( $key, $bp_hidden_filters_value ) ) ? "disabled=disabled" : " "; }?>  />
-							    		<label for="<?php echo $key;?>"><?php _e( $value, 'buddypress' ); ?></label>
+							    		<label for="<?php echo $key;?>"><?php _e( $value, 'bp-activity-filter' ); ?></label>
 							    	</td>
 							    </tr>
 						    <?php }
@@ -219,9 +219,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * This is the display function for your field
 		 */
 		public function bp_activity_filter_filed_2_callback( $labels ) { ?>
-		 <table>
-			<caption class="description">
-		    	<?php _e( 'Select activity/activities you want to hide from dropdown list on activity front page.', 'buddypress' );?>
+		 <table class="filter-table">
+			<caption class="filter-description">
+		    	<?php _e( 'Select activity/activities you want to hide from dropdown list on activity front page.', 'bp-activity-filter' );?>
 		    </caption>
 			
 			<?php 
@@ -231,7 +231,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		    <tr>
 		    	<td class="filter-option">
 		    		<input id="bp-activity-filter-everything-checkbox" name="bp-hidden-filters-name[]" type="checkbox" value="-1"  disabled="disabled" />
-					<label for="bp-hidden-filters-name"><?php _e( 'Everything', 'buddypress' ); ?></label>
+					<label for="bp-hidden-filters-name"><?php _e( 'Everything', 'bp-activity-filter' ); ?></label>
 				</td>
 			</tr>
 			
@@ -240,7 +240,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 						<tr>
 							<td class="filter-option">	    		
 					    		<input id="<?php echo $key."-checkbox"?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key;?>" <?php  echo ( (!empty($bp_hidden_filters_value) && is_array( $bp_hidden_filters_value )) && in_array($key, $bp_hidden_filters_value)) ? "checked" : " "; ?> />
-					    		<label for="bp-hidden-filters-name"><?php _e( $value, 'buddypress' ); ?></label>
+					    		<label for="bp-hidden-filters-name"><?php _e( $value, 'bp-activity-filter' ); ?></label>
 					    	</td>
 					    </tr>					    
 		    	<?php }

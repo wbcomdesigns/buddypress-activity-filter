@@ -22,8 +22,10 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting_Save')) {
 				check_admin_referer('buddypress-options');
 				
 				$hidden_filters = array();
-				if (!empty ($_POST['bp-default-filter-name'])) 				
-					bp_update_option('bp-default-filter-name', filter_var($_POST['bp-default-filter-name'], FILTER_SANITIZE_STRING));					
+				if (!empty ($_POST['bp-default-filter-name'])) {
+					$bp_default_filter_name = sanitize_text_field( $_POST['bp-default-filter-name'] );
+					bp_update_option('bp-default-filter-name', filter_var( $bp_default_filter_name, FILTER_SANITIZE_STRING));
+				}
 				
 				if (is_array($_POST['bp-hidden-filters-name']))
 					$hidden_filters = array_map('sanitize_text_field', wp_unslash($_POST['bp-hidden-filters-name']));
