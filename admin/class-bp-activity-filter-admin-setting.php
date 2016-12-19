@@ -179,11 +179,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 */
 		public function bp_activity_filter_filed_1_callback($labels) {  ?>
 			<table class="filter-table">
-			<caption class="filter-description">
-			<table>
-			<caption class="description">
-		    	<?php _e( 'Select activity you want to list on activity page by default.', 'bp-activity-filter' );?>
-		    </caption>
+				<caption class="filter-description">
+			    	<?php _e( 'Select activity you want to list on activity page by default.', 'bp-activity-filter' );?>
+			    </caption>
 
 			<?php
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
@@ -201,8 +199,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		    <tr>
 		    	<td class="filter-option">
 		    		<input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php  echo ($bp_default_activity_value == -1) ? "checked=checked": " ";?>/>
-					<label for="bp-default-filter-name"><?php _e( "Everything", 'bp-activity-filter' ); ?></label>	</td>
-					</tr>
+					<label for="bp-default-filter-name"><?php _e( "Everything", 'bp-activity-filter' ); ?></label>	
+				</td>
+				</tr>
 		    <?php foreach ( $labels as $key => $value ) :
 							if ( !empty($value) ) { ?>
 								<tr>
@@ -223,10 +222,6 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		public function bp_activity_filter_filed_2_callback( $labels ) { ?>
 		 <table class="filter-table">
 			<caption class="filter-description">
-
-		 <table>
-			<caption class="description">
-
 		    	<?php _e( 'Select activity/activities you want to hide from dropdown list on activity front page.', 'bp-activity-filter' );?>
 		    </caption>
 
