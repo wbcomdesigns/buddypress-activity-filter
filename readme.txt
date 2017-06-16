@@ -1,6 +1,6 @@
 === BuddyPress Activity Filter ===
 Contributors: vapvarun,wbcomdesigns
-Tags: buddypress,activity-filter, activity, filter
+Tags: buddypress,activity-filter, activity, filter , BuddyPress Activity, Activity Filter, Default Activity, Hide Activty, BuddyPress default activity
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.6
 Tested up to: 4.8
@@ -30,9 +30,9 @@ Greater than BP v2.6+
 
 == Screenshots ==
 
-1. Plugin Listing- is the screen that shows the plugin name displayed in plugin listing page. 
+1. It allows you to select activity type to display at activity page by default.. 
 screenshot-1.png
-2. Plugin Options - is the screen that shows actual settings screen in buddypress options.
+2. It allows to select activity/activities you want to hide from dropdown list on activity options.
    screenshot-2.png
 
 == Changelog ==
