@@ -92,7 +92,7 @@ if (!class_exists('WbCom_BP_Activity_Filter')) {
          * @desc Adds the Settings link to the plugin activate/deactivate page
          */
         public function bp_activity_filter_plugin_actions($links, $file) {
-            $settings_link = '<a href="' . admin_url("admin.php?page=bp-settings#bp_activity_filter") . '">' . __('Settings', 'bp-activity-filter') . '</a>';
+            $settings_link = '<a href="' . admin_url("admin.php?page=bp_activity_filter_settings") . '">' . __('Settings', 'bp-activity-filter') . '</a>';
             array_unshift($links, $settings_link); // before other links
             return $links;
         }

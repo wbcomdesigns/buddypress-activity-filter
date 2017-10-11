@@ -13,7 +13,11 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			/**
 			 * You need to hook bp_register_admin_settings to register your settings
 			 */
-			add_action('bp_register_admin_settings', array(&$this, 'bp_activity_filter_section_settings'), 100);
+			add_action('admin_menu', array(&$this, 'bp_activity_filter_admin_menu'), 100);
+		}
+
+		public function bp_activity_filter_admin_menu() {
+			add_submenu_page( 'bp-activity', __('BP Activity Filter Settings', 'bp-activity-filter' ), __(' BP Activity Filter Settings ', 'bp-activity-filter' ), 'manage_options', 'bp_activity_filter_settings', array( $this, 'bp_activity_filter_section_settings') );
 		}
 
 		/**
@@ -93,78 +97,26 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			$labels = array_reverse(array_unique(array_reverse($labels)));
 			$labels = array_reverse($labels);
 
-			/* This is how you add a new section to BuddyPress settings */
-			add_settings_section(
-				/* the id of your new section */
-				'bp_activity_filter_section',
-
-				/* the title of your section */
-				__( 'Activity Filter Settings',  'bp-activity-filter' ),
-
-				/* the display function for your section's description */
-				array(&$this,'bp_activity_filter_section_callback'),
-
-				/* BuddyPress settings */
-				'buddypress'
-			);
-
-			/* This is how you add a new field 1 to your plugin's section */
-			add_settings_field(
-				/* the option name you want to use for your plugin */
-				'bp_activity_filter_filed_1',
-
-				/* The title for your setting */
-				__( 'Default Activity Filter', 'bp-activity-filter' ),
-
-				/* Display function */
-				array(&$this,'bp_activity_filter_filed_1_callback'),
-
-				/* BuddyPress settings */
-				'buddypress',
-
-				/* Your plugin's section id */
-				'bp_activity_filter_section',
-
-				/* Arguments passed */
-				$labels
-			);
-
-			/* This is how you add a new field 2 to your plugin's section */
-			add_settings_field(
-				/* the option name you want to use for your plugin */
-				'bp_activity_filter_filed_2',
-
-				/* The title for your setting */
-				__( 'Hide  Activity Filter(s)', 'bp-activity-filter' ),
-
-				/* Display function */
-				array(&$this,'bp_activity_filter_filed_2_callback'),
-
-				/* BuddyPress settings */
-				'buddypress',
-
-				/* Your plugin's section id */
-				'bp_activity_filter_section',
-
-				/* Arguments passed */
-				$labels
-			);
-
-			/* This is where you add your setting to BuddyPress ones  Here you are directly using intval as your validation function   */
-			register_setting(
-				/* BuddyPress settings */
-				'buddypress',
-
-				/* the option name you want to use for your plugin */
-				'bp-activity-filter-section-name',
-
-				/* the validatation function you use before saving your option to the database */
-				'intval'
-			);
+			$this->bp_activity_filter_admin_settings_page( $labels );
 		}
 
 
-		/**
+		public function bp_activity_filter_admin_settings_page( $labels ) { ?>
+			<div id="wpbody-content" aria-label="Main content" tabindex="0">
+			<div class="wrap">
+				<h1><?php _e('BuddyPress Activity Filter Settings', 'bp-activity-filter' ); ?></h1>
+				<form method="post" novalidate="novalidate" id="bp_activity_filter_setting_form" >
+					<?php $this->bp_activity_filter_section_callback();
+					$this->bp_activity_filter_filed_1_callback($labels);
+					$this->bp_activity_filter_filed_2_callback($labels);
+					?>
+					<p class="submit">
+						<a id="bp_activity_filter_setting_form_submit" class="button-primary">Save Settings</a>
+					</p>
+				</form>
+		<?php }
+
+	/**
 		 * This is the display function for your section's description
 		 */
 		public function bp_activity_filter_section_callback() { ?>
@@ -177,12 +129,10 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		/**
 		 * This is the display function for your field
 		 */
-		public function bp_activity_filter_filed_1_callback($labels) {  ?>
-			<table class="filter-table">
-				<caption class="filter-description">
-			    	<?php _e( 'Select activity you want to list on activity page by default.', 'bp-activity-filter' );?>
-			    </caption>
-
+		public function bp_activity_filter_filed_1_callback($labels) {
+			global $bp;
+			?>
+			<table class="filter-table form-table" >
 			<?php
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 
@@ -195,24 +145,28 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' );
 
 			if(empty($bp_default_activity_value))
-				$bp_default_activity_value=-1;?>
-		    <tr>
-		    	<td class="filter-option">
-		    		<input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php  echo ($bp_default_activity_value == -1) ? "checked=checked": " ";?>/>
-					<label for="bp-default-filter-name"><?php _e( "Everything", 'bp-activity-filter' ); ?></label>	
-				</td>
-				</tr>
-		    <?php foreach ( $labels as $key => $value ) :
+				$bp_default_activity_value=-1; ?>
+			<th scope="row"><label class="filter-description" ><?php _e( 'Select activity you want to list on activity page by default.', 'bp-activity-filter' ); ?></label></th>
+		    <td>
+		    	<table>
+			    	<tr>
+				    	<td class="filter-option">
+				    		<input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php  echo ($bp_default_activity_value == -1) ? "checked=checked": " ";?>/>
+							<label for="bp-default-filter-name"><?php _e( "Everything", 'bp-activity-filter' ); ?></label>
+						</td>
+					</tr>
+			    <?php 	foreach ( $labels as $key => $value ) :
 							if ( !empty($value) ) { ?>
-								<tr>
-									<td class="filter-option">
-							    		<input id="<?php echo $key."_radio";?>" name="bp-default-filter-name" type="radio" value="<?php echo $key;?>" <?php  echo ($bp_default_activity_value == $key) ? "checked=checked ": " "; if  ( !empty ( $bp_hidden_filters_value ) && is_array( $bp_hidden_filters_value ) ) { echo ( in_array( $key, $bp_hidden_filters_value ) ) ? "disabled=disabled" : " "; }?>  />
-							    		<label for="<?php echo $key;?>"><?php _e( $value, 'bp-activity-filter' ); ?></label>
-							    	</td>
-							    </tr>
+							<tr>
+								<td class="filter-option">
+						    		<input id="<?php echo $key."_radio";?>" name="bp-default-filter-name" type="radio" value="<?php echo $key;?>" <?php  echo ($bp_default_activity_value == $key) ? "checked=checked ": " "; ?>  />
+						    		<label for="<?php echo $key;?>"><?php _e( $value, 'bp-activity-filter' ); ?></label>
+						    	</td>
+					    	</tr>
 						    <?php }
 		   			 	endforeach;	 ?>
-		   	</table>
+   			 	</table>
+		 	</td>
 		   	<?php
 		}
 
@@ -220,35 +174,39 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * This is the display function for your field
 		 */
 		public function bp_activity_filter_filed_2_callback( $labels ) { ?>
-		 <table class="filter-table">
-			<caption class="filter-description">
-		    	<?php _e( 'Select activity/activities you want to hide from dropdown list on activity front page.', 'bp-activity-filter' );?>
-		    </caption>
 
 			<?php
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 
 			$bp_hidden_filters_value = bp_get_option( 'bp-hidden-filters-name' );  ?>
 		    <tr>
-		    	<td class="filter-option">
-		    		<input id="bp-activity-filter-everything-checkbox" name="bp-hidden-filters-name[]" type="checkbox" value="-1"  disabled="disabled" />
-					<label for="bp-hidden-filters-name"><?php _e( 'Everything', 'bp-activity-filter' ); ?></label>
+		    	<th scope="row"><label class="filter-description" ><?php _e( 'Select activity/activities you want to hide from dropdown list on activity front page.', 'bp-activity-filter' ); ?></label></th>
+		    	<td>
+		    		<table>
+		    			<tr>
+					    	<td class="filter-option">
+					    		<input id="bp-activity-filter-everything-checkbox" name="bp-hidden-filters-name[]" type="checkbox" value="-1"  disabled="disabled" />
+								<label for="bp-hidden-filters-name"><?php _e( 'Everything', 'bp-activity-filter' ); ?></label>
+							</td>
+						</tr>
+		    		<?php foreach ( $labels as $key => $value  ) :
+						if ( !empty( $value)) { ?>
+							<tr>
+								<td class="filter-option">
+						    		<input id="<?php echo $key."-checkbox"?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key;?>" <?php  echo ( (!empty($bp_hidden_filters_value) && is_array( $bp_hidden_filters_value )) && in_array($key, $bp_hidden_filters_value)) ? "checked" : " "; ?> />
+						    		<label for="bp-hidden-filters-name"><?php _e( $value, 'bp-activity-filter' ); ?></label>
+						    	</td>
+					    	</tr>
+			    		<?php }
+					endforeach; ?>
+					</table>
 				</td>
 			</tr>
+		</table>
 
-		    <?php foreach ( $labels as $key => $value  ) :
-					if ( !empty( $value)) { ?>
-						<tr>
-							<td class="filter-option">
-					    		<input id="<?php echo $key."-checkbox"?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key;?>" <?php  echo ( (!empty($bp_hidden_filters_value) && is_array( $bp_hidden_filters_value )) && in_array($key, $bp_hidden_filters_value)) ? "checked" : " "; ?> />
-					    		<label for="bp-hidden-filters-name"><?php _e( $value, 'bp-activity-filter' ); ?></label>
-					    	</td>
-					    </tr>
-		    	<?php }
-				endforeach; ?>
-				</table>
-				<?php
+		<?php
 		}
+
 	}
 }
 
