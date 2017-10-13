@@ -17,6 +17,8 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			add_action( 'wp_ajax_nopriv_bp_activity_filter_save_display_settings', array($this, 'bp_activity_filter_save_display_settings' ) );
 			add_action( 'wp_ajax_bp_activity_filter_save_hide_settings', array($this, 'bp_activity_filter_save_hide_settings') );
 			add_action( 'wp_ajax_nopriv_bp_activity_filter_save_hide_settings', array($this, 'bp_activity_filter_save_hide_settings' ) );
+			add_action( 'wp_ajax_bp_activity_filter_save_cpt_settings', array($this, 'bp_activity_filter_save_cpt_settings') );
+			add_action( 'wp_ajax_nopriv_bp_activity_filter_save_cpt_settings', array($this, 'bp_activity_filter_save_cpt_settings' ) );
 		}
 
 		public function bp_activity_filter_admin_menu() {
@@ -130,6 +132,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			$bpaf_tabs = array(
 				'bpaf_display_activity' => __('Display Activity', BPAF_TEXT_DOMAIN),
 				'bpaf_hide_activity' => __('Hide Activity', BPAF_TEXT_DOMAIN),
+				'bpaf_cpt_activity' => __('Post Type Activity', BPAF_TEXT_DOMAIN),
 				'bpaf_faq' => __('FAQ', BPAF_TEXT_DOMAIN)
 			);
 
@@ -150,6 +153,8 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		        case 'bpaf_display_activity': 	$this->bpaf_display_activity_section();
 		            							break;
 		        case 'bpaf_hide_activity'   :	$this->bpaf_hide_activity_section();
+		            							break;
+		        case 'bpaf_cpt_activity'   :	$this->bpaf_cpt_activity_section();
 		            							break;
 		        case 'bpaf_faq'             :	$this->bpaf_faq_section();
 		               							break;
@@ -279,7 +284,6 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			parse_str( $_POST['form_data'], $setting_form_data );
 			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
 			$bp_default_filter_name = $form_details['bp-default-filter-name'];
-			echo "<pre>"; print_r( $bp_default_filter_name ); echo "</pre>";
 			bp_update_option( 'bp-default-filter-name',  $bp_default_filter_name );
 			exit;
 		}
@@ -288,10 +292,114 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			parse_str( $_POST['form_data'], $setting_form_data );
 			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
 			$bp_hidden_filter_name = $form_details['bp-hidden-filters-name'];
-			echo "<pre>"; print_r( $bp_hidden_filter_name); echo "</pre>";
 			bp_update_option( 'bp-hidden-filters-name',  $bp_hidden_filter_name );
 			exit;
 		}
+
+		public function bp_activity_filter_save_cpt_settings() {
+			parse_str( $_POST['form_data'], $cpt_settings_data );
+			$cpt_settings_details = filter_var_array( $cpt_settings_data, FILTER_SANITIZE_STRING );
+			bp_update_option( 'bp-cpt-filters-settings',  $cpt_settings_details );
+			exit;
+		}
+
+		public function bpaf_cpt_activity_section() {
+			$cpt_filter_val = bp_get_option( 'bp-cpt-filters-settings');
+			?>
+			<form method="post" novalidate="novalidate" id="bp_activity_filter_cpt_setting_form" >
+				<table class="filter-table form-table" >
+				<?php
+				 	$args = array(
+				       'public'   => true,
+				       '_builtin' => false,
+				    );
+
+				    $output = 'names'; // names or objects, note names is the default
+				    $operator = 'and'; // 'and' or 'or'
+
+				    $post_types = get_post_types( $args, $output, $operator );
+				    foreach ( $post_types  as $post_type ) {
+				    	$post_details = get_post_type_object( $post_type );
+				    	$saved_settings = $cpt_filter_val['bpaf_admin_settings'][$post_type];
+				    	if( array_key_exists('display_type', $saved_settings) ) {
+				    	//echo "<pre>"; print_r( $saved_settings ); echo "</pre>";
+				    		$display_type = $saved_settings['display_type'];
+				    	} else {
+				    		$display_type = '';
+				    	}
+				    	if( array_key_exists('group', $saved_settings)) {
+				    		$group = $saved_settings['group'];
+				    	} else {
+				    		$group = '';
+				    	}
+				    ?>
+				    <tr>
+				    	<th scope="row"><label class="filter-description" ><?php echo $post_details->label; ?></label></th>
+					    <td>
+					    	<table>
+					    		<tr>
+							    	<td class="filter-option">
+										<label ><?php _e( 'Rename in Activity Stream', BPAF_TEXT_DOMAIN ); ?></label>
+									</td>
+								</tr>
+								<tr>
+									<td class="filter-option">
+										<input id="<?php echo $post_type."_text";?>" name='<?php echo "bpaf_admin_settings[$post_type][new_label]"; ?>' type="text" value="<?php if( isset( $saved_settings['new_label'] ) ) { echo $saved_settings['new_label']; } ?>" />
+
+									</td>
+								</tr>
+								<tr>
+									<td class="filter-option">
+										<input id="<?php echo $post_type."_radio";?>" name="<?php echo "bpaf_admin_settings[$post_type][display_type]"; ?>" type="radio" value="not_display" <?php checked( $display_type, 'not_display' ); ?> />
+										<label for="bpaf_admin_settings_display_type-$post_type"><?php _e( 'Do not display', BPAF_TEXT_DOMAIN ); ?></label>
+									</td>
+								</tr>
+								<tr>
+									<td class="filter-option">
+										<input id="<?php echo $post_type."_radio";?>" class="bp-default-filter-name" name="<?php echo "bpaf_admin_settings[$post_type][display_type]"; ?>" type="radio" value="main_activity" <?php checked( $display_type, 'main_activity' ); ?>  />
+										<label for="bpaf_admin_settings_display_type-$post_type"><?php _e( 'Display in main Activity Stream', BPAF_TEXT_DOMAIN ); ?></label>
+									</td>
+								</tr>
+								<?php if ( bp_is_active( 'groups' ) ) { ?>
+								<tr>
+									<td class="filter-option">
+										<input id="<?php echo $post_type."_radio";?>" class="bpaf-group-filter" name="<?php echo "bpaf_admin_settings[$post_type][display_type]"; ?>" type="radio" value="groups" <?php checked( $display_type, 'groups' ); ?>  />
+										<label for='<?php "bpaf_admin_settings_display_type-$post_type"; ?>'><?php _e( 'Display in Groups', BPAF_TEXT_DOMAIN ); ?></label>
+									</td>
+								</tr>
+								<tr>
+									<td class="filter-option">
+										<table class="bpaf-group-list" >
+										<?php
+											$group_args = array(
+												'order' => 'DESC',
+												'orderby' => 'date_created'
+											);
+						                    $allgroups  = groups_get_groups( $group_args );
+						                    foreach ($allgroups['groups'] as $key => $value) {
+				                    		?>
+											<tr>
+												<td class="filter-option">
+													<input id="<?php echo $post_type."_checkbox";?>" name="<?php echo "bpaf_admin_settings[$post_type][group][]"; ?>" type="checkbox" value="<?php echo $value->name; ?>" <?php  //echo ($bp_default_activity_value == $key) ? "checked=checked ": " "; ?>  />
+													<label for="bp-hidden-filters-name"><?php echo $value->name; ?></label>
+												</td>
+											</tr>
+										<?php } ?>
+										</table>
+									</td>
+								</tr>
+								<?php } ?>
+							</table>
+						</td>
+			       	</tr>
+				    <?php }	?>
+	    		</table>
+				<div class="submit">
+					<a id="bp_activity_filter_cpt_setting_form_submit" class="button-primary"><?php _e('Save Settings', BPAF_TEXT_DOMAIN ); ?></a>
+					<div class="spinner"></div>
+				</div>
+    		</form>
+		<?php exit; }
 
 	}
 }

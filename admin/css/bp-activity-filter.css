@@ -34,3 +34,6 @@ table.form-table td.filter-option {
 .bpaf-setting-page .spinner {
     float: none;
 }
+.bpaf-group-list {
+    margin-left: 30px;
+}
