@@ -1,5 +1,10 @@
 @CHARSET "ISO-8859-1";
 
+@font-face {
+    font-family: FontAwesome;
+    src: url('../fonts/FontAwesome.otf');
+}
+
 table.form-table td.filter-option label {
     height: 53px;
     line-height: 25px;
@@ -18,4 +23,14 @@ table.form-table td.filter-option {
 }
 .form-table table.filter-table {
     width: 100% !important;
+}
+.bpaf-extra-actions {
+	float: right;
+}
+#bpaf_setting_error_settings_updated {
+    display: none;
+}
+
+.bpaf-setting-page .spinner {
+    float: none;
 }
