@@ -82,6 +82,11 @@ if (!class_exists('WbCom_BP_Activity_Filter')) {
             /**
              * Including file for dropdown option filter setting on front-end
              */
+            require_once plugin_dir_path(__FILE__) . 'admin/class-bp-activity-filter-add-post-support.php';
+
+            /**
+             * Including file for dropdown option filter setting on front-end
+             */
             require_once plugin_dir_path(__FILE__) . 'templates/class-bp-activity-filter-query.php';
         }
 

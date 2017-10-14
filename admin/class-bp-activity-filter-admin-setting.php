@@ -322,7 +322,6 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				    	$post_details = get_post_type_object( $post_type );
 				    	$saved_settings = $cpt_filter_val['bpaf_admin_settings'][$post_type];
 				    	if( array_key_exists('display_type', $saved_settings) ) {
-				    	//echo "<pre>"; print_r( $saved_settings ); echo "</pre>";
 				    		$display_type = $saved_settings['display_type'];
 				    	} else {
 				    		$display_type = '';
@@ -377,10 +376,20 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 											);
 						                    $allgroups  = groups_get_groups( $group_args );
 						                    foreach ($allgroups['groups'] as $key => $value) {
+						                    	if( is_array( $group )) {
+						                    		if( in_array( $value->name, $group ) ) {
+						                    			$checked_val = $value->name;
+						                    		}
+						                    		else {
+						                    			$checked_val = '';
+						                    		}
+						                    	} else {
+						                    		$checked_val = '';
+						                    	}
 				                    		?>
 											<tr>
 												<td class="filter-option">
-													<input id="<?php echo $post_type."_checkbox";?>" name="<?php echo "bpaf_admin_settings[$post_type][group][]"; ?>" type="checkbox" value="<?php echo $value->name; ?>" <?php  //echo ($bp_default_activity_value == $key) ? "checked=checked ": " "; ?>  />
+													<input id="<?php echo $post_type."_checkbox";?>" name="<?php echo "bpaf_admin_settings[$post_type][group][]"; ?>" type="checkbox" value="<?php echo $value->name; ?>" <?php checked( $checked_val, $value->name ); ?> />
 													<label for="bp-hidden-filters-name"><?php echo $value->name; ?></label>
 												</td>
 											</tr>
