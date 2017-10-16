@@ -26,6 +26,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Script_Includer')) {
 
 			wp_enqueue_style( 'custom_wp_admin_css' );
 			wp_enqueue_style( 'font_awesome_css' );
+			if ( !wp_script_is( 'jquery-ui-accordion', 'enqueued' ) ) {
+				wp_enqueue_script( 'jquery-ui-accordion' );
+			}
 			wp_enqueue_script( 'custom_wp_admin_js', plugin_dir_url( __FILE__ ) . 'js/bp-activity-filter.js', array( 'jquery' ), '1.0.0', false );
 		}
 

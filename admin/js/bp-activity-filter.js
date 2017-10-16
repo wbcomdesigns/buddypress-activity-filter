@@ -1,4 +1,5 @@
 jQuery(document).ready(function($) {
+
   jQuery('#bpaf_setting_error_settings_updated').hide();
   jQuery( "#bp_activity_filter_display_setting_form_submit" ).on( 'click', function(){
     var form_data = jQuery( '#bp_activity_filter_display_setting_form' ).serialize();
@@ -46,6 +47,11 @@ jQuery(document).ready(function($) {
                   jQuery('#bpaf_setting_error_settings_updated').show();
                 }
             );
+  });
+
+  jQuery( "#bpaf_faq_accordion" ).accordion({
+    collapsible: true,
+    heightStyle: "content"
   });
 
 });

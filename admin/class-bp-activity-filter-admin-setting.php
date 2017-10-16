@@ -256,27 +256,43 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		}
 
 		public function bpaf_faq_section() { ?>
-			<div class="bpaf-admin-settings-block">
-			    <div id="bpaf-settings-tbl">
-			        <div class="bpaf-admin-row">
-			            <div>
-			                <button class="bpaf-accordion">What plugin does this plugin require?</button>
-			                <div class="panel">
-			                    <p>As the name of the plugin justifies, this plugin helps the site members to <strong>checkin, during their post updates</strong>, this plugin requires <strong>BuddyPress</strong> plugin to be installed and active.</p>
-			                    <p>You'll also get an admin notice and the plugin will become ineffective if the required plugin will not be there.</p>
-			                </div>
-			            </div>
-			        </div>
-
-			        <div class="bpaf-admin-row">
-			            <div>
-			                <button class="bpaf-accordion">How to go for any custom development?</button>
-			                <div class="panel">
-			                    <p>If you need additional help you can contact us for <a href="https://wbcomdesigns.com/contact/" target="_blank" title="Custom Development by Wbcom Designs">Custom Development</a>.</p>
-			                </div>
-			            </div>
-			        </div>
-			    </div>
+			<div id="bpaf_faq_accordion">
+			  <h3><?php _e( 'Is this plugin requires another plugin?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <div>
+			    <p>
+			    	<?php _e( 'Yes, this plugin requires BuddyPress plugin.', BPAF_TEXT_DOMAIN ); ?>
+			    </p>
+			  </div>
+			  <h3><?php _e( 'By default, which filters will be displayed in activity dropdown?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <div>
+			    <p>
+			    	<?php _e( 'By default, all filters will be displayed.', BPAF_TEXT_DOMAIN ); ?>
+			    </p>
+			  </div>
+			  <h3><?php _e( 'By default, which filters will be hidden in activity dropdown?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <div>
+			    <p>
+				    <?php _e( 'By default, no filter will be hidden.', BPAF_TEXT_DOMAIN ); ?>
+			    </p>
+			  </div>
+			  <h3><?php _e( 'If I selected \'Display in Groups\' then what will be happened?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <div>
+			    <p>
+				    <?php _e( 'If you selected \'Display in Groups\' option then when you add a new post in that specific custom post type, all BuddyPress groups display this activity.', BPAF_TEXT_DOMAIN ); ?>
+			    </p>
+			  </div>
+			  <h3><?php _e( 'What will be displayed if \'Rename in Activity Stream\' field empty?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <div>
+			    <p>
+				    <?php _e( 'If this field is empty then the singular label of custom post type will be displayed.', BPAF_TEXT_DOMAIN ); ?>
+			    </p>
+			  </div>
+			  <h3><?php _e( 'Where do I ask for support?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <div>
+			    <p>
+			    	<?php _e( 'Please visit <a href="http://wbcomdesigns.com/contact" rel="nofollow" target="_blank">Wbcom Designs</a> for any query related to plugin and BuddyPress.', BPAF_TEXT_DOMAIN ); ?>
+			    </p>
+			  </div>
 			</div>
 		<?php }
 
@@ -320,7 +336,12 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				    $post_types = get_post_types( $args, $output, $operator );
 				    foreach ( $post_types  as $post_type ) {
 				    	$post_details = get_post_type_object( $post_type );
-				    	$saved_settings = $cpt_filter_val['bpaf_admin_settings'][$post_type];
+				    	if( !empty( $cpt_filter_val ) ) {
+				    		$saved_settings = $cpt_filter_val['bpaf_admin_settings'][$post_type];
+				    	} else {
+				    		$saved_settings = array();
+				    	}
+
 				    	if( array_key_exists('display_type', $saved_settings) ) {
 				    		$display_type = $saved_settings['display_type'];
 				    	} else {
@@ -364,37 +385,6 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									<td class="filter-option">
 										<input id="<?php echo $post_type."_radio";?>" class="bpaf-group-filter" name="<?php echo "bpaf_admin_settings[$post_type][display_type]"; ?>" type="radio" value="groups" <?php checked( $display_type, 'groups' ); ?>  />
 										<label for='<?php "bpaf_admin_settings_display_type-$post_type"; ?>'><?php _e( 'Display in Groups', BPAF_TEXT_DOMAIN ); ?></label>
-									</td>
-								</tr>
-								<tr>
-									<td class="filter-option">
-										<table class="bpaf-group-list" >
-										<?php
-											$group_args = array(
-												'order' => 'DESC',
-												'orderby' => 'date_created'
-											);
-						                    $allgroups  = groups_get_groups( $group_args );
-						                    foreach ($allgroups['groups'] as $key => $value) {
-						                    	if( is_array( $group )) {
-						                    		if( in_array( $value->name, $group ) ) {
-						                    			$checked_val = $value->name;
-						                    		}
-						                    		else {
-						                    			$checked_val = '';
-						                    		}
-						                    	} else {
-						                    		$checked_val = '';
-						                    	}
-				                    		?>
-											<tr>
-												<td class="filter-option">
-													<input id="<?php echo $post_type."_checkbox";?>" name="<?php echo "bpaf_admin_settings[$post_type][group][]"; ?>" type="checkbox" value="<?php echo $value->name; ?>" <?php checked( $checked_val, $value->name ); ?> />
-													<label for="bp-hidden-filters-name"><?php echo $value->name; ?></label>
-												</td>
-											</tr>
-										<?php } ?>
-										</table>
 									</td>
 								</tr>
 								<?php } ?>

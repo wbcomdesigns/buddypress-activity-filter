@@ -37,3 +37,9 @@ table.form-table td.filter-option {
 .bpaf-group-list {
     margin-left: 30px;
 }
+#bpaf_faq_accordion {
+    margin: 20px;
+}
+#bpaf_faq_accordion .ui-accordion-header-icon {
+    margin-right: 10px;
+}
