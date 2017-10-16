@@ -60,9 +60,15 @@ if (!class_exists('WbCom_BP_Activity_Filter_Add_Post_Type_Support')) {
 					            // add activity
 
 					            $action = '<a id="group-' . esc_attr( $group->id ) . '" class="new-group" href="' . bp_get_group_permalink( $group ) . '">' .$group->name . '</a>';
+					            $post_action = "";
+					            $post_action = apply_filters('bpaf_groups_content_override', $post_author, $post_type_rename, $post_title, $action );
+					            if (empty($post_action)) {
+					            	$post_action = "$post_author.' added a new '.$post_type_rename.', '.$post_title.' in the group '.$action.' about'";
+					            }
+
 					            $prep_args = array(
 					                'id'                => false,                  // Pass an existing activity ID to update an existing entry.
-					                'action'            => $post_author.' added a new '.$post_type_rename.', '.$post_title.' in the group '.$action.' about',                     // The activity action - e.g. "Jon Doe posted an update"
+					                'action'            => $post_action,                     // The activity action - e.g. "Jon Doe posted an update"
 					                'content'           => $post_excerpt,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!"
 					                'component'         => 'groups',                  // The name/ID of the component e.g. groups, profile, mycomponent.
 					                'type'              => 'activity_update',                  // The activity type e.g. activity_update, profile_updated.
@@ -89,11 +95,15 @@ if (!class_exists('WbCom_BP_Activity_Filter_Add_Post_Type_Support')) {
 			            $post_thumb = get_the_post_thumbnail($post_id);
 			            $post_excerpt = $post_thumb.'<br/>'. $post_excerpt;
 			            $post_link = get_the_permalink($post_id);
-
+			            $post_action = "";
+			            $post_action = apply_filters('bpaf_main_activity_content_override', $post_author, $post_type_rename, $post_title);
+			            if (empty($post_action)) {
+			            	$post_action = "$post_author.' added a new '.$post_type_rename.', '.$post_title.' about'";
+			            }
 			            // add activity
 			            $prep_args = array(
 			                'id'                => false,                  // Pass an existing activity ID to update an existing entry.
-			                'action'            => $post_author.' added a new '.$post_type_rename.', '.$post_title.' about',                     // The activity action - e.g. "Jon Doe posted an update"
+			                'action'            => $post_action,                     // The activity action - e.g. "Jon Doe posted an update"
 			                'content'           => $post_excerpt,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!"
 			                'component'         => 'activity',                  // The name/ID of the component e.g. groups, profile, mycomponent.
 			                'type'              => 'new_blog_post',                  // The activity type e.g. activity_update, profile_updated.

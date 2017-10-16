@@ -191,7 +191,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 								</td>
 							</tr>
 					    <?php 	foreach ( $labels as $key => $value ) :
-									if ( !empty($value) ) { ?>
+									if ( !empty( $value ) ) { ?>
 									<tr>
 										<td class="filter-option">
 								    		<input id="<?php echo $key."_radio";?>" name="bp-default-filter-name" type="radio" value="<?php echo $key;?>" <?php  echo ($bp_default_activity_value == $key) ? "checked=checked ": " "; ?>  />
@@ -224,7 +224,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form" >
 				<table class="filter-table form-table" >
 				    <tr>
-				    	<th scope="row"><label class="filter-description" ><?php _e( 'Select activity/activities you want to hide from dropdown list on activity front page.', BPAF_TEXT_DOMAIN ); ?></label></th>
+				    	<th scope="row"><label class="filter-description" ><?php _e( 'Select activity filters those you want to hide from the dropdown list on activity front page.', BPAF_TEXT_DOMAIN ); ?></label></th>
 				    	<td>
 				    		<table>
 				    			<tr>
