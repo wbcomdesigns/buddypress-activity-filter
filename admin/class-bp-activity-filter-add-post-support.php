@@ -63,7 +63,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Add_Post_Type_Support')) {
 					            $post_action = "";
 					            $post_action = apply_filters('bpaf_groups_content_override', $post_author, $post_type_rename, $post_title, $action );
 					            if (empty($post_action)) {
-					            	$post_action = "$post_author.' added a new '.$post_type_rename.', '.$post_title.' in the group '.$action.' about'";
+					            	$post_action = "$post_author".' added a new '."$post_type_rename".', '."$post_title".' in the group '."$action".' about';
 					            }
 
 					            $prep_args = array(
@@ -98,7 +98,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Add_Post_Type_Support')) {
 			            $post_action = "";
 			            $post_action = apply_filters('bpaf_main_activity_content_override', $post_author, $post_type_rename, $post_title);
 			            if (empty($post_action)) {
-			            	$post_action = "$post_author.' added a new '.$post_type_rename.', '.$post_title.' about'";
+			            	$post_action = "$post_author".' added a new '."$post_type_rename".', '."$post_title".' about';
 			            }
 			            // add activity
 			            $prep_args = array(
