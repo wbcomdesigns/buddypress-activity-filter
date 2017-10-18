@@ -30,6 +30,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Activity_Stream')) {
 				$action = '';
 				$defult_activity_stream = bp_get_option('bp-default-filter-name');
 				$hidden_activity_stream = bp_get_option('bp-hidden-filters-name');
+				if( empty($hidden_activity_stream) ) {
+					$hidden_activity_stream = array();
+				}
 				$admin_setting_object = new WbCom_BP_Activity_Filter_Admin_Setting();
 				$labels = $admin_setting_object->bpaf_get_labels();
 				foreach ( $labels as $l_key => $l_value ) {
