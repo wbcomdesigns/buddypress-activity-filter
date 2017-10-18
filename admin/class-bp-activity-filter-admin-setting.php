@@ -164,6 +164,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		}
 
 		public function bpaf_display_activity_section() {
+			global $bp;
+			$defult_activity_stream = bp_get_option('bp-default-filter-name');
+			$hidden_activity_stream = bp_get_option('bp-hidden-filters-name');
 			$labels = $this->bpaf_get_labels();
 			?>
 			<form method="post" novalidate="novalidate" id="bp_activity_filter_display_setting_form" >
@@ -219,7 +222,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			$labels = $this->bpaf_get_labels();
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 
-			$bp_hidden_filters_value = bp_get_option( 'bp-hidden-filters-name' );  ?>
+			$bp_hidden_filters_value = bp_get_option( 'bp-hidden-filters-name' );
+			//echo "<pre>"; print_r( $bp_hidden_filters_value ); echo "</pre>";
+			 ?>
 
 			<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form" >
 				<table class="filter-table form-table" >
