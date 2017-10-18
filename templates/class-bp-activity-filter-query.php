@@ -23,7 +23,8 @@ if (!class_exists('WbCom_BP_Activity_Filter_Activity_Stream')) {
 				return $query;
 			}
 
-			$query = wp_parse_args( $query, array() );
+			if( empty( $query ) ) {
+				$query = wp_parse_args( $query, array() );
 
 				$count = 0;
 				$action = '';
@@ -53,7 +54,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Activity_Stream')) {
 					$query = 'action=' . $action;
 
 				}
-
+			}
 			 return $query;
 		}
 	}
