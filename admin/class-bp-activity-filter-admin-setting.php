@@ -21,13 +21,20 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			add_action( 'wp_ajax_nopriv_bp_activity_filter_save_cpt_settings', array($this, 'bp_activity_filter_save_cpt_settings' ) );
 		}
 
+	    /**
+	     * BP Share activity filter
+	     * @access public
+	     * @since    1.0.0
+	     */
 		public function bp_activity_filter_admin_menu() {
 			add_submenu_page( 'bp-activity', __('BP Activity Filter Settings', BPAF_TEXT_DOMAIN ), __(' BP Activity Filter Settings ', BPAF_TEXT_DOMAIN ), 'manage_options', 'bp_activity_filter_settings', array( $this, 'bp_activity_filter_section_settings') );
 		}
 
-		/**
-		 * Your setting main function
-		 */
+	    /**
+	     * Settings page content
+	     * @access public
+	     * @since    1.0.0
+	     */
 		public function bp_activity_filter_section_settings() {
 			$tab = isset($_GET['tab']) ? $_GET['tab'] : 'bpaf_display_activity';
 		?>
@@ -51,6 +58,11 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		<?php
 		}
 
+	    /**
+	     * Get all labels
+	     * @access public
+	     * @since    1.0.0
+	     */
 		public function bpaf_get_labels() {
 			/*Argument to pass in callback*/
 			$filter_actions = buddypress() -> activity -> actions;
@@ -127,7 +139,11 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		}
 
 
-
+	    /**
+	     * Display tabs
+	     * @access public
+	     * @since    1.0.0
+	     */
 		public function bpaf_plugin_settings_tabs( $current ) {
 			$bpaf_tabs = array(
 				'bpaf_display_activity' => __('Display Activity', BPAF_TEXT_DOMAIN),
@@ -146,6 +162,11 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			$this->bpaf_include_admin_setting_tabs($current);
 		}
 
+	    /**
+	     * Display content according tabs
+	     * @access public
+	     * @since    1.0.0
+	     */
 		function bpaf_include_admin_setting_tabs($bpaf_tab)
 		{
 		    $bpaf_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : $bpaf_tab;
@@ -163,6 +184,11 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		    }
 		}
 
+	    /**
+	     * Display content of Display Activity tab section
+	     * @access public
+	     * @since    1.0.0
+	     */
 		public function bpaf_display_activity_section() {
 			global $bp;
 			$defult_activity_stream = bp_get_option('bp-default-filter-name');
@@ -214,16 +240,17 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		   	<?php
 		}
 
-		/**
-		 * This is the display function for your field
-		 */
+	    /**
+	     * Display content of Hide Activity tab section
+	     * @access public
+	     * @since    1.0.0
+	     */
 		public function bpaf_hide_activity_section() {
 			global $bp;
 			$labels = $this->bpaf_get_labels();
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 
 			$bp_hidden_filters_value = bp_get_option( 'bp-hidden-filters-name' );
-			//echo "<pre>"; print_r( $bp_hidden_filters_value ); echo "</pre>";
 			 ?>
 
 			<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form" >
@@ -260,6 +287,11 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		<?php
 		}
 
+	    /**
+	     * Display content of Display FAQ tab section
+	     * @access public
+	     * @since    1.0.0
+	     */
 		public function bpaf_faq_section() { ?>
 			<div id="bpaf_faq_accordion">
 			  <h3><?php _e( 'Is this plugin requires another plugin?', BPAF_TEXT_DOMAIN ); ?></h3>
@@ -292,6 +324,17 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				    <?php _e( 'If this field is empty then the singular label of custom post type will be displayed.', BPAF_TEXT_DOMAIN ); ?>
 			    </p>
 			  </div>
+			  <h3><?php _e( 'How to modify the custom post type activity content display on the front end?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <div>
+			    <p>
+			    	<?php _e( 'You can modify activity content by given filters.', BPAF_TEXT_DOMAIN ); ?>
+			    	<ol>
+				    	<li><b>bpaf_main_activity_content_override</b></li>
+				    	<li><b>bpaf_groups_content_override</b></li>
+				    </ol>
+			    </p>
+
+			  </div>
 			  <h3><?php _e( 'Where do I ask for support?', BPAF_TEXT_DOMAIN ); ?></h3>
 			  <div>
 			    <p>
@@ -301,29 +344,11 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			</div>
 		<?php }
 
-		public function bp_activity_filter_save_display_settings() {
-			parse_str( $_POST['form_data'], $setting_form_data );
-			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
-			$bp_default_filter_name = $form_details['bp-default-filter-name'];
-			bp_update_option( 'bp-default-filter-name',  $bp_default_filter_name );
-			exit;
-		}
-
-		public function bp_activity_filter_save_hide_settings() {
-			parse_str( $_POST['form_data'], $setting_form_data );
-			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
-			$bp_hidden_filter_name = $form_details['bp-hidden-filters-name'];
-			bp_update_option( 'bp-hidden-filters-name',  $bp_hidden_filter_name );
-			exit;
-		}
-
-		public function bp_activity_filter_save_cpt_settings() {
-			parse_str( $_POST['form_data'], $cpt_settings_data );
-			$cpt_settings_details = filter_var_array( $cpt_settings_data, FILTER_SANITIZE_STRING );
-			bp_update_option( 'bp-cpt-filters-settings',  $cpt_settings_details );
-			exit;
-		}
-
+	    /**
+	     * Display content of Display Activity tab section
+	     * @access public
+	     * @since    1.0.0
+	     */
 		public function bpaf_cpt_activity_section() {
 			$cpt_filter_val = bp_get_option( 'bp-cpt-filters-settings');
 			?>
@@ -404,6 +429,44 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				</div>
     		</form>
 		<?php exit; }
+
+	    /**
+	     * Save content of Display Activity tab section
+	     * @access public
+	     * @since    1.0.0
+	     */
+		public function bp_activity_filter_save_display_settings() {
+			parse_str( $_POST['form_data'], $setting_form_data );
+			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
+			$bp_default_filter_name = $form_details['bp-default-filter-name'];
+			bp_update_option( 'bp-default-filter-name',  $bp_default_filter_name );
+			exit;
+		}
+
+	    /**
+	     * Save content of Hide Activity tab section
+	     * @access public
+	     * @since    1.0.0
+	     */
+		public function bp_activity_filter_save_hide_settings() {
+			parse_str( $_POST['form_data'], $setting_form_data );
+			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
+			$bp_hidden_filter_name = $form_details['bp-hidden-filters-name'];
+			bp_update_option( 'bp-hidden-filters-name',  $bp_hidden_filter_name );
+			exit;
+		}
+
+	    /**
+	     * Save content of Custom post type Activity tab section
+	     * @access public
+	     * @since    1.0.0
+	     */
+		public function bp_activity_filter_save_cpt_settings() {
+			parse_str( $_POST['form_data'], $cpt_settings_data );
+			$cpt_settings_details = filter_var_array( $cpt_settings_data, FILTER_SANITIZE_STRING );
+			bp_update_option( 'bp-cpt-filters-settings',  $cpt_settings_details );
+			exit;
+		}
 
 	}
 }
