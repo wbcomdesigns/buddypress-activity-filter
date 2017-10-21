@@ -26,12 +26,12 @@ function check_required_plugin_is_activated() {
     if (is_multisite()) {
         if (!is_plugin_active_for_network('buddypress/bp-loader.php') && !is_plugin_active('buddypress/bp-loader.php')) {
             deactivate_plugins(plugin_basename(__FILE__));
-            wp_die(__('The <b>BuddyPress Activity Filter</b> plugin requires <b>Buddypress</b> plugin to be installed and active. Return to <a href="' . admin_url('plugins.php') . '">Plugins</a>', 'bp-activity-filter'));
+            wp_die(__('The <b>BuddyPress Activity Filter</b> plugin requires <b>BuddyPress</b> plugin to be installed and active. Return to <a href="' . admin_url('plugins.php') . '">Plugins</a>', 'bp-activity-filter'));
         }
     } else {
         if (!in_array('buddypress/bp-loader.php', apply_filters('active_plugins', get_option('active_plugins')))) {
             deactivate_plugins(plugin_basename(__FILE__));
-            wp_die(__('The <b>BuddyPress Activity Filter</b> plugin requires <b>Buddypress</b> plugin to be installed and active. Return to <a href="' . admin_url('plugins.php') . '">Plugins</a>', 'bp-activity-filter'));
+            wp_die(__('The <b>BuddyPress Activity Filter</b> plugin requires <b>BuddyPress</b> plugin to be installed and active. Return to <a href="' . admin_url('plugins.php') . '">Plugins</a>', 'bp-activity-filter'));
         }
     }
 }
