@@ -367,8 +367,10 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				    foreach ( $post_types  as $post_type ) {
 				    	$post_details = get_post_type_object( $post_type );
 				    	if( !empty( $cpt_filter_val ) ) {
+
 				    		$saved_settings = $cpt_filter_val['bpaf_admin_settings'][$post_type];
 				    	} else {
+
 				    		$saved_settings = array();
 				    	}
 
