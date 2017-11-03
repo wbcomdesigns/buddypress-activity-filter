@@ -4,7 +4,7 @@ Tags: buddypress,activity-filter, activity, filter , BuddyPress Activity, Activi
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
 Tested up to: 4.8.3
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,9 +57,12 @@ You can modify activity content by given filters.
 
 == Changelog ==
 
-= 1.0.2 =
+= 1.0.3 =
 * Fix - Changed plugin setting UI.
 * Enhancement - Add activities settings for custom post type.
+
+= 1.0.2 =
+* Fix - Default filter fixes
 
 = 1.0.1 =
 * Fix - Admin table fixes
