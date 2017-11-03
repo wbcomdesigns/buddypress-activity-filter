@@ -12,6 +12,7 @@ It will help to set default filter option with BuddyPress Activity and It will a
 
 == Description ==
 Admin can set default and customised activities to be listed on front-end.
+
 It will also allow to set your default option for activities. You can change default from everything to Post Updates.
 
 If you need additional help you can contact us for [Custom Development](https://wbcomdesigns.com/contact/).
@@ -57,12 +58,12 @@ You can modify activity content by given filters.
 == Changelog ==
 
 = 1.0.2 =
-* Changed plugin setting UI.
+* Fix - Changed plugin setting UI.
 * Enhancement - Add activities settings for custom post type.
 
 = 1.0.1 =
-Admin table fixes
+* Fix - Admin table fixes
 
 = 1.0.0 =
-Initial Release
+* Initial Release
 

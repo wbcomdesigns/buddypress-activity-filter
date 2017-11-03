@@ -1,20 +1,25 @@
+#, fuzzy
 msgid ""
 msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: BuddyPress Activity Filter\n"
-"POT-Creation-Date: 2017-10-21 13:21+0530\n"
-"PO-Revision-Date: 2017-10-21 13:21+0530\n"
+"POT-Creation-Date: 2017-11-03 22:02+0530\n"
+"PO-Revision-Date: 2017-11-03 22:02+0530\n"
 "Last-Translator: \n"
-"Language-Team: wbcomdesigns\n"
-"Language: en_US\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.4\n"
 "X-Poedit-Basepath: ..\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: buddypress-activity-filter.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_x;_e\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
 
 #: admin/class-bp-activity-filter-admin-setting.php:30
 msgid "BP Activity Filter Settings"
@@ -75,7 +80,7 @@ msgstr ""
 
 #: admin/class-bp-activity-filter-admin-setting.php:236
 #: admin/class-bp-activity-filter-admin-setting.php:283
-#: admin/class-bp-activity-filter-admin-setting.php:427
+#: admin/class-bp-activity-filter-admin-setting.php:429
 msgid "Save Settings"
 msgstr ""
 
@@ -149,19 +154,19 @@ msgid ""
 "BuddyPress."
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:392
+#: admin/class-bp-activity-filter-admin-setting.php:394
 msgid "Rename in Activity Stream"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:404
+#: admin/class-bp-activity-filter-admin-setting.php:406
 msgid "Do not display"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:410
+#: admin/class-bp-activity-filter-admin-setting.php:412
 msgid "Display in main Activity Stream"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:417
+#: admin/class-bp-activity-filter-admin-setting.php:419
 msgid "Display in Groups"
 msgstr ""
 
@@ -173,4 +178,25 @@ msgstr ""
 
 #: buddypress-activity-filter.php:105
 msgid "Settings"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "BuddyPress Activity Filter"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://wbcomdesigns.com/downloads/buddypress-activity-filter/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Admin can set default and customized activities to be listed on front-end"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Wbcom Designs<admin@wbcomdesigns.com>"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://www.wbcomdesigns.com/"
 msgstr ""
