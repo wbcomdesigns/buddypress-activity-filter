@@ -274,13 +274,8 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									?>
 									<tr>
 										<td class="filter-option">
-<<<<<<< HEAD
 								    		<input id="<?php echo $key."-checkbox"?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key;?>" <?php  echo ( (!empty($bp_hidden_filters_value) && is_array( $bp_hidden_filters_value )) && in_array($key, $bp_hidden_filters_value)) ? "checked" : " ";  echo $default_active; ?> />
 								    		<label for="bp-hidden-filters-name"><?php _e( $value, BPAF_TEXT_DOMAIN ); ?></label>
-=======
-								    		<input id="<?php echo $key."-checkbox"?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key;?>" <?php  echo ( (!empty($bp_hidden_filters_value) && is_array( $bp_hidden_filters_value )) && in_array($key, $bp_hidden_filters_value)) ? "checked" : " "; ?> />
-								    		<label for="bp-hidden-filters-name"><?php _e( $value, 'bp-activity-filter' ); ?></label>
->>>>>>> a7a5d9e309db4ebfdc461031af90ba382c7c9e36
 								    	</td>
 							    	</tr>
 					    		<?php }
