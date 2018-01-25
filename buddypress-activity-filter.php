@@ -15,10 +15,6 @@ if (!defined('ABSPATH')) {
     wp_die('Direct Access is not Allowed');
 }
 
-if ( ! defined( 'BPAF_TEXT_DOMAIN' ) ) {
-    define( 'BPAF_TEXT_DOMAIN', 'bp-activity-filter' );
-}
-
 /**
  *  Checking for buddypress whether it is active or not
  */

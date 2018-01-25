@@ -69,4 +69,3 @@ You can modify activity content by given filters.
 
 = 1.0.0 =
 * Initial Release
-
