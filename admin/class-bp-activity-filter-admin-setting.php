@@ -249,7 +249,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			global $bp;
 			$labels = $this->bpaf_get_labels();
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
-
+			$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' );
 			$bp_hidden_filters_value = bp_get_option( 'bp-hidden-filters-name' );
 			 ?>
 
@@ -266,10 +266,15 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									</td>
 								</tr>
 				    		<?php foreach ( $labels as $key => $value  ) :
-								if ( !empty( $value)) { ?>
+								if ( !empty( $value) ) {
+									$default_active = '';
+									if( $bp_default_activity_value == $key ) {
+										$default_active = "disabled = 'disabled'";
+									}
+									?>
 									<tr>
 										<td class="filter-option">
-								    		<input id="<?php echo $key."-checkbox"?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key;?>" <?php  echo ( (!empty($bp_hidden_filters_value) && is_array( $bp_hidden_filters_value )) && in_array($key, $bp_hidden_filters_value)) ? "checked" : " "; ?> />
+								    		<input id="<?php echo $key."-checkbox"?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key;?>" <?php  echo ( (!empty($bp_hidden_filters_value) && is_array( $bp_hidden_filters_value )) && in_array($key, $bp_hidden_filters_value)) ? "checked" : " ";  echo $default_active; ?> />
 								    		<label for="bp-hidden-filters-name"><?php _e( $value, BPAF_TEXT_DOMAIN ); ?></label>
 								    	</td>
 							    	</tr>

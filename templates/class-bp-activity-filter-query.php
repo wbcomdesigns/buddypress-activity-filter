@@ -17,7 +17,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 		}
 
 		public function bpaf_filter_activity( $args ) {
-			if ( array_key_exists( 'since', $args ) || array_key_exists( 'include', $args ) ) {
+			if ( array_key_exists( 'scope', $args ) || array_key_exists( 'since', $args ) || array_key_exists( 'include', $args ) || array_key_exists( 'include', $args ) || array_key_exists( 'page', $args ) ) {
 				global $bp;
 				$count                  = 0;
 				$action                 = '';
