@@ -27,7 +27,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 	     * @since    1.0.0
 	     */
 		public function bp_activity_filter_admin_menu() {
-			add_submenu_page( 'bp-activity', __('BP Activity Filter Settings', BPAF_TEXT_DOMAIN ), __(' BP Activity Filter Settings ', BPAF_TEXT_DOMAIN ), 'manage_options', 'bp_activity_filter_settings', array( $this, 'bp_activity_filter_section_settings') );
+			add_submenu_page( 'bp-activity', __('BP Activity Filter Settings', 'bp-activity-filter' ), __(' BP Activity Filter Settings ', 'bp-activity-filter' ), 'manage_options', 'bp_activity_filter_settings', array( $this, 'bp_activity_filter_section_settings') );
 		}
 
 	    /**
@@ -42,16 +42,16 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			<div class="wrap">
 				<div class="bpaf-header">
 					<div class="bpaf-extra-actions">
-						<button type="button" class="button button-secondary" onclick="window.open('https://wbcomdesigns.com/contact/', '_blank');"><i class="fa fa-envelope" aria-hidden="true"></i> <?php _e( 'Email Support', BPAF_TEXT_DOMAIN )?></button>
-						<button type="button" class="button button-secondary" onclick="window.open('https://wbcomdesigns.com/helpdesk/article-categories/buddypress-activity-filter/', '_blank');"><i class="fa fa-file" aria-hidden="true"></i> <?php _e( 'User Manual', BPAF_TEXT_DOMAIN )?></button>
-						<button type="button" class="button button-secondary" onclick="window.open('https://wordpress.org/support/plugin/bp-activity-filter/reviews/', '_blank');"><i class="fa fa-star" aria-hidden="true"></i> <?php _e( 'Rate Us on WordPress.org', BPAF_TEXT_DOMAIN )?></button>
+						<button type="button" class="button button-secondary" onclick="window.open('https://wbcomdesigns.com/contact/', '_blank');"><i class="fa fa-envelope" aria-hidden="true"></i> <?php _e( 'Email Support', 'bp-activity-filter' )?></button>
+						<button type="button" class="button button-secondary" onclick="window.open('https://wbcomdesigns.com/helpdesk/article-categories/buddypress-activity-filter/', '_blank');"><i class="fa fa-file" aria-hidden="true"></i> <?php _e( 'User Manual', 'bp-activity-filter' )?></button>
+						<button type="button" class="button button-secondary" onclick="window.open('https://wordpress.org/support/plugin/bp-activity-filter/reviews/', '_blank');"><i class="fa fa-star" aria-hidden="true"></i> <?php _e( 'Rate Us on WordPress.org', 'bp-activity-filter' )?></button>
 					</div>
 				</div>
-				<h1><?php _e('BuddyPress Activity Filter Settings', BPAF_TEXT_DOMAIN ); ?></h1>
+				<h1><?php _e('BuddyPress Activity Filter Settings', 'bp-activity-filter' ); ?></h1>
 			    <div id="bpaf_setting_error_settings_updated" class="updated settings-error notice is-dismissible">
-					<p><strong><?php _e('Settings saved.', BPAF_TEXT_DOMAIN ); ?></strong></p>
+					<p><strong><?php _e('Settings saved.', 'bp-activity-filter' ); ?></strong></p>
 					<button type="button" class="notice-dismiss">
-						<span class="screen-reader-text"><?php _e('Dismiss this notice.', BPAF_TEXT_DOMAIN ); ?></span>
+						<span class="screen-reader-text"><?php _e('Dismiss this notice.', 'bp-activity-filter' ); ?></span>
 					</button>
 				</div>
 				<?php $this->bpaf_plugin_settings_tabs($tab);?>
@@ -146,10 +146,10 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 	     */
 		public function bpaf_plugin_settings_tabs( $current ) {
 			$bpaf_tabs = array(
-				'bpaf_display_activity' => __('Display Activity', BPAF_TEXT_DOMAIN),
-				'bpaf_hide_activity' => __('Hide Activity', BPAF_TEXT_DOMAIN),
-				'bpaf_cpt_activity' => __('Post Type Activity', BPAF_TEXT_DOMAIN),
-				'bpaf_faq' => __('FAQ', BPAF_TEXT_DOMAIN)
+				'bpaf_display_activity' => __('Display Activity', 'bp-activity-filter'),
+				'bpaf_hide_activity' => __('Hide Activity', 'bp-activity-filter'),
+				'bpaf_cpt_activity' => __('Post Type Activity', 'bp-activity-filter'),
+				'bpaf_faq' => __('FAQ', 'bp-activity-filter')
 			);
 
 			$tab_html =  '<h2 class="nav-tab-wrapper">';
@@ -210,13 +210,13 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 					if(empty($bp_default_activity_value))
 						$bp_default_activity_value=-1; ?>
-					<th scope="row"><label class="filter-description" ><?php _e( 'Select activity you want to list on activity page by default.', BPAF_TEXT_DOMAIN ); ?></label></th>
+					<th scope="row"><label class="filter-description" ><?php _e( 'Select activity you want to list on activity page by default.', 'bp-activity-filter' ); ?></label></th>
 				    <td>
 				    	<table>
 					    	<tr>
 						    	<td class="filter-option">
 						    		<input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php  echo ($bp_default_activity_value == -1) ? "checked=checked": " ";?>/>
-									<label for="bp-default-filter-name"><?php _e( "Everything", BPAF_TEXT_DOMAIN ); ?></label>
+									<label for="bp-default-filter-name"><?php _e( "Everything", 'bp-activity-filter' ); ?></label>
 								</td>
 							</tr>
 					    <?php 	foreach ( $labels as $key => $value ) :
@@ -224,7 +224,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									<tr>
 										<td class="filter-option">
 								    		<input id="<?php echo $key."_radio";?>" name="bp-default-filter-name" type="radio" value="<?php echo $key;?>" <?php  echo ($bp_default_activity_value == $key) ? "checked=checked ": " "; ?>  />
-								    		<label for="<?php echo $key;?>"><?php _e( $value, BPAF_TEXT_DOMAIN ); ?></label>
+								    		<label for="<?php echo $key;?>"><?php _e( $value, 'bp-activity-filter' ); ?></label>
 								    	</td>
 							    	</tr>
 								    <?php }
@@ -233,7 +233,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				 	</td>
 			 	</table>
 		 		<div class="submit">
-					<a id="bp_activity_filter_display_setting_form_submit" class="button-primary"><?php _e('Save Settings', BPAF_TEXT_DOMAIN ); ?></a>
+					<a id="bp_activity_filter_display_setting_form_submit" class="button-primary"><?php _e('Save Settings', 'bp-activity-filter' ); ?></a>
 					<div class="spinner"></div>
 				</div>
 		 	</form>
@@ -256,13 +256,13 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form" >
 				<table class="filter-table form-table" >
 				    <tr>
-				    	<th scope="row"><label class="filter-description" ><?php _e( 'Select activity filters those you want to hide from the dropdown list on activity front page.', BPAF_TEXT_DOMAIN ); ?></label></th>
+				    	<th scope="row"><label class="filter-description" ><?php _e( 'Select activity filters those you want to hide from the dropdown list on activity front page.', 'bp-activity-filter' ); ?></label></th>
 				    	<td>
 				    		<table>
 				    			<tr>
 							    	<td class="filter-option">
 							    		<input id="bp-activity-filter-everything-checkbox" name="bp-hidden-filters-name[]" type="checkbox" value="-1"  disabled="disabled" />
-										<label for="bp-hidden-filters-name"><?php _e( 'Everything', BPAF_TEXT_DOMAIN ); ?></label>
+										<label for="bp-hidden-filters-name"><?php _e( 'Everything', 'bp-activity-filter' ); ?></label>
 									</td>
 								</tr>
 				    		<?php foreach ( $labels as $key => $value  ) :
@@ -270,7 +270,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									<tr>
 										<td class="filter-option">
 								    		<input id="<?php echo $key."-checkbox"?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key;?>" <?php  echo ( (!empty($bp_hidden_filters_value) && is_array( $bp_hidden_filters_value )) && in_array($key, $bp_hidden_filters_value)) ? "checked" : " "; ?> />
-								    		<label for="bp-hidden-filters-name"><?php _e( $value, BPAF_TEXT_DOMAIN ); ?></label>
+								    		<label for="bp-hidden-filters-name"><?php _e( $value, 'bp-activity-filter' ); ?></label>
 								    	</td>
 							    	</tr>
 					    		<?php }
@@ -280,7 +280,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 					</tr>
 				</table>
 				<div class="submit">
-					<a id="bp_activity_filter_hide_setting_form_submit" class="button-primary"><?php _e('Save Settings', BPAF_TEXT_DOMAIN ); ?></a>
+					<a id="bp_activity_filter_hide_setting_form_submit" class="button-primary"><?php _e('Save Settings', 'bp-activity-filter' ); ?></a>
 					<div class="spinner"></div>
 				</div>
 			</form>
@@ -294,40 +294,40 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 	     */
 		public function bpaf_faq_section() { ?>
 			<div id="bpaf_faq_accordion">
-			  <h3><?php _e( 'Is this plugin requires another plugin?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <h3><?php _e( 'Is this plugin requires another plugin?', 'bp-activity-filter' ); ?></h3>
 			  <div>
 			    <p>
-			    	<?php _e( 'Yes, this plugin requires BuddyPress plugin.', BPAF_TEXT_DOMAIN ); ?>
+			    	<?php _e( 'Yes, this plugin requires BuddyPress plugin.', 'bp-activity-filter' ); ?>
 			    </p>
 			  </div>
-			  <h3><?php _e( 'By default, which filters will be displayed in activity dropdown?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <h3><?php _e( 'By default, which filters will be displayed in activity dropdown?', 'bp-activity-filter' ); ?></h3>
 			  <div>
 			    <p>
-			    	<?php _e( 'By default, all filters will be displayed.', BPAF_TEXT_DOMAIN ); ?>
+			    	<?php _e( 'By default, all filters will be displayed.', 'bp-activity-filter' ); ?>
 			    </p>
 			  </div>
-			  <h3><?php _e( 'By default, which filters will be hidden in activity dropdown?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <h3><?php _e( 'By default, which filters will be hidden in activity dropdown?', 'bp-activity-filter' ); ?></h3>
 			  <div>
 			    <p>
-				    <?php _e( 'By default, no filter will be hidden.', BPAF_TEXT_DOMAIN ); ?>
+				    <?php _e( 'By default, no filter will be hidden.', 'bp-activity-filter' ); ?>
 			    </p>
 			  </div>
-			  <h3><?php _e( 'If I selected \'Display in Groups\' then what will be happened?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <h3><?php _e( 'If I selected \'Display in Groups\' then what will be happened?', 'bp-activity-filter' ); ?></h3>
 			  <div>
 			    <p>
-				    <?php _e( 'If you selected \'Display in Groups\' option then when you add a new post in that specific custom post type, all BuddyPress groups display this activity.', BPAF_TEXT_DOMAIN ); ?>
+				    <?php _e( 'If you selected \'Display in Groups\' option then when you add a new post in that specific custom post type, all BuddyPress groups display this activity.', 'bp-activity-filter' ); ?>
 			    </p>
 			  </div>
-			  <h3><?php _e( 'What will be displayed if \'Rename in Activity Stream\' field empty?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <h3><?php _e( 'What will be displayed if \'Rename in Activity Stream\' field empty?', 'bp-activity-filter' ); ?></h3>
 			  <div>
 			    <p>
-				    <?php _e( 'If this field is empty then the singular label of custom post type will be displayed.', BPAF_TEXT_DOMAIN ); ?>
+				    <?php _e( 'If this field is empty then the singular label of custom post type will be displayed.', 'bp-activity-filter' ); ?>
 			    </p>
 			  </div>
-			  <h3><?php _e( 'How to modify the custom post type activity content display on the front end?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <h3><?php _e( 'How to modify the custom post type activity content display on the front end?', 'bp-activity-filter' ); ?></h3>
 			  <div>
 			    <p>
-			    	<?php _e( 'You can modify activity content by given filters.', BPAF_TEXT_DOMAIN ); ?>
+			    	<?php _e( 'You can modify activity content by given filters.', 'bp-activity-filter' ); ?>
 			    	<ol>
 				    	<li><b>bpaf_main_activity_content_override</b></li>
 				    	<li><b>bpaf_groups_content_override</b></li>
@@ -335,10 +335,10 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			    </p>
 
 			  </div>
-			  <h3><?php _e( 'Where do I ask for support?', BPAF_TEXT_DOMAIN ); ?></h3>
+			  <h3><?php _e( 'Where do I ask for support?', 'bp-activity-filter' ); ?></h3>
 			  <div>
 			    <p>
-			    	<?php _e( 'Please visit <a href="http://wbcomdesigns.com/contact" rel="nofollow" target="_blank">Wbcom Designs</a> for any query related to plugin and BuddyPress.', BPAF_TEXT_DOMAIN ); ?>
+			    	<?php _e( 'Please visit <a href="http://wbcomdesigns.com/contact" rel="nofollow" target="_blank">Wbcom Designs</a> for any query related to plugin and BuddyPress.', 'bp-activity-filter' ); ?>
 			    </p>
 			  </div>
 			</div>
@@ -391,7 +391,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 					    	<table>
 					    		<tr>
 							    	<td class="filter-option">
-										<label ><?php _e( 'Rename in Activity Stream', BPAF_TEXT_DOMAIN ); ?></label>
+										<label ><?php _e( 'Rename in Activity Stream', 'bp-activity-filter' ); ?></label>
 									</td>
 								</tr>
 								<tr>
@@ -403,20 +403,20 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 								<tr>
 									<td class="filter-option">
 										<input id="<?php echo $post_type."_radio";?>" name="<?php echo "bpaf_admin_settings[$post_type][display_type]"; ?>" type="radio" value="not_display" <?php checked( $display_type, 'not_display' ); ?> />
-										<label for="bpaf_admin_settings_display_type-$post_type"><?php _e( 'Do not display', BPAF_TEXT_DOMAIN ); ?></label>
+										<label for="bpaf_admin_settings_display_type-$post_type"><?php _e( 'Do not display', 'bp-activity-filter' ); ?></label>
 									</td>
 								</tr>
 								<tr>
 									<td class="filter-option">
 										<input id="<?php echo $post_type."_radio";?>" class="bp-default-filter-name" name="<?php echo "bpaf_admin_settings[$post_type][display_type]"; ?>" type="radio" value="main_activity" <?php checked( $display_type, 'main_activity' ); ?>  />
-										<label for="bpaf_admin_settings_display_type-$post_type"><?php _e( 'Display in main Activity Stream', BPAF_TEXT_DOMAIN ); ?></label>
+										<label for="bpaf_admin_settings_display_type-$post_type"><?php _e( 'Display in main Activity Stream', 'bp-activity-filter' ); ?></label>
 									</td>
 								</tr>
 								<?php if ( bp_is_active( 'groups' ) ) { ?>
 								<tr>
 									<td class="filter-option">
 										<input id="<?php echo $post_type."_radio";?>" class="bpaf-group-filter" name="<?php echo "bpaf_admin_settings[$post_type][display_type]"; ?>" type="radio" value="groups" <?php checked( $display_type, 'groups' ); ?>  />
-										<label for='<?php "bpaf_admin_settings_display_type-$post_type"; ?>'><?php _e( 'Display in Groups', BPAF_TEXT_DOMAIN ); ?></label>
+										<label for='<?php "bpaf_admin_settings_display_type-$post_type"; ?>'><?php _e( 'Display in Groups', 'bp-activity-filter' ); ?></label>
 									</td>
 								</tr>
 								<?php } ?>
@@ -426,7 +426,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				    <?php }	?>
 	    		</table>
 				<div class="submit">
-					<a id="bp_activity_filter_cpt_setting_form_submit" class="button-primary"><?php _e('Save Settings', BPAF_TEXT_DOMAIN ); ?></a>
+					<a id="bp_activity_filter_cpt_setting_form_submit" class="button-primary"><?php _e('Save Settings', 'bp-activity-filter' ); ?></a>
 					<div class="spinner"></div>
 				</div>
     		</form>
