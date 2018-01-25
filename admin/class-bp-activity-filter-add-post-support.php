@@ -25,6 +25,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Add_Post_Type_Support')) {
 
 			$cpt_filter_setting = bp_get_option('bp-cpt-filters-settings');
 			$all_posts = $cpt_filter_setting['bpaf_admin_settings'];
+			if( isset( $all_posts ) && is_array( $all_posts ) ) {
 			foreach( $all_posts as $post_type=>$details ) {
 				if( $get_post_type == $post_type ) {
 					$post_details = get_post_type_object( $post_type );
@@ -123,6 +124,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Add_Post_Type_Support')) {
 
 				}
 			}
+		}
 
 		}
 
