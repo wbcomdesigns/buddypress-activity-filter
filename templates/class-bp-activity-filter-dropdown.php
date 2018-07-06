@@ -32,6 +32,8 @@ if (!class_exists('WbCom_BP_Activity_Filter_Public_Setting')) {
 
 			add_filter('bp_get_activity_show_filters', array($this, 'getting_all_filters_function'), 11, 3);
 
+			add_filter('bp_nouveau_filter_dropdown', array( $this, 'wb_bp_nouveau_filter_default' ), 11, 2 );
+
 
 
 		/* Clearing cookie for correct result */
@@ -42,6 +44,30 @@ if (!class_exists('WbCom_BP_Activity_Filter_Public_Setting')) {
 
 				setcookie('bp-activity-filter', ' ', $past, '/');
 
+		}
+
+		public function wb_bp_nouveau_filter_default( $output, $filters ) {
+
+			if( 'activity' == bp_current_component() ) {
+				$defult_activity_stream = bp_get_option('bp-default-filter-name');
+				$output = '';
+				foreach ( $filters as $key => $value ) {
+					if( $defult_activity_stream == $key ) {
+						$output .= sprintf( '<option value="%1$s" selected="selected">%2$s</option>%3$s',
+							esc_attr( $key ),
+							esc_html( $value ),
+							PHP_EOL
+						);
+					} else {
+						$output .= sprintf( '<option value="%1$s">%2$s</option>%3$s',
+							esc_attr( $key ),
+							esc_html( $value ),
+							PHP_EOL
+						);
+					}
+				}
+			}
+			return $output;
 		}
 
 		/**
