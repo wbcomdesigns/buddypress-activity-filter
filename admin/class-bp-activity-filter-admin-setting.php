@@ -331,7 +331,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 		            							break;
 
-		        case 'bpaf_cpt_activity'   :	$this->bpaf_cpt_activity_section();
+		        case 'bpaf_cpt_activity'    :	$this->bpaf_cpt_activity_section();
 
 		            							break;
 
@@ -363,7 +363,16 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 			$hidden_activity_stream = bp_get_option('bp-hidden-filters-name');
 
-			$labels = $this->bpaf_get_labels();
+			//$labels = $this->bpaf_get_labels();
+			$actions = bp_activity_get_actions_for_context( 'activity' );
+			foreach ( $actions as $action ) {
+				// Friends activity collapses two filters into one.
+				if ( in_array( $action['key'], array( 'friendship_accepted', 'friendship_created' ) ) ) {
+					$action['key'] = 'friendship_accepted,friendship_created';
+				}
+
+				$labels[ $action['key'] ] = $action['label'];
+			}
 
 			?>
 
