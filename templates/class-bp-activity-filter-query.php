@@ -12,43 +12,37 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			 * Filtering activity stream
 			 */
 				add_filter( 'bp_ajax_querystring', array( $this, 'filtering_activity_default' ), 999, 2 );
-				$filter_key = 'has_activities';
-				add_filter( 'bp_before_' . $filter_key . '_parse_args', array( $this, 'bpaf_filter_activity' ), 100, 1 );
+				add_action( 'wp_enqueue_scripts', array( $this, 'bpaf_enqueue_scripts' ) );
 		}
 
-		public function bpaf_filter_activity( $args ) {
-			if ( array_key_exists( 'scope', $args ) || array_key_exists( 'since', $args ) || array_key_exists( 'include', $args ) || array_key_exists( 'include', $args ) || array_key_exists( 'page', $args ) ) {
-				global $bp;
-				$count                  = 0;
-				$action                 = '';
-				$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
-				$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
-				if ( empty( $hidden_activity_stream ) ) {
-					$hidden_activity_stream = array();
-				}
-				$admin_setting_object = new WbCom_BP_Activity_Filter_Admin_Setting();
-				$labels               = $admin_setting_object->bpaf_get_labels();
-				if ( ! empty( $hidden_activity_stream ) ) {
-					foreach ( $labels as $l_key => $l_value ) {
-						if ( ! empty( $l_value ) ) {
-							if ( in_array( $l_key, $hidden_activity_stream ) ) {
+		public function bpaf_enqueue_scripts() {
 
-							} else {
-								if ( $count == 0 ) {
-									$action .= $l_key;
-									$count++;
-								} else {
-									$action .= ',' . $l_key;
-									$count++;
-								}
-							}
-						}
-					}
-					$args['action']  = $action;
-					$args['include'] = '';
-				}
+			/**
+			 * This function is provided for demonstration purposes only.
+			 *
+			 * An instance of this class should be passed to the run() function
+			 * defined in Bp_Add_Group_Types_Loader as all of the hooks are defined
+			 * in that particular class.
+			 *
+			 * The Bp_Add_Group_Types_Loader will then create the relationship
+			 * between the defined hooks and the functions defined in this
+			 * class.
+			 */
+			global $bp;
+			$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
+			if ( $defult_activity_stream != -1 ) {
+
+				wp_enqueue_script( 'bp-activity-filter-public', plugin_dir_url( __FILE__ ) . 'js/buddypress-activity-filter-public.js', array( 'jquery' ), time(), false );
+
+				wp_localize_script(
+					'bp-activity-filter-public',
+					'bpaf_js_object',
+					array(
+						'default_filter' => $defult_activity_stream,
+					)
+				);
 			}
-			return $args;
+
 		}
 
 		/**
@@ -62,7 +56,28 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				return $query;
 			}
 
-			if ( empty( $query ) ) {
+			if ( ! empty( $_POST['cookie'] ) )
+				$_BP_COOKIE = wp_parse_args( str_replace( '; ', '&', urldecode( $_POST['cookie'] ) ) );
+			else
+				$_BP_COOKIE = &$_COOKIE;
+			
+			if( !empty( $query ) ) {
+				$bp_query = explode( '&', $query );
+				$page     = array_pop( $bp_query );
+				$qs       = explode( '=', $page );
+				if( 'page' == $qs[0] ) {
+					$size = $qs[1];
+				}
+				
+			} else {
+				$bp_query = array();
+				$size = sizeof( $bp_query );
+			}
+
+			$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
+
+			if ( ( $defult_activity_stream != -1 ) && ( 1 == $_BP_COOKIE['bpaf-default-filter'] ) ) {
+				
 				$query = wp_parse_args( $query, array() );
 
 				$count                  = 0;
@@ -91,10 +106,14 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				}
 				if ( $defult_activity_stream != -1 ) {
 					$query = 'action=' . $defult_activity_stream;
+					if( !empty( $page ) ) {
+						$query .= '&'.$page;
+					}
 				} else {
 					$query = 'action=' . $action;
 				}
 			}
+			echo '<pre>final_query:'; print_r( $query ); echo "</pre>";
 			return $query;
 		}
 	}
