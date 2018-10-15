@@ -30,7 +30,9 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			 */
 			global $bp;
 			$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
-			if ( $defult_activity_stream != -1 ) {
+			if ( empty( $defult_activity_stream ) ) {
+				$defult_activity_stream = -1;
+			}	
 
 				wp_enqueue_script( 'bp-activity-filter-public', plugin_dir_url( __FILE__ ) . 'js/buddypress-activity-filter-public.js', array( 'jquery' ), time(), false );
 
@@ -41,20 +43,22 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 						'default_filter' => $defult_activity_stream,
 					)
 				);
-			}
 
 		}
 
 		/**
-		 * Modyfying activity loop for default acitvity
+		 * Modifying activity loop for default acitvity
 		 *
 		 * @param $retval
 		 */
 		public function filtering_activity_default( $query, $object ) {
 			global $bp;
+			$query_size = '';
+
 			if ( 'activity' != $object ) {
 				return $query;
 			}
+			
 
 			if ( ! empty( $_POST['cookie'] ) )
 				$_BP_COOKIE = wp_parse_args( str_replace( '; ', '&', urldecode( $_POST['cookie'] ) ) );
@@ -62,28 +66,27 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				$_BP_COOKIE = &$_COOKIE;
 			
 			if( !empty( $query ) ) {
-				$bp_query = explode( '&', $query );
-				$page     = array_pop( $bp_query );
+				$bp_query     = explode( '&', $query );
+				$bp_query_arr = $bp_query;
+				$page     = array_pop( $bp_query_arr );
 				$qs       = explode( '=', $page );
 				if( 'page' == $qs[0] ) {
 					$size = $qs[1];
+					$query_size = sizeof( $bp_query );
 				}
-				
 			} else {
 				$bp_query = array();
 				$size = sizeof( $bp_query );
 			}
 
 			$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
+			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
 
 			if ( ( $defult_activity_stream != -1 ) && ( 1 == $_BP_COOKIE['bpaf-default-filter'] ) ) {
-				
 				$query = wp_parse_args( $query, array() );
 
-				$count                  = 0;
-				$action                 = '';
-				$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
-				$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
+				$count  = 0;
+				$action = '';
 				if ( empty( $hidden_activity_stream ) ) {
 					$hidden_activity_stream = array();
 				}
@@ -108,11 +111,35 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 					$query = 'action=' . $defult_activity_stream;
 					if( !empty( $page ) ) {
 						$query .= '&'.$page;
-					}
+					}					
 				} else {
 					$query = 'action=' . $action;
 				}
-			}
+				
+			} else if( $defult_activity_stream == -1 && ( 1 == $_BP_COOKIE['bpaf-default-filter'] ) || empty( $query ) || ( 1 == $query_size ) ) {
+				$count  = 0;
+				$action = '';
+				$admin_setting_object = new WbCom_BP_Activity_Filter_Admin_Setting();
+				$labels               = $admin_setting_object->bpaf_get_labels();
+				if( !empty( $labels ) ) {
+					foreach ( $labels as $l_key => $l_value ) {
+						if ( ! empty( $l_value ) ) {
+							if ( in_array( $l_key, $hidden_activity_stream ) ) {
+
+							} else {
+								if ( $count == 0 ) {
+									$action .= $l_key;
+									$count++;
+								} else {
+									$action .= ',' . $l_key;
+									$count++;
+								}
+							}
+						}
+					}
+				}
+				$query = 'action=' . $action;				
+			}			
 			return $query;
 		}
 	}
