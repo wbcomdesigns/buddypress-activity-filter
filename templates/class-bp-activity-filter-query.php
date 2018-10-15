@@ -113,7 +113,6 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 					$query = 'action=' . $action;
 				}
 			}
-			echo '<pre>final_query:'; print_r( $query ); echo "</pre>";
 			return $query;
 		}
 	}
