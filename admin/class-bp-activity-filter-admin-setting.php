@@ -363,7 +363,6 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 			$hidden_activity_stream = bp_get_option('bp-hidden-filters-name');
 
-			//$labels = $this->bpaf_get_labels();
 			$actions = bp_activity_get_actions_for_context( 'activity' );
 			foreach ( $actions as $action ) {
 				// Friends activity collapses two filters into one.
@@ -476,7 +475,15 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 			global $bp;
 
-			$labels = $this->bpaf_get_labels();
+			$actions = bp_activity_get_actions_for_context( 'activity' );
+			foreach ( $actions as $action ) {
+				// Friends activity collapses two filters into one.
+				if ( in_array( $action['key'], array( 'friendship_accepted', 'friendship_created' ) ) ) {
+					$action['key'] = 'friendship_accepted,friendship_created';
+				}
+
+				$labels[ $action['key'] ] = $action['label'];
+			}
 
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 
@@ -923,4 +930,3 @@ if (class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 	$admin_setting_obj = new WbCom_BP_Activity_Filter_Admin_Setting();
 
 }
-
