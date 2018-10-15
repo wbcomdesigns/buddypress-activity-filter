@@ -81,7 +81,6 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 
 			$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
 			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
-
 			if ( ( $defult_activity_stream != -1 ) && ( 1 == $_BP_COOKIE['bpaf-default-filter'] ) ) {
 				$query = wp_parse_args( $query, array() );
 
@@ -138,8 +137,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 						}
 					}
 				}
-				$query = 'action=' . $action;				
-			}			
+				$query = 'action=' . $action;
+				if( !empty( $page ) ) {
+					$query .= '&'.$page;
+				}				
+			}
+					
 			return $query;
 		}
 	}
