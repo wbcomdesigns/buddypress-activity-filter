@@ -79,7 +79,22 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				$size = sizeof( $bp_query );
 			}
 
-			$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
+			if( bp_is_group_activity() ) {
+				$defult_activity_stream = -1;
+				$page_actions = bp_activity_get_actions_for_context();
+				if( !empty( $page_actions ) ) {
+					$selected_activity_stream = bp_get_option( 'bp-default-filter-name' );
+					foreach( $page_actions as $gakey => $gavalue ) {
+						if( $selected_activity_stream == $gavalue['key'] ) {
+							$defult_activity_stream = $selected_activity_stream;
+						}
+					}
+				}
+			} else {
+				$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
+				$page_actions           = bp_activity_get_actions_for_context( 'activity' );
+			}
+
 			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
 			if ( ( $defult_activity_stream != -1 ) && ( 1 == $_BP_COOKIE['bpaf-default-filter'] ) ) {
 				$query = wp_parse_args( $query, array() );
