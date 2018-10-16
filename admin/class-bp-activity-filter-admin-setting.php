@@ -425,13 +425,22 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 					    <?php 	foreach ( $labels as $key => $value ) :
 
-									if ( !empty( $value ) ) { ?>
+									if ( !empty( $value ) ) { 
+										$hide_active = '';
+										if( !empty( $bp_hidden_filters_value ) ) {
+											if( in_array( $key, $bp_hidden_filters_value ) ) {
+
+												$hide_active = "disabled = 'disabled'";
+
+											}
+										}
+										?>
 
 									<tr>
 
 										<td class="filter-option">
 
-								    		<input id="<?php echo $key."_radio";?>" name="bp-default-filter-name" type="radio" value="<?php echo $key;?>" <?php  echo ($bp_default_activity_value == $key) ? "checked=checked ": " "; ?>  />
+								    		<input id="<?php echo $key."_radio";?>" name="bp-default-filter-name" type="radio" value="<?php echo $key;?>" <?php  echo ($bp_default_activity_value == $key) ? "checked=checked ": " "; echo $hide_active; ?>  />
 
 								    		<label for="<?php echo $key;?>"><?php _e( $value, 'bp-activity-filter' ); ?></label>
 
