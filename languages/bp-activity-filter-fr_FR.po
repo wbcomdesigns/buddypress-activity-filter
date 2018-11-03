@@ -1,154 +1,163 @@
-# Copyright (C) 2018 
-# This file is distributed under the same license as the  package.
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-03 19:06+0530\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Project-Id-Version: BuddyPress Activity Filter\n"
+"POT-Creation-Date: 2018-10-22 11:16-0400\n"
+"PO-Revision-Date: 2018-10-29 15:06-0400\n"
+"Language-Team: jean-pierre michaud <translation@wpenhancer.agency>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Varun Dubey\n"
-"Language-Team: Wbcom Designs\n"
-"Language: en\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;"
-"_nx_noop:1,2,3c;esc_attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;"
-"esc_html_x:1,2c\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-Basepath: ..\n"
-"X-Textdomain-Support: yes\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: buddypress-activity-filter.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Last-Translator: jean-pierre michaud <translation@wpenhancer.agency>\n"
+"Language: fr_FR\n"
 "X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
 
 #: admin/class-bp-activity-filter-admin-setting.php:54
 msgid "BP Activity Filter Settings"
-msgstr ""
-
-#: admin/class-bp-activity-filter-admin-setting.php:54
-msgid " BP Activity Filter Settings "
-msgstr ""
+msgstr "Paramètres Filtrage des Activités"
 
 #: admin/class-bp-activity-filter-admin-setting.php:80
 msgid "Email Support"
-msgstr ""
+msgstr "Envoyer un courriel au soutien technique"
 
 #: admin/class-bp-activity-filter-admin-setting.php:82
 msgid "User Manual"
-msgstr ""
+msgstr "Manuel d’Instructions"
 
 #: admin/class-bp-activity-filter-admin-setting.php:84
 msgid "Rate Us on WordPress.org"
-msgstr ""
+msgstr "Évaluez-nous sur WordPress.org"
 
 #: admin/class-bp-activity-filter-admin-setting.php:90
 msgid "BuddyPress Activity Filter Settings"
-msgstr ""
+msgstr "Paramètres Filtrage des Activités"
 
 #: admin/class-bp-activity-filter-admin-setting.php:94
 msgid "Settings saved."
-msgstr ""
+msgstr "Paramètres sauvegardés."
 
 #: admin/class-bp-activity-filter-admin-setting.php:98
 msgid "Dismiss this notice."
-msgstr ""
+msgstr "Ignorer cette notice."
 
 #: admin/class-bp-activity-filter-admin-setting.php:280
 msgid "Display Activity"
-msgstr ""
+msgstr "Afficher l’activité"
 
 #: admin/class-bp-activity-filter-admin-setting.php:282
 msgid "Hide Activity"
-msgstr ""
+msgstr "Masquer l'activité"
 
 #: admin/class-bp-activity-filter-admin-setting.php:284
 msgid "Post Type Activity"
-msgstr ""
+msgstr "Type de Post d’Activité"
 
 #: admin/class-bp-activity-filter-admin-setting.php:286
 msgid "FAQ"
-msgstr ""
+msgstr "FAQ"
 
 #: admin/class-bp-activity-filter-admin-setting.php:408
 msgid "Select activity you want to list on activity page by default."
 msgstr ""
+"Sélectionner l’activité que vous voulez lister par défaut sur le fil "
+"d’activité."
 
 #: admin/class-bp-activity-filter-admin-setting.php:420
 #: admin/class-bp-activity-filter-admin-setting.php:525
 msgid "Everything"
-msgstr ""
+msgstr "Tout"
 
 #: admin/class-bp-activity-filter-admin-setting.php:463
 #: admin/class-bp-activity-filter-admin-setting.php:571
 #: admin/class-bp-activity-filter-admin-setting.php:855
 msgid "Save Settings"
-msgstr ""
+msgstr "Sauvegarder les paramètres"
 
 #: admin/class-bp-activity-filter-admin-setting.php:513
 msgid ""
 "Select activity filters those you want to hide from the dropdown list on "
 "activity front page."
 msgstr ""
+"Sélectionnez les titres d’activité que vous voulez cacher du menu déroulant "
+"en page principale."
 
 #: admin/class-bp-activity-filter-admin-setting.php:595
 msgid "Is this plugin requires another plugin?"
-msgstr ""
+msgstr "Ce plugin nécessite-t-il un autre plugin?"
 
 #: admin/class-bp-activity-filter-admin-setting.php:601
 msgid "Yes, this plugin requires BuddyPress plugin."
-msgstr ""
+msgstr "Oui, ce plugin nécessite le plugin BuddyPress."
 
 #: admin/class-bp-activity-filter-admin-setting.php:607
 msgid "By default, which filters will be displayed in activity dropdown?"
 msgstr ""
+"Par défaut, quels filtres vont être affichés dans le menu déroulant des "
+"activités?"
 
 #: admin/class-bp-activity-filter-admin-setting.php:613
 msgid "By default, all filters will be displayed."
-msgstr ""
+msgstr "Par défaut, tous les titres sont affichés."
 
 #: admin/class-bp-activity-filter-admin-setting.php:619
 msgid "By default, which filters will be hidden in activity dropdown?"
-msgstr ""
+msgstr "Par défaut, quels filtres seront cachés du menu déroulant d’activités?"
 
 #: admin/class-bp-activity-filter-admin-setting.php:625
 msgid "By default, no filter will be hidden."
-msgstr ""
+msgstr "Par défaut, aucun titre n’est caché."
 
 #: admin/class-bp-activity-filter-admin-setting.php:631
 msgid "If I selected 'Display in Groups' then what will be happened?"
 msgstr ""
+"Si je sélectionne 'Afficher dans les Groupes' qu’est-ce qui va arriver?"
 
 #: admin/class-bp-activity-filter-admin-setting.php:637
 msgid ""
 "If you selected 'Display in Groups' option then when you add a new post in "
 "that specific custom post type, all BuddyPress groups display this activity."
 msgstr ""
+"Si vous sélectionnez 'Afficher dans les Groupes', lorsque vous créerez un "
+"message de ce type, il s'affichera dans tous les groupes auxquels vous être "
+"abonné."
 
 #: admin/class-bp-activity-filter-admin-setting.php:643
 msgid "What will be displayed if 'Rename in Activity Stream' field empty?"
 msgstr ""
+"Que va-t-il s'afficher si la case \"Renommer dans le fil d'activité\" est "
+"laissé vide?"
 
 #: admin/class-bp-activity-filter-admin-setting.php:649
 msgid ""
 "If this field is empty then the singular label of custom post type will be "
 "displayed."
 msgstr ""
+"Si la case est laissée vide, l'étiquette normale de ce type de post sera "
+"utilisé et affiché."
 
 #: admin/class-bp-activity-filter-admin-setting.php:655
 msgid ""
-"How to modify the custom post type activity content display on the front "
-"end?"
+"How to modify the custom post type activity content display on the front end?"
 msgstr ""
+"Comment modifier le contenu d'activité de ce certains types de posts sur le "
+"l’interface usager?"
 
 #: admin/class-bp-activity-filter-admin-setting.php:661
 msgid "You can modify activity content by given filters."
-msgstr ""
+msgstr "Vous pouvez modifier le contenu de l'activité par des filtres donnés."
 
 #: admin/class-bp-activity-filter-admin-setting.php:677
 msgid "Where do I ask for support?"
-msgstr ""
+msgstr "Où puis-je demander de l'aide?"
 
 #: admin/class-bp-activity-filter-admin-setting.php:683
 msgid ""
@@ -156,41 +165,75 @@ msgid ""
 "target=\"_blank\">Wbcom Designs</a> for any query related to plugin and "
 "BuddyPress."
 msgstr ""
+"S'il vous plaît visitez <a href=\"http://wbcomdesigns.com/contact\" rel="
+"\"nofollow\" target=\"_blank\">Wbcom Designs</a> pour toute requête liée au "
+"plugin et BuddyPress."
 
 #: admin/class-bp-activity-filter-admin-setting.php:785
 msgid "Rename in Activity Stream"
-msgstr ""
+msgstr "Renomer dans le fil d’activité"
 
 #: admin/class-bp-activity-filter-admin-setting.php:809
 msgid "Do not display"
-msgstr ""
+msgstr "Ne pas afficher"
 
 #: admin/class-bp-activity-filter-admin-setting.php:821
 msgid "Display in main Activity Stream"
-msgstr ""
+msgstr "Afficher dans le fil d’activité principal"
 
 #: admin/class-bp-activity-filter-admin-setting.php:835
 msgid "Display in Groups"
-msgstr ""
+msgstr "Afficher dans les Groupes"
 
 #: buddypress-activity-filter.php:35
 msgid ""
 "The <b>BuddyPress Activity Filter</b> plugin requires <b>BuddyPress</b> "
-"plugin to be installed and active. Return to <a href=\""
+"plugin to be installed and active. For now, the plugin will be deactivated."
 msgstr ""
+"Le plugin <b>Filtrage des Activités</b> nécessite <b>BuddyPress</b> pour "
+"être installé et actif. Pour l'instant, le plugin sera désactivé."
 
 #: buddypress-activity-filter.php:144
 msgid "Settings"
-msgstr ""
+msgstr "Paramètres"
 
 #: buddypress-activity-filter.php:193 buddypress-activity-filter.php:217
 msgid ""
 "BuddyPress Activity Filter requires to be activated on the blog where "
 "BuddyPress is activated."
 msgstr ""
+"Filtrage des Activités nécessite d'être activé sur le blog où BuddyPress est "
+"activé."
 
 #: buddypress-activity-filter.php:198 buddypress-activity-filter.php:223
 msgid ""
 "BuddyPress Activity Filter and BuddyPress need to share the same network "
 "configuration."
 msgstr ""
+"Filtrage des Activités et BuddyPress doivent partager la même configuration "
+"réseau."
+
+#. Plugin Name of the plugin/theme
+msgid "BuddyPress Activity Filter"
+msgstr "BuddyPress Filtrage des Activités"
+
+#. Plugin URI of the plugin/theme
+msgid "https://wbcomdesigns.com/downloads/buddypress-activity-filter/"
+msgstr "https://wbcomdesigns.com/downloads/buddypress-activity-filter/"
+
+#. Description of the plugin/theme
+msgid ""
+"This plugin will extend Buddypress for the admin to set default and "
+"customized activities to be listed on front-end"
+msgstr ""
+"Ce plugin va étendre BuddyPress pour l'administrateur de définir les "
+"activités par défaut et personnalisés pour être répertoriés sur le fil "
+"d'activité"
+
+#. Author of the plugin/theme
+msgid "Wbcom Designs<admin@wbcomdesigns.com>"
+msgstr "Wbcom Designs<admin@wbcomdesigns.com>"
+
+#. Author URI of the plugin/theme
+msgid "https://www.wbcomdesigns.com/"
+msgstr "https://www.wbcomdesigns.com/"

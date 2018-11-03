@@ -5,7 +5,7 @@ Tags: buddypress,activity-filter, activity, filter , BuddyPress Activity, Activi
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
 Tested up to: 4.9.8
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,9 @@ You can modify activity content by given filters.
 
 
 == Changelog ==
+
+= 1.0.6 =
+* Enhancement - Added French translation files – credits to Jean Pierre Michaud
 
 = 1.0.5 =
 * Fix - BuddyPress 3.2.0 Compatible.
