@@ -1,19 +1,21 @@
 <?php
-
-/*
-
-  Plugin Name: BuddyPress Activity Filter
-  Plugin URI: https://wbcomdesigns.com/downloads/buddypress-activity-filter/
-  Description: Admin can set default and customized activities to be listed on front-end
-  Version: 1.0.7
-  Text Domain: bp-activity-filter
-  Author: Wbcom Designs<admin@wbcomdesigns.com>
-  Author URI: https://www.wbcomdesigns.com/
-  License: GPL2
-  License URI: https://www.gnu.org/licenses/gpl-2.0.html
-
+/**
+ *
+ * @link              https://wbcomdesigns.com/
+ * @since             1.0.0
+ *
+ * @wordpress-plugin
+ * Plugin Name:       BuddyPress Activity Filter
+ * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-activity-filter/
+ * Description:       Admin can set default and customized activities to be listed on front-end.
+ * Version:           1.0.7
+ * Author:            Wbcom Designs<admin@wbcomdesigns.com>
+ * Author URI:        https://wbcomdesigns.com/
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:       bp-activity-filter
+ * Domain Path:       /languages
  */
-
 
 
 if (!defined('ABSPATH')) {
@@ -32,7 +34,7 @@ define( 'BP_ACTIVITY_FILTER_PLUGIN_BASENAME',  plugin_basename( __FILE__ ) );
 function check_required_plugin_is_activated() {
    if ( ! defined( 'BP_VERSION' ) ) {
         deactivate_plugins(plugin_basename(__FILE__));
-        wp_die(__('The <b>BuddyPress Activity Filter</b> plugin requires <b>BuddyPress</b> plugin to be installed and active. Return to <a href="' . admin_url('plugins.php') . '">Plugins</a>', 'bp-activity-filter'));
+        wp_die( esc_html__('The <b>BuddyPress Activity Filter</b> plugin requires <b>BuddyPress</b> plugin to be installed and active. Return to <a href="' . admin_url('plugins.php') . '">Plugins</a>', 'bp-activity-filter'));
     }
 }
 
@@ -190,12 +192,12 @@ function bpfilter_check_config(){
         $warnings = array();
         if ( !bp_core_do_network_admin() && !$config['blog_status'] ) {
             add_action( 'admin_notices', 'bpfilter_same_blog' );
-            $warnings[] = __( 'BuddyPress Activity Filter requires to be activated on the blog where BuddyPress is activated.', 'bp-activity-filter' );
+            $warnings[] = esc_html__( 'BuddyPress Activity Filter requires to be activated on the blog where BuddyPress is activated.', 'bp-activity-filter' );
         }
 
         if ( bp_core_do_network_admin() && !$config['network_status'] ) {
             add_action( 'admin_notices', 'bpfilter_same_network_config' );
-            $warnings[] = __( 'BuddyPress Activity Filter and BuddyPress need to share the same network configuration.', 'bp-activity-filter' );
+            $warnings[] = esc_html__( 'BuddyPress Activity Filter and BuddyPress need to share the same network configuration.', 'bp-activity-filter' );
         }
 
         if ( ! empty( $warnings ) ) :
@@ -208,18 +210,18 @@ function bpfilter_check_config(){
 
 add_action( 'bp_include', 'bp_activity_filter_init' );
 function bp_activity_filter_init(){
-    if (bpfilter_check_config() && class_exists('WbCom_BP_Activity_Filter')) {
+    if ( bpfilter_check_config() && class_exists('WbCom_BP_Activity_Filter')) {
         $GLOBALS['activity_filter'] = new WbCom_BP_Activity_Filter();
     }
 }
-function bpfilter_same_blog(){
+function bpfilter_same_blog() {
     echo '<div class="error"><p>'
-    . esc_html( __( 'BuddyPress Activity Filter requires to be activated on the blog where BuddyPress is activated.', 'bp-activity-filter' ) )
+    . esc_html__( 'BuddyPress Activity Filter requires to be activated on the blog where BuddyPress is activated.', 'bp-activity-filter' )
     . '</p></div>';
 }
 
-function bpfilter_same_network_config(){
+function bpfilter_same_network_config() {
     echo '<div class="error"><p>'
-    . esc_html( __( 'BuddyPress Activity Filter and BuddyPress need to share the same network configuration.', 'bp-activity-filter' ) )
+    . esc_html__( 'BuddyPress Activity Filter and BuddyPress need to share the same network configuration.', 'bp-activity-filter' )
     . '</p></div>';
 }
