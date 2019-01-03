@@ -49,9 +49,4 @@ jQuery(document).ready(function($) {
             );
   });
 
-  jQuery( "#bpaf_faq_accordion" ).accordion({
-    collapsible: true,
-    heightStyle: "content"
-  });
-
 });
