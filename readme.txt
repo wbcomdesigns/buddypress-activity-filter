@@ -4,8 +4,8 @@ Contributors: vapvarun,wbcomdesigns
 Tags: buddypress,activity-filter, activity, filter , BuddyPress Activity, Activity Filter, Default Activity, Hide Activty, BuddyPress default activity
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
-Tested up to: 5.0.1
-Stable tag: 1.0.7
+Tested up to: 5.0.2
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,8 +87,9 @@ You can modify activity content by given filters.
 
 == Changelog ==
 
-= 1.0.7 =
+= 2.0.0
 * Fix - Compatibility with BuddyPress 4.1.0. #25
+* Enhancement- Improve Backend UI where you can manage all wbcom plugin's settings at one place. #27
 
 = 1.0.6 =
 * Enhancement - Added French translation files – credits to Jean Pierre Michaud

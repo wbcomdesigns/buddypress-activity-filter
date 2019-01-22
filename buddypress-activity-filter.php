@@ -8,7 +8,7 @@
  * Plugin Name:       BuddyPress Activity Filter
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-activity-filter/
  * Description:       Admin can set default and customized activities to be listed on front-end.
- * Version:           1.0.7
+ * Version:           2.0.0
  * Author:            Wbcom Designs<admin@wbcomdesigns.com>
  * Author URI:        https://wbcomdesigns.com/
  * License:           GPL-2.0+
@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
 }
 define( 'BP_ACTIVITY_FILTER_PLUGIN_BASENAME',  plugin_basename( __FILE__ ) );
 
-
+define( 'BP_ACTIVITY_FILTER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  *  Checking for buddypress whether it is active or not
@@ -34,7 +34,7 @@ define( 'BP_ACTIVITY_FILTER_PLUGIN_BASENAME',  plugin_basename( __FILE__ ) );
 function check_required_plugin_is_activated() {
    if ( ! defined( 'BP_VERSION' ) ) {
         deactivate_plugins(plugin_basename(__FILE__));
-        wp_die( esc_html__('The <b>BuddyPress Activity Filter</b> plugin requires <b>BuddyPress</b> plugin to be installed and active. Return to <a href="' . admin_url('plugins.php') . '">Plugins</a>', 'bp-activity-filter'));
+        wp_die( esc_html__('The BuddyPress Activity Filter plugin requires BuddyPress plugin to be installed and active. Return to <a href="' . admin_url('plugins.php') . '">Plugins</a>', 'bp-activity-filter'));
     }
 }
 
@@ -70,7 +70,7 @@ if (!class_exists('WbCom_BP_Activity_Filter')) {
             add_filter('plugin_action_links_' . plugin_basename(__FILE__), array(&$this, 'bp_activity_filter_plugin_actions'), 10, 2);
 
 
-
+            require_once plugin_dir_path( __FILE__ ) . 'admin/wbcom/wbcom-admin-settings.php';
             /**
              * Including scripts files for admin setting
              */
