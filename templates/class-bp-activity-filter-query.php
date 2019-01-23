@@ -13,7 +13,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			 */
 			add_filter( 'bp_ajax_querystring', array( $this, 'filtering_activity_default' ), 999, 2 );
 			add_action( 'wp_enqueue_scripts', array( $this, 'bpaf_enqueue_scripts' ) );
-			add_action('bp_activity_before_save', array( $this, 'bpaf_activity_do_not_save' ), 9, 1 );
+			add_action( 'bp_activity_before_save', array( $this, 'bpaf_activity_do_not_save' ), 5, 1 );
+			add_action( 'friends_friendship_accepted', array( $this, 'bpaf_bp_friends_friendship_accepted_activity' ), 5, 4 );
 		}
 
 		public function bpaf_enqueue_scripts() {
@@ -174,6 +175,20 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 		    if( ! empty( $hidden_activity_stream ) && is_array( $hidden_activity_stream ) ) {
 			    if( in_array( $activity_object->type, $hidden_activity_stream ) ) {
 			        $activity_object->type = false;
+			    }
+			}
+		}
+
+		/**
+		 * Restrict to create friendship activity.
+		 *
+		 * @param $activity_object
+		 */
+		public function bpaf_bp_friends_friendship_accepted_activity( $friendship_id, $initiator_user_id, $friend_user_id, $friendship = false ) {
+			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
+		    if( ! empty( $hidden_activity_stream ) && is_array( $hidden_activity_stream ) ) {
+			    if( in_array( 'friendship_accepted,friendship_created', $hidden_activity_stream ) ) {
+			        remove_action( 'friends_friendship_accepted', 'bp_friends_friendship_accepted_activity', 10, 4 );
 			    }
 			}
 		}
