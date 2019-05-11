@@ -458,7 +458,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 					       'public'   => true,
 
 					       '_builtin' => false,
-
+					       'exclude_from_search' => false, 
 					    );
 
 
@@ -470,38 +470,24 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 
 					    $post_types = get_post_types( $args, $output, $operator );
-
+					    
 					    foreach ( $post_types  as $post_type ) {
 
 					    	$post_details = get_post_type_object( $post_type );
 
 					    	if( !empty( $cpt_filter_val ) ) {
-
-
-
-					    		$saved_settings = $cpt_filter_val['bpaf_admin_settings'][$post_type];
-
-					    	} else {
-
-
-
-					    		$saved_settings = array();
-
+					    		$saved_settings = ( isset($cpt_filter_val['bpaf_admin_settings'][$post_type]) )?$cpt_filter_val['bpaf_admin_settings'][$post_type]:array();
 					    	}
 
-
-
-					    	if( array_key_exists('display_type', $saved_settings) ) {
+					    	if( !empty($saved_settings) && array_key_exists('display_type', $saved_settings) ) {
 
 					    		$display_type = $saved_settings['display_type'];
 
 					    	} else {
-
 					    		$display_type = '';
-
 					    	}
 
-					    	if( array_key_exists('group', $saved_settings)) {
+					    	if( !empty($saved_settings) && array_key_exists('group', $saved_settings)) {
 
 					    		$group = $saved_settings['group'];
 
