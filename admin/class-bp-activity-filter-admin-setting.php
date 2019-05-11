@@ -373,17 +373,17 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 					    		<table>
 
-					    			<tr>
+					    			<!-- <tr>
 
 								    	<td class="filter-option">
 
 								    		<input id="bp-activity-filter-everything-checkbox" name="bp-hidden-filters-name[]" type="checkbox" value="-1"  disabled="disabled" />
 
-											<label for="bp-hidden-filters-name"><?php _e( 'Everything', 'bp-activity-filter' ); ?></label>
+											<label for="bp-hidden-filters-name"><?php //_e( 'Everything', 'bp-activity-filter' ); ?></label>
 
 										</td>
 
-									</tr>
+									</tr> -->
 
 					    		<?php foreach ( $labels as $key => $value  ) :
 
