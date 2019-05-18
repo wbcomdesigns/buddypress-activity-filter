@@ -171,7 +171,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			$bpaf_tabs = array(
 				'bpaf_display_activity' => esc_html__('Display Activity', 'bp-activity-filter'),
 
-				'bpaf_hide_activity' => esc_html__('Hide Activity', 'bp-activity-filter'),
+				'bpaf_hide_activity' => esc_html__('Remove Activity', 'bp-activity-filter'),
 
 				'bpaf_cpt_activity' => esc_html__('Post Type Activity', 'bp-activity-filter')
 			);
@@ -343,16 +343,25 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 			global $bp;
 
+			$skip_activity = array(
+				'0'	=> 'updated_profile',
+				'1'	=> 'activity_update',
+				'2' => 'new_blog_post',
+				'3'	=> 'new_blog_comment',
+				//'4'	=> 'group_details_updated',
+			);
+
 			$actions = bp_activity_get_actions_for_context( 'activity' );
+			//print_r( $actions );
 			foreach ( $actions as $action ) {
 				// Friends activity collapses two filters into one.
 				if ( in_array( $action['key'], array( 'friendship_accepted', 'friendship_created' ) ) ) {
 					$action['key'] = 'friendship_accepted,friendship_created';
 				}
-
-				$labels[ $action['key'] ] = $action['label'];
+				if( !in_array( $action['key'], $skip_activity ) ){
+					$labels[ $action['key'] ] = $action['label'];
+				}
 			}
-
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 
 			$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' );
@@ -367,7 +376,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 					    <tr>
 
-					    	<th scope="row"><label class="filter-description" ><?php _e( 'Select activity filters those you want to hide from the dropdown list on activity front page.', 'bp-activity-filter' ); ?></label></th>
+					    	<th scope="row"><label class="filter-description" ><?php _e( 'Select activity types those you want to stop form being generated.', 'bp-activity-filter' ); ?></label></th>
 
 					    	<td>
 

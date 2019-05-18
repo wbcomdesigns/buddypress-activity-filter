@@ -98,6 +98,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			}
 
 			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
+			$hidden_activity_stream = array();
 			if ( ( $defult_activity_stream != -1 ) && ( 1 == $_BP_COOKIE['bpaf-default-filter'] ) ) {
 				$query = wp_parse_args( $query, array() );
 
