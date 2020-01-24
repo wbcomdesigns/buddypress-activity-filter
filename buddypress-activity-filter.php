@@ -28,19 +28,6 @@ define( 'BP_ACTIVITY_FILTER_PLUGIN_BASENAME',  plugin_basename( __FILE__ ) );
 define( 'BP_ACTIVITY_FILTER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 /**
- *  Checking for buddypress whether it is active or not
- */
-
-function check_required_plugin_is_activated() {
-   if ( ! defined( 'BP_VERSION' ) ) {
-        deactivate_plugins(plugin_basename(__FILE__));
-        wp_die( esc_html__('The BuddyPress Activity Filter plugin requires BuddyPress plugin to be installed and active. Return to <a href="' . admin_url('plugins.php') . '">Plugins</a>', 'bp-activity-filter'));
-    }
-}
-
-register_activation_hook(__FILE__, 'check_required_plugin_is_activated');
-
-/**
  * Defining class WbCom_BP_Activity_Filter is not exist
  */
 
@@ -224,4 +211,38 @@ function bpfilter_same_network_config() {
     echo '<div class="error"><p>'
     . esc_html__( 'BuddyPress Activity Filter and BuddyPress need to share the same network configuration.', 'bp-activity-filter' )
     . '</p></div>';
+}
+
+/**
+ *  Check if buddypress activate.
+ */
+function bpfilter_requires_buddypress()
+{
+
+    if ( !class_exists( 'Buddypress' ) &&  ! defined( 'BP_VERSION' )  ) {
+        deactivate_plugins( plugin_basename( __FILE__ ) );
+        //deactivate_plugins('buddypress-polls/buddypress-polls.php');
+        add_action( 'admin_notices', 'bpfilter_required_plugin_admin_notice' );
+        unset($_GET['activate']);
+    }
+}
+
+add_action( 'admin_init', 'bpfilter_requires_buddypress' );
+/**
+ * Throw an Alert to tell the Admin why it didn't activate.
+ *
+ * @author wbcomdesigns
+ * @since  2.0.2
+ */
+function bpfilter_required_plugin_admin_notice()
+{
+
+    $bpquotes_plugin          = esc_html__('BuddyPress Activity Filter', 'bp-activity-filter');
+    $bp_plugin                = esc_html__('BuddyPress', 'bp-activity-filter');
+    echo '<div class="error"><p>';
+    echo sprintf(esc_html__('%1$s is ineffective now as it requires %2$s to be installed and active.', 'bp-activity-filter'), '<strong>' . esc_html($bpquotes_plugin) . '</strong>', '<strong>' . esc_html($bp_plugin) . '</strong>');
+    echo '</p></div>';
+    if (isset($_GET['activate']) ) {
+        unset($_GET['activate']);
+    }
 }
