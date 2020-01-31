@@ -18,7 +18,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Public_Setting')) {
 			 * Showing selected filters in dropdown
 			 */
 
-			//add_filter('bp_get_activity_show_filters', array($this, 'getting_all_filters_function'), 11, 3);
+			add_filter('bp_get_activity_show_filters', array($this, 'getting_all_filters_function'), 11, 3);
 
 			/* Clearing cookie for correct result */
 

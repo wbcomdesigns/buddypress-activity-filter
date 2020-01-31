@@ -348,7 +348,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				'1'	=> 'activity_update',
 				'2' => 'new_blog_post',
 				'3'	=> 'new_blog_comment',
-				//'4'	=> 'group_details_updated',
+				'4'	=> 'group_details_updated',
 			);
 
 			$actions = bp_activity_get_actions_for_context( 'activity' );
@@ -358,9 +358,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				if ( in_array( $action['key'], array( 'friendship_accepted', 'friendship_created' ) ) ) {
 					$action['key'] = 'friendship_accepted,friendship_created';
 				}
-				if( !in_array( $action['key'], $skip_activity ) ){
+				
 					$labels[ $action['key'] ] = $action['label'];
-				}
+				
 			}
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 
@@ -478,7 +478,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 
 
-					    $post_types = get_post_types( $args, $output, $operator );
+					    $post_types = get_post_types();
 					    
 					    foreach ( $post_types  as $post_type ) {
 
