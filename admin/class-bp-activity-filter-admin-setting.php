@@ -406,6 +406,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 						$args = array(
 							'public'   => true,
 							'_builtin' => false,
+							'exclude_from_search'	 => false
 						);
 
 						$output   = 'names'; // names or objects, note names is the default
