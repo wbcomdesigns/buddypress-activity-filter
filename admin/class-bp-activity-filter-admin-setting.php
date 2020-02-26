@@ -168,9 +168,9 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 				 */
 		public function bpaf_plugin_settings_tabs( $current ) {
 			$bpaf_tabs = array(
-				'bpaf_display_activity' => esc_html__( 'Apply Default Filter', 'bp-activity-filter' ),
+				'bpaf_display_activity' => esc_html__( 'Default Filter', 'bp-activity-filter' ),
 				'bpaf_hide_activity'    => esc_html__( 'Remove Activity', 'bp-activity-filter' ),
-				'bpaf_cpt_activity'     => esc_html__( 'Enable Post Type Activites', 'bp-activity-filter' ),
+				'bpaf_cpt_activity'     => esc_html__( 'CPT Activites', 'bp-activity-filter' ),
 			);
 
 			$tab_html = '<div class="wbcom-tabs-section"><h2 class="nav-tab-wrapper">';
