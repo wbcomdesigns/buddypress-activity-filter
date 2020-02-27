@@ -404,9 +404,9 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 								</thead>
 						<?php
 						$args = array(
-							'public'   => true,
-							'_builtin' => false,
-							'exclude_from_search'	 => false
+							'public'              => true,
+							'_builtin'            => false,
+							'exclude_from_search' => false,
 						);
 
 						$output   = 'names'; // names or objects, note names is the default
@@ -415,36 +415,37 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 						$post_types = get_post_types( $args, $output, $operator );
 
 						echo '<tbody>';
+						if ( ! empty( $post_types ) && is_array( $post_types ) ) :
 
-						foreach ( $post_types as $post_type ) {
+							foreach ( $post_types as $post_type ) {
 
-							$post_details = get_post_type_object( $post_type );
+								$post_details = get_post_type_object( $post_type );
 
-							if ( ! empty( $cpt_filter_val ) ) {
-								$saved_settings = ( isset( $cpt_filter_val['bpaf_admin_settings'][ $post_type ] ) ) ? $cpt_filter_val['bpaf_admin_settings'][ $post_type ] : array();
-							}
+								if ( ! empty( $cpt_filter_val ) ) {
+									$saved_settings = ( isset( $cpt_filter_val['bpaf_admin_settings'][ $post_type ] ) ) ? $cpt_filter_val['bpaf_admin_settings'][ $post_type ] : array();
+								}
 
-							if ( ! empty( $saved_settings ) && array_key_exists( 'display_type', $saved_settings ) ) {
+								if ( ! empty( $saved_settings ) && array_key_exists( 'display_type', $saved_settings ) ) {
 
-								$display_type = $saved_settings['display_type'];
-							} else {
-								$display_type = '';
-							}
+									$display_type = $saved_settings['display_type'];
+								} else {
+									$display_type = '';
+								}
 
-							if ( ! empty( $saved_settings ) && array_key_exists( 'group', $saved_settings ) ) {
+								if ( ! empty( $saved_settings ) && array_key_exists( 'group', $saved_settings ) ) {
 
-								$group = $saved_settings['group'];
-							} else {
+									$group = $saved_settings['group'];
+								} else {
 
-								$group = '';
-							}
+									$group = '';
+								}
 
-							if ( isset( $saved_settings['new_label'] ) ) {
-								$value = $saved_settings['new_label'];
-							} else {
-								$value = '';
-							}
-							?>
+								if ( isset( $saved_settings['new_label'] ) ) {
+									$value = $saved_settings['new_label'];
+								} else {
+									$value = '';
+								}
+								?>
 
 									<tr>
 
@@ -457,7 +458,15 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 										</td>
 									</tr>
 
-								<?php } ?>
+								<?php
+							}
+						else :
+							echo '<div class="notice">';
+							echo '<p class="description">' . __( 'Sorry, seems you do not have any custom post types to allow in activity stream.' ) . '</p>';
+							echo '</div>';
+
+						endif;
+						?>
 								</tbody>
 							</table>
 
