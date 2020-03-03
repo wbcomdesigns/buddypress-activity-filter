@@ -224,17 +224,16 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
 
 			$actions = bp_activity_get_actions_for_context( 'activity' );
+			$labels  = array();
 			foreach ( $actions as $action ) {
 				// Friends activity collapses two filters into one.
 				if ( in_array( $action['key'], array( 'friendship_accepted', 'friendship_created' ) ) ) {
 					$action['key'] = 'friendship_accepted,friendship_created';
 				}
 
-				$labels_arr[] = $action['label'];
-				if ( ( $key  = array_search( 'Group Activity Updates', $labels_arr ) ) !== false ) {
-					unset( $labels_arr[ $key ] );
+				if ( ! array_key_exists( $action['key'], $labels ) ) {
+					$labels[ $action['key'] ] = $action['label'];
 				}
-				$labels = array_unique( $labels_arr );
 			}
 			?>
 					<div class="wbcom-tab-content">
@@ -318,13 +317,16 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 			$actions = bp_activity_get_actions_for_context( 'activity' );
 			// print_r( $actions );
+			$labels = array();
 			foreach ( $actions as $action ) {
 				// Friends activity collapses two filters into one.
 				if ( in_array( $action['key'], array( 'friendship_accepted', 'friendship_created' ) ) ) {
 					$action['key'] = 'friendship_accepted,friendship_created';
 				}
 
-				$labels[ $action['key'] ] = $action['label'];
+				if ( ! array_key_exists( $action['key'], $labels ) ) {
+					$labels[ $action['key'] ] = $action['label'];
+				}
 			}
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 
@@ -349,6 +351,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 									foreach ( $labels as $key => $value ) :
 										if ( ! empty( $value ) ) {
 											$default_active = '';
+											// echo $bp_default_activity_value;
 											if ( $bp_default_activity_value == $key ) {
 												$default_active = "disabled = 'disabled'";
 											}
