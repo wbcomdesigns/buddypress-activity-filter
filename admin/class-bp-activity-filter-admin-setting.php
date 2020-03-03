@@ -316,8 +316,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			);
 
 			$actions = bp_activity_get_actions_for_context( 'activity' );
-			// print_r( $actions );
-			$labels = array();
+			$labels  = array();
 			foreach ( $actions as $action ) {
 				// Friends activity collapses two filters into one.
 				if ( in_array( $action['key'], array( 'friendship_accepted', 'friendship_created' ) ) ) {
@@ -333,6 +332,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' );
 
 			$bp_hidden_filters_value = bp_get_option( 'bp-hidden-filters-name' );
+
 			?>
 					<div class="wbcom-tab-content">
 						<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form" >
@@ -407,8 +407,9 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 								</thead>
 						<?php
 						$args = array(
-							'public'   => true,
-							'_builtin' => false,
+							'public'              => true,
+							'_builtin'            => false,
+							'exclude_from_search' => false,
 						);
 
 						$output   = 'names'; // names or objects, note names is the default
@@ -418,48 +419,59 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 						echo '<tbody>';
 
-						foreach ( $post_types as $post_type ) {
+						if ( ! empty( $post_types ) && is_array( $post_types ) ) :
 
-							$post_details = get_post_type_object( $post_type );
+							foreach ( $post_types as $post_type ) {
 
-							if ( ! empty( $cpt_filter_val ) ) {
-								$saved_settings = ( isset( $cpt_filter_val['bpaf_admin_settings'][ $post_type ] ) ) ? $cpt_filter_val['bpaf_admin_settings'][ $post_type ] : array();
-							}
+								$post_details = get_post_type_object( $post_type );
 
-							if ( ! empty( $saved_settings ) && array_key_exists( 'display_type', $saved_settings ) ) {
+								if ( ! empty( $cpt_filter_val ) ) {
+									$saved_settings = ( isset( $cpt_filter_val['bpaf_admin_settings'][ $post_type ] ) ) ? $cpt_filter_val['bpaf_admin_settings'][ $post_type ] : array();
+								}
 
-								$display_type = $saved_settings['display_type'];
-							} else {
-								$display_type = '';
-							}
+								if ( ! empty( $saved_settings ) && array_key_exists( 'display_type', $saved_settings ) ) {
+									$display_type = $saved_settings['display_type'];
+								} else {
+									$display_type = '';
+								}
 
-							if ( ! empty( $saved_settings ) && array_key_exists( 'group', $saved_settings ) ) {
+								if ( ! empty( $saved_settings ) && array_key_exists( 'group', $saved_settings ) ) {
 
-								$group = $saved_settings['group'];
-							} else {
+									$group = $saved_settings['group'];
+								} else {
 
-								$group = '';
-							}
+									$group = '';
+								}
 
-							if ( isset( $saved_settings['new_label'] ) ) {
-								$value = $saved_settings['new_label'];
-							} else {
-								$value = '';
-							}
-							?>
+								if ( isset( $saved_settings['new_label'] ) ) {
+									$value = $saved_settings['new_label'];
+								} else {
+									$value = '';
+								}
+								?>
 
 									<tr>
 
 										<td scope="row" data-title="Post Type"><label class="filter-description" ><?php echo $post_details->label; ?></label></td>
 										<td class="filter-option" data-title="Enable/Disable">
-											<input id="<?php echo $post_type . '_radio'; ?>" name="<?php echo "bpaf_admin_settings[$post_type][display_type]"; ?>" type="checkbox" value="not_display" <?php checked( $display_type, 'not_display' ); ?> />
+											<input id="<?php echo $post_type . '_radio'; ?>" name="<?php echo "bpaf_admin_settings[$post_type][display_type]"; ?>" type="checkbox" value="enable" <?php checked( $display_type, 'enable' ); ?> />
 										</td>
 										<td class="filter-option" data-title="Upload Lable">
 											<input id="<?php echo $post_type . '_text'; ?>" name='<?php echo "bpaf_admin_settings[$post_type][new_label]"; ?>' type="text" value="<?php echo $value; ?>" />
 										</td>
 									</tr>
 
-								<?php } ?>
+								<?php
+							}
+
+						else :
+							echo '<div class="notice">';
+							echo '<p class="description">' . __( 'Sorry, seems you do not have any custom post types to allow in activity stream.' ) . '</p>';
+							echo '</div>';
+
+						endif;
+
+						?>
 								</tbody>
 							</table>
 
@@ -523,7 +535,6 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			parse_str( $_POST['form_data'], $cpt_settings_data );
 
 			$cpt_settings_details = filter_var_array( $cpt_settings_data, FILTER_SANITIZE_STRING );
-
 			bp_update_option( 'bp-cpt-filters-settings', $cpt_settings_details );
 
 			exit;
