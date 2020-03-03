@@ -29,16 +29,36 @@ define( 'BP_ACTIVITY_FILTER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  *  Checking for buddypress whether it is active or not
+ *
+ * @author wbcomdesigns
+ * @since  3.0.1
  */
-
 function check_required_plugin_is_activated() {
-	if ( ! defined( 'BP_VERSION' ) ) {
+	if ( ! class_exists( 'Buddypress' ) ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
-		wp_die( esc_html__( 'The BuddyPress Activity Filter plugin requires BuddyPress plugin to be installed and active. Return to <a href="' . admin_url( 'plugins.php' ) . '">Plugins</a>', 'bp-activity-filter' ) );
+		add_action( 'admin_notices', 'bp_activity_filter_required_plugin_admin_notice' );
+		 unset( $_GET['activate'] );
 	}
 }
+add_action( 'admin_init', 'check_required_plugin_is_activated' );
 
-register_activation_hook( __FILE__, 'check_required_plugin_is_activated' );
+/**
+ * Throw an Alert to tell the Admin why it didn't activate.
+ *
+ * @author wbcomdesigns
+ * @since  3.0.1
+ */
+function bp_activity_filter_required_plugin_admin_notice() {
+	$plugin    = esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' );
+	$bp_plugin = esc_html__( 'BuddyPress', 'bp-activity-filter' );
+	echo '<div class="error"><p>';
+	echo sprintf( esc_html__( '%1$s is ineffective now as it requires %2$s to be installed and active.', 'bp-activity-filter' ), '<strong>' . esc_html( $plugin ) . '</strong>', '<strong>' . esc_html( $bp_plugin ) . '</strong>' );
+	echo '</p></div>';
+	if ( isset( $_GET['activate'] ) ) {
+		unset( $_GET['activate'] );
+	}
+
+}
 
 /**
  * Defining class WbCom_BP_Activity_Filter is not exist
