@@ -5,13 +5,12 @@ Tags: buddypress,activity-filter, activity, filter , BuddyPress Activity, Activi
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
 Tested up to: 5.2
-Stable tag: 2.0.1
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 
-It will help to set default filter option with BuddyPress Activity and It will also allow removing some specific activity types from activities.
-
+It will help to set default filter option with BuddyPress Activity and It will also allow removing some specific activity types from activities. It also allows to post certain public CPT type activies using simple enable option. Like if you have event post type, you allow to post a simple activity update inside BuddyPress activities [reference](https://codex.buddypress.org/plugindev/post-types-activities/).  
 
 
 == Description ==
@@ -24,8 +23,6 @@ If you need additional help you can contact us for [Custom Development](https://
 
 
 == Installation ==
-
-
 
 1. Upload the plugin files to the `/wp-content/plugins/buddypress-activity-filter` directory, or install the plugin through the WordPress plugins screen directly.
 
@@ -40,8 +37,6 @@ If you need additional help you can contact us for [Custom Development](https://
 
 Yes, this plugin requires BuddyPress plugin.
 
-
-
 = By default, which filters will be displayed in activity dropdown? =
 
 By default, all filters will be displayed.
@@ -54,13 +49,9 @@ By default, no filter will be hidden.
 
 If you selected 'Display in Groups' option then when you add a new post in that specific custom post type, all BuddyPress groups display this activity.
 
-
-
 = What will be displayed if 'Rename in Activity Stream' field empty?=
 
 If this field is empty then the singular label of custom post type will be displayed.
-
-
 
 = How to modify the custom post type activity content display on the front end?=
 
@@ -83,9 +74,11 @@ You can modify activity content by given filters.
 
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
-
-
 == Changelog ==
+
+= 2.1.0 =
+* Fix: Compatibility with BuddyPress 5.1.2
+* Fix: Updated UI for the enabling CPT updates inside the activity.
 
 = 2.0.1
 * Fix - Compatibility with BuddyPress 4.3.0. #33
