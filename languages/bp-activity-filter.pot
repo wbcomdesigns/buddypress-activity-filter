@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-06 18:41:44+00:00\n"
+"POT-Creation-Date: 2020-03-06 18:49:31+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -190,12 +190,12 @@ msgid "Install"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:18
-#: admin/wbcom/wbcom-admin-settings.php:487
+#: admin/wbcom/wbcom-admin-settings.php:479
 msgid "Activate"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-plugins-page.php:22
-#: admin/wbcom/wbcom-admin-settings.php:488
+#: admin/wbcom/wbcom-admin-settings.php:480
 msgid "Deactivate"
 msgstr ""
 
@@ -208,8 +208,8 @@ msgid "View"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:3
-#: admin/wbcom/wbcom-admin-settings.php:524
-#: admin/wbcom/wbcom-admin-settings.php:609
+#: admin/wbcom/wbcom-admin-settings.php:516
+#: admin/wbcom/wbcom-admin-settings.php:601
 msgid "Support"
 msgstr ""
 
@@ -300,9 +300,6 @@ msgid "Preview"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-themes-page.php:30
-msgid "LearnMate"
-msgstr ""
-
 #: admin/wbcom/templates/wbcom-themes-page.php:38
 msgid "LearnMate"
 msgstr ""
@@ -592,22 +589,11 @@ msgstr ""
 msgid "EDD Service Extended"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:347
-msgid "WB Ads Rotator with Split Test"
-msgstr ""
-
-#: admin/wbcom/wbcom-admin-settings.php:349
-msgid ""
-"This plugin is designed for the SPLIT TESTING, you can check performance of "
-"your ads layout and on the basis of them you can select one of them for "
-"your regular use."
-msgstr ""
-
-#: admin/wbcom/wbcom-admin-settings.php:367
+#: admin/wbcom/wbcom-admin-settings.php:359
 msgid "BuddyPress Moderation Pro"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:368
+#: admin/wbcom/wbcom-admin-settings.php:360
 msgid ""
 "BuddyPress Community Moderation offers a solution for site owners to keep "
 "their communities straight. With community policing strategy, members of "
@@ -615,22 +601,22 @@ msgid ""
 "content created within the various components."
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:373
+#: admin/wbcom/wbcom-admin-settings.php:365
 msgid "BuddyPress Polls"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:374
+#: admin/wbcom/wbcom-admin-settings.php:366
 msgid ""
 "Use BuddyPress Polls plugin to create polls inside the activity, let your "
 "user response to your polls. Members can create pools like activities, "
 "easily votes on them."
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:379
+#: admin/wbcom/wbcom-admin-settings.php:371
 msgid "BuddyPress Resume Manager"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:380
+#: admin/wbcom/wbcom-admin-settings.php:372
 msgid ""
 "BuddyPress Resume Manager adds a separate BuddyPress Resume menu at a "
 "user’s BuddyPress Profile Page to display individual member resume. We have "
@@ -638,49 +624,49 @@ msgid ""
 "disable them."
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:385
+#: admin/wbcom/wbcom-admin-settings.php:377
 msgid "BuddyPress Profanity"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:386
+#: admin/wbcom/wbcom-admin-settings.php:378
 msgid ""
 "Use BuddyPress Profanity plugin to censor content in your community! Easily "
 "Censor all the unwanted words in activities, private messages contents by "
 "specifying a list of keywords to be filtered."
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:391
+#: admin/wbcom/wbcom-admin-settings.php:383
 msgid "BuddyPress Private Community Pro"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:392
+#: admin/wbcom/wbcom-admin-settings.php:384
 msgid ""
 "This plugin offers a lockdown for BuddyPress Component and will ask users "
 "to log in go further to check profile or any other protected details."
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:397
+#: admin/wbcom/wbcom-admin-settings.php:389
 msgid "BuddyPress Profile Pro"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:398
+#: admin/wbcom/wbcom-admin-settings.php:390
 msgid ""
 "This plugin gives you the power to extend BuddyPress Profiles with repeater "
 "fields and groups. You can easily add multiple field groups and display "
 "them at member’s profile."
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:518
-#: admin/wbcom/wbcom-admin-settings.php:597
+#: admin/wbcom/wbcom-admin-settings.php:510
+#: admin/wbcom/wbcom-admin-settings.php:589
 msgid "Components"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:521
-#: admin/wbcom/wbcom-admin-settings.php:603
+#: admin/wbcom/wbcom-admin-settings.php:513
+#: admin/wbcom/wbcom-admin-settings.php:595
 msgid "Themes"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:591 buddypress-activity-filter.php:162
+#: admin/wbcom/wbcom-admin-settings.php:583 buddypress-activity-filter.php:162
 msgid "Settings"
 msgstr ""
 
