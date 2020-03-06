@@ -342,14 +342,6 @@ if ( !class_exists( 'Wbcom_Admin_Settings' ) ) {
 					'status'		 => $this->wbcom_plugin_status( 'edd-service-extended' ),
 					'wp_url'		 => 'https://wordpress.org/plugins/edd-service-extended/',
 					'icon'			 => 'fab fa-2x fa-product-hunt'
-				),
-				'21' => array(
-					'name'			 => esc_html__( 'WB Ads Rotator with Split Test', 'bp-activity-filter' ),
-					'slug'			 => 'wb-ads-rotator-with-split-test',
-					'description'	 => esc_html__( 'This plugin is designed for the SPLIT TESTING, you can check performance of your ads layout and on the basis of them you can select one of them for your regular use.', 'bp-activity-filter' ),
-					'status'		 => $this->wbcom_plugin_status( 'wb-ads-rotator-with-split-test' ),
-					'wp_url'		 => 'https://wordpress.org/plugins/wb-ads-rotator-with-split-test/',
-					'icon'			 => 'fas fa-2x fa-ad'
 				)
 			);
 			return $free_plugins;

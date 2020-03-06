@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-06 12:44:21+00:00\n"
+"POT-Creation-Date: 2020-03-06 18:41:44+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -214,14 +214,13 @@ msgid "Support"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:5
-msgid "Are you having any questions or issues?"
+msgid "Do you have any questions or issues?"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:7
 msgid ""
-"Our team is here to help you out at anytime. If you have any idea about how "
-"we could improve. You can share access to your site on our helpdesk if it "
-"can help getting faster. There are two ways to in touch with us :"
+"Our team is here to help you out at any time. If you have any idea about "
+"how we could improve, you can contact our support."
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:19
@@ -230,9 +229,8 @@ msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:20
 msgid ""
-"Open a ticket on our helpdesk, we don't guarantee a fast response but "
-"within a week. Except if you've purchased one of our product we'll reply "
-"within 24 hours."
+"Please open a ticket on our helpdesk, and we'll try to respond within 24 "
+"hours during working days. "
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:24
@@ -246,9 +244,9 @@ msgstr ""
 
 #: admin/wbcom/templates/wbcom-support-page.php:40
 msgid ""
-"Create a new thread on our plugin page, participation is open to anyone "
-"from all around the world. We'll be there to help as well but can't "
-"guarantee any delay."
+"Please create a new thread on our plugin page; participation is open to "
+"anyone from all around the world. Our support is minimal at wordpress.org "
+"threads. "
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-themes-page.php:4
@@ -306,24 +304,24 @@ msgid "LearnMate"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-themes-page.php:38
-msgid "Learnmate"
+msgid "LearnMate"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-themes-page.php:40
-msgid "Add Review to your course"
+msgid "Add review to your course"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-themes-page.php:41
-msgid "Course Coming Soon"
+msgid "Course coming soon"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-themes-page.php:42
 #: admin/wbcom/templates/wbcom-themes-page.php:69
-msgid "Grid And List Layout"
+msgid "Grid & List Layout"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-themes-page.php:43
-msgid "Learndash/LifterLMS Extra Widgets"
+msgid "LearnDash/LifterLMS Extra Widgets"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-themes-page.php:44
@@ -331,7 +329,7 @@ msgid "Unparalleled Course Layout"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-themes-page.php:45
-msgid "Awesome Learndash/LifterLMS Pages"
+msgid "Awesome LearnDash/LifterLMS Pages"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-themes-page.php:46
@@ -383,7 +381,7 @@ msgid "Awesome Resume list Page"
 msgstr ""
 
 #: admin/wbcom/templates/wbcom-themes-page.php:93
-msgid "Outstanding all job maanger pagesLayout"
+msgid "Outstanding all job maanger pages layout"
 msgstr ""
 
 #: admin/wbcom/wbcom-admin-settings.php:179

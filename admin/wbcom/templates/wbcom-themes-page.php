@@ -35,14 +35,14 @@
 						<img src="<?php echo BP_ACTIVITY_FILTER_PLUGIN_URL . 'admin/wbcom/assets/imgs/learnmate.jpg'; ?>" alt="Avatar" class="image" style="width:100%">
 					</div>
 					<div class="wbcom-demo-title">
-						<h2><?php esc_html_e( 'Learnmate', 'bp-activity-filter' ); ?></h2>
+						<h2><?php esc_html_e( 'LearnMate', 'bp-activity-filter' ); ?></h2>
 						<ul class="wbcom_theme_features_list">
-                            <li><?php esc_html_e( 'Add Review to your course', 'bp-activity-filter' ); ?></li>
-                            <li><?php esc_html_e( 'Course Coming Soon', 'bp-activity-filter' ); ?></li>
-                            <li><?php esc_html_e( 'Grid And List Layout', 'bp-activity-filter' ); ?></li>
-                            <li><?php esc_html_e( 'Learndash/LifterLMS Extra Widgets', 'bp-activity-filter' ); ?></li>
+                            <li><?php esc_html_e( 'Add review to your course', 'bp-activity-filter' ); ?></li>
+                            <li><?php esc_html_e( 'Course coming soon', 'bp-activity-filter' ); ?></li>
+                            <li><?php esc_html_e( 'Grid & List Layout', 'bp-activity-filter' ); ?></li>
+                            <li><?php esc_html_e( 'LearnDash/LifterLMS Extra Widgets', 'bp-activity-filter' ); ?></li>
                             <li><?php esc_html_e( 'Unparalleled Course Layout', 'bp-activity-filter' ); ?></li>
-                            <li><?php esc_html_e( 'Awesome Learndash/LifterLMS Pages', 'bp-activity-filter' ); ?></li>
+                            <li><?php esc_html_e( 'Awesome LearnDash/LifterLMS Pages', 'bp-activity-filter' ); ?></li>
                             <li><?php esc_html_e( 'Distraction Free Reading', 'bp-activity-filter' ); ?></li>
                         </ul>
 						<div class="wbcom-middle">
@@ -66,7 +66,7 @@
                             <li><?php esc_html_e( 'Dokan Extra Widgets', 'bp-activity-filter' ); ?></li>
                             <li><?php esc_html_e( 'Unique Single Product Page Customization', 'bp-activity-filter' ); ?></li>
                             <li><?php esc_html_e( 'Awesome WooCommerce Pages', 'bp-activity-filter' ); ?></li>
-                            <li><?php esc_html_e( 'Grid And List Layout', 'bp-activity-filter' ); ?></li>
+                            <li><?php esc_html_e( 'Grid & List Layout', 'bp-activity-filter' ); ?></li>
                             <li><?php esc_html_e( 'Automated Mega Menu Support', 'bp-activity-filter' ); ?></li>
                         </ul>
 						<div class="wbcom-middle">
@@ -90,7 +90,7 @@
                             <li><?php esc_html_e( 'Simple live searching and filtering', 'bp-activity-filter' ); ?></li>
                             <li><?php esc_html_e( 'Unique Job listing Page', 'bp-activity-filter' ); ?></li>
                             <li><?php esc_html_e( 'Awesome Resume list Page', 'bp-activity-filter' ); ?></li>
-                            <li><?php esc_html_e( 'Outstanding all job maanger pagesLayout', 'bp-activity-filter' ); ?></li>
+                            <li><?php esc_html_e( 'Outstanding all job maanger pages layout', 'bp-activity-filter' ); ?></li>
                         </ul>
 						<div class="wbcom-middle">
 							<a target="_blank" href="https://wbcomdesigns.com/downloads/jobmate-theme/" class="wbcom-button wbcom-purchase"><?php esc_html_e( 'Purchase', 'bp-activity-filter' ); ?></a>

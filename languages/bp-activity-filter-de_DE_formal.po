@@ -230,24 +230,24 @@ msgid "LearnMate"
 msgstr "LearnMate"
 
 #: admin/wbcom/templates/wbcom-themes-page.php:38
-msgid "Learnmate"
-msgstr "Learnmate"
+msgid "LearnMate"
+msgstr "LearnMate"
 
 #: admin/wbcom/templates/wbcom-themes-page.php:40
-msgid "Add Review to your course"
+msgid "Add review to your course"
 msgstr "Eine Bewertung Ihrem Kurs hinzufügen"
 
 #: admin/wbcom/templates/wbcom-themes-page.php:41
-msgid "Course Coming Soon"
+msgid "Course coming soon"
 msgstr "Kurs in Kürze"
 
 #: admin/wbcom/templates/wbcom-themes-page.php:42
 #: admin/wbcom/templates/wbcom-themes-page.php:69
-msgid "Grid And List Layout"
+msgid "Grid & List Layout"
 msgstr "Raster- und Listenlayout"
 
 #: admin/wbcom/templates/wbcom-themes-page.php:43
-msgid "Learndash/LifterLMS Extra Widgets"
+msgid "LearnDash/LifterLMS Extra Widgets"
 msgstr "Learndash / LifterLMS Extra Widgets"
 
 #: admin/wbcom/templates/wbcom-themes-page.php:44
@@ -255,7 +255,7 @@ msgid "Unparalleled Course Layout"
 msgstr "Einmaliges Kurslayout"
 
 #: admin/wbcom/templates/wbcom-themes-page.php:45
-msgid "Awesome Learndash/LifterLMS Pages"
+msgid "Awesome LearnDash/LifterLMS Pages"
 msgstr "Fantastische Learndash / LifterLMS-Seiten"
 
 #: admin/wbcom/templates/wbcom-themes-page.php:46
@@ -307,7 +307,7 @@ msgid "Awesome Resume list Page"
 msgstr "Fantastische Bewerberangebotsseite"
 
 #: admin/wbcom/templates/wbcom-themes-page.php:93
-msgid "Outstanding all job maanger pagesLayout"
+msgid "Outstanding all job maanger pages layout"
 msgstr "Hervorragend auf allen Job-Manager-Layout-Seiten"
 
 #: admin/wbcom/wbcom-admin-settings.php:179
