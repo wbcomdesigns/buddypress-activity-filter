@@ -375,7 +375,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 									</td>
 								</tr>
 							</table>
-							<p class="description"><?php echo __( 'Each checked activity type will not be recorded as new activity.' ); ?></p>
+							<p class="description"><?php echo __( 'Any checked activity type will not be recorded as a new activity. ', 'bp-activity-filter' ); ?></p>
 							<div class="submit">
 								<a id="bp_activity_filter_hide_setting_form_submit" class="button-primary"><?php _e( 'Save Settings', 'bp-activity-filter' ); ?></a>
 								<div class="spinner"></div>
@@ -403,7 +403,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 								<thead>
 								<th class="th-title"><?php echo esc_html__( 'Post Type', 'bp-activity-filter' ); ?></th>
 								<th class="th-title"><?php echo esc_html__( 'Enable/Disable', 'bp-activity-filter' ); ?></th>
-								<th class="th-title"><?php echo esc_html__( 'Update Lable', 'bp-activity-filter' ); ?></th>
+								<th class="th-title"><?php echo esc_html__( 'Name for activities', 'bp-activity-filter' ); ?></th>
 								</thead>
 						<?php
 						$args = array(
@@ -466,7 +466,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 						else :
 							echo '<div class="notice">';
-							echo '<p class="description">' . __( 'Sorry, seems you do not have any custom post types to allow in activity stream.' ) . '</p>';
+							echo '<p class="description">' . __( 'Sorry, it seems you do not have any custom post type available to allow in the activity stream.', 'bp-activity-filter') . '</p>';
 							echo '</div>';
 
 						endif;

@@ -2,7 +2,7 @@
 	<?php echo do_shortcode( '[wbcom_admin_setting_header]' ); ?>
 	<h4 class="wbcom-plugin-heading"><?php esc_html_e( 'Support', 'bp-activity-filter' ); ?></h4>
     <div id="wbcom_admin_content_support" class="wbcom_admin_tab_content">
-        <strong><?php esc_html_e( 'Having any question or issue ?', 'bp-activity-filter' ); ?></strong>
+        <strong><?php esc_html_e( 'Are you having any questions or issues?', 'bp-activity-filter' ); ?></strong>
         <p>
 			<?php esc_html_e( 'Our team is here to help you out at anytime. If you have any idea about how we could improve. You can share access to your site on our helpdesk if it can help getting faster. There are two ways to in touch with us :', 'bp-activity-filter' ); ?></p>
 
