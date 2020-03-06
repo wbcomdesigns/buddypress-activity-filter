@@ -334,14 +334,6 @@ if ( !class_exists( 'Wbcom_Admin_Settings' ) ) {
 					'status'		 => $this->wbcom_plugin_status( 'woo-price-quote-inquiry' ),
 					'wp_url'		 => 'https://wordpress.org/plugins/woo-price-quote-inquiry/',
 					'icon'			 => 'fas fa-2x fa-dollar-sign'
-				),
-				'20' => array(
-					'name'			 => esc_html__( 'EDD Service Extended', 'bp-activity-filter' ),
-					'slug'			 => 'edd-service-extended',
-					'description'	 => esc_html__( 'This plugin helps administrators of the site categorize their wordpress media.', 'bp-activity-filter' ),
-					'status'		 => $this->wbcom_plugin_status( 'edd-service-extended' ),
-					'wp_url'		 => 'https://wordpress.org/plugins/edd-service-extended/',
-					'icon'			 => 'fab fa-2x fa-product-hunt'
 				)
 			);
 			return $free_plugins;
