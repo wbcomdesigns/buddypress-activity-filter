@@ -66,10 +66,6 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
 
 				bp_update_option( 'bp-hidden-filters-name', $hidden_filters );
 				
-				echo "<pre>";
-				print_r($_POST);
-				echo "</pre>";
-				
 				if ( ! empty( $_POST['bp-default-profile-filter-name'] ) ) {
 
 					$bp_default_profile_filter_name = sanitize_text_field( $_POST['bp-default-profile-filter-name'] );
