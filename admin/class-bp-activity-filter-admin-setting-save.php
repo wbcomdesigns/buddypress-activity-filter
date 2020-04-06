@@ -59,7 +59,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
 
 				}
 
-				if ( is_array( $_POST['bp-hidden-filters-name'] ) ) {
+				if ( isset($_POST['bp-hidden-filters-name']) && is_array( $_POST['bp-hidden-filters-name'] ) ) {
 
 					$hidden_filters = array_map( 'sanitize_text_field', wp_unslash( $_POST['bp-hidden-filters-name'] ) );
 				}
@@ -74,7 +74,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
 
 				}
 
-				if ( is_array( $_POST['bp-hidden-profile-filters-name'] ) ) {
+				if ( isset($_POST['bp-hidden-profile-filters-name']) && is_array( $_POST['bp-hidden-profile-filters-name'] ) ) {
 
 					$hidden_profile_filters = array_map( 'sanitize_text_field', wp_unslash( $_POST['bp-hidden-profile-filters-name'] ) );
 				}
