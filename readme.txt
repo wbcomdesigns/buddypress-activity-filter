@@ -4,13 +4,13 @@ Contributors: vapvarun,wbcomdesigns
 Tags: buddypress,activity-filter, activity, filter , BuddyPress Activity, Activity Filter, Default Activity, Hide Activty, BuddyPress default activity
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
-Tested up to: 5.2
-Stable tag: 2.1.0
+Tested up to: 5.4.0
+Stable tag: trunk
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 
-It will help to set default filter option with BuddyPress Activity and It will also allow removing some specific activity types from activities. It also allows to post certain public CPT type activies using simple enable option. Like if you have event post type, you allow to post a simple activity update inside BuddyPress activities [reference](https://codex.buddypress.org/plugindev/post-types-activities/).  
+It will help to set default filter option with BuddyPress Activity and It will also allow removing some specific activity types from activities. It also allows to post certain public CPT type activies using simple enable option. Like if you have event post type, you allow to post a simple activity update inside BuddyPress activities [reference](https://codex.buddypress.org/plugindev/post-types-activities/).
 
 
 == Description ==
@@ -75,6 +75,8 @@ You can modify activity content by given filters.
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+= 2.2.0 =
+* Enhancement: Added default option for Sitewide Activity & Profile separately
 
 = 2.1.0 =
 * Fix: Compatibility with BuddyPress 5.1.2
