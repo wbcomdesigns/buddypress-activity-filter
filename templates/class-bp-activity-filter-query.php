@@ -15,6 +15,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			add_action( 'wp_enqueue_scripts', array( $this, 'bpaf_enqueue_scripts' ) );
 			add_action( 'bp_activity_before_save', array( $this, 'bpaf_activity_do_not_save' ), 5, 1 );
 			add_action( 'friends_friendship_accepted', array( $this, 'bpaf_bp_friends_friendship_accepted_activity' ), 5, 4 );
+			
+			add_action( 'bp_template_redirect', array( $this, 'bpaf_bp_set_default_activity_filter' ) );
 		}
 
 		public function bpaf_enqueue_scripts() {
@@ -30,21 +32,27 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			 * between the defined hooks and the functions defined in this
 			 * class.
 			 */
-			global $bp;
-			$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
+			global $bp;			
+			if (  bp_is_user_activity() ) {
+				$defult_activity_stream = bp_get_option( 'bp-default-profile-filter-name' );
+			} else {
+				$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
+			}
+			
+			
 			if ( empty( $defult_activity_stream ) ) {
 				$defult_activity_stream = -1;
 			}	
 
-				wp_enqueue_script( 'bp-activity-filter-public', plugin_dir_url( __FILE__ ) . 'js/buddypress-activity-filter-public.js', array( 'jquery' ), time(), false );
+			wp_enqueue_script( 'bp-activity-filter-public', plugin_dir_url( __FILE__ ) . 'js/buddypress-activity-filter-public.js', array( 'jquery' ), time(), false );
 
-				wp_localize_script(
-					'bp-activity-filter-public',
-					'bpaf_js_object',
-					array(
-						'default_filter' => $defult_activity_stream,
-					)
-				);
+			wp_localize_script(
+				'bp-activity-filter-public',
+				'bpaf_js_object',
+				array(
+					'default_filter' => $defult_activity_stream,
+				)
+			);
 
 		}
 
@@ -92,6 +100,18 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 						}
 					}
 				}
+			} else if ( bp_is_user_activity() ) {
+				$defult_activity_stream = -1;
+				$page_actions = bp_activity_get_actions_for_context();
+				if( !empty( $page_actions ) ) {
+					$selected_activity_stream = bp_get_option( 'bp-default-profile-filter-name' );
+					foreach( $page_actions as $gakey => $gavalue ) {
+						if( $selected_activity_stream == $gavalue['key'] ) {
+							$defult_activity_stream = $selected_activity_stream;
+						}
+					}
+				}
+			
 			} else {
 				$defult_activity_stream = bp_get_option( 'bp-default-filter-name' );
 				$page_actions           = bp_activity_get_actions_for_context( 'activity' );
@@ -192,7 +212,28 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			        remove_action( 'friends_friendship_accepted', 'bp_friends_friendship_accepted_activity', 10, 4 );
 			    }
 			}
+		}		
+		
+		public function bpaf_bp_set_default_activity_filter() {
+			// If the filter is already set, do not do anything ok.
+			if (  isset( $_COOKIE['bp-activity-filter'] ) ) {
+				return ;
+			}
+			// additional check for activity dir and profile activity.
+			if ( ! bp_is_activity_directory() && ! bp_is_user_activity() ) {
+				return ;
+			}
+			if ( bp_is_user_activity() ) {
+				$filter = bp_get_option( 'bp-default-profile-filter-name' );
+			} else {
+				$filter = bp_get_option( 'bp-default-filter-name' );
+			}
+			// Set filter to our respective filter.,
+			// In this case, I am setting filter to the 'Updates' filter
+			setcookie( 'bp-activity-filter', $filter, null, '/' );
+			$_COOKIE['bp-activity-filter'] = $filter;
 		}
+		
 	}
 }
 if ( class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {

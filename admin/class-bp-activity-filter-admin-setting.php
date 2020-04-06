@@ -238,26 +238,27 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			?>
 					<div class="wbcom-tab-content">
 						<form method="post" novalidate="novalidate" id="bp_activity_filter_display_setting_form" >
-							<h2><?php echo __( 'Apply Default Filter', 'bp-activity-filter' ); ?></h2>
+							<h2><?php echo __( 'Apply Default Filter on Activity Page', 'bp-activity-filter' ); ?></h2>
 							<table class="filter-table form-table" >
-						<?php
-						/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
-						$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' );
-						$bp_hidden_filters_value   = bp_get_option( 'bp-hidden-filters-name' );
-						if ( is_array( $bp_hidden_filters_value ) && in_array( $bp_default_activity_value, $bp_hidden_filters_value ) ) {
-							bp_update_option( 'bp-default-filter-name', '-1' );
-						}
-						$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' );
-						if ( empty( $bp_default_activity_value ) ) {
-							$bp_default_activity_value = -1;
-						}
-						?>
+							<?php
+							/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
+							$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' );
+							$bp_hidden_filters_value   = bp_get_option( 'bp-hidden-filters-name' );
+							if ( is_array( $bp_hidden_filters_value ) && in_array( $bp_default_activity_value, $bp_hidden_filters_value ) ) {
+								bp_update_option( 'bp-default-filter-name', '-1' );
+							}
+							$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' );
+							if ( empty( $bp_default_activity_value ) ) {
+								$bp_default_activity_value = -1;
+							}
+							?>
 								<td>
 									<table>
 										<tr>
 											<td class="filter-option">
+												<label>
 												<input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php echo ( $bp_default_activity_value == -1 ) ? 'checked=checked' : ' '; ?>/>
-												<label for="bp-default-filter-name"><?php _e( 'Everything', 'bp-activity-filter' ); ?></label>
+												<?php _e( 'Everything', 'bp-activity-filter' ); ?></label>
 											</td>
 										</tr>
 								<?php
@@ -272,13 +273,14 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 										?>
 												<tr>
 													<td class="filter-option">
+														<label for="<?php echo $key . '_radio'; ?>">
 														<input id="<?php echo $key . '_radio'; ?>" name="bp-default-filter-name" type="radio" value="<?php echo $key; ?>"
 												<?php
 												echo ( $bp_default_activity_value == $key ) ? 'checked=checked ' : ' ';
 												echo $hide_active;
 												?>
 															   />
-														<label for="<?php echo $key; ?>"><?php _e( $value, 'bp-activity-filter' ); ?></label>
+														<?php _e( $value, 'bp-activity-filter' ); ?></label>
 													</td>
 												</tr>
 												<?php
@@ -288,6 +290,63 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 									</table>
 								</td>
 							</table>
+							<br /><br />
+							<h2><?php echo __( 'Apply Default Filter on Profile Activity Page', 'bp-activity-filter' ); ?></h2>
+							
+							<table class="filter-table form-table" >
+							<?php
+							/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
+							$bp_default_activity_value = bp_get_option( 'bp-default-profile-filter-name' );
+							$bp_hidden_filters_value   = bp_get_option( 'bp-hidden-profile-filters-name' );
+							if ( is_array( $bp_hidden_filters_value ) && in_array( $bp_default_activity_value, $bp_hidden_filters_value ) ) {
+								//bp_update_option( 'bp-default-filter-name', '-1' );
+							}
+							$bp_default_activity_value = bp_get_option( 'bp-default-profile-filter-name' );
+							if ( empty( $bp_default_activity_value ) ) {
+								$bp_default_activity_value = -1;
+							}
+							?>
+								<td>
+									<table>
+										<tr>
+											<td class="filter-option">
+												<label>
+												<input id="bp-activity-filter-everything-radio" name="bp-default-profile-filter-name" type="radio" value="-1"  <?php echo ( $bp_default_activity_value == -1 ) ? 'checked=checked' : ' '; ?>/>
+												<?php _e( 'Everything', 'bp-activity-filter' ); ?></label>
+											</td>
+										</tr>
+								<?php
+								unset($labels['new_member']);
+								unset($labels['updated_profile']);
+								foreach ( $labels as $key => $value ) :
+									if ( ! empty( $value ) ) {
+										$hide_active = '';
+										if ( ! empty( $bp_hidden_filters_value ) ) {
+											if ( in_array( $key, $bp_hidden_filters_value ) ) {
+												$hide_active = "disabled = 'disabled'";
+											}
+										}
+										?>
+												<tr>
+													<td class="filter-option">
+													<label for="<?php echo $key . '_profile_radio'; ?>">
+														<input id="<?php echo $key . '_profile_radio'; ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo $key; ?>"
+												<?php
+												echo ( $bp_default_activity_value == $key ) ? 'checked=checked ' : ' ';
+												echo $hide_active;
+												?>
+															   />
+														<?php _e( $value, 'bp-activity-filter' ); ?></label>
+													</td>
+												</tr>
+												<?php
+									}
+								endforeach;
+								?>
+									</table>
+								</td>
+							</table>
+							
 							<div class="submit">
 								<a id="bp_activity_filter_display_setting_form_submit" class="button-primary"><?php _e( 'Save Settings', 'bp-activity-filter' ); ?></a>
 								<div class="spinner"></div>
@@ -499,8 +558,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
 
 			$bp_default_filter_name = $form_details['bp-default-filter-name'];
+			
+			$bp_default_profile_filter_name = $form_details['bp-default-profile-filter-name'];
 
 			bp_update_option( 'bp-default-filter-name', $bp_default_filter_name );
+			
+			bp_update_option( 'bp-default-profile-filter-name', $bp_default_profile_filter_name );
 
 			exit;
 		}
