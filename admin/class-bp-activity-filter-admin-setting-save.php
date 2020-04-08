@@ -1,9 +1,5 @@
 <?php
-
-
 /**
-
-
  * Defining class for Filter dropdown option for public setting
  */
 
@@ -11,20 +7,14 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
 
 
 	class WbCom_BP_Activity_Filter_Admin_Setting_Save {
-
-
+		
 		/**
-
-
 		 * Constructor
 		 */
-
 
 		public function __construct() {
 
 			/**
-
-
 			 * Saving option values
 			 */
 
@@ -32,19 +22,14 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
 
 		}
 
-
-
-
 		/**
-
-
 		 * Saving options
 		 */
 
 
 		public function bp_core_acivity_filter_admin_settings_save() {
 
-			if ( isset( $_GET['page'] ) && 'bp-settings' == $_GET['page'] && ! empty( $_POST['submit'] ) ) {
+			if ( isset( $_GET['page'] ) && 'bp_activity_filter_settings' == $_GET['page'] && ! empty( $_POST['submit'] ) ) {
 
 				check_admin_referer( 'buddypress-options' );
 
@@ -91,8 +76,5 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
 }
 
 if ( class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
-
-
 	$admin_setting_save_obj = new WbCom_BP_Activity_Filter_Admin_Setting_Save();
-
 }
