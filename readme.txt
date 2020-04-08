@@ -75,6 +75,9 @@ You can modify activity content by given filters.
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+= 2.2.1 =
+* Fix: BuddyPress & BuddyBoss bp-settings not saved and display error message.
+
 = 2.2.0 =
 * Enhancement: Added default option for Sitewide Activity & Profile separately
 
