@@ -117,16 +117,13 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				$page_actions           = bp_activity_get_actions_for_context( 'activity' );
 			}
 
-			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
 			$hidden_activity_stream = array();
+			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );			
 			if ( ( $defult_activity_stream != -1 ) && ( 1 == $_BP_COOKIE['bpaf-default-filter'] ) ) {
 				$query = wp_parse_args( $query, array() );
 
 				$count  = 0;
-				$action = '';
-				if ( empty( $hidden_activity_stream ) ) {
-					$hidden_activity_stream = array();
-				}
+				$action = '';				
 				$admin_setting_object = new WbCom_BP_Activity_Filter_Admin_Setting();
 				$labels               = $admin_setting_object->bpaf_get_labels();
 				foreach ( $labels as $l_key => $l_value ) {
