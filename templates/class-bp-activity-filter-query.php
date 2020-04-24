@@ -40,8 +40,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			}
 			
 			
-			if ( empty( $defult_activity_stream ) ) {
-				$defult_activity_stream = -1;
+			if ( empty( $defult_activity_stream ) || $defult_activity_stream == -1 ) {
+				$defult_activity_stream = 0;
 			}	
 
 			wp_enqueue_script( 'bp-activity-filter-public', plugin_dir_url( __FILE__ ) . 'js/buddypress-activity-filter-public.js', array( 'jquery' ), time(), false );
