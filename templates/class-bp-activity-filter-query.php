@@ -90,16 +90,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			}
 
 			if( bp_is_group_activity() ) {
-				$defult_activity_stream = -1;
-				$page_actions = bp_activity_get_actions_for_context();
-				if( !empty( $page_actions ) ) {
-					$selected_activity_stream = bp_get_option( 'bp-default-filter-name' );
-					foreach( $page_actions as $gakey => $gavalue ) {
-						if( $selected_activity_stream == $gavalue['key'] ) {
-							$defult_activity_stream = $selected_activity_stream;
-						}
-					}
-				}
+				$defult_activity_stream = -1;				
 			} else if ( bp_is_user_activity() ) {
 				$defult_activity_stream = -1;
 				$page_actions = bp_activity_get_actions_for_context();
