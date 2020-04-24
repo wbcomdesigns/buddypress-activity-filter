@@ -495,8 +495,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 				</form>
 			</div>
-			<?php
-			exit;
+			<?php			
 		}
 
 		/**
