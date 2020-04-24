@@ -13,8 +13,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			 */
 			add_filter( 'bp_ajax_querystring', array( $this, 'filtering_activity_default' ), 999, 2 );
 			add_action( 'wp_enqueue_scripts', array( $this, 'bpaf_enqueue_scripts' ) );
-			add_action( 'bp_activity_before_save', array( $this, 'bpaf_activity_do_not_save' ), 5, 1 );
-			add_action( 'friends_friendship_accepted', array( $this, 'bpaf_bp_friends_friendship_accepted_activity' ), 5, 4 );
+			//add_action( 'bp_activity_before_save', array( $this, 'bpaf_activity_do_not_save' ), 5, 1 );
+			//add_action( 'friends_friendship_accepted', array( $this, 'bpaf_bp_friends_friendship_accepted_activity' ), 5, 4 );
 			
 			add_action( 'bp_template_redirect', array( $this, 'bpaf_bp_set_default_activity_filter' ) );
 		}
