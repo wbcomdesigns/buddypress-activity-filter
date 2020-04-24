@@ -281,9 +281,10 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 					<?php
 					/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 					$bp_default_activity_value = bp_get_option( 'bp-default-profile-filter-name' );
-					$bp_hidden_filters_value   = bp_get_option( 'bp-hidden-profile-filters-name' );
+					$bp_hidden_filters_value   = bp_get_option( 'bp-hidden-filters-name' );
+					
 					if ( is_array( $bp_hidden_filters_value ) && in_array( $bp_default_activity_value, $bp_hidden_filters_value ) ) {
-						//bp_update_option( 'bp-default-filter-name', '-1' );
+						bp_update_option( 'bp-default-profile-filter-name', '-1' );
 					}
 					$bp_default_activity_value = bp_get_option( 'bp-default-profile-filter-name' );
 					if ( empty( $bp_default_activity_value ) ) {
