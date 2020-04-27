@@ -52,7 +52,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		 * @since    1.0.0
 		 */
 		public function bp_activity_filter_section_settings() {
-			$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'bpaf_display_activity';
+			$tab = isset( $_GET['tab'] ) ? sanitize_text_field($_GET['tab']) : 'bpaf_display_activity';
 			?>
 			<div id="wpbody-content" class="bpaf-setting-page" aria-label="Main content" tabindex="0">
 
@@ -67,11 +67,11 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 					<div id="bpaf_setting_error_settings_updated" class="updated settings-error notice is-dismissible">
 
-						<p><strong><?php _e( 'Settings saved.', 'bp-activity-filter' ); ?></strong></p>
+						<p><strong><?php esc_html_e( 'Settings saved.', 'bp-activity-filter' ); ?></strong></p>
 
 						<button type="button" class="notice-dismiss">
 
-							<span class="screen-reader-text"><?php _e( 'Dismiss this notice.', 'bp-activity-filter' ); ?></span>
+							<span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'bp-activity-filter' ); ?></span>
 
 						</button>
 
@@ -238,13 +238,13 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			?>
 			<div class="wbcom-tab-content">
 				<form method="post" novalidate="novalidate" id="bp_activity_filter_display_setting_form" >
-					<h2><?php echo __( 'Apply Default Filter on Activity Page', 'bp-activity-filter' ); ?></h2>
+					<h2><?php esc_html_e( 'Apply Default Filter on Activity Page', 'bp-activity-filter' ); ?></h2>
 					<table class="filter-table form-table" >
 						<tr>
 							<td class="filter-option">
 								<label>
 								<input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php echo ( $bp_default_activity_value == -1 ) ? 'checked=checked' : ' '; ?>/>
-								<?php _e( 'Everything', 'bp-activity-filter' ); ?></label>
+								<?php esc_html_e( 'Everything', 'bp-activity-filter' ); ?></label>
 							</td>
 						</tr>
 						<?php
@@ -266,7 +266,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 									<td class="filter-option">
 										<label for="<?php echo $key . '_radio'; ?>">
 										<input id="<?php echo $key . '_radio'; ?>" name="bp-default-filter-name" type="radio" value="<?php echo $key; ?>"<?php  echo $checked; echo $hide_active;?> />
-										<?php _e( $value, 'bp-activity-filter' ); ?></label>
+										<?php esc_html_e( $value, 'bp-activity-filter' ); ?></label>
 									</td>
 								</tr>
 								<?php
@@ -275,7 +275,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 						?>
 					</table>
 					<br /><br />
-					<h2><?php echo __( 'Apply Default Filter on Profile Activity Page', 'bp-activity-filter' ); ?></h2>
+					<h2><?php esc_html_e( 'Apply Default Filter on Profile Activity Page', 'bp-activity-filter' ); ?></h2>
 					
 					<table class="filter-table form-table" >
 					<?php
@@ -295,7 +295,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 							<td class="filter-option">
 								<label>
 								<input id="bp-activity-filter-everything-radio" name="bp-default-profile-filter-name" type="radio" value="-1"  <?php echo ( $bp_default_activity_value == -1 ) ? 'checked=checked' : ' '; ?>/>
-								<?php _e( 'Everything', 'bp-activity-filter' ); ?></label>
+								<?php esc_html_e( 'Everything', 'bp-activity-filter' ); ?></label>
 							</td>
 						</tr>
 						<?php
@@ -318,7 +318,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 									<td class="filter-option">
 									<label for="<?php echo $key . '_profile_radio'; ?>">
 										<input id="<?php echo $key . '_profile_radio'; ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo $key; ?>" <?php echo  $checked; echo $hide_active;?> />
-										<?php _e( $value, 'bp-activity-filter' ); ?></label>
+										<?php echo esc_html($value); ?></label>
 									</td>
 								</tr>
 								<?php
@@ -329,7 +329,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 						
 					
 					<div class="submit">
-						<a id="bp_activity_filter_display_setting_form_submit" class="button-primary"><?php _e( 'Save Settings', 'bp-activity-filter' ); ?></a>
+						<a id="bp_activity_filter_display_setting_form_submit" class="button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
 						<div class="spinner"></div>
 					</div>
 				</form>
@@ -367,7 +367,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			?>
 			<div class="wbcom-tab-content">
 				<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form" >
-					<h2><?php echo __( 'Remove Activity', 'bp-activity-filter' ); ?></h2>
+					<h2><?php esc_html_e( 'Remove Activity', 'bp-activity-filter' ); ?></h2>
 					<table class="filter-table form-table" >															
 						<?php
 						foreach ( $labels as $key => $value ) :
@@ -380,7 +380,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 								<tr>
 									<td class="filter-option">
 										<input id="<?php echo $key . '-checkbox'; ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key; ?>"<?php echo  $checked;?> />
-										<label for="bp-hidden-filters-name"><?php _e( $value, 'bp-activity-filter' ); ?></label>
+										<label for="bp-hidden-filters-name"><?php echo esc_html($value); ?></label>
 									</td>
 								</tr>
 								<?php
@@ -388,9 +388,9 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 						endforeach;
 						?>	
 					</table>
-					<p class="description"><?php echo __( 'Any checked activity type will not be recorded as a new activity. ', 'bp-activity-filter' ); ?></p>
+					<p class="description"><?php echo esc_html__( 'Any checked activity type will not be recorded as a new activity. ', 'bp-activity-filter' ); ?></p>
 					<div class="submit">
-						<a id="bp_activity_filter_hide_setting_form_submit" class="button-primary"><?php _e( 'Save Settings', 'bp-activity-filter' ); ?></a>
+						<a id="bp_activity_filter_hide_setting_form_submit" class="button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
 						<div class="spinner"></div>
 					</div>
 				</form>
@@ -479,7 +479,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 				else :
 					echo '<div class="notice">';
-					echo '<p class="description">' . __( 'Sorry, it seems you do not have any custom post type available to allow in the activity stream.', 'bp-activity-filter') . '</p>';
+					echo '<p class="description">' . esc_html__( 'Sorry, it seems you do not have any custom post type available to allow in the activity stream.', 'bp-activity-filter') . '</p>';
 					echo '</div>';
 
 				endif;
@@ -489,7 +489,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 					</table>
 
 					<div class="submit">
-						<a id="bp_activity_filter_cpt_setting_form_submit" class="button-primary"><?php _e( 'Save Settings', 'bp-activity-filter' ); ?></a>
+						<a id="bp_activity_filter_cpt_setting_form_submit" class="button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
 						<div class="spinner"></div>
 					</div>
 
