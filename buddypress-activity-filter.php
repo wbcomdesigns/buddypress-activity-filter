@@ -8,7 +8,7 @@
  * Plugin Name:       BuddyPress Activity Filter
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-activity-filter/
  * Description:       Admin can set default and customized activities to be listed on front-end.
- * Version:           2.2.1
+ * Version:           2.3.0
  * Author:            Wbcom Designs<admin@wbcomdesigns.com>
  * Author URI:        https://wbcomdesigns.com/
  * License:           GPL-2.0+
@@ -67,7 +67,7 @@ function bp_activity_filter_required_plugin_admin_notice() {
 if ( ! class_exists( 'WbCom_BP_Activity_Filter' ) ) {
 
 	class WbCom_BP_Activity_Filter {
-		
+
 		/**
 		 * Constructor
 		 */
