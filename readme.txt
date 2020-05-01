@@ -33,13 +33,13 @@ If you need additional help you can contact us for [Custom Development](https://
 
 == Frequently Asked Questions ==
 
-= Is this plugin requires another plugin?=
+= Will BuddyPress Activity work with BuddyBoss Platfrom? =
 
-Yes, this plugin requires BuddyPress plugin.
+Yes, It will work with BuddyBoss Platfrom.
 
 = By default, which filters will be displayed in activity dropdown? =
 
-By default, all filters will be displayed.
+By default, all everything will be displayed.
 
 = By default, which filters will be hidden in activity dropdown? =
 
@@ -57,12 +57,7 @@ If this field is empty then the singular label of custom post type will be displ
 
 You can modify activity content by given filters.
 
-1. bpaf_main_activity_content_override
-
-2. bpaf_groups_content_override
-
 == Screenshots ==
-
 
 1. The screenshot shows settings to select activity type to display at activity page by default, corresponds to screenshot-1.(png|jpg|jpeg|gif).
 
@@ -75,6 +70,14 @@ You can modify activity content by given filters.
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+= 2.3.0 =
+* Fixed #62 - Group Related Activities 
+* Fixed #59 - Conflict with BuddyPress quotes plugin
+* Fixed #63 - BuddyPress Profile : group actvity
+* Fixed: Comment not add when remove "Replied to a status update"
+* Fixed: Add All Register Activity Type in Review Activity Setting & update code
+* Fixed #53 - Error Log
+
 = 2.2.1 =
 * Fix: BuddyPress & BuddyBoss bp-settings not saved and display error message.
 
@@ -104,7 +107,6 @@ You can modify activity content by given filters.
 = 1.0.3 =
 * Fix - Changed plugin setting UI.
 * Enhancement - Add activities settings for custom post type.
-
 
 = 1.0.2 =
 * Fix - Default filter fixes
