@@ -22,7 +22,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			add_action( 'wp_ajax_bp_activity_filter_save_hide_settings', array( $this, 'bp_activity_filter_save_hide_settings' ) );
 
 			add_action( 'wp_ajax_bp_activity_filter_save_cpt_settings', array( $this, 'bp_activity_filter_save_cpt_settings' ) );
-			
+
 		}
 
 		/**
@@ -52,7 +52,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		 * @since    1.0.0
 		 */
 		public function bp_activity_filter_section_settings() {
-			$tab = isset( $_GET['tab'] ) ? sanitize_text_field($_GET['tab']) : 'bpaf_display_activity';
+			$tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'bpaf_display_activity';
 			?>
 			<div id="wpbody-content" class="bpaf-setting-page" aria-label="Main content" tabindex="0">
 
@@ -211,7 +211,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		public function bpaf_display_activity_section() {
 			global $bp;
 			$actions = bp_activity_get_actions_for_context( 'activity' );
-			$labels  = array();			
+			$labels  = array();
 			foreach ( $actions as $action ) {
 				// Friends activity collapses two filters into one.
 				if ( in_array( $action['key'], array( 'friendship_accepted', 'friendship_created' ) ) ) {
@@ -222,8 +222,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 					$labels[ $action['key'] ] = $action['label'];
 				}
 			}
-			
-		
+
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 			$bp_default_activity_value = bp_get_option( 'bp-default-filter-name' );
 			$bp_hidden_filters_value   = bp_get_option( 'bp-hidden-filters-name' );
@@ -234,7 +233,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			if ( empty( $bp_default_activity_value ) ) {
 				$bp_default_activity_value = -1;
 			}
-					
+
 			?>
 			<div class="wbcom-tab-content">
 				<form method="post" novalidate="novalidate" id="bp_activity_filter_display_setting_form" >
@@ -256,16 +255,21 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 										$hide_active = " disabled = 'disabled' ";
 									}
 								}
-								
+
 								$checked = '';
-								if (( $bp_default_activity_value == $key )) {
+								if ( ( $bp_default_activity_value == $key ) ) {
 									$checked = " checked='checked' ";
 								}
 								?>
 								<tr>
 									<td class="filter-option">
 										<label for="<?php echo $key . '_radio'; ?>">
-										<input id="<?php echo $key . '_radio'; ?>" name="bp-default-filter-name" type="radio" value="<?php echo $key; ?>"<?php  echo $checked; echo $hide_active;?> />
+										<input id="<?php echo $key . '_radio'; ?>" name="bp-default-filter-name" type="radio" value="<?php echo $key; ?>"
+															  <?php
+																echo $checked;
+																echo $hide_active;
+																?>
+										 />
 										<?php esc_html_e( $value, 'bp-activity-filter' ); ?></label>
 									</td>
 								</tr>
@@ -276,13 +280,13 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 					</table>
 					<br /><br />
 					<h2><?php esc_html_e( 'Apply Default Filter on Profile Activity Page', 'bp-activity-filter' ); ?></h2>
-					
+
 					<table class="filter-table form-table" >
 					<?php
 					/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 					$bp_default_activity_value = bp_get_option( 'bp-default-profile-filter-name' );
 					$bp_hidden_filters_value   = bp_get_option( 'bp-hidden-filters-name' );
-					
+
 					if ( is_array( $bp_hidden_filters_value ) && in_array( $bp_default_activity_value, $bp_hidden_filters_value ) ) {
 						bp_update_option( 'bp-default-profile-filter-name', '-1' );
 					}
@@ -290,7 +294,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 					if ( empty( $bp_default_activity_value ) ) {
 						$bp_default_activity_value = -1;
 					}
-					?>						
+					?>
 						<tr>
 							<td class="filter-option">
 								<label>
@@ -299,8 +303,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 							</td>
 						</tr>
 						<?php
-						unset($labels['new_member']);
-						unset($labels['updated_profile']);
+						unset( $labels['new_member'] );
+						unset( $labels['updated_profile'] );
 						foreach ( $labels as $key => $value ) :
 							if ( ! empty( $value ) ) {
 								$hide_active = '';
@@ -310,15 +314,20 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 									}
 								}
 								$checked = '';
-								if (( $bp_default_activity_value == $key )) {
+								if ( ( $bp_default_activity_value == $key ) ) {
 									$checked = " checked='checked' ";
 								}
 								?>
 								<tr>
 									<td class="filter-option">
 									<label for="<?php echo $key . '_profile_radio'; ?>">
-										<input id="<?php echo $key . '_profile_radio'; ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo $key; ?>" <?php echo  $checked; echo $hide_active;?> />
-										<?php echo esc_html($value); ?></label>
+										<input id="<?php echo $key . '_profile_radio'; ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo $key; ?>"
+															  <?php
+																echo $checked;
+																echo $hide_active;
+																?>
+										 />
+										<?php echo esc_html( $value ); ?></label>
 									</td>
 								</tr>
 								<?php
@@ -326,8 +335,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 						endforeach;
 						?>
 					</table>
-						
-					
+
+
 					<div class="submit">
 						<a id="bp_activity_filter_display_setting_form_submit" class="button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
 						<div class="spinner"></div>
@@ -346,21 +355,27 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		public function bpaf_hide_activity_section() {
 
 			global $bp;
-			
-			$activity_actions = bp_activity_get_actions();			
-			$labels  = array();			
+
+			$activity_actions = bp_activity_get_actions();
+			$labels           = array();
 			foreach ( $activity_actions as $component => $actions ) {
-				foreach($actions as $action_key => $action_values){
+				foreach ( $actions as $action_key => $action_values ) {
 					// Friends activity collapses two filters into one.
 					if ( in_array( $action_key, array( 'friendship_accepted', 'friendship_created' ) ) ) {
 						$action_key = 'friendship_accepted,friendship_created';
 					}
 
 					if ( ! array_key_exists( $action_key, $labels ) ) {
-						$labels[ $action_key ] = $action_values[ 'value' ];
+						$labels[ $action_key ] = $action_values['value'];
+					}
+
+					if ( array_key_exists( 'activity_update', $labels ) && array_key_exists( 'activity_comment', $labels ) ) {
+						unset( $labels['activity_update'] );
+						unset( $labels['activity_comment'] );
+
 					}
 				}
-			}			
+			}
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 			$bp_hidden_filters_value = bp_get_option( 'bp-hidden-filters-name' );
 
@@ -368,25 +383,25 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			<div class="wbcom-tab-content">
 				<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form" >
 					<h2><?php esc_html_e( 'Remove Activity', 'bp-activity-filter' ); ?></h2>
-					<table class="filter-table form-table" >															
+					<table class="filter-table form-table" >
 						<?php
 						foreach ( $labels as $key => $value ) :
-							if ( ! empty( $value ) ) {								
+							if ( ! empty( $value ) ) {
 								$checked = '';
-								if (( ( ! empty( $bp_hidden_filters_value ) && is_array( $bp_hidden_filters_value ) ) && in_array( $key, $bp_hidden_filters_value ) )) {
+								if ( ( ( ! empty( $bp_hidden_filters_value ) && is_array( $bp_hidden_filters_value ) ) && in_array( $key, $bp_hidden_filters_value ) ) ) {
 									$checked = " checked='checked' ";
 								}
 								?>
 								<tr>
 									<td class="filter-option">
-										<input id="<?php echo $key . '-checkbox'; ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key; ?>"<?php echo  $checked;?> />
-										<label for="bp-hidden-filters-name"><?php echo esc_html($value); ?></label>
+										<input id="<?php echo $key . '-checkbox'; ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key; ?>"<?php echo $checked; ?> />
+										<label for="bp-hidden-filters-name"><?php echo esc_html( $value ); ?></label>
 									</td>
 								</tr>
 								<?php
 							}
 						endforeach;
-						?>	
+						?>
 					</table>
 					<p class="description"><?php echo esc_html__( 'Any checked activity type will not be recorded as a new activity. ', 'bp-activity-filter' ); ?></p>
 					<div class="submit">
@@ -479,7 +494,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 				else :
 					echo '<div class="notice">';
-					echo '<p class="description">' . esc_html__( 'Sorry, it seems you do not have any custom post type available to allow in the activity stream.', 'bp-activity-filter') . '</p>';
+					echo '<p class="description">' . esc_html__( 'Sorry, it seems you do not have any custom post type available to allow in the activity stream.', 'bp-activity-filter' ) . '</p>';
 					echo '</div>';
 
 				endif;
@@ -495,7 +510,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 				</form>
 			</div>
-			<?php			
+			<?php
 		}
 
 		/**
@@ -511,11 +526,11 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
 
 			$bp_default_filter_name = $form_details['bp-default-filter-name'];
-			
+
 			$bp_default_profile_filter_name = $form_details['bp-default-profile-filter-name'];
 
 			bp_update_option( 'bp-default-filter-name', $bp_default_filter_name );
-			
+
 			bp_update_option( 'bp-default-profile-filter-name', $bp_default_profile_filter_name );
 
 			wp_die();
