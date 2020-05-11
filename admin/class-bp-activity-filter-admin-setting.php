@@ -369,13 +369,14 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 						$labels[ $action_key ] = $action_values['value'];
 					}
 
-					if ( array_key_exists( 'activity_update', $labels ) && array_key_exists( 'activity_comment', $labels ) ) {
+					if ( array_key_exists( 'activity_update', $labels ) || array_key_exists( 'activity_comment', $labels ) ) {
 						unset( $labels['activity_update'] );
 						unset( $labels['activity_comment'] );
 
 					}
 				}
 			}
+
 			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 			$bp_hidden_filters_value = bp_get_option( 'bp-hidden-filters-name' );
 
