@@ -63,8 +63,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 		 */
 		public function filtering_activity_default( $query, $object ) {
 			global $bp;
-			$query_size = '';
-
+			$query_size = '';			
 			if ( 'activity' != $object ) {
 				return $query;
 			}
@@ -100,7 +99,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 
 			$hidden_activity_stream = array();
 			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
-
+			
 			if ( ( $defult_activity_stream != -1 ) && ( 1 == $_BP_COOKIE['bpaf-default-filter'] ) ) {
 				$query = wp_parse_args( $query, array() );
 
@@ -125,6 +124,9 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				}
 				if ( $defult_activity_stream != -1 ) {
 					$query = 'action=' . $defult_activity_stream;
+					if ( isset($_POST['scope']) && $_POST['scope'] != '' ) {
+						$query .= '&scope=' . $_POST['scope'];
+					}
 					if ( ! empty( $page ) ) {
 						$query .= '&' . $page;
 					}
@@ -156,6 +158,9 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 					}
 				}
 				$query = 'action=' . $action;
+				if ( isset($_POST['scope']) && $_POST['scope'] != '' ) {
+					$query .= '&scope=' . $_POST['scope'];
+				}
 				if ( ! empty( $page ) ) {
 					$query .= '&' . $page;
 				}
