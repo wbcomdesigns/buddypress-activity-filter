@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-06 19:18:27+00:00\n"
+"POT-Creation-Date: 2020-09-17 12:31:31+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,83 +24,83 @@ msgstr ""
 "X-Textdomain-Support: yes\n"
 "X-Generator: grunt-wp-i18n 1.0.3\n"
 
-#: admin/class-bp-activity-filter-admin-setting.php:49
+#: admin/class-bp-activity-filter-admin-setting.php:42
 msgid "WB Plugins"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:50
+#: admin/class-bp-activity-filter-admin-setting.php:43
 msgid "General"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:52
+#: admin/class-bp-activity-filter-admin-setting.php:45
 msgid "BP Activity Filter"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:71
+#: admin/class-bp-activity-filter-admin-setting.php:64
 msgid "BuddyPress Activity Filter Settings"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:77
+#: admin/class-bp-activity-filter-admin-setting.php:70
 msgid "Settings saved."
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:81
+#: admin/class-bp-activity-filter-admin-setting.php:74
 msgid "Dismiss this notice."
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:171
+#: admin/class-bp-activity-filter-admin-setting.php:164
 msgid "Default Filter"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:172
-#: admin/class-bp-activity-filter-admin-setting.php:398
+#: admin/class-bp-activity-filter-admin-setting.php:165
+#: admin/class-bp-activity-filter-admin-setting.php:386
 msgid "Remove Activity"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:173
+#: admin/class-bp-activity-filter-admin-setting.php:166
 msgid "CPT Activites"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:241
+#: admin/class-bp-activity-filter-admin-setting.php:240
 msgid "Apply Default Filter on Activity Page"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:261
-#: admin/class-bp-activity-filter-admin-setting.php:315
+#: admin/class-bp-activity-filter-admin-setting.php:246
+#: admin/class-bp-activity-filter-admin-setting.php:302
 msgid "Everything"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:294
+#: admin/class-bp-activity-filter-admin-setting.php:282
 msgid "Apply Default Filter on Profile Activity Page"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:351
-#: admin/class-bp-activity-filter-admin-setting.php:439
-#: admin/class-bp-activity-filter-admin-setting.php:538
+#: admin/class-bp-activity-filter-admin-setting.php:341
+#: admin/class-bp-activity-filter-admin-setting.php:409
+#: admin/class-bp-activity-filter-admin-setting.php:508
 msgid "Save Settings"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:437
+#: admin/class-bp-activity-filter-admin-setting.php:407
 msgid "Any checked activity type will not be recorded as a new activity. "
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:459
+#: admin/class-bp-activity-filter-admin-setting.php:429
 msgid "Enable Post Type Activites"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:463
+#: admin/class-bp-activity-filter-admin-setting.php:433
 msgid "Post Type"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:464
+#: admin/class-bp-activity-filter-admin-setting.php:434
 msgid "Enable/Disable"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:465
+#: admin/class-bp-activity-filter-admin-setting.php:435
 msgid "Name for activities"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:528
+#: admin/class-bp-activity-filter-admin-setting.php:498
 msgid ""
 "Sorry, it seems you do not have any custom post type available to allow in "
 "the activity stream."
@@ -665,7 +665,7 @@ msgstr ""
 msgid "Themes"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:575 buddypress-activity-filter.php:162
+#: admin/wbcom/wbcom-admin-settings.php:575 buddypress-activity-filter.php:146
 msgid "Settings"
 msgstr ""
 
@@ -677,13 +677,13 @@ msgstr ""
 msgid "%1$s is ineffective now as it requires %2$s to be installed and active."
 msgstr ""
 
-#: buddypress-activity-filter.php:213 buddypress-activity-filter.php:237
+#: buddypress-activity-filter.php:197 buddypress-activity-filter.php:221
 msgid ""
 "BuddyPress Activity Filter requires to be activated on the blog where "
 "BuddyPress is activated."
 msgstr ""
 
-#: buddypress-activity-filter.php:218 buddypress-activity-filter.php:243
+#: buddypress-activity-filter.php:202 buddypress-activity-filter.php:227
 msgid ""
 "BuddyPress Activity Filter and BuddyPress need to share the same network "
 "configuration."
