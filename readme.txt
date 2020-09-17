@@ -70,6 +70,10 @@ You can modify activity content by given filters.
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+
+= 2.4.0 =
+* Fixed #67 - Default filter issue.
+
 = 2.3.0 =
 * Fixed #62 - Group Related Activities 
 * Fixed #59 - Conflict with BuddyPress quotes plugin
