@@ -7,7 +7,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
 
 
 	class WbCom_BP_Activity_Filter_Admin_Setting_Save {
-		
+
 		/**
 		 * Constructor
 		 */
@@ -33,7 +33,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
 
 				check_admin_referer( 'buddypress-options' );
 
-				$hidden_filters = array();
+				$hidden_filters         = array();
 				$hidden_profile_filters = array();
 
 				if ( ! empty( $_POST['bp-default-filter-name'] ) ) {
@@ -44,13 +44,13 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
 
 				}
 
-				if ( isset($_POST['bp-hidden-filters-name']) && is_array( $_POST['bp-hidden-filters-name'] ) ) {
+				if ( isset( $_POST['bp-hidden-filters-name'] ) && is_array( $_POST['bp-hidden-filters-name'] ) ) {
 
 					$hidden_filters = array_map( 'sanitize_text_field', wp_unslash( $_POST['bp-hidden-filters-name'] ) );
 				}
 
 				bp_update_option( 'bp-hidden-filters-name', $hidden_filters );
-				
+
 				if ( ! empty( $_POST['bp-default-profile-filter-name'] ) ) {
 
 					$bp_default_profile_filter_name = sanitize_text_field( $_POST['bp-default-profile-filter-name'] );
