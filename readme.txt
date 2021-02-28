@@ -1,4 +1,4 @@
-=== BuddyPress Activity Filter ===
+=== Wbcom Designs - BuddyPress Activity Filter ===
 
 Contributors: vapvarun,wbcomdesigns
 Tags: buddypress,activity-filter, activity, filter , BuddyPress Activity, Activity Filter, Default Activity, Hide Activty, BuddyPress default activity
