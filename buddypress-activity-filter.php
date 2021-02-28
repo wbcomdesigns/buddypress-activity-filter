@@ -5,7 +5,7 @@
  * @since             1.0.0
  *
  * @wordpress-plugin
- * Plugin Name:       BuddyPress Activity Filter
+ * Plugin Name:       Wbcom Designs - BuddyPress Activity Filter
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-activity-filter/
  * Description:       It will help set the default filter option with BuddyPress Activity, & also allow disabling selected activity types.
  * Version:           2.5.0
