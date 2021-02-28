@@ -173,7 +173,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			}
 
 			$tab_html .= '</h2></div>';
-			echo wp_kses_post( $tab_html );
+			echo $tab_html;
 			$this->bpaf_include_admin_setting_tabs( $current );
 		}
 
@@ -263,11 +263,11 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 								?>
 								<tr>
 									<td class="filter-option">
-										<label for="<?php echo esc_attr( $key ) . '_radio'; ?>">
-										<input id="<?php echo esc_attr( $key ) . '_radio'; ?>" name="bp-default-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
+										<label for="<?php echo $key . '_radio'; ?>">
+										<input id="<?php echo $key . '_radio'; ?>" name="bp-default-filter-name" type="radio" value="<?php echo $key; ?>"
 															  <?php
-																echo esc_attr( $checked );
-																echo esc_attr( $hide_active );
+																echo $checked;
+																echo $hide_active;
 																?>
 										 />
 										<?php esc_html_e( $value, 'bp-activity-filter' ); ?></label>
@@ -320,11 +320,11 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 								?>
 								<tr>
 									<td class="filter-option">
-									<label for="<?php echo esc_attr( $key ) . '_profile_radio'; ?>">
-										<input id="<?php echo esc_attr( $key ) . '_profile_radio'; ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
+									<label for="<?php echo $key . '_profile_radio'; ?>">
+										<input id="<?php echo $key . '_profile_radio'; ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo $key; ?>"
 															  <?php
-																echo esc_attr( $checked );
-																echo esc_attr( $hide_active );
+																echo $checked;
+																echo $hide_active;
 																?>
 										 />
 										<?php echo esc_html( $value ); ?></label>
@@ -395,7 +395,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 								?>
 								<tr>
 									<td class="filter-option">
-										<input id="<?php echo esc_attr( $key ) . '-checkbox'; ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr( $key ); ?>"<?php echo esc_attr( $checked ); ?> />
+										<input id="<?php echo $key . '-checkbox'; ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key; ?>"<?php echo $checked; ?> />
 										<label for="bp-hidden-filters-name"><?php echo esc_html( $value ); ?></label>
 									</td>
 								</tr>
@@ -481,12 +481,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 							<tr>
 
-								<td scope="row" data-title="Post Type"><label class="filter-description" ><?php echo esc_html( $post_details->label ); ?></label></td>
+								<td scope="row" data-title="Post Type"><label class="filter-description" ><?php echo $post_details->label; ?></label></td>
 								<td class="filter-option" data-title="Enable/Disable">
-									<input id="<?php echo esc_attr( $post_type ) . '_radio'; ?>" name="<?php echo esc_attr( "bpaf_admin_settings[$post_type][display_type]" ); ?>" type="checkbox" value="enable" <?php checked( $display_type, 'enable' ); ?> />
+									<input id="<?php echo $post_type . '_radio'; ?>" name="<?php echo "bpaf_admin_settings[$post_type][display_type]"; ?>" type="checkbox" value="enable" <?php checked( $display_type, 'enable' ); ?> />
 								</td>
 								<td class="filter-option" data-title="Upload Lable">
-									<input id="<?php echo esc_attr( $post_type ) . '_text'; ?>" name='<?php echo esc_attr( "bpaf_admin_settings[$post_type][new_label]" ); ?>' type="text" value="<?php echo esc_attr( $value ); ?>" />
+									<input id="<?php echo $post_type . '_text'; ?>" name='<?php echo "bpaf_admin_settings[$post_type][new_label]"; ?>' type="text" value="<?php echo $value; ?>" />
 								</td>
 							</tr>
 

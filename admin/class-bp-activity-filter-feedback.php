@@ -268,7 +268,7 @@ if ( ! class_exists( 'BP_Activity_Filter_Feedback' ) ) :
 			<div class="notice updated bp-activity-filter-notice">
 				<div class="bp-activity-filter-notice-inner">
 					<div class="bp-activity-filter-notice-icon">
-						<img src="<?php echo esc_url( BP_ACTIVITY_FILTER_PLUGIN_URL . '/admin/images/wbcom.png' ); ?>" alt="<?php echo esc_attr__( 'BuddyPress Activity Filter', 'bp-activity-filter' ); ?>" />
+						<img src="<?php echo BP_ACTIVITY_FILTER_PLUGIN_URL . '/admin/images/wbcom.png'; ?>" alt="<?php echo esc_attr__( 'BuddyPress Activity Filter', 'bp-activity-filter' ); ?>" />
 					</div>
 					<div class="bp-activity-filter-notice-content">
 						<h3><?php echo esc_html__( 'Are you enjoying BuddyPress Activity Filter?', 'bp-activity-filter' ); ?></h3>
