@@ -58,7 +58,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 							if ( ! empty( $groupids ) ) {
 								foreach ( $groupids as $key => $value ) {
 									// post detail for use
-									$post_author = get_the_author_meta( 'nicename', $post->post_author );
+									$post_author = get_the_author_meta( 'display_name', $post->post_author );
 									$post_author = '<a href="' . bp_get_loggedin_user_link() . '">' . $post_author . '</a>';
 									$post_title  = '<a href="' . get_the_permalink( $post_id ) . '">' . get_the_title( $post_id ) . '</a>';
 
@@ -98,7 +98,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 						} elseif ( 'main_activity' == $filter_type ) {
 							// post detail for use
 
-							$post_author = get_the_author_meta( 'nicename', $post->post_author );
+							$post_author = get_the_author_meta( 'display_name', $post->post_author );
 							$post_author = '<a href="' . bp_get_loggedin_user_link() . '">' . $post_author . '</a>';
 							$post_title  = '<a href="' . get_the_permalink( $post_id ) . '">' . get_the_title( $post_id ) . '</a>';
 
@@ -129,7 +129,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 							);
 							bp_activity_add( $prep_args );
 						} elseif ( $filter_type == 'enable' ) {
-							$post_author = get_the_author_meta( 'nicename', $post->post_author );
+							$post_author = get_the_author_meta( 'display_name', $post->post_author );
 							$post_author = '<a href="' . bp_get_loggedin_user_link() . '">' . $post_author . '</a>';
 							$post_title  = '<a href="' . get_the_permalink( $post_id ) . '">' . get_the_title( $post_id ) . '</a>';
 
