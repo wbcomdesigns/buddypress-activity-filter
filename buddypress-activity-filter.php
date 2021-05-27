@@ -227,3 +227,17 @@ function bpfilter_same_network_config() {
 	. esc_html__( 'BuddyPress Activity Filter and BuddyPress need to share the same network configuration.', 'bp-activity-filter' )
 	. '</p></div>';
 }
+
+
+/**
+ * redirect to plugin settings page after activated
+ */
+
+add_action( 'activated_plugin', 'bpfilter_activation_redirect_settings' );
+function bpfilter_activation_redirect_settings( $plugin ){
+
+	if( $plugin == plugin_basename( __FILE__ ) ) {
+		wp_redirect( admin_url( 'admin.php?page=bp_activity_filter_settings' ) ) ;
+		exit;
+	}
+}

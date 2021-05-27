@@ -52,7 +52,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		 * @since    1.0.0
 		 */
 		public function bp_activity_filter_section_settings() {
-			$tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'bpaf_display_activity';
+			$tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'bpaf_welcome';
 			?>
 			<div id="wpbody-content" class="bpaf-setting-page" aria-label="Main content" tabindex="0">
 
@@ -161,6 +161,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		 */
 		public function bpaf_plugin_settings_tabs( $current ) {
 			$bpaf_tabs = array(
+				'bpaf_welcome' => esc_html__( 'Welcome', 'bp-activity-filter' ),
 				'bpaf_display_activity' => esc_html__( 'Default Filter', 'bp-activity-filter' ),
 				'bpaf_hide_activity'    => esc_html__( 'Remove Activity', 'bp-activity-filter' ),
 				'bpaf_cpt_activity'     => esc_html__( 'CPT Activites', 'bp-activity-filter' ),
@@ -187,6 +188,9 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			$bpaf_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : $bpaf_tab;
 
 			switch ( $bpaf_tab ) {
+				case 'bpaf_welcome':
+					$this->bpaf_welcome_section();
+					break;
 				case 'bpaf_display_activity':
 					$this->bpaf_display_activity_section();
 					break;
@@ -197,8 +201,14 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 					$this->bpaf_cpt_activity_section();
 					break;
 				default:
-					$this->bpaf_display_activity_section();
+					$this->bpaf_welcome_section();
 					break;
+			}
+		}
+		
+		public function bpaf_welcome_section() {
+			if ( file_exists( dirname( __FILE__ ) . '/bp-welcome-page.php' ) ) {
+				require_once dirname( __FILE__ ) . '/bp-welcome-page.php';
 			}
 		}
 
