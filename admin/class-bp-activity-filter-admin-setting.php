@@ -57,6 +57,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			<div id="wpbody-content" class="bpaf-setting-page" aria-label="Main content" tabindex="0">
 
 				<div class="wrap">
+                                    <hr class="wp-header-end">
 
 					<div class="bpaf-header">
 						<?php echo do_shortcode( '[wbcom_admin_setting_header]' ); ?>
@@ -167,13 +168,13 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 				'bpaf_cpt_activity'     => esc_html__( 'CPT Activites', 'bp-activity-filter' ),
 			);
 
-			$tab_html = '<div class="wbcom-tabs-section"><h2 class="nav-tab-wrapper">';
+			$tab_html = '<div class="wbcom-tabs-section"><div class="nav-tab-wrapper"><div class="wb-responsive-menu"><span>' . esc_html( 'Menu' ) . '</span><input class="wb-toggle-btn" type="checkbox" id="wb-toggle-btn"><label class="wb-toggle-icon" for="wb-toggle-btn"><span class="wb-icon-bars"></span></label></div><ul>';
 			foreach ( $bpaf_tabs as $bpaf_tab => $bpaf_name ) {
 				$class     = ( $bpaf_tab == $current ) ? 'nav-tab-active' : '';
-				$tab_html .= '<a class="nav-tab ' . $class . '" href="admin.php?page=bp_activity_filter_settings&tab=' . $bpaf_tab . '">' . $bpaf_name . '</a>';
+				$tab_html .= '<li><a class="nav-tab ' . $class . '" href="admin.php?page=bp_activity_filter_settings&tab=' . $bpaf_tab . '">' . $bpaf_name . '</a></li>';
 			}
 
-			$tab_html .= '</h2></div>';
+			$tab_html .= '</div></ul></div>';
 			echo $tab_html;
 			$this->bpaf_include_admin_setting_tabs( $current );
 		}
