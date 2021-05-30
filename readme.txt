@@ -100,6 +100,10 @@ You can modify activity content by given filters.
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+= 2.6.0 =
+* Fix - Update plugin backend UI
+* Fix - (#75)Fixed load admin script on admin pages for all languages
+
 = 2.5.0 =
 * Fixed - PHPCS Fixes
 * Fixed - Use Display Names instead for nicename for new cpt activties
