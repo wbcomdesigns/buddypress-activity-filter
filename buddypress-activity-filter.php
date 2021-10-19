@@ -236,7 +236,7 @@ function bpfilter_same_network_config() {
 add_action( 'activated_plugin', 'bpfilter_activation_redirect_settings' );
 function bpfilter_activation_redirect_settings( $plugin ){
 
-	if( $plugin == plugin_basename( __FILE__ ) ) {
+	if( $plugin == plugin_basename( __FILE__ ) && class_exists( 'Buddypress' ) ) {
 		wp_redirect( admin_url( 'admin.php?page=bp_activity_filter_settings' ) ) ;
 		exit;
 	}
