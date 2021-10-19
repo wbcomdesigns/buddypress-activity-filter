@@ -560,8 +560,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
 
-			$bp_hidden_filter_name = $form_details['bp-hidden-filters-name'];
-
+			$bp_hidden_filter_name = ( isset($form_details['bp-hidden-filters-name'])) ? $form_details['bp-hidden-filters-name'] : array() ;			
 			bp_update_option( 'bp-hidden-filters-name', $bp_hidden_filter_name );
 
 			wp_die();
