@@ -61,7 +61,10 @@ if (!class_exists('WbCom_BP_Activity_Filter_Public_Setting')) {
 				}
 			}
 			$bp_template_option = bp_get_option('_bp_theme_package_id');
-
+			if ( class_exists( 'BBP_BuddyPress_Activity' )) {
+				remove_action( 'bp_activity_filter_options',        array( bbpress()->extend->buddypress->activity, 'activity_filter_options'   ), 10    );
+				add_action( 'bp_activity_filter_options',        array( $this, 'bp_activity_filter_options'   ), 10    );
+			}
 			if( 'nouveau' == $bp_template_option ) {
 				return array(
 					'filters' => $filters,
@@ -71,6 +74,19 @@ if (!class_exists('WbCom_BP_Activity_Filter_Public_Setting')) {
 				return $output;
 			}
 
+		}
+		public function bp_activity_filter_options() {
+			$filters_db = bp_get_option('bp-hidden-filters-name');
+			if ( !in_array( 'bbp_topic_create',$filters_db)) {
+				?>
+				<option value="bbp_topic_create"><?php esc_html_e( 'Topics',  'bp-activity-filter' ); ?></option>
+				<?php
+			}
+			if ( !in_array( 'bbp_reply_create',$filters_db)) {
+				?>
+				<option value="bbp_reply_create"><?php esc_html_e( 'Replies',  'bp-activity-filter' ); ?></option>
+				<?php
+			}			
 		}
 
 	}
