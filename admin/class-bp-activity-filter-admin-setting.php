@@ -221,7 +221,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		 */
 		public function bpaf_display_activity_section() {
 			global $bp;
-			$actions = bp_activity_get_actions_for_context( 'activity' );
+			$actions = ( function_exists( 'bp_activity_get_actions_for_context' ) ) ? bp_activity_get_actions_for_context( 'activity' ) : array();
 			$labels  = array();
 			foreach ( $actions as $action ) {
 				// Friends activity collapses two filters into one.
@@ -366,8 +366,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		public function bpaf_hide_activity_section() {
 
 			global $bp;
-
-			$activity_actions = bp_activity_get_actions();
+			
+			$activity_actions = ( function_exists( 'bp_activity_get_actions' ) ) ? bp_activity_get_actions() : array();
 			$labels           = array();
 			foreach ( $activity_actions as $component => $actions ) {
 				foreach ( $actions as $action_key => $action_values ) {
