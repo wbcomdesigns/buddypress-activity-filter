@@ -1,24 +1,39 @@
 <?php
 /**
- * Including CSS  for addmin setting
+ * Including CSS  for addmin setting.
+ *
+ * @package BuddyPress_Activity_Filter
  */
 
 if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
+
+	/**
+	 * Including CSS  for addmin setting.
+	 *
+	 * @package BuddyPress_Activity_Filter
+	 */
 	class WbCom_BP_Activity_Filter_Add_Post_Type_Support {
 		/**
 		 * Constructor
 		 */
 		public function __construct() {
-			// transition_post_status
+			// transition_post_status.
 			add_action( 'transition_post_status', array( &$this, 'bpaf_customize_page_tracking_args' ), 999, 3 );
 		}
 
+		/**
+		 * Fire a callback only when my-custom-post-type posts are transitioned to 'publish'.
+		 *
+		 * @param string  $new_status New post status.
+		 * @param string  $old_status Old post status.
+		 * @param WP_Post $post       Post object.
+		 */
 		public function bpaf_customize_page_tracking_args( $new_status, $old_status, $post ) {
 			global $bp;
 			$post_id   = $post->ID;
 			$all_posts = '';
 
-			// bail out if not published
+			// bail out if not published.
 			if ( 'publish' === $old_status || 'publish' !== $new_status ) {
 				return;
 			}
@@ -57,7 +72,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 							}
 							if ( ! empty( $groupids ) ) {
 								foreach ( $groupids as $key => $value ) {
-									// post detail for use
+									// post detail for use.
 									$post_author = get_the_author_meta( 'display_name', $post->post_author );
 									$post_author = '<a href="' . bp_get_loggedin_user_link() . '">' . $post_author . '</a>';
 									$post_title  = '<a href="' . get_the_permalink( $post_id ) . '">' . get_the_title( $post_id ) . '</a>';
@@ -68,7 +83,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 									$post_link       = get_the_permalink( $post_id );
 									$group           = groups_get_group( array( 'group_id' => $value ) );
 									$group_permalink = trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/' );
-									// add activity
+									// add activity.
 
 									$action      = '<a id="group-' . esc_attr( $group->id ) . '" class="new-group" href="' . bp_get_group_permalink( $group ) . '">' . $group->name . '</a>';
 									$post_action = '';
@@ -79,8 +94,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 
 									$prep_args = array(
 										'id'            => false,                  // Pass an existing activity ID to update an existing entry.
-										'action'        => $post_action,                     // The activity action - e.g. "Jon Doe posted an update"
-										'content'       => $post_link,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!"
+										'action'        => $post_action,                     // The activity action - e.g. "Jon Doe posted an update".
+										'content'       => $post_link,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!".
 										'component'     => 'groups',                  // The name/ID of the component e.g. groups, profile, mycomponent.
 										'type'          => 'activity_update',                  // The activity type e.g. activity_update, profile_updated.
 										'primary_link'  => $post_link,                     // Optional: The primary URL for this item in RSS feeds (defaults to activity permalink).
@@ -96,8 +111,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 								}
 							}
 						} elseif ( 'main_activity' == $filter_type ) {
-							// post detail for use
-
+							// post detail for use.
 							$post_author = get_the_author_meta( 'display_name', $post->post_author );
 							$post_author = '<a href="' . bp_get_loggedin_user_link() . '">' . $post_author . '</a>';
 							$post_title  = '<a href="' . get_the_permalink( $post_id ) . '">' . get_the_title( $post_id ) . '</a>';
@@ -111,11 +125,11 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 							if ( isset( $post_action ) ) {
 								$post_action = $post_author . ' added a new ' . $post_type_rename . ', ' . $post_title;
 							}
-							// add activity
+							// add activity.
 							$prep_args = array(
 								'id'                => false,                  // Pass an existing activity ID to update an existing entry.
-								'action'            => $post_action,                     // The activity action - e.g. "Jon Doe posted an update"
-								'content'           => $post_link,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!"
+								'action'            => $post_action,                     // The activity action - e.g. "Jon Doe posted an update".
+								'content'           => $post_link,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!".
 								'component'         => 'activity',                  // The name/ID of the component e.g. groups, profile, mycomponent.
 								'type'              => 'new_blog_post',                  // The activity type e.g. activity_update, profile_updated.
 								'primary_link'      => $post_link,                     // Optional: The primary URL for this item in RSS feeds (defaults to activity permalink).
@@ -128,7 +142,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 								'error_type'        => 'bool',
 							);
 							bp_activity_add( $prep_args );
-						} elseif ( $filter_type == 'enable' ) {
+						} elseif ( 'enable' == $filter_type ) {
 							$post_author = get_the_author_meta( 'display_name', $post->post_author );
 							$post_author = '<a href="' . bp_get_loggedin_user_link() . '">' . $post_author . '</a>';
 							$post_title  = '<a href="' . get_the_permalink( $post_id ) . '">' . get_the_title( $post_id ) . '</a>';
@@ -142,7 +156,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 							if ( isset( $post_action ) ) {
 								$post_action = $post_author . ' added a new ' . $post_type_rename . ', ' . $post_title;
 							}
-							// add activity
+							// add activity.
 							$prep_args = array(
 								'id'                => false,                  // Pass an existing activity ID to update an existing entry.
 								'action'            => $post_action,                     // The activity action - e.g. "Jon Doe posted an update"

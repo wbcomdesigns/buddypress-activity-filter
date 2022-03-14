@@ -1,9 +1,16 @@
 <?php
 /**
  * Defining class if not exist for admin setting
+ *
+ *  @package BuddyPress_Activity_Filter
  */
-if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
+if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
+	/**
+	 * Defining class if not exist for admin setting
+	 *
+	 *  @package BuddyPress_Activity_Filter
+	 */
 	class WbCom_BP_Activity_Filter_Admin_Setting {
 
 		/**
@@ -52,12 +59,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		 * @since    1.0.0
 		 */
 		public function bp_activity_filter_section_settings() {
-			$tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'bpaf_welcome';
+			$tab = filter_input( INPUT_GET, 'tab' ) ? filter_input( INPUT_GET, 'tab' ) : 'bpaf_welcome';
 			?>
 			<div id="wpbody-content" class="bpaf-setting-page" aria-label="Main content" tabindex="0">
 
 				<div class="wrap">
-                                    <hr class="wp-header-end">
+									<hr class="wp-header-end">
 
 					<div class="bpaf-header">
 						<?php echo do_shortcode( '[wbcom_admin_setting_header]' ); ?>
@@ -155,14 +162,16 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		}
 
 		/**
-		 * Display tabs
+		 * Display tabs.
 		 *
 		 * @access public
 		 * @since    1.0.0
+		 *
+		 * @param string $current Current Admin tab.
 		 */
 		public function bpaf_plugin_settings_tabs( $current ) {
 			$bpaf_tabs = array(
-				'bpaf_welcome' => esc_html__( 'Welcome', 'bp-activity-filter' ),
+				'bpaf_welcome'          => esc_html__( 'Welcome', 'bp-activity-filter' ),
 				'bpaf_display_activity' => esc_html__( 'Default Filter', 'bp-activity-filter' ),
 				'bpaf_hide_activity'    => esc_html__( 'Remove Activity', 'bp-activity-filter' ),
 				'bpaf_cpt_activity'     => esc_html__( 'CPT Activites', 'bp-activity-filter' ),
@@ -175,7 +184,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			}
 
 			$tab_html .= '</div></ul></div>';
-			echo $tab_html;
+			echo wp_kses_post( $tab_html );
 			$this->bpaf_include_admin_setting_tabs( $current );
 		}
 
@@ -184,9 +193,10 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		 *
 		 * @access public
 		 * @since    1.0.0
+		 * @param string $bpaf_tab Tabs.
 		 */
-		function bpaf_include_admin_setting_tabs( $bpaf_tab ) {
-			$bpaf_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : $bpaf_tab;
+		public function bpaf_include_admin_setting_tabs( $bpaf_tab ) {
+			$bpaf_tab = filter_input( INPUT_GET, 'tab' ) ? filter_input( INPUT_GET, 'tab' ) : $bpaf_tab;
 
 			switch ( $bpaf_tab ) {
 				case 'bpaf_welcome':
@@ -206,7 +216,13 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 					break;
 			}
 		}
-		
+
+		/**
+		 * Display content of welcome tab section
+		 *
+		 * @access public
+		 * @since    1.0.0
+		 */
 		public function bpaf_welcome_section() {
 			if ( file_exists( dirname( __FILE__ ) . '/bp-welcome-page.php' ) ) {
 				require_once dirname( __FILE__ ) . '/bp-welcome-page.php';
@@ -274,13 +290,13 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 								?>
 								<tr>
 									<td class="filter-option">
-										<label for="<?php echo $key . '_radio'; ?>">
-										<input id="<?php echo $key . '_radio'; ?>" name="bp-default-filter-name" type="radio" value="<?php echo $key; ?>"
-															  <?php
-																echo $checked;
-																echo $hide_active;
-																?>
-										 />
+										<label for="<?php echo esc_html( $key . '_radio' ); ?>">
+										<input id="<?php echo esc_attr( $key . '_radio' ); ?>" name="bp-default-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
+											<?php
+											echo esc_html( $checked );
+											echo esc_html( $hide_active );
+											?>
+										/>
 										<?php esc_html_e( $value, 'bp-activity-filter' ); ?></label>
 									</td>
 								</tr>
@@ -331,13 +347,13 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 								?>
 								<tr>
 									<td class="filter-option">
-									<label for="<?php echo $key . '_profile_radio'; ?>">
-										<input id="<?php echo $key . '_profile_radio'; ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo $key; ?>"
-															  <?php
-																echo $checked;
-																echo $hide_active;
-																?>
-										 />
+									<label for="<?php echo esc_attr( $key . '_profile_radio' ); ?>">
+										<input id="<?php echo esc_attr( $key . '_profile_radio' ); ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
+												<?php
+												echo esc_html( $checked );
+												echo esc_html( $hide_active );
+												?>
+										/>
 										<?php echo esc_html( $value ); ?></label>
 									</td>
 								</tr>
@@ -346,8 +362,6 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 						endforeach;
 						?>
 					</table>
-
-
 					<div class="submit">
 						<a id="bp_activity_filter_display_setting_form_submit" class="button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
 						<div class="spinner"></div>
@@ -366,7 +380,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		public function bpaf_hide_activity_section() {
 
 			global $bp;
-			
+
 			$activity_actions = ( function_exists( 'bp_activity_get_actions' ) ) ? bp_activity_get_actions() : array();
 			$labels           = array();
 			foreach ( $activity_actions as $component => $actions ) {
@@ -406,7 +420,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 								?>
 								<tr>
 									<td class="filter-option">
-										<input id="<?php echo $key . '-checkbox'; ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo $key; ?>"<?php echo $checked; ?> />
+										<input id="<?php echo esc_attr( $key . '-checkbox' ); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr( $key ); ?>"<?php echo esc_html( $checked ); ?> />
 										<label for="bp-hidden-filters-name"><?php echo esc_html( $value ); ?></label>
 									</td>
 								</tr>
@@ -452,7 +466,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 					'exclude_from_search' => false,
 				);
 
-				$output   = 'names'; // names or objects, note names is the default
+				$output   = 'names'; // names or objects, note names is the default.
 				$operator = 'and'; // 'and' or 'or'
 
 				$post_types = get_post_types( $args, $output, $operator );
@@ -492,12 +506,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 							<tr>
 
-								<td scope="row" data-title="Post Type"><label class="filter-description" ><?php echo $post_details->label; ?></label></td>
+								<td scope="row" data-title="Post Type"><label class="filter-description" ><?php echo esc_html( $post_details->label ); ?></label></td>
 								<td class="filter-option" data-title="Enable/Disable">
-									<input id="<?php echo $post_type . '_radio'; ?>" name="<?php echo "bpaf_admin_settings[$post_type][display_type]"; ?>" type="checkbox" value="enable" <?php checked( $display_type, 'enable' ); ?> />
+									<input id="<?php echo esc_attr( $post_type . '_radio' ); ?>" name="<?php echo esc_attr( "bpaf_admin_settings[$post_type][display_type]" ); ?>" type="checkbox" value="enable" <?php checked( $display_type, 'enable' ); ?> />
 								</td>
 								<td class="filter-option" data-title="Upload Lable">
-									<input id="<?php echo $post_type . '_text'; ?>" name='<?php echo "bpaf_admin_settings[$post_type][new_label]"; ?>' type="text" value="<?php echo $value; ?>" />
+									<input id="<?php echo esc_attr( $post_type . '_text' ); ?>" name='<?php echo esc_attr( "bpaf_admin_settings[$post_type][new_label]" ); ?>' type="text" value="<?php echo esc_attr( $value ); ?>" />
 								</td>
 							</tr>
 
@@ -532,8 +546,13 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		 * @since    1.0.0
 		 */
 		public function bp_activity_filter_save_display_settings() {
-
-			parse_str( $_POST['form_data'], $setting_form_data );
+			// Check for nonce security.
+			$admin_nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+			if ( ! wp_verify_nonce( $admin_nonce, 'bp_activity_filter_nonce' ) ) {
+				die( 'Busted!' );
+			}
+			$form_data = isset( $_POST['form_data'] ) ? sanitize_text_field( wp_unslash( $_POST['form_data'] ) ) : '';
+			parse_str( $form_data, $setting_form_data );
 
 			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
 
@@ -555,12 +574,16 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		 * @since    1.0.0
 		 */
 		public function bp_activity_filter_save_hide_settings() {
-
-			parse_str( $_POST['form_data'], $setting_form_data );
+			$admin_nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+			if ( ! wp_verify_nonce( $admin_nonce, 'bp_activity_filter_nonce' ) ) {
+				die( 'Busted!' );
+			}
+			$form_data = isset( $_POST['form_data'] ) ? sanitize_text_field( wp_unslash( $_POST['form_data'] ) ) : '';
+			parse_str( $form_data, $setting_form_data );
 
 			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
 
-			$bp_hidden_filter_name = ( isset($form_details['bp-hidden-filters-name'])) ? $form_details['bp-hidden-filters-name'] : array() ;			
+			$bp_hidden_filter_name = ( isset( $form_details['bp-hidden-filters-name'] ) ) ? $form_details['bp-hidden-filters-name'] : array();
 			bp_update_option( 'bp-hidden-filters-name', $bp_hidden_filter_name );
 
 			wp_die();
@@ -573,8 +596,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		 * @since    1.0.0
 		 */
 		public function bp_activity_filter_save_cpt_settings() {
-
-			parse_str( $_POST['form_data'], $cpt_settings_data );
+			$admin_nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+			if ( ! wp_verify_nonce( $admin_nonce, 'bp_activity_filter_nonce' ) ) {
+				die( 'Busted!' );
+			}
+			$form_data = isset( $_POST['form_data'] ) ? sanitize_text_field( wp_unslash( $_POST['form_data'] ) ) : '';
+			parse_str( $form_data, $setting_form_data );
 
 			$cpt_settings_details = filter_var_array( $cpt_settings_data, FILTER_SANITIZE_STRING );
 			bp_update_option( 'bp-cpt-filters-settings', $cpt_settings_details );

@@ -1,9 +1,16 @@
 <?php
 /**
- * Defining class for Filtering activity stream
+ * Defining class for Filtering activity stream.
+ *
+ * @package BuddyPress_Activity_Filter
  */
-if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 
+if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
+	/**
+	 * Defining class for Filtering activity stream.
+	 *
+	 * @package BuddyPress_Activity_Filter
+	 */
 	class WbCom_BP_Activity_Filter_Activity_Stream {
 		/**
 		 * Constructor
@@ -20,6 +27,11 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			add_action( 'bp_template_redirect', array( $this, 'bpaf_bp_set_default_activity_filter' ) );
 		}
 
+		/**
+		 * Registers the script if $src provided (does NOT overwrite), and enqueues it.
+		 *
+		 * @return void
+		 */
 		public function bpaf_enqueue_scripts() {
 
 			/**
@@ -60,7 +72,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 		/**
 		 * Modifying activity loop for default acitvity.
 		 *
-		 * @param $retval
+		 * @param  string $query (string) Current query string.
+		 * @param string $object Current template component.
 		 */
 		public function filtering_activity_default( $query, $object ) {
 			global $bp;
@@ -68,9 +81,13 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			if ( 'activity' != $object ) {
 				return $query;
 			}
+			$bpaf_filter_nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+			if ( wp_verify_nonce( $bpaf_filter_nonce, '_wpnonce_activity_filter' ) ) {
+				return true;
+			}
 
 			if ( ! empty( $_POST['cookie'] ) ) {
-				$_BP_COOKIE = wp_parse_args( str_replace( '; ', '&', urldecode( $_POST['cookie'] ) ) );
+				$_BP_COOKIE = wp_parse_args( str_replace( '; ', '&', urldecode( sanitize_text_field( wp_unslash( $_POST['cookie'] ) ) ) ) );
 			} else {
 				$_BP_COOKIE = &$_COOKIE;
 			}
@@ -82,11 +99,11 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				$qs           = explode( '=', $page );
 				if ( 'page' == $qs[0] ) {
 					$size       = $qs[1];
-					$query_size = sizeof( $bp_query );
+					$query_size = count( $bp_query );
 				}
 			} else {
 				$bp_query = array();
-				$size     = sizeof( $bp_query );
+				$size     = count( $bp_query );
 			}
 
 			if ( bp_is_group_activity() ) {
@@ -129,7 +146,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				if ( $defult_activity_stream != -1 ) {
 					$query = 'action=' . $defult_activity_stream;
 					if ( isset( $_POST['scope'] ) && $_POST['scope'] != '' ) {
-						$query .= '&scope=' . $_POST['scope'];
+						$query .= '&scope=' . sanitize_text_field( wp_unslash( $_POST['scope'] ) );
 					}
 					if ( ! empty( $page ) ) {
 						$query .= '&' . $page;
@@ -163,7 +180,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				}
 				$query = 'action=' . $action;
 				if ( isset( $_POST['scope'] ) && $_POST['scope'] != '' ) {
-					$query .= '&scope=' . $_POST['scope'];
+					$query .= '&scope=' . sanitize_text_field( wp_unslash( $_POST['scope'] ) );
 				}
 				if ( ! empty( $page ) ) {
 					$query .= '&' . $page;
@@ -175,7 +192,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 		/**
 		 * Restrict to save activity.
 		 *
-		 * @param $activity_object
+		 * @param object $activity_object Activity Object.
 		 */
 		public function bpaf_activity_do_not_save( $activity_object ) {
 			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
@@ -189,7 +206,10 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 		/**
 		 * Restrict to create friendship activity.
 		 *
-		 * @param $activity_object
+		 * @param int    $friendship_id ID of the pending friendship object.
+		 * @param int    $initiator_user_id ID of the friendship initiator.
+		 * @param int    $friend_user_id ID of the user requested friendship with.
+		 * @param object $friendship BuddyPress Friendship Object.
 		 */
 		public function bpaf_bp_friends_friendship_accepted_activity( $friendship_id, $initiator_user_id, $friend_user_id, $friendship = false ) {
 			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
@@ -200,6 +220,11 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			}
 		}
 
+		/**
+		 * Fires inside the 'bp_template_redirect' function.
+		 *
+		 * @since BuddyPress 1.6.0
+		 */
 		public function bpaf_bp_set_default_activity_filter() {
 			// If the filter is already set, do not do anything ok.
 			if ( isset( $_COOKIE['bp-activity-filter'] ) ) {
@@ -215,7 +240,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				$filter = bp_get_option( 'bp-default-filter-name' );
 			}
 			// Set filter to our respective filter.,
-			// In this case, I am setting filter to the 'Updates' filter
+			// In this case, I am setting filter to the 'Updates' filter.
 			setcookie( 'bp-activity-filter', $filter, null, '/' );
 			$_COOKIE['bp-activity-filter'] = $filter;
 		}
