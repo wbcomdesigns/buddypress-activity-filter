@@ -4,8 +4,8 @@ Contributors: vapvarun,wbcomdesigns
 Tags: buddypress,activity-filter, activity, filter , BuddyPress Activity, Activity Filter, Default Activity, Hide Activty, BuddyPress default activity
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
-Tested up to: 5.8.1
-Stable tag: 2.7.0
+Tested up to: 5.9.2
+Stable tag: 2.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -100,10 +100,17 @@ You can modify activity content by given filters.
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+= 2.8.0 =
+* Fix - Fixed phpcs error
+* Fix - Removed install plugin button from wrapper
+* Fix - (#95) Fixed embed links issue
+* Fix - (#95) Fixed Activity UI issue
+* Fix - (#93) Fixed default activity filter issue with php 8
+
 = 2.7.0 =
-* Fix #88 - Fatal Error Displaying When BuddyPress Activity Component is disabled
-* Fix #78 - topics and replies do not remove
-* Fix #89 - Ajax Warning in Remove Activity Tab
+* Fix - #88 - Fatal Error Displaying When BuddyPress Activity Component is disabled
+* Fix - #78 - topics and replies do not remove
+* Fix - #89 - Ajax Warning in Remove Activity Tab
 * Fix - Redirect stop when buddypress plugin not activate
 
 = 2.6.0 =
