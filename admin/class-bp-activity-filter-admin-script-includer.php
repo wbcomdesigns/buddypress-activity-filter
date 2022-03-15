@@ -27,8 +27,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Script_Includer' ) ) {
 		 * Adding css files
 		 */
 		public function include_admin_css_function() {
-
-			// Register and enqueue style.
+			// phpcs:ignore
 			if ( isset( $_GET['page'] ) && 'bp_activity_filter_settings' === $_GET['page'] ) {
 				wp_register_style( 'custom_wp_admin_css', plugins_url( 'css/bp-activity-filter.css', __FILE__ ) );
 

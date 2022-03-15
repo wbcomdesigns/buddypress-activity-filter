@@ -41,7 +41,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
 
 				if ( ! empty( $_POST['bp-default-filter-name'] ) ) {
 
-					$bp_default_filter_name = sanitize_text_field( $_POST['bp-default-filter-name'] );
+					$bp_default_filter_name = sanitize_text_field( wp_unslash( $_POST['bp-default-filter-name'] ) );
 
 					bp_update_option( 'bp-default-filter-name', filter_var( $bp_default_filter_name, FILTER_SANITIZE_STRING ) );
 
@@ -56,7 +56,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting_Save' ) ) {
 
 				if ( ! empty( $_POST['bp-default-profile-filter-name'] ) ) {
 
-					$bp_default_profile_filter_name = sanitize_text_field( $_POST['bp-default-profile-filter-name'] );
+					$bp_default_profile_filter_name = sanitize_text_field( wp_unslash( $_POST['bp-default-profile-filter-name'] ) );
 
 					bp_update_option( 'bp-default-profile-filter-name', filter_var( $bp_default_profile_filter_name, FILTER_SANITIZE_STRING ) );
 
