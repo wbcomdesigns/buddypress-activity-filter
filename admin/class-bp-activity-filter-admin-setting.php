@@ -578,7 +578,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			if ( ! wp_verify_nonce( $admin_nonce, 'bp_activity_filter_nonce' ) ) {
 				die( 'Busted!' );
 			}
-			$form_data = isset( $_POST['form_data'] ) ? sanitize_text_field( wp_unslash( $_POST['form_data'] ) ) : '';
+			$form_data = isset( $_POST['form_data'] ) ? wp_unslash( $_POST['form_data'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			parse_str( $form_data, $setting_form_data );
 
 			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
@@ -600,8 +600,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			if ( ! wp_verify_nonce( $admin_nonce, 'bp_activity_filter_nonce' ) ) {
 				die( 'Busted!' );
 			}
-			$form_data = isset( $_POST['form_data'] ) ? sanitize_text_field( wp_unslash( $_POST['form_data'] ) ) : '';
-			parse_str( $form_data, $setting_form_data );
+			$form_data = isset( $_POST['form_data'] ) ? wp_unslash( $_POST['form_data'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			parse_str( $form_data, $cpt_settings_data );
 
 			$cpt_settings_details = filter_var_array( $cpt_settings_data, FILTER_SANITIZE_STRING );
 			bp_update_option( 'bp-cpt-filters-settings', $cpt_settings_details );
