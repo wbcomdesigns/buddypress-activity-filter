@@ -5,7 +5,7 @@ Tags: buddypress,activity-filter, activity, filter , BuddyPress Activity, Activi
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
 Tested up to: 5.9.2
-Stable tag: 2.8.0
+Stable tag: 2.8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -100,6 +100,9 @@ You can modify activity content by given filters.
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+= 2.8.1 =
+* Fix - (#97) Fixed remove activity setting are not saving
+
 = 2.8.0 =
 * Fix - Fixed phpcs error
 * Fix - Removed install plugin button from wrapper
