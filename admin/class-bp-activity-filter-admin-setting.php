@@ -61,32 +61,35 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 		public function bp_activity_filter_section_settings() {
 			$tab = filter_input( INPUT_GET, 'tab' ) ? filter_input( INPUT_GET, 'tab' ) : 'bpaf_welcome';
 			?>
-			<div id="wpbody-content" class="bpaf-setting-page" aria-label="Main content" tabindex="0">
-
-				<div class="wrap">
-									<hr class="wp-header-end">
-
-					<div class="bpaf-header">
-						<?php echo do_shortcode( '[wbcom_admin_setting_header]' ); ?>
-						<h1 class="wbcom-plugin-heading">
-							<?php esc_html_e( 'BuddyPress Activity Filter Settings', 'bp-activity-filter' ); ?>
-						</h1>
+			<div class="wrap">
+				<div class="wbcom-bb-plugins-offer-wrapper">
+					<div id="wb_admin_logo">
+						<a href="https://wbcomdesigns.com/downloads/buddypress-community-bundle/" target="_blank">
+							<img src="<?php echo esc_url( BP_ACTIVITY_FILTER_PLUGIN_URL ) . 'admin/wbcom/assets/imgs/wbcom-offer-notice.png'; ?>">
+						</a>
 					</div>
-
-					<div id="bpaf_setting_error_settings_updated" class="updated settings-error notice is-dismissible">
-
+				</div>
+				<div class="wbcom-wrap">
+					<div class="blpro-header">
+						<div class="wbcom_admin_header-wrapper">
+							<div id="wb_admin_plugin_name">
+								<?php esc_html_e( 'BuddyPress Activity Filter', 'bp-activity-filter' ); ?>
+								<span><?php printf( __( 'Version %s', 'bp-activity-filter' ), BP_ACTIVITY_FILTER_PLUGIN_VERSION ); ?></span>
+							</div>
+							<?php echo do_shortcode( '[wbcom_admin_setting_header]' ); ?>
+						</div>
+					</div>
+					<div id="bpaf_setting_error_settings_updated" class="updated settings-error notice is-dismissible" style="display:none;">
 						<p><strong><?php esc_html_e( 'Settings saved.', 'bp-activity-filter' ); ?></strong></p>
-
 						<button type="button" class="notice-dismiss">
-
 							<span class="screen-reader-text"><?php esc_html_e( 'Dismiss this notice.', 'bp-activity-filter' ); ?></span>
-
 						</button>
-
 					</div>
 					<div class="wbcom-admin-settings-page">
 						<?php $this->bpaf_plugin_settings_tabs( $tab ); ?>
 					</div>
+				</div>
+			</div>
 					<?php
 		}
 
@@ -180,7 +183,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			$tab_html = '<div class="wbcom-tabs-section"><div class="nav-tab-wrapper"><div class="wb-responsive-menu"><span>' . esc_html( 'Menu' ) . '</span><input class="wb-toggle-btn" type="checkbox" id="wb-toggle-btn"><label class="wb-toggle-icon" for="wb-toggle-btn"><span class="wb-icon-bars"></span></label></div><ul>';
 			foreach ( $bpaf_tabs as $bpaf_tab => $bpaf_name ) {
 				$class     = ( $bpaf_tab == $current ) ? 'nav-tab-active' : '';
-				$tab_html .= '<li><a class="nav-tab ' . $class . '" href="admin.php?page=bp_activity_filter_settings&tab=' . $bpaf_tab . '">' . $bpaf_name . '</a></li>';
+				$tab_html .= '<li><a class="nav-tab ' . $class . '" id="' . esc_attr( $bpaf_tab ) . '" href="admin.php?page=bp_activity_filter_settings&tab=' . $bpaf_tab . '">' . $bpaf_name . '</a></li>';
 			}
 
 			$tab_html .= '</div></ul></div>';
@@ -263,110 +266,135 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 			?>
 			<div class="wbcom-tab-content">
-				<form method="post" novalidate="novalidate" id="bp_activity_filter_display_setting_form" >
-					<h2><?php esc_html_e( 'Apply Default Filter on Activity Page', 'bp-activity-filter' ); ?></h2>
-					<table class="filter-table form-table" >
-						<tr>
-							<td class="filter-option">
-								<label>
-								<input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php echo ( $bp_default_activity_value == -1 ) ? 'checked=checked' : ' '; ?>/>
-								<?php esc_html_e( 'Everything', 'bp-activity-filter' ); ?></label>
-							</td>
-						</tr>
-						<?php
-						foreach ( $labels as $key => $value ) :
-							if ( ! empty( $value ) ) {
-								$hide_active = '';
-								if ( ! empty( $bp_hidden_filters_value ) ) {
-									if ( in_array( $key, $bp_hidden_filters_value ) ) {
-										$hide_active = " disabled = 'disabled' ";
-									}
-								}
-
-								$checked = '';
-								if ( ( $bp_default_activity_value == $key ) ) {
-									$checked = " checked='checked' ";
-								}
-								?>
-								<tr>
-									<td class="filter-option">
-										<label for="<?php echo esc_html( $key . '_radio' ); ?>">
-										<input id="<?php echo esc_attr( $key . '_radio' ); ?>" name="bp-default-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
-											<?php
-											echo esc_html( $checked );
-											echo esc_html( $hide_active );
-											?>
-										/>
-										<?php esc_html_e( $value, 'bp-activity-filter' ); ?></label>
-									</td>
-								</tr>
-								<?php
-							}
-						endforeach;
-						?>
-					</table>
-					<br /><br />
-					<h2><?php esc_html_e( 'Apply Default Filter on Profile Activity Page', 'bp-activity-filter' ); ?></h2>
-
-					<table class="filter-table form-table" >
-					<?php
-					/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
-					$bp_default_activity_value = bp_get_option( 'bp-default-profile-filter-name' );
-					$bp_hidden_filters_value   = bp_get_option( 'bp-hidden-filters-name' );
-
-					if ( is_array( $bp_hidden_filters_value ) && in_array( $bp_default_activity_value, $bp_hidden_filters_value ) ) {
-						bp_update_option( 'bp-default-profile-filter-name', '-1' );
-					}
-					$bp_default_activity_value = bp_get_option( 'bp-default-profile-filter-name' );
-					if ( empty( $bp_default_activity_value ) ) {
-						$bp_default_activity_value = -1;
-					}
-					?>
-						<tr>
-							<td class="filter-option">
-								<label>
-								<input id="bp-activity-filter-everything-radio" name="bp-default-profile-filter-name" type="radio" value="-1"  <?php echo ( $bp_default_activity_value == -1 ) ? 'checked=checked' : ' '; ?>/>
-								<?php esc_html_e( 'Everything', 'bp-activity-filter' ); ?></label>
-							</td>
-						</tr>
-						<?php
-						unset( $labels['new_member'] );
-						unset( $labels['updated_profile'] );
-						foreach ( $labels as $key => $value ) :
-							if ( ! empty( $value ) ) {
-								$hide_active = '';
-								if ( ! empty( $bp_hidden_filters_value ) ) {
-									if ( in_array( $key, $bp_hidden_filters_value ) ) {
-										$hide_active = " disabled = 'disabled' ";
-									}
-								}
-								$checked = '';
-								if ( ( $bp_default_activity_value == $key ) ) {
-									$checked = " checked='checked' ";
-								}
-								?>
-								<tr>
-									<td class="filter-option">
-									<label for="<?php echo esc_attr( $key . '_profile_radio' ); ?>">
-										<input id="<?php echo esc_attr( $key . '_profile_radio' ); ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
-												<?php
-												echo esc_html( $checked );
-												echo esc_html( $hide_active );
-												?>
-										/>
-										<?php echo esc_html( $value ); ?></label>
-									</td>
-								</tr>
-								<?php
-							}
-						endforeach;
-						?>
-					</table>
-					<div class="submit">
-						<a id="bp_activity_filter_display_setting_form_submit" class="button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
-						<div class="spinner"></div>
+				<div class="wbcom-wrapper-admin">
+					<div class="wbcom-admin-title-section">
+						<h3><?php esc_html_e( 'Default Filter Settings', 'bp-activity-filter' ); ?></h3>
 					</div>
-				</form>
+					<div class="wbcom-admin-option-wrap wbcom-admin-option-wrap-view">
+						<form method="post" novalidate="novalidate" id="bp_activity_filter_display_setting_form" >
+							<div class="wbcom-admin-title-section">
+								<h3>
+									<?php esc_html_e( 'Apply Default Filter on Activity Page', 'bp-activity-filter' ); ?>
+								</h3>
+							</div>
+							<div class="filter-table form-table" >
+								<div class="wbcom-settings-section-wrap">
+									<div class="wbcom-settings-section-options-heading">
+										<label>
+											<?php esc_html_e( 'Everything', 'bp-activity-filter' ); ?>
+										</label>
+									</div>
+									<div class="wbcom-settings-section-options">
+										<input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php echo ( $bp_default_activity_value == -1 ) ? 'checked=checked' : ' '; ?>/>
+									</div>
+								</div>
+								<?php
+								foreach ( $labels as $key => $value ) :
+									if ( ! empty( $value ) ) {
+										$hide_active = '';
+										if ( ! empty( $bp_hidden_filters_value ) ) {
+											if ( in_array( $key, $bp_hidden_filters_value ) ) {
+												$hide_active = " disabled = 'disabled' ";
+											}
+										}
+
+										$checked = '';
+										if ( ( $bp_default_activity_value == $key ) ) {
+											$checked = " checked='checked' ";
+										}
+										?>
+										<div class="wbcom-settings-section-wrap">
+											<div class="wbcom-settings-section-options-heading">
+												<label>
+													<?php esc_html_e( $value, 'bp-activity-filter' ); ?>
+												</label>
+											</div>
+											<div class="wbcom-settings-section-options">
+												<input id="<?php echo esc_attr( $key . '_radio' ); ?>" name="bp-default-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
+													<?php
+													echo esc_html( $checked );
+													echo esc_html( $hide_active );
+													?>
+												/>
+											</div>
+										</div>
+										<?php
+									}
+								endforeach;
+								?>
+							</div>
+							<div class="wbcom-admin-title-section">
+								<h3>
+									<?php esc_html_e( 'Apply Default Filter on Profile Activity Page', 'bp-activity-filter' ); ?>
+								</h3>
+							</div>
+							<div class="filter-table form-table" >
+							<?php
+							/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
+							$bp_default_activity_value = bp_get_option( 'bp-default-profile-filter-name' );
+							$bp_hidden_filters_value   = bp_get_option( 'bp-hidden-filters-name' );
+
+							if ( is_array( $bp_hidden_filters_value ) && in_array( $bp_default_activity_value, $bp_hidden_filters_value ) ) {
+								bp_update_option( 'bp-default-profile-filter-name', '-1' );
+							}
+							$bp_default_activity_value = bp_get_option( 'bp-default-profile-filter-name' );
+							if ( empty( $bp_default_activity_value ) ) {
+								$bp_default_activity_value = -1;
+							}
+							?>
+								<div class="wbcom-settings-section-wrap">
+									<div class="wbcom-settings-section-options-heading">
+										<label>
+											<?php esc_html_e( 'Everything', 'bp-activity-filter' ); ?>
+										</label>
+									</div>
+									<div class="wbcom-settings-section-options">
+										<input id="bp-activity-filter-everything-radio" name="bp-default-profile-filter-name" type="radio" value="-1"  <?php echo ( $bp_default_activity_value == -1 ) ? 'checked=checked' : ' '; ?>/>
+									</div>
+								</div>
+								<?php
+								unset( $labels['new_member'] );
+								unset( $labels['updated_profile'] );
+								foreach ( $labels as $key => $value ) :
+									if ( ! empty( $value ) ) {
+										$hide_active = '';
+										if ( ! empty( $bp_hidden_filters_value ) ) {
+											if ( in_array( $key, $bp_hidden_filters_value ) ) {
+												$hide_active = " disabled = 'disabled' ";
+											}
+										}
+										$checked = '';
+										if ( ( $bp_default_activity_value == $key ) ) {
+											$checked = " checked='checked' ";
+										}
+										?>
+										<div class="wbcom-settings-section-wrap">
+											<div class="wbcom-settings-section-options-heading">
+												<label>
+													<?php echo esc_html( $value ); ?>
+												</label>
+											</div>
+											<div class="wbcom-settings-section-options">
+													<input id="<?php echo esc_attr( $key . '_profile_radio' ); ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
+														<?php
+														echo esc_html( $checked );
+														echo esc_html( $hide_active );
+														?>
+												/>											
+											</div>
+										</div>
+										<?php
+									}
+								endforeach;
+								?>
+							</div>
+							<div class="submit">
+								<a id="bp_activity_filter_display_setting_form_submit" class="button button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
+								<div class="spinner"></div>
+							</div>
+						</form>
+					</div>
+				</div>
 			</div>
 			<?php
 		}
@@ -407,34 +435,46 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 
 			?>
 			<div class="wbcom-tab-content">
-				<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form" >
-					<h2><?php esc_html_e( 'Remove Activity', 'bp-activity-filter' ); ?></h2>
-					<table class="filter-table form-table" >
-						<?php
-						foreach ( $labels as $key => $value ) :
-							if ( ! empty( $value ) ) {
-								$checked = '';
-								if ( ( ( ! empty( $bp_hidden_filters_value ) && is_array( $bp_hidden_filters_value ) ) && in_array( $key, $bp_hidden_filters_value ) ) ) {
-									$checked = " checked='checked' ";
-								}
-								?>
-								<tr>
-									<td class="filter-option">
-										<input id="<?php echo esc_attr( $key . '-checkbox' ); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr( $key ); ?>"<?php echo esc_html( $checked ); ?> />
-										<label for="bp-hidden-filters-name"><?php echo esc_html( $value ); ?></label>
-									</td>
-								</tr>
-								<?php
-							}
-						endforeach;
-						?>
-					</table>
-					<p class="description"><?php echo esc_html__( 'Any checked activity type will not be recorded as a new activity. ', 'bp-activity-filter' ); ?></p>
-					<div class="submit">
-						<a id="bp_activity_filter_hide_setting_form_submit" class="button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
-						<div class="spinner"></div>
+				<div class="wbcom-wrapper-admin">
+					<div class="wbcom-admin-title-section">
+						<h3><?php esc_html_e( 'Remove Activity Settings', 'bp-activity-filter' ); ?></h3>
 					</div>
-				</form>
+					<div class="wbcom-welcome-head">
+						<p class="description"><?php echo esc_html__( 'Any checked activity type will not be recorded as a new activity. ', 'bp-activity-filter' ); ?></p>
+					</div>
+					<div class="wbcom-admin-option-wrap wbcom-admin-option-wrap-view">
+						<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form" >
+							<div class="filter-table form-table" >
+								<?php
+								foreach ( $labels as $key => $value ) :
+									if ( ! empty( $value ) ) {
+										$checked = '';
+										if ( ( ( ! empty( $bp_hidden_filters_value ) && is_array( $bp_hidden_filters_value ) ) && in_array( $key, $bp_hidden_filters_value ) ) ) {
+											$checked = " checked='checked' ";
+										}
+										?>
+										<div class="wbcom-settings-section-wrap">
+											<div class="wbcom-settings-section-options-heading">
+												<label>
+													<?php echo esc_html( $value ); ?>
+												</label>
+											</div>
+											<div class="wbcom-settings-section-options">
+													<input id="<?php echo esc_attr( $key . '-checkbox' ); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr( $key ); ?>"<?php echo esc_html( $checked ); ?> />
+											</div>
+										</div>
+										<?php
+									}
+								endforeach;
+								?>
+							</div>
+							<div class="submit">
+								<a id="bp_activity_filter_hide_setting_form_submit" class="button button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
+								<div class="spinner"></div>
+							</div>
+						</form>
+					</div>
+				</div>
 			</div>
 			<?php
 		}
@@ -450,91 +490,98 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			$cpt_filter_val = bp_get_option( 'bp-cpt-filters-settings' );
 			?>
 			<div class="wbcom-tab-content">
-				<form method="post" novalidate="novalidate" id="bp_activity_filter_cpt_setting_form" >
-					<h2><?php echo esc_html__( 'Enable Post Type Activites', 'bp-activity-filter' ); ?></h2>
-
-					<table class="filter-table form-table" >
-						<thead>
-						<th class="th-title"><?php echo esc_html__( 'Post Type', 'bp-activity-filter' ); ?></th>
-						<th class="th-title"><?php echo esc_html__( 'Enable/Disable', 'bp-activity-filter' ); ?></th>
-						<th class="th-title"><?php echo esc_html__( 'Name for activities', 'bp-activity-filter' ); ?></th>
-						</thead>
-				<?php
-				$args = array(
-					'public'              => true,
-					'_builtin'            => false,
-					'exclude_from_search' => false,
-				);
-
-				$output   = 'names'; // names or objects, note names is the default.
-				$operator = 'and'; // 'and' or 'or'
-
-				$post_types = get_post_types( $args, $output, $operator );
-
-				echo '<tbody>';
-
-				if ( ! empty( $post_types ) && is_array( $post_types ) ) :
-
-					foreach ( $post_types as $post_type ) {
-
-						$post_details = get_post_type_object( $post_type );
-
-						if ( ! empty( $cpt_filter_val ) ) {
-							$saved_settings = ( isset( $cpt_filter_val['bpaf_admin_settings'][ $post_type ] ) ) ? $cpt_filter_val['bpaf_admin_settings'][ $post_type ] : array();
-						}
-
-						if ( ! empty( $saved_settings ) && array_key_exists( 'display_type', $saved_settings ) ) {
-							$display_type = $saved_settings['display_type'];
-						} else {
-							$display_type = '';
-						}
-
-						if ( ! empty( $saved_settings ) && array_key_exists( 'group', $saved_settings ) ) {
-
-							$group = $saved_settings['group'];
-						} else {
-
-							$group = '';
-						}
-
-						if ( isset( $saved_settings['new_label'] ) ) {
-							$value = $saved_settings['new_label'];
-						} else {
-							$value = '';
-						}
-						?>
-
-							<tr>
-
-								<td scope="row" data-title="Post Type"><label class="filter-description" ><?php echo esc_html( $post_details->label ); ?></label></td>
-								<td class="filter-option" data-title="Enable/Disable">
-									<input id="<?php echo esc_attr( $post_type . '_radio' ); ?>" name="<?php echo esc_attr( "bpaf_admin_settings[$post_type][display_type]" ); ?>" type="checkbox" value="enable" <?php checked( $display_type, 'enable' ); ?> />
-								</td>
-								<td class="filter-option" data-title="Upload Lable">
-									<input id="<?php echo esc_attr( $post_type . '_text' ); ?>" name='<?php echo esc_attr( "bpaf_admin_settings[$post_type][new_label]" ); ?>' type="text" value="<?php echo esc_attr( $value ); ?>" />
-								</td>
-							</tr>
-
-						<?php
-					}
-
-				else :
-					echo '<div class="notice">';
-					echo '<p class="description">' . esc_html__( 'Sorry, it seems you do not have any custom post type available to allow in the activity stream.', 'bp-activity-filter' ) . '</p>';
-					echo '</div>';
-
-				endif;
-
-				?>
-						</tbody>
-					</table>
-
-					<div class="submit">
-						<a id="bp_activity_filter_cpt_setting_form_submit" class="button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
-						<div class="spinner"></div>
+				<div class="wbcom-wrapper-admin">
+					<div class="wbcom-admin-title-section">
+						<h3>
+							<?php echo esc_html__( 'Enable Post Type Activites', 'bp-activity-filter' ); ?>
+						</h3>
 					</div>
+					<div class="wbcom-admin-option-wrap wbcom-admin-option-wrap-view">
+						<form method="post" novalidate="novalidate" id="bp_activity_filter_cpt_setting_form" >
 
-				</form>
+							<table class="filter-table form-table" >
+								<thead>
+								<th class="th-title"><?php echo esc_html__( 'Post Type', 'bp-activity-filter' ); ?></th>
+								<th class="th-title"><?php echo esc_html__( 'Enable/Disable', 'bp-activity-filter' ); ?></th>
+								<th class="th-title"><?php echo esc_html__( 'Name for activities', 'bp-activity-filter' ); ?></th>
+								</thead>
+						<?php
+						$args = array(
+							'public'              => true,
+							'_builtin'            => false,
+							'exclude_from_search' => false,
+						);
+
+						$output   = 'names'; // names or objects, note names is the default.
+						$operator = 'and'; // 'and' or 'or'
+
+						$post_types = get_post_types( $args, $output, $operator );
+
+						echo '<tbody>';
+
+						if ( ! empty( $post_types ) && is_array( $post_types ) ) :
+
+							foreach ( $post_types as $post_type ) {
+
+								$post_details = get_post_type_object( $post_type );
+
+								if ( ! empty( $cpt_filter_val ) ) {
+									$saved_settings = ( isset( $cpt_filter_val['bpaf_admin_settings'][ $post_type ] ) ) ? $cpt_filter_val['bpaf_admin_settings'][ $post_type ] : array();
+								}
+
+								if ( ! empty( $saved_settings ) && array_key_exists( 'display_type', $saved_settings ) ) {
+									$display_type = $saved_settings['display_type'];
+								} else {
+									$display_type = '';
+								}
+
+								if ( ! empty( $saved_settings ) && array_key_exists( 'group', $saved_settings ) ) {
+
+									$group = $saved_settings['group'];
+								} else {
+
+									$group = '';
+								}
+
+								if ( isset( $saved_settings['new_label'] ) ) {
+									$value = $saved_settings['new_label'];
+								} else {
+									$value = '';
+								}
+								?>
+
+									<tr>
+
+										<td scope="row" data-title="Post Type"><label class="filter-description" ><?php echo esc_html( $post_details->label ); ?></label></td>
+										<td class="filter-option" data-title="Enable/Disable">
+											<input id="<?php echo esc_attr( $post_type . '_radio' ); ?>" name="<?php echo esc_attr( "bpaf_admin_settings[$post_type][display_type]" ); ?>" type="checkbox" value="enable" <?php checked( $display_type, 'enable' ); ?> />
+										</td>
+										<td class="filter-option" data-title="Upload Lable">
+											<input id="<?php echo esc_attr( $post_type . '_text' ); ?>" name='<?php echo esc_attr( "bpaf_admin_settings[$post_type][new_label]" ); ?>' type="text" value="<?php echo esc_attr( $value ); ?>" />
+										</td>
+									</tr>
+
+								<?php
+							}
+
+						else :
+							echo '<div class="notice">';
+							echo '<p class="description">' . esc_html__( 'Sorry, it seems you do not have any custom post type available to allow in the activity stream.', 'bp-activity-filter' ) . '</p>';
+							echo '</div>';
+
+						endif;
+
+						?>
+								</tbody>
+							</table>
+
+							<div class="submit">
+								<a id="bp_activity_filter_cpt_setting_form_submit" class="button button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
+								<div class="spinner"></div>
+							</div>
+						</form>
+					</div>
+				</div>
 			</div>
 			<?php
 		}

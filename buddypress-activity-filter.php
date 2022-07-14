@@ -22,6 +22,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	wp_die( 'Direct Access is not Allowed' );
 }
+define( 'BP_ACTIVITY_FILTER_PLUGIN_VERSION', '2.8.1' );
+
 define( 'BP_ACTIVITY_FILTER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 define( 'BP_ACTIVITY_FILTER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
