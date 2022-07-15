@@ -29,6 +29,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			add_action( 'wp_ajax_bp_activity_filter_save_hide_settings', array( $this, 'bp_activity_filter_save_hide_settings' ) );
 
 			add_action( 'wp_ajax_bp_activity_filter_save_cpt_settings', array( $this, 'bp_activity_filter_save_cpt_settings' ) );
+			add_action( 'in_admin_header', array( $this, 'bp_activity_filter_hide_all_admin_notices_from_setting_page' ) );
 
 		}
 
@@ -654,6 +655,22 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			bp_update_option( 'bp-cpt-filters-settings', $cpt_settings_details );
 
 			wp_die();
+		}
+
+		/**
+		 * Hide all notices from the setting page.
+		 *
+		 * @return void
+		 */
+		public function bp_activity_filter_hide_all_admin_notices_from_setting_page() {
+			$wbcom_pages_array  = array( 'wbcomplugins', 'wbcom-plugins-page', 'wbcom-support-page', 'bp_activity_filter_settings' );
+			$wbcom_setting_page = filter_input( INPUT_GET, 'page' ) ? filter_input( INPUT_GET, 'page' ) : '';
+
+			if ( in_array( $wbcom_setting_page, $wbcom_pages_array, true ) ) {
+				remove_all_actions( 'admin_notices' );
+				remove_all_actions( 'all_admin_notices' );
+			}
+
 		}
 
 	}
