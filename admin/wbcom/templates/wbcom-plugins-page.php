@@ -9,8 +9,7 @@
 	<div class="wbcom-wrap wbcom-plugin-wrapper">    	
 		<div class="wbcom_admin_header-wrapper">
 			<div id="wb_admin_plugin_name">
-				<?php esc_html_e( 'BuddyPress Activity Filter', 'bp-activity-filter' ); ?>
-				<span><?php printf( __( 'Version %s', 'bp-activity-filter' ), BP_ACTIVITY_FILTER_PLUGIN_VERSION ); ?></span>
+				<?php esc_html_e( 'Themes & Extension', 'bp-activity-filter' ); ?>
 			</div>
 			<?php echo do_shortcode( '[wbcom_admin_setting_header]' ); ?>
 		</div>
