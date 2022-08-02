@@ -270,18 +270,18 @@ button.ui-button::-moz-focus-inner {
     display: inline-block;
 }
 
-.ui-controlgroup > .ui-controlgroup-item {
+.ui-controlgroup>.ui-controlgroup-item {
     float: left;
     margin-left: 0;
     margin-right: 0;
 }
 
-.ui-controlgroup > .ui-controlgroup-item:focus,
-.ui-controlgroup > .ui-controlgroup-item.ui-visual-focus {
+.ui-controlgroup>.ui-controlgroup-item:focus,
+.ui-controlgroup>.ui-controlgroup-item.ui-visual-focus {
     z-index: 9999;
 }
 
-.ui-controlgroup-vertical > .ui-controlgroup-item {
+.ui-controlgroup-vertical>.ui-controlgroup-item {
     display: block;
     float: none;
     width: 100%;
@@ -302,11 +302,11 @@ button.ui-button::-moz-focus-inner {
     font-size: 80%;
 }
 
-.ui-controlgroup-horizontal .ui-controlgroup-label + .ui-controlgroup-item {
+.ui-controlgroup-horizontal .ui-controlgroup-label+.ui-controlgroup-item {
     border-left: none;
 }
 
-.ui-controlgroup-vertical .ui-controlgroup-label + .ui-controlgroup-item {
+.ui-controlgroup-vertical .ui-controlgroup-label+.ui-controlgroup-item {
     border-top: none;
 }
 
@@ -323,7 +323,7 @@ button.ui-button::-moz-focus-inner {
 .ui-controlgroup-vertical .ui-spinner-input {
     /* Support: IE8 only, Android < 4.4 only */
     width: 75%;
-    width: calc( 100% - 2.4em);
+    width: calc(100% - 2.4em);
 }
 
 .ui-controlgroup-vertical .ui-spinner .ui-spinner-up {
@@ -1542,7 +1542,7 @@ table.form-table td.filter-option {
 }
 
 @media only screen and (max-width : 782px) {
-    #bp_activity_filter_cpt_setting_form > tbody > tr:nth-of-type(odd) {
+    #bp_activity_filter_cpt_setting_form>tbody>tr:nth-of-type(odd) {
         background-color: transparent;
     }
 
@@ -1569,7 +1569,7 @@ table.form-table td.filter-option {
         position: relative;
         padding-left: 40% !important;
         white-space: normal;
-        text-align:left;
+        text-align: left;
     }
 
     #bp_activity_filter_cpt_setting_form td:before {
@@ -1579,7 +1579,7 @@ table.form-table td.filter-option {
         width: 28%;
         padding-right: 10px;
         white-space: nowrap;
-        text-align:left;
+        text-align: left;
         font-weight: bold;
     }
 
@@ -1618,9 +1618,27 @@ table.form-table td.filter-option {
 .nav-tab-wrapper ul li a#bpaf_display_activity:before {
     content: "\f536";
 }
+
 .nav-tab-wrapper ul li a#bpaf_hide_activity:before {
     content: "\f14f";
 }
+
 .nav-tab-wrapper ul li a#bpaf_cpt_activity:before {
     content: "\f540";
+}
+
+div#bpaf_setting_error_settings_updated {
+    position: absolute;
+    right: 50px;
+    z-index: 99;
+    border-radius: 10px;
+    line-height: normal;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: #10AB00;
+}
+
+button.notice-dismiss:before {
+    color: red !important;
 }
