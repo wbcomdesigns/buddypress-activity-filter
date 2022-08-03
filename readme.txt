@@ -100,6 +100,9 @@ You can modify activity content by given filters.
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+= 2.8.2 =
+* Fix - Updated Admin wrapper 
+
 = 2.8.1 =
 * Fix - (#97) Fixed remove activity setting are not saving
 
