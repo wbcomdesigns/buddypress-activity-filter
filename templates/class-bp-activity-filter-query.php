@@ -81,6 +81,10 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			if ( 'activity' != $object ) {
 				return $query;
 			}
+			$active_plugins = get_option( 'active_plugins' );
+			if ( in_array( 'buddypress-hashtag/buddypress-hashtags.php', $active_plugins ) ) {
+				return $query;
+			}
 			$bpaf_filter_nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
 			if ( wp_verify_nonce( $bpaf_filter_nonce, '_wpnonce_activity_filter' ) ) {
 				return true;
