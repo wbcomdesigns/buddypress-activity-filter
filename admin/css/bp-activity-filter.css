@@ -61,6 +61,50 @@
     z-index: 100;
 }
 
+.wbcom-settings-section-options-heading.wbcom-admin-title-section h3 {
+    margin: 0;
+}
+
+.wbcom-settings-section-remove-activity-setting {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    gap: 5px;
+}
+.form-table .wbcom-settings-section-remove-activity-setting input[type=checkbox] {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    font-size: 0 !important;
+    background:transparent !important;
+    border: 1px solid #999 !important;
+    border-radius:6px !important;
+}
+.form-table .wbcom-settings-section-remove-activity-setting input[type=checkbox]:before {
+    content: "";
+    bottom: 0 !important;
+    position: unset !important;
+    top: 0px !important;
+    left: 0px !important;
+    width: 20px !important;
+    height: 20px !important;    
+    transition: all .3s;
+    background:transparent !important;
+    box-shadow: none !important;    
+}
+.wbcom-settings-section-remove-activity-setting input[type=checkbox]:checked::before {
+    transform: unset !important;
+    content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%233582c4%27%2F%3E%3C%2Fsvg%3E") !important;
+}
+
+.wbcom-admin-option-wrap .form-table .wbcom-settings-section-remove-activity-setting input[type=checkbox]:after{
+    display: none !important;
+}
+.wbcom-admin-option-wrap .form-table .wbcom-settings-section-remove-activity-setting input[type=checkbox]:checked {
+    background:#f6f7fe !important;
+}
+
+
 
 /* Interaction Cues
 ----------------------------------*/

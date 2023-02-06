@@ -272,23 +272,16 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 						<h3><?php esc_html_e( 'Default Filter Settings', 'bp-activity-filter' ); ?></h3>
 					</div>
 					<div class="wbcom-admin-option-wrap wbcom-admin-option-wrap-view">
-						<form method="post" novalidate="novalidate" id="bp_activity_filter_display_setting_form" >
-							<div class="wbcom-admin-title-section">
-								<h3>
-									<?php esc_html_e( 'Apply Default Filter on Activity Page', 'bp-activity-filter' ); ?>
-								</h3>
-							</div>
-							<div class="filter-table form-table" >
+						<form method="post" novalidate="novalidate" id="bp_activity_filter_display_setting_form">												
+							<div class="filter-table form-table">
 								<div class="wbcom-settings-section-wrap">
-									<div class="wbcom-settings-section-options-heading">
-										<label>
-											<?php esc_html_e( 'Everything', 'bp-activity-filter' ); ?>
-										</label>
-									</div>
-									<div class="wbcom-settings-section-options">
+									<div class="wbcom-settings-section-options-heading wbcom-admin-title-section">
+										<h3><?php esc_html_e( 'Apply Default Filter on Activity Page', 'bp-activity-filter' ); ?></h3>
+									</div>	
+									<div class="wbcom-settings-section-radio">										
 										<input id="bp-activity-filter-everything-radio" name="bp-default-filter-name" type="radio" value="-1"  <?php echo ( $bp_default_activity_value == -1 ) ? 'checked=checked' : ' '; ?>/>
-									</div>
-								</div>
+										<label><?php esc_html_e( 'Everything', 'bp-activity-filter' ); ?></label>
+									</div>								
 								<?php
 								foreach ( $labels as $key => $value ) :
 									if ( ! empty( $value ) ) {
@@ -304,31 +297,23 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 											$checked = " checked='checked' ";
 										}
 										?>
-										<div class="wbcom-settings-section-wrap">
-											<div class="wbcom-settings-section-options-heading">
-												<label>
-													<?php esc_html_e( $value, 'bp-activity-filter' ); ?>
-												</label>
-											</div>
-											<div class="wbcom-settings-section-options">
-												<input id="<?php echo esc_attr( $key . '_radio' ); ?>" name="bp-default-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
-													<?php
-													echo esc_html( $checked );
-													echo esc_html( $hide_active );
-													?>
-												/>
-											</div>
+										<div class="wbcom-settings-section-radio">
+											<input id="<?php echo esc_attr( $key . '_radio' ); ?>" name="bp-default-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
+												<?php
+												echo esc_html( $checked );
+												echo esc_html( $hide_active );
+												?>
+											/>
+											<label>
+												<?php esc_html_e( $value, 'bp-activity-filter' ); ?>
+											</label>
 										</div>
 										<?php
 									}
 								endforeach;
 								?>
 							</div>
-							<div class="wbcom-admin-title-section">
-								<h3>
-									<?php esc_html_e( 'Apply Default Filter on Profile Activity Page', 'bp-activity-filter' ); ?>
-								</h3>
-							</div>
+
 							<div class="filter-table form-table" >
 							<?php
 							/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
@@ -344,15 +329,13 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 							}
 							?>
 								<div class="wbcom-settings-section-wrap">
-									<div class="wbcom-settings-section-options-heading">
-										<label>
-											<?php esc_html_e( 'Everything', 'bp-activity-filter' ); ?>
-										</label>
+									<div class="wbcom-settings-section-options-heading wbcom-admin-title-section">
+										<h3><?php esc_html_e( 'Apply Default Filter on Profile Activity Page', 'bp-activity-filter' ); ?></h3>									
 									</div>
-									<div class="wbcom-settings-section-options">
+									<div class="wbcom-settings-section-radio">
 										<input id="bp-activity-filter-everything-radio" name="bp-default-profile-filter-name" type="radio" value="-1"  <?php echo ( $bp_default_activity_value == -1 ) ? 'checked=checked' : ' '; ?>/>
+										<label><?php esc_html_e( 'Everything', 'bp-activity-filter' ); ?></label>
 									</div>
-								</div>
 								<?php
 								unset( $labels['new_member'] );
 								unset( $labels['updated_profile'] );
@@ -369,20 +352,16 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 											$checked = " checked='checked' ";
 										}
 										?>
-										<div class="wbcom-settings-section-wrap">
-											<div class="wbcom-settings-section-options-heading">
-												<label>
-													<?php echo esc_html( $value ); ?>
-												</label>
-											</div>
-											<div class="wbcom-settings-section-options">
-													<input id="<?php echo esc_attr( $key . '_profile_radio' ); ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
-														<?php
-														echo esc_html( $checked );
-														echo esc_html( $hide_active );
-														?>
-												/>											
-											</div>
+										<div class="wbcom-settings-section-radio">
+											<input id="<?php echo esc_attr( $key . '_profile_radio' ); ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo esc_attr( $key ); ?>"
+												<?php
+												echo esc_html( $checked );
+												echo esc_html( $hide_active );
+												?>
+											/>				
+											<label>
+												<?php echo esc_html( $value ); ?>
+											</label>							
 										</div>
 										<?php
 									}
@@ -446,6 +425,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 					<div class="wbcom-admin-option-wrap wbcom-admin-option-wrap-view">
 						<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form" >
 							<div class="filter-table form-table" >
+								<div class="wbcom-settings-section-wrap">
 								<?php
 								foreach ( $labels as $key => $value ) :
 									if ( ! empty( $value ) ) {
@@ -454,20 +434,16 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 											$checked = " checked='checked' ";
 										}
 										?>
-										<div class="wbcom-settings-section-wrap">
-											<div class="wbcom-settings-section-options-heading">
-												<label>
-													<?php echo esc_html( $value ); ?>
-												</label>
+										
+											<div class="wbcom-settings-section-remove-activity-setting">
+												<input id="<?php echo esc_attr( $key . '-checkbox' ); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr( $key ); ?>"<?php echo esc_html( $checked ); ?> />
+												<label><?php echo esc_html( $value ); ?></label>											
 											</div>
-											<div class="wbcom-settings-section-options">
-													<input id="<?php echo esc_attr( $key . '-checkbox' ); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr( $key ); ?>"<?php echo esc_html( $checked ); ?> />
-											</div>
-										</div>
 										<?php
 									}
 								endforeach;
 								?>
+							</div>
 							</div>
 							<div class="submit">
 								<a id="bp_activity_filter_hide_setting_form_submit" class="button button-primary"><?php esc_html_e( 'Save Settings', 'bp-activity-filter' ); ?></a>
