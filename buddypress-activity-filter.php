@@ -42,6 +42,13 @@ function check_required_plugin_is_activated() {
 			$activate = filter_input( INPUT_GET, 'activate' );
 			unset( $activate );
 		}
+	}elseif( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ){
+		deactivate_plugins( plugin_basename( __FILE__ ) );
+		add_action( 'admin_notices', 'bp_activity_filter_required_plugin_admin_notice' );
+		if ( null !== filter_input( INPUT_GET, 'activate' ) ) {
+			$activate = filter_input( INPUT_GET, 'activate' );
+			unset( $activate );
+		}
 	}
 }
 add_action( 'admin_init', 'check_required_plugin_is_activated' );
@@ -266,8 +273,8 @@ function bpfilter_same_network_config() {
  * @param string $plugin Path to the plugin file relative to the plugins directory.
  */
 function bpfilter_activation_redirect_settings( $plugin ) {
-
-	if ( plugin_basename( __FILE__ ) === $plugin && class_exists( 'Buddypress' ) ) {
+	$active_plugins = get_option( 'active_plugins' );
+	if ( plugin_basename( __FILE__ ) === $plugin && class_exists( 'Buddypress' ) && ! in_array( 'buddyboss-platform/bp-loader.php', $active_plugins ) ) {
 		wp_safe_redirect( admin_url( 'admin.php?page=bp_activity_filter_settings' ) );
 		exit;
 	}
