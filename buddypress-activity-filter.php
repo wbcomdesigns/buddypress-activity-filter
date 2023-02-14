@@ -8,7 +8,7 @@
  * Plugin Name:       Wbcom Designs - BuddyPress Activity Filter
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-activity-filter/
  * Description:       It will help set the default filter option with BuddyPress Activity, & also allow disabling selected activity types.
- * Version:           2.8.3
+ * Version:           2.8.5
  * Author:            Wbcom Designs<admin@wbcomdesigns.com>
  * Author URI:        https://wbcomdesigns.com/
  * License:           GPL-2.0+
@@ -22,7 +22,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	wp_die( 'Direct Access is not Allowed' );
 }
-define( 'BP_ACTIVITY_FILTER_PLUGIN_VERSION', '2.8.3' );
+define( 'BP_ACTIVITY_FILTER_PLUGIN_VERSION', '2.8.5' );
 
 define( 'BP_ACTIVITY_FILTER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
@@ -64,7 +64,7 @@ function bp_activity_filter_required_plugin_admin_notice() {
 	$bp_plugin = esc_html__( 'BuddyPress', 'bp-activity-filter' );
 	echo '<div class="error"><p>';
 	/* translators: %1$s: BuddyPress Activity Filter ;  %2$s: BuddyPress*/
-	echo sprintf( esc_html__( '%1$s is ineffective now as it requires %2$s to be installed and active.', 'bp-activity-filter' ), '<strong>' . esc_html( $plugin ) . '</strong>', '<strong>' . esc_html( $bp_plugin ) . '</strong>' );
+	echo sprintf( esc_html__( '%1$s is ineffective now as it requires %2$s to be installed and active. It is not compatible with BuddyBoss due to similar features.', 'bp-activity-filter' ), '<strong>' . esc_html( $plugin ) . '</strong>', '<strong>' . esc_html( $bp_plugin ) . '</strong>' );
 	echo '</p></div>';
 	if ( null !== filter_input( INPUT_GET, 'activate' ) ) {
 		$activate = filter_input( INPUT_GET, 'activate' );
