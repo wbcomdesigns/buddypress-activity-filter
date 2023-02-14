@@ -94,7 +94,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 
 									$prep_args = array(
 										'id'            => false,                  // Pass an existing activity ID to update an existing entry.
-										'action'        => $post_action,                     // The activity action - e.g. "Jon Doe posted an update".
+										'action'        => $post_action,                     // The activity action - e.g. "Jon Doe published an update".
 										'content'       => $post_link,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!".
 										'component'     => 'groups',                  // The name/ID of the component e.g. groups, profile, mycomponent.
 										'type'          => 'activity_update',                  // The activity type e.g. activity_update, profile_updated.
@@ -128,7 +128,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 							// add activity.
 							$prep_args = array(
 								'id'                => false,                  // Pass an existing activity ID to update an existing entry.
-								'action'            => $post_action,                     // The activity action - e.g. "Jon Doe posted an update".
+								'action'            => $post_action,                     // The activity action - e.g. "Jon Doe published an update".
 								'content'           => $post_link,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!".
 								'component'         => 'activity',                  // The name/ID of the component e.g. groups, profile, mycomponent.
 								'type'              => 'new_blog_post',                  // The activity type e.g. activity_update, profile_updated.
@@ -159,7 +159,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 							// add activity.
 							$prep_args = array(
 								'id'                => false,                  // Pass an existing activity ID to update an existing entry.
-								'action'            => $post_action,                     // The activity action - e.g. "Jon Doe posted an update"
+								'action'            => $post_action,                     // The activity action - e.g. "Jon Doe published an update"
 								'content'           => $post_link,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!"
 								'component'         => 'activity',                  // The name/ID of the component e.g. groups, profile, mycomponent.
 								'type'              => 'new_blog_post',                  // The activity type e.g. activity_update, profile_updated.

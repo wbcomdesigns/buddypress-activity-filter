@@ -534,7 +534,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 											<input id="<?php echo esc_attr( $post_type . '_radio' ); ?>" name="<?php echo esc_attr( "bpaf_admin_settings[$post_type][display_type]" ); ?>" type="checkbox" value="enable" <?php checked( $display_type, 'enable' ); ?> />
 										</td>
 										<td class="filter-option" data-title="Upload Lable">
-											<input id="<?php echo esc_attr( $post_type . '_text' ); ?>" placeholder='<?php echo esc_attr( "$post_type" );?> <?php esc_html_e( 'posted', 'bp-activity-filter' ); ?>' name='<?php echo esc_attr( "bpaf_admin_settings[$post_type][new_label]" ); ?>' type="text" value="<?php echo esc_attr( $value ); ?>" />
+											<input id="<?php echo esc_attr( $post_type . '_text' ); ?>" placeholder='<?php echo esc_attr( "$post_type" );?> <?php esc_html_e( 'published', 'bp-activity-filter' ); ?>' name='<?php echo esc_attr( "bpaf_admin_settings[$post_type][new_label]" ); ?>' type="text" value="<?php echo esc_attr( $value ); ?>" />
 										</td>
 									</tr>
 
