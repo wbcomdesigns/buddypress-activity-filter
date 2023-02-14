@@ -18,6 +18,8 @@ It will help set the default filter option with BuddyPress Activity, and It will
 Admin can set default and customized activities to be listed on the front-end.
 It will also allow setting your default option for activities. You can change the default from everything to Post Updates. The plugin also allows you to enable activities from custom post types when they are published.
 
+It's not for BuddyBoss Platform :( , you can find similar option within their plugin.
+
 [vimeo https://vimeo.com/556804506]
 
 
