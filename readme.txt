@@ -102,6 +102,11 @@ You can modify activity content by given filters.
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+= 2.8.5 =
+* Fix - Disabled the plugin for bb due to similar features
+* Fix - add default placeholder for cpt types
+* Fix - (#111) Updated UI type checkbox and radio
+
 = 2.8.3 =
 * Fix - (#153)Fixed compatibility issue with BuddyPress Hashtag plugin 
 
