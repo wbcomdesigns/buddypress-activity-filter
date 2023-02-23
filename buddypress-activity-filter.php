@@ -275,8 +275,10 @@ function bpfilter_same_network_config() {
 function bpfilter_activation_redirect_settings( $plugin ) {
 	$active_plugins = get_option( 'active_plugins' );
 	if ( plugin_basename( __FILE__ ) === $plugin && class_exists( 'Buddypress' ) && ! in_array( 'buddyboss-platform/bp-loader.php', $active_plugins ) ) {
-		wp_safe_redirect( admin_url( 'admin.php?page=bp_activity_filter_settings' ) );
-		exit;
+		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action']  == 'activate' && isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] == $plugin) {
+			wp_safe_redirect( admin_url( 'admin.php?page=bp_activity_filter_settings' ) );
+			exit;
+		}
 	}
 }
 add_action( 'activated_plugin', 'bpfilter_activation_redirect_settings' );
