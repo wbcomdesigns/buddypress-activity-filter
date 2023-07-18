@@ -534,7 +534,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 											<input id="<?php echo esc_attr( $post_type . '_radio' ); ?>" name="<?php echo esc_attr( "bpaf_admin_settings[$post_type][display_type]" ); ?>" type="checkbox" value="enable" <?php checked( $display_type, 'enable' ); ?> />
 										</td>
 										<td class="filter-option" data-title="Upload Lable">
-											<input id="<?php echo esc_attr( $post_type . '_text' ); ?>" placeholder='<?php echo esc_attr( "$post_type" );?> <?php esc_html_e( 'published', 'bp-activity-filter' ); ?>' name='<?php echo esc_attr( "bpaf_admin_settings[$post_type][new_label]" ); ?>' type="text" value="<?php echo esc_attr( $value ); ?>" />
+											<input id="<?php echo esc_attr( $post_type . '_text' ); ?>" placeholder='<?php echo esc_attr( "$post_type" ); ?> <?php esc_html_e( 'published', 'bp-activity-filter' ); ?>' name='<?php echo esc_attr( "bpaf_admin_settings[$post_type][new_label]" ); ?>' type="text" value="<?php echo esc_attr( $value ); ?>" />
 										</td>
 									</tr>
 
@@ -579,11 +579,16 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			parse_str( $form_data, $setting_form_data );
 
 			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-
 			$bp_default_filter_name = $form_details['bp-default-filter-name'];
-
+			if ( 'friendship_acceptedfriendship_created' == $bp_default_filter_name ) {
+				$freindship = explode( 'ed', $bp_default_filter_name );
+				$bp_default_filter_name = $freindship[0] . 'ed,' . $freindship[1] . 'ed';
+			}
 			$bp_default_profile_filter_name = $form_details['bp-default-profile-filter-name'];
-
+			if ( 'friendship_acceptedfriendship_created' == $bp_default_profile_filter_name ) {
+				$freindship = explode( 'ed', $bp_default_profile_filter_name );
+				$bp_default_profile_filter_name = $freindship[0] . 'ed,' . $freindship[1] . 'ed';
+			}
 			bp_update_option( 'bp-default-filter-name', $bp_default_filter_name );
 
 			bp_update_option( 'bp-default-profile-filter-name', $bp_default_profile_filter_name );
