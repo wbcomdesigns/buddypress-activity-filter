@@ -245,7 +245,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			}
 			// Set filter to our respective filter.,
 			// In this case, I am setting filter to the 'Updates' filter.
-			setcookie( 'bp-activity-filter', $filter, null, '/' );
+			$expires = time() + 1800;
+			setcookie( 'bp-activity-filter', $filter, $expires, '/' );
 			$_COOKIE['bp-activity-filter'] = $filter;
 		}
 
