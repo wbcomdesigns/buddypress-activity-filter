@@ -578,7 +578,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 			$form_data = isset( $_POST['form_data'] ) ? sanitize_text_field( wp_unslash( $_POST['form_data'] ) ) : '';
 			parse_str( $form_data, $setting_form_data );
 
-			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_STRING );
+			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 			$bp_default_filter_name = $form_details['bp-default-filter-name'];
 
