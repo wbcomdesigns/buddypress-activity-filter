@@ -75,7 +75,10 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Admin_Setting' ) ) {
 						<div class="wbcom_admin_header-wrapper">
 							<div id="wb_admin_plugin_name">
 								<?php esc_html_e( 'BuddyPress Activity Filter', 'bp-activity-filter' ); ?>
-								<span><?php printf( __( 'Version %s', 'bp-activity-filter' ), BP_ACTIVITY_FILTER_PLUGIN_VERSION ); ?></span>
+								<span><?php
+								/* translators: %s: */
+								printf( esc_html__( 'Version %s', 'bp-activity-filter' ), esc_attr( BP_ACTIVITY_FILTER_PLUGIN_VERSION ) ); 
+								?></span>
 							</div>
 							<?php echo do_shortcode( '[wbcom_admin_setting_header]' ); ?>
 						</div>
