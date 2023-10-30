@@ -42,7 +42,6 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Public_Setting' ) ) {
 		 */
 		public function getting_all_filters_function( $output, $filters, $context ) {
 			// Build the options output.
-
 			$output = '';
 
 			$filters_db = bp_get_option( 'bp-hidden-filters-name' );
@@ -71,10 +70,14 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Public_Setting' ) ) {
 				add_action( 'bp_activity_filter_options', array( $this, 'bp_activity_filter_options' ), 10 );
 			}
 			if ( 'nouveau' == $bp_template_option ) {
-				return array(
-					'filters' => $filters,
-					'context' => $context,
-				);
+				if ( class_exists( 'Youzify' ) ) {
+						return $output;
+				} else {
+					return array(
+						'filters' => $filters,
+						'context' => $context,
+					);
+				}
 			} else {
 				return $output;
 			}
