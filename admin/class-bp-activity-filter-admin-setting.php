@@ -435,65 +435,22 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 							<div class="filter-table form-table">
 								<div class="wbcom-settings-section-wrap">
 									<?php
-									// Define your original labels array. Replace this with your actual labels.
-									$labels = [
-										'new_member_registered' => 'New member registered',
-										'member_changed_profile_picture' => 'Member changed profile picture',
-										'member_changed_cover_photo' => 'Member changed cover photo',
-										'updated_profile' => 'Updated Profile',
-										'friendships_accepted' => 'Friendships accepted',
-										'new_friendship_created' => 'New friendship created',
-										'created_a_group' => 'Created a group',
-										'joined_a_group' => 'Joined a group',
-										'group_details_edited' => 'Group details edited',
-										'member_changed_group_picture' => 'Member changed group picture',
-										'member_changed_group_cover_photo' => 'Member changed group cover photo',
-										'new_post_published' => 'New post published',
-										'new_post_comment_posted' => 'New post comment posted',
-										'new_forum_topic' => 'New forum topic',
-										'new_forum_reply' => 'New forum reply'
-									];
-
-									// Define an associative array with your new, professional labels.
-									$new_labels = [
-										'new_member_registered' => 'Member Registration',
-										'member_changed_profile_picture' => 'Profile Picture Update',
-										'member_changed_cover_photo' => 'Cover Photo Update',
-										'updated_profile' => 'Profile Updated',
-										'friendships_accepted' => 'Friendship Accepted',
-										'new_friendship_created' => 'Friendship Initiated',
-										'created_a_group' => 'Group Creation',
-										'joined_a_group' => 'Group Membership',
-										'group_details_edited' => 'Group Update',
-										'member_changed_group_picture' => 'Group Photo Update',
-										'member_changed_group_cover_photo' => 'Group Cover Update',
-										'new_post_published' => 'Post Published',
-										'new_post_comment_posted' => 'Post Commented',
-										'new_forum_topic' => 'Forum Topic Created',
-										'new_forum_reply' => 'Forum Reply Posted'
-									];
-
-									// Loop through your existing labels.
-									foreach ($labels as $key => $value) {
+									foreach ($labels as $key => $value) :
 										if (!empty($value)) {
-											// Replace label with new label if available
-											$display_value = isset($new_labels[$key]) ? $new_labels[$key] : $value;
-
 											$checked = '';
-											if (!empty($bp_hidden_filters_value) && is_array($bp_hidden_filters_value) && in_array($key, $bp_hidden_filters_value)) {
+											if (((!empty($bp_hidden_filters_value) && is_array($bp_hidden_filters_value)) && in_array($key, $bp_hidden_filters_value))) {
 												$checked = " checked='checked' ";
 											}
 									?>
+
 											<div class="wbcom-settings-section-remove-activity-setting">
-												<input id="<?php echo esc_attr($key . '-checkbox'); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr($key); ?>" <?php echo $checked; ?> />
-												<label for="<?php echo esc_attr($key . '-checkbox'); ?>"><?php echo esc_html($display_value); ?></label>
+												<input id="<?php echo esc_attr($key . '-checkbox'); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr($key); ?>" <?php echo esc_html($checked); ?> />
+												<label><?php echo esc_html($value); ?></label>
 											</div>
 									<?php
 										}
-									}
+									endforeach;
 									?>
-
-
 								</div>
 							</div>
 							<div class="submit">
