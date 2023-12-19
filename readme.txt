@@ -10,17 +10,14 @@ License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 
-It will help set the default filter option with BuddyPress Activity, and It will also allow removing some specific activity types from activities. It also allows posting certain public CPT-type activities using a simple enable option. If you have an event post type, you can post a simple activity update inside BuddyPress activities [reference](https://codex.buddypress.org/plugindev/post-types-activities/).
+Streamline your BuddyPress Activity with ease. Set default filters, remove specific activity types, and enable public Custom Post Type (CPT) activities effortlessly. Enhance user engagement and content control.
 
 
 == Description ==
 
-Admin can set default and customized activities to be listed on the front end.
-It will also allow setting your default option for activities. You can change the default from Everything to Post Updates. The plugin also allows you to enable activities from custom post types when they are published.
-
-It's not for the BuddyBoss Platform :(, you can find a similar option within their plugin.
-
-[vimeo https://vimeo.com/556804506]
+Take charge of your activity feed by setting default and personalized activity listings for your website. With this feature, administrators can finely tune the front-end display of activities to match their desired user experience.
+Choose your preferred default activity view, switching from the all-inclusive 'Everything' option to more specific views like 'Post Updates.' This flexibility empowers you to curate the content that takes center stage on your platform, enhancing user engagement.
+Elevate your content strategy by enabling activities from custom post types upon their publication. This ensures that every piece of content gets the attention it deserves, right from the moment it goes live.
 
 
 === THEME - WORDPRESS THEME WITH OUTSTANDING BUDDYPRESS SUPPORT ===
