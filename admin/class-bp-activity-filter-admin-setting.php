@@ -311,9 +311,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									?>
 											<div class="wbcom-settings-section-radio">
 												<input id="<?php echo esc_attr($key . '_radio'); ?>" name="bp-default-filter-name" type="radio" value="<?php echo esc_attr($key); ?>" <?php
-																																														echo esc_html($checked);
-																																														echo esc_html($hide_active);
-																																														?> />
+																																															echo esc_html($checked);
+																																															echo esc_html($hide_active);
+																																															?> />
 												<label>
 													<?php esc_html_e($value, 'bp-activity-filter'); ?>
 												</label>
@@ -364,9 +364,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 										?>
 												<div class="wbcom-settings-section-radio">
 													<input id="<?php echo esc_attr($key . '_profile_radio'); ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo esc_attr($key); ?>" <?php
-																																																			echo esc_html($checked);
-																																																			echo esc_html($hide_active);
-																																																			?> />
+																																																				echo esc_html($checked);
+																																																				echo esc_html($hide_active);
+																																																				?> />
 													<label>
 														<?php echo esc_html($value); ?>
 													</label>
@@ -435,55 +435,42 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 							<div class="filter-table form-table">
 								<div class="wbcom-settings-section-wrap">
 									<?php
-									foreach ($labels as $key => $value) :
+									// Define an associative array with your new, professional labels.
+									$new_labels = [
+										'new_member_registered' => 'Member Registration',
+										'member_changed_profile_picture' => 'Profile Picture Update',
+										'member_changed_cover_photo' => 'Cover Photo Update',
+										'updated_profile' => 'Profile Updated',
+										'friendships_accepted' => 'Friendship Accepted',
+										'new_friendship_created' => 'Friendship Initiated',
+										'created_a_group' => 'Group Creation',
+										'joined_a_group' => 'Group Membership',
+										'group_details_edited' => 'Group Update',
+										'member_changed_group_picture' => 'Group Photo Update',
+										'member_changed_group_cover_photo' => 'Group Cover Update',
+										'new_post_published' => 'Post Published',
+										'new_post_comment_posted' => 'Post Commented',
+										'new_forum_topic' => 'Forum Topic Created',
+										'new_forum_reply' => 'Forum Reply Posted'
+									];
+
+									// Loop through your existing labels. Replace $labels with $new_labels if you want to use the new labels.
+									foreach ($new_labels as $key => $value) {  // Changed $labels to $new_labels
 										if (!empty($value)) {
 											$checked = '';
-											if (((!empty($bp_hidden_filters_value) && is_array($bp_hidden_filters_value)) && in_array($key, $bp_hidden_filters_value))) {
+											if (!empty($bp_hidden_filters_value) && is_array($bp_hidden_filters_value) && in_array($key, $bp_hidden_filters_value)) {
 												$checked = " checked='checked' ";
 											}
 									?>
-
 											<div class="wbcom-settings-section-remove-activity-setting">
-												<?php
-												// Define an associative array with your new, professional labels.
-												$activity_labels = [
-													'new_member_registered' => 'Member Registration',
-													'member_changed_profile_picture' => 'Profile Picture Update',
-													'member_changed_cover_photo' => 'Cover Photo Update',
-													'updated_profile' => 'Profile Updated',
-													'friendships_accepted' => 'Friendship Accepted',
-													'new_friendship_created' => 'Friendship Initiated',
-													'created_a_group' => 'Group Creation',
-													'joined_a_group' => 'Group Membership',
-													'group_details_edited' => 'Group Update',
-													'member_changed_group_picture' => 'Group Photo Update',
-													'member_changed_group_cover_photo' => 'Group Cover Update',
-													'new_post_published' => 'Post Published',
-													'new_post_comment_posted' => 'Post Commented',
-													'new_forum_topic' => 'Forum Topic Created',
-													'new_forum_reply' => 'Forum Reply Posted'
-												];
-
-												// Loop through your activity labels.
-												foreach ($activity_labels as $key => $value) {
-													// Assuming $checked is defined elsewhere in your code for each activity type.
-													// Replace 'checked_condition' with the actual condition or variable.
-													$checked = 'checked_condition'; // Placeholder for your checked condition logic
-
-													// Checkbox and label HTML.
-												?>
-													<input id="<?php echo esc_attr($key . '-checkbox'); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr($key); ?>" <?php if ($checked) echo ' checked'; ?> />
-													<label for="<?php echo esc_attr($key . '-checkbox'); ?>"><?php echo esc_html($value); ?></label>
-												<?php
-												}
-												?>
-
-
+												<input id="<?php echo esc_attr($key . '-checkbox'); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr($key); ?>" <?php echo esc_html($checked); ?> />
+												<label for="<?php echo esc_attr($key . '-checkbox'); ?>"><?php echo esc_html($value); ?></label>
 											</div>
 									<?php
 										}
-									endforeach;
+									}
 									?>
+
 								</div>
 							</div>
 							<div class="submit">
