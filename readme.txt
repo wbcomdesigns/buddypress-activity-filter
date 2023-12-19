@@ -4,8 +4,8 @@ Contributors: vapvarun,wbcomdesigns
 Tags: buddypress,activity-filter, activity, filter, BuddyPress Activity, Activity Filter, Default Activity, Hide Activity, BuddyPress default activity
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
-Tested up to: 6.3.0
-Stable tag: 2.8.6
+Tested up to: 6.4.2
+Stable tag: 2.8.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -98,6 +98,9 @@ You can modify activity content by using the given filters.
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+= 2.8.7 =
+* Fix: BuddyPress v12 support
+
 = 2.8.6 =
 * Fix - Fixed phpcs error
 * Fix - (#116) Fixed activity filter issue
