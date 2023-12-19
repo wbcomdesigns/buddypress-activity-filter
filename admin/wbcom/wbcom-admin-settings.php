@@ -221,7 +221,7 @@ if ( ! class_exists( 'Wbcom_Admin_Settings' ) ) {
 		 */
 		public function wbcom_enqueue_admin_scripts() {
 			if ( ! wp_style_is( 'font-awesome', 'enqueued' ) ) {
-				wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css' );
+				wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css', array(), '4.7.0');
 			}
 			if ( ! wp_script_is( 'wbcom_admin_setting_js', 'enqueued' ) ) {
 
@@ -247,7 +247,7 @@ if ( ! class_exists( 'Wbcom_Admin_Settings' ) ) {
 			}
 
 			if ( ! wp_style_is( 'wbcom-admin-setting-css', 'enqueued' ) ) {
-				wp_enqueue_style( 'wbcom-admin-setting-css', BP_ACTIVITY_FILTER_PLUGIN_URL . 'admin/wbcom/assets/css/wbcom-admin-setting.css' );
+				wp_enqueue_style('wbcom-admin-setting-css', BP_ACTIVITY_FILTER_PLUGIN_URL . 'admin/wbcom/assets/css/wbcom-admin-setting.css', array(), BP_ACTIVITY_FILTER_PLUGIN_VERSION);
 			}
 
 		}

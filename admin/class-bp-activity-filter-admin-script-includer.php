@@ -29,10 +29,10 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Script_Includer' ) ) {
 		public function include_admin_css_function() {
 			// phpcs:ignore
 			if ( isset( $_GET['page'] ) && 'bp_activity_filter_settings' === $_GET['page'] ) {
-				wp_register_style( 'custom_wp_admin_css', plugins_url( 'css/bp-activity-filter.css', __FILE__ ) );
+				wp_register_style('custom_wp_admin_css', plugins_url('css/bp-activity-filter.css', __FILE__), array(), BP_ACTIVITY_FILTER_PLUGIN_VERSION);
 
 				wp_enqueue_style( 'custom_wp_admin_css' );
-				wp_enqueue_script( 'custom_wp_admin_js', plugin_dir_url( __FILE__ ) . 'js/bp-activity-filter.js', array( 'jquery' ) );
+				wp_enqueue_script('custom_wp_admin_js', plugin_dir_url(__FILE__) . 'js/bp-activity-filter.js', array('jquery'), BP_ACTIVITY_FILTER_PLUGIN_VERSION, true);
 				wp_localize_script(
 					'custom_wp_admin_js',
 					'wbcom_bpaf_admin',

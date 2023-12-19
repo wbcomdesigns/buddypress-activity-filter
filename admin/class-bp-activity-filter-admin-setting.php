@@ -307,7 +307,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 													$selected = ($bp_default_activity_value == $key) ? 'selected="selected"' : '';
 											?>
 													<option value="<?php echo esc_attr($key); ?>" <?php echo esc_attr($selected); ?> <?php echo esc_attr($disabled); ?>>
-														<?php esc_html_e($value, 'bp-activity-filter'); ?>
+														<?php echo esc_html($value); ?>
 													</option>
 											<?php
 												}
@@ -454,7 +454,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 											$checked = in_array($key, (array)$bp_hidden_filters_value) ? " checked='checked' " : '';
 									?>
 											<div class="wbcom-settings-section-remove-activity-setting">
-												<input id="<?php echo esc_attr($key . '-checkbox'); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr($key); ?>" <?php echo $checked; ?> />
+												<input id="<?php echo esc_attr($key . '-checkbox'); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr($key); ?>" <?php echo esc_attr($checked); ?> />
 												<label for="<?php echo esc_attr($key . '-checkbox'); ?>"><?php echo esc_html($value); ?></label>
 											</div>
 									<?php
@@ -555,7 +555,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 												<input id="<?php echo esc_attr($post_type . '_radio'); ?>" name="<?php echo esc_attr("bpaf_admin_settings[$post_type][display_type]"); ?>" type="checkbox" value="enable" <?php checked($display_type, 'enable'); ?> />
 											</td>
 											<td class="filter-option" data-title="Upload Label">
-												<input id="<?php echo esc_attr($post_type . '_text'); ?>" placeholder='<?php echo strtolower(esc_html($post_details->labels->singular_name)); ?>' name='<?php echo esc_attr("bpaf_admin_settings[$post_type][new_label]"); ?>' type="text" value="<?php echo esc_attr($value); ?>" />
+												<input id="<?php echo esc_attr($post_type . '_text'); ?>" placeholder='<?php echo esc_html(strtolower($post_details->labels->singular_name)); ?>' name='<?php echo esc_attr("bpaf_admin_settings[$post_type][new_label]"); ?>' type="text" value="<?php echo esc_attr($value); ?>" />
 											</td>
 										</tr>
 
