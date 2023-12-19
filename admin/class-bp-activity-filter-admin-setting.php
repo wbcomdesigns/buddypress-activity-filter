@@ -399,7 +399,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			}
 
 			// Remove specific labels if present.
-			foreach (['activity_update', 'activity_comment'] as $unwanted_key) {
+			foreach (['activity_update', 'activity_comment', 'new_blog_post', 'new_blog_comment'] as $unwanted_key) {
 				if (array_key_exists($unwanted_key, $labels)) {
 					unset($labels[$unwanted_key]);
 				}
@@ -419,9 +419,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				'new_group_avatar' => 'Group Avatar Updated',
 				'new_group_cover_photo' => 'Group Cover Photo Updated',
 				'bbp_topic_create' => 'Forum Topic Created',
-				'bbp_reply_create' => 'Forum Reply Posted',
-				'new_blog_post' => 'Blog Post Published',
-				'new_blog_comment' => 'Blog Comment Added'
+				'bbp_reply_create' => 'Forum Reply Posted'
 			];
 
 			// Update the original $labels array with professional labels.
