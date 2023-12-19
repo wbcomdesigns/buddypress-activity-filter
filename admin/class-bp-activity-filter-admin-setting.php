@@ -395,32 +395,64 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 */
 		public function bpaf_hide_activity_section()
 		{
-
 			global $bp;
 
-			$activity_actions = (function_exists('bp_activity_get_actions')) ? bp_activity_get_actions() : array();
-			$labels           = array();
+			// Fetch activity actions and initialize labels array.
+			$activity_actions = function_exists('bp_activity_get_actions') ? bp_activity_get_actions() : array();
+			$labels = array();
+
+			// Process activity actions to populate labels.
 			foreach ($activity_actions as $component => $actions) {
 				foreach ($actions as $action_key => $action_values) {
-					// Friends activity collapses two filters into one.
+					// Collapse friendship actions into one.
 					if (in_array($action_key, array('friendship_accepted', 'friendship_created'))) {
 						$action_key = 'friendship_accepted,friendship_created';
 					}
 
+					// Add unique action labels.
 					if (!array_key_exists($action_key, $labels)) {
 						$labels[$action_key] = $action_values['value'];
-					}
-
-					if (array_key_exists('activity_update', $labels) || array_key_exists('activity_comment', $labels)) {
-						unset($labels['activity_update']);
-						unset($labels['activity_comment']);
 					}
 				}
 			}
 
-			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
+			// Remove specific labels if present.
+			foreach (['activity_update', 'activity_comment'] as $unwanted_key) {
+				if (array_key_exists($unwanted_key, $labels)) {
+					unset($labels[$unwanted_key]);
+				}
+			}
+
+			// Define an associative array with your new, professional labels.
+			$professional_labels = [
+				'new_member' => 'New Member Registered',
+				'new_avatar' => 'Profile Picture Updated',
+				'new_cover_photo' => 'Cover Photo Updated',
+				'updated_profile' => 'Profile Updated',
+				'friendship_accepted,friendship_created' => 'Friendship Status Changed',
+				'friends_register_activity_action' => 'Friendship Activity Registered',
+				'created_group' => 'New Group Created',
+				'joined_group' => 'Joined a Group',
+				'group_details_updated' => 'Group Details Updated',
+				'new_group_avatar' => 'Group Avatar Updated',
+				'new_group_cover_photo' => 'Group Cover Photo Updated',
+				'bbp_topic_create' => 'Forum Topic Created',
+				'bbp_reply_create' => 'Forum Reply Posted',
+				'new_blog_post' => 'Blog Post Published',
+				'new_blog_comment' => 'Blog Comment Added'
+			];
+
+			// Update the original $labels array with professional labels.
+			foreach ($labels as $key => &$value) {
+				if (array_key_exists($key, $professional_labels)) {
+					$value = $professional_labels[$key];
+				}
+			}
+
+			// Fetch hidden filters option.
 			$bp_hidden_filters_value = bp_get_option('bp-hidden-filters-name');
 
+			// Output form with checkboxes.
 		?>
 			<div class="wbcom-tab-content">
 				<div class="wbcom-wrapper-admin">
@@ -434,23 +466,17 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 						<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form">
 							<div class="filter-table form-table">
 								<div class="wbcom-settings-section-wrap">
-									<?php
-									foreach ($labels as $key => $value) :
+									<?php foreach ($labels as $key => $value) :
 										if (!empty($value)) {
-											$checked = '';
-											if (((!empty($bp_hidden_filters_value) && is_array($bp_hidden_filters_value)) && in_array($key, $bp_hidden_filters_value))) {
-												$checked = " checked='checked' ";
-											}
+											$checked = in_array($key, (array)$bp_hidden_filters_value) ? " checked='checked' " : '';
 									?>
-
 											<div class="wbcom-settings-section-remove-activity-setting">
-												<input id="<?php echo esc_attr($key . '-checkbox'); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr($key); ?>" <?php echo esc_html($checked); ?> />
-												<label><?php echo esc_html($value); ?></label>
+												<input id="<?php echo esc_attr($key . '-checkbox'); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr($key); ?>" <?php echo $checked; ?> />
+												<label for="<?php echo esc_attr($key . '-checkbox'); ?>"><?php echo esc_html($value); ?></label>
 											</div>
 									<?php
 										}
-									endforeach;
-									?>
+									endforeach; ?>
 								</div>
 							</div>
 							<div class="submit">
