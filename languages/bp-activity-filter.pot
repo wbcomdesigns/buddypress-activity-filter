@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-19 06:23:11+00:00\n"
+"POT-Creation-Date: 2023-12-19 07:10:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -140,30 +140,44 @@ msgstr ""
 msgid "Default Filter Settings"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:291
-msgid "Default Filter for Site Wide Activity"
+#: admin/class-bp-activity-filter-admin-setting.php:287
+msgid ""
+"Configure default activity filters for site-wide and profile-specific "
+"activities."
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:295
-#: admin/class-bp-activity-filter-admin-setting.php:347
+#: admin/class-bp-activity-filter-admin-setting.php:294
+msgid "Site-Wide Activity Filter"
+msgstr ""
+
+#: admin/class-bp-activity-filter-admin-setting.php:297
+msgid "Select the default filter for site-wide activity display."
+msgstr ""
+
+#: admin/class-bp-activity-filter-admin-setting.php:299
+#: admin/class-bp-activity-filter-admin-setting.php:341
 msgid "Everything"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:343
-msgid "Default Filter On Profile Activity"
+#: admin/class-bp-activity-filter-admin-setting.php:336
+msgid "Profile Activity Filter"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:380
-#: admin/class-bp-activity-filter-admin-setting.php:483
-#: admin/class-bp-activity-filter-admin-setting.php:591
+#: admin/class-bp-activity-filter-admin-setting.php:339
+msgid "Choose the default filter for profile-specific activity display."
+msgstr ""
+
+#: admin/class-bp-activity-filter-admin-setting.php:365
+#: admin/class-bp-activity-filter-admin-setting.php:466
+#: admin/class-bp-activity-filter-admin-setting.php:577
 msgid "Save Settings"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:460
+#: admin/class-bp-activity-filter-admin-setting.php:443
 msgid "Control Auto-Generated Activities"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:463
+#: admin/class-bp-activity-filter-admin-setting.php:446
 msgid ""
 "Manage and customize the automatic generation of activities on your "
 "BuddyPress site. Easily enable or disable specific activities to tailor "
@@ -171,23 +185,27 @@ msgid ""
 "activity newsfeed"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:508
-msgid "Enable Post Type Activites"
+#: admin/class-bp-activity-filter-admin-setting.php:491
+msgid "BuddyPress Activity Integration"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:516
+#: admin/class-bp-activity-filter-admin-setting.php:495
+msgid "Enable BuddyPress Activity Posting for selected Post Type"
+msgstr ""
+
+#: admin/class-bp-activity-filter-admin-setting.php:502
 msgid "Post Type"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:517
+#: admin/class-bp-activity-filter-admin-setting.php:503
 msgid "Enable/Disable"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:518
+#: admin/class-bp-activity-filter-admin-setting.php:504
 msgid "Name for activities"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:581
+#: admin/class-bp-activity-filter-admin-setting.php:567
 msgid ""
 "Sorry, it seems you do not have any custom post type available to allow in "
 "the activity stream."
