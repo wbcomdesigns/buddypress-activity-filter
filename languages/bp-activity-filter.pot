@@ -1,14 +1,14 @@
-# Copyright (C) 2022
+# Copyright (C) 2023
 # This file is distributed under the same license as the  package.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-03 13:23:52+00:00\n"
+"POT-Creation-Date: 2023-12-19 06:23:11+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2022-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Varun Dubey\n"
 "Language-Team: Wbcom Designs\n"
 "Language: en\n"
@@ -86,103 +86,108 @@ msgstr ""
 msgid "Send Feedback"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:50
+#: admin/class-bp-activity-filter-admin-setting.php:53
 msgid "WB Plugins"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:51
+#: admin/class-bp-activity-filter-admin-setting.php:54
 msgid "General"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:53
+#: admin/class-bp-activity-filter-admin-setting.php:56
 msgid "BP Activity Filter"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:77
+#: admin/class-bp-activity-filter-admin-setting.php:81
 #: admin/class-bp-activity-filter-feedback.php:271
 #: admin/class-bp-activity-filter-feedback.php:311
 #: admin/wbcom/templates/wbcom-license-page.php:12
-#: buddypress-activity-filter.php:56
+#: buddypress-activity-filter.php:66
 msgid "BuddyPress Activity Filter"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:78
-#: admin/wbcom/templates/wbcom-license-page.php:13
+#: admin/class-bp-activity-filter-admin-setting.php:84
+#: admin/wbcom/templates/wbcom-license-page.php:16
+#. translators: %s:
 msgid "Version %s"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:84
+#: admin/class-bp-activity-filter-admin-setting.php:91
 msgid "Settings saved."
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:86
+#: admin/class-bp-activity-filter-admin-setting.php:93
 msgid "Dismiss this notice."
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:178
+#: admin/class-bp-activity-filter-admin-setting.php:187
 msgid "Welcome"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:179
+#: admin/class-bp-activity-filter-admin-setting.php:188
 msgid "Default Filter"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:180
+#: admin/class-bp-activity-filter-admin-setting.php:189
 msgid "Remove Activity"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:181
+#: admin/class-bp-activity-filter-admin-setting.php:190
 msgid "CPT Activites"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:272
+#: admin/class-bp-activity-filter-admin-setting.php:284
 msgid "Default Filter Settings"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:278
+#: admin/class-bp-activity-filter-admin-setting.php:291
 msgid "Default Filter for Site Wide Activity"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:285
-#: admin/class-bp-activity-filter-admin-setting.php:349
+#: admin/class-bp-activity-filter-admin-setting.php:295
+#: admin/class-bp-activity-filter-admin-setting.php:347
 msgid "Everything"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:329
+#: admin/class-bp-activity-filter-admin-setting.php:343
 msgid "Default Filter On Profile Activity"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:393
-#: admin/class-bp-activity-filter-admin-setting.php:473
-#: admin/class-bp-activity-filter-admin-setting.php:580
+#: admin/class-bp-activity-filter-admin-setting.php:380
+#: admin/class-bp-activity-filter-admin-setting.php:483
+#: admin/class-bp-activity-filter-admin-setting.php:591
 msgid "Save Settings"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:441
-msgid "Remove Activity Settings"
+#: admin/class-bp-activity-filter-admin-setting.php:460
+msgid "Control Auto-Generated Activities"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:444
-msgid "Any checked activity type will not be recorded as a new activity. "
+#: admin/class-bp-activity-filter-admin-setting.php:463
+msgid ""
+"Manage and customize the automatic generation of activities on your "
+"BuddyPress site. Easily enable or disable specific activities to tailor "
+"your community's experience. Checked options will be skipped in the "
+"activity newsfeed"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:497
+#: admin/class-bp-activity-filter-admin-setting.php:508
 msgid "Enable Post Type Activites"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:505
+#: admin/class-bp-activity-filter-admin-setting.php:516
 msgid "Post Type"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:506
+#: admin/class-bp-activity-filter-admin-setting.php:517
 msgid "Enable/Disable"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:507
+#: admin/class-bp-activity-filter-admin-setting.php:518
 msgid "Name for activities"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:570
+#: admin/class-bp-activity-filter-admin-setting.php:581
 msgid ""
 "Sorry, it seems you do not have any custom post type available to allow in "
 "the activity stream."
@@ -262,32 +267,32 @@ msgstr ""
 msgid "No thanks / I already have"
 msgstr ""
 
-#: admin/wbcom/templates/wbcom-license-page.php:18
+#: admin/wbcom/templates/wbcom-license-page.php:23
 msgid "Plugin License"
 msgstr ""
 
-#: admin/wbcom/templates/wbcom-license-page.php:24
-#: admin/wbcom/templates/wbcom-license-page.php:36
+#: admin/wbcom/templates/wbcom-license-page.php:29
+#: admin/wbcom/templates/wbcom-license-page.php:41
 msgid "Product"
 msgstr ""
 
-#: admin/wbcom/templates/wbcom-license-page.php:25
-#: admin/wbcom/templates/wbcom-license-page.php:37
+#: admin/wbcom/templates/wbcom-license-page.php:30
+#: admin/wbcom/templates/wbcom-license-page.php:42
 msgid "Version"
 msgstr ""
 
-#: admin/wbcom/templates/wbcom-license-page.php:26
-#: admin/wbcom/templates/wbcom-license-page.php:38
+#: admin/wbcom/templates/wbcom-license-page.php:31
+#: admin/wbcom/templates/wbcom-license-page.php:43
 msgid "Key"
 msgstr ""
 
-#: admin/wbcom/templates/wbcom-license-page.php:27
-#: admin/wbcom/templates/wbcom-license-page.php:39
+#: admin/wbcom/templates/wbcom-license-page.php:32
+#: admin/wbcom/templates/wbcom-license-page.php:44
 msgid "Status"
 msgstr ""
 
-#: admin/wbcom/templates/wbcom-license-page.php:28
-#: admin/wbcom/templates/wbcom-license-page.php:40
+#: admin/wbcom/templates/wbcom-license-page.php:33
+#: admin/wbcom/templates/wbcom-license-page.php:45
 msgid "Action"
 msgstr ""
 
@@ -813,35 +818,37 @@ msgstr ""
 msgid "Our Plugins"
 msgstr ""
 
-#: admin/wbcom/wbcom-admin-settings.php:353 buddypress-activity-filter.php:160
+#: admin/wbcom/wbcom-admin-settings.php:353 buddypress-activity-filter.php:170
 msgid "Settings"
 msgstr ""
 
-#: buddypress-activity-filter.php:57
+#: buddypress-activity-filter.php:67
 msgid "BuddyPress"
 msgstr ""
 
-#: buddypress-activity-filter.php:60
+#: buddypress-activity-filter.php:70
 #. translators: %1$s: BuddyPress Activity Filter ;  %2$s: BuddyPress
-msgid "%1$s is ineffective now as it requires %2$s to be installed and active."
+msgid ""
+"%1$s is ineffective now as it requires %2$s to be installed and active. It "
+"is not compatible with BuddyBoss due to similar features."
 msgstr ""
 
-#: buddypress-activity-filter.php:214 buddypress-activity-filter.php:247
+#: buddypress-activity-filter.php:224 buddypress-activity-filter.php:257
 msgid ""
 "BuddyPress Activity Filter requires to be activated on the blog where "
 "BuddyPress is activated."
 msgstr ""
 
-#: buddypress-activity-filter.php:219 buddypress-activity-filter.php:256
+#: buddypress-activity-filter.php:229 buddypress-activity-filter.php:266
 msgid ""
 "BuddyPress Activity Filter and BuddyPress need to share the same network "
 "configuration."
 msgstr ""
 
-#: templates/class-bp-activity-filter-dropdown.php:93
+#: templates/class-bp-activity-filter-dropdown.php:96
 msgid "Topics"
 msgstr ""
 
-#: templates/class-bp-activity-filter-dropdown.php:98
+#: templates/class-bp-activity-filter-dropdown.php:101
 msgid "Replies"
 msgstr ""
