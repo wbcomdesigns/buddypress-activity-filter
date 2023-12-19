@@ -460,7 +460,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 						<h3><?php esc_html_e('Control Auto-Generated Activities', 'bp-activity-filter'); ?></h3>
 					</div>
 					<div class="wbcom-welcome-head">
-						<p class="description"><?php echo esc_html__('Manage and customize the automatic generation of activities on your BuddyPress site. Easily enable or disable specific activities to tailor your community\'s experience', 'bp-activity-filter'); ?></p>
+						<p class="description"><?php echo esc_html__('Manage and customize the automatic generation of activities on your BuddyPress site. Easily enable or disable specific activities to tailor your community\'s experience. Checked options will be skipped in the activity newsfeed', 'bp-activity-filter'); ?></p>
 					</div>
 					<div class="wbcom-admin-option-wrap wbcom-admin-option-wrap-view">
 						<form method="post" novalidate="novalidate" id="bp_activity_filter_hide_setting_form">
