@@ -283,6 +283,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 					<div class="wbcom-admin-title-section">
 						<h3><?php esc_html_e('Default Filter Settings', 'bp-activity-filter'); ?></h3>
 					</div>
+					<div class="wbcom-welcome-head">
+						<p class="description"><?php echo esc_html__('Configure default activity filters for site-wide and profile-specific activities.', 'bp-activity-filter'); ?></p>
+					</div>
 					<div class="wbcom-admin-option-wrap wbcom-admin-option-wrap-view">
 						<form method="post" novalidate="novalidate" id="bp_activity_filter_display_setting_form">
 							<div class="filter-table form-table">
