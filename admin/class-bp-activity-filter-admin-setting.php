@@ -311,9 +311,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									?>
 											<div class="wbcom-settings-section-radio">
 												<input id="<?php echo esc_attr($key . '_radio'); ?>" name="bp-default-filter-name" type="radio" value="<?php echo esc_attr($key); ?>" <?php
-																																															echo esc_html($checked);
-																																															echo esc_html($hide_active);
-																																															?> />
+																																														echo esc_html($checked);
+																																														echo esc_html($hide_active);
+																																														?> />
 												<label>
 													<?php esc_html_e($value, 'bp-activity-filter'); ?>
 												</label>
@@ -364,9 +364,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 										?>
 												<div class="wbcom-settings-section-radio">
 													<input id="<?php echo esc_attr($key . '_profile_radio'); ?>" name="bp-default-profile-filter-name" type="radio" value="<?php echo esc_attr($key); ?>" <?php
-																																																				echo esc_html($checked);
-																																																				echo esc_html($hide_active);
-																																																				?> />
+																																																			echo esc_html($checked);
+																																																			echo esc_html($hide_active);
+																																																			?> />
 													<label>
 														<?php echo esc_html($value); ?>
 													</label>
@@ -445,6 +445,25 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 											<div class="wbcom-settings-section-remove-activity-setting">
 												<?php
+												// Define your current activity types here.
+												$activity_types = [
+													'new_member_registered' => 'New member registered',
+													'member_changed_profile_picture' => 'Member changed profile picture',
+													'member_changed_cover_photo' => 'Member changed cover photo',
+													'updated_profile' => 'Updated Profile',
+													'friendships_accepted' => 'Friendships accepted',
+													'new_friendship_created' => 'New friendship created',
+													'created_a_group' => 'Created a group',
+													'joined_a_group' => 'Joined a group',
+													'group_details_edited' => 'Group details edited',
+													'member_changed_group_picture' => 'Member changed group picture',
+													'member_changed_group_cover_photo' => 'Member changed group cover photo',
+													'new_post_published' => 'New post published',
+													'new_post_comment_posted' => 'New post comment posted',
+													'new_forum_topic' => 'New forum topic', // Added entry
+													'new_forum_reply' => 'New forum reply'  // Added entry
+												];
+
 												// Define an associative array with your new, professional labels.
 												$activity_labels = [
 													'new_member_registered' => 'Member Registration',
@@ -460,8 +479,8 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 													'member_changed_group_cover_photo' => 'Group Cover Update',
 													'new_post_published' => 'Post Published',
 													'new_post_comment_posted' => 'Post Commented',
-													'new_forum_topic' => 'Forum Topic Created', // Added label
-													'new_forum_reply' => 'Forum Reply Posted'  // Added label
+													'new_forum_topic' => 'Forum Topic Created', // New label
+													'new_forum_reply' => 'Forum Reply Posted'  // New label
 												];
 
 												// Loop through your activity types.
@@ -472,13 +491,15 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 														$value = $activity_labels[$key];
 													}
 
+													// Assuming $checked is defined elsewhere in your code
 													// Your existing checkbox and label HTML.
 												?>
-													<input id="<?php echo esc_attr($key . '-checkbox'); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr($key); ?>" <?php echo esc_html($checked); ?> />
-													<label><?php echo esc_html($value); ?></label>
+													<input id="<?php echo esc_attr($key . '-checkbox'); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr($key); ?>" <?php if (isset($checked) && $checked) echo ' checked'; ?> />
+													<label for="<?php echo esc_attr($key . '-checkbox'); ?>"><?php echo esc_html($value); ?></label>
 												<?php
 												}
 												?>
+
 											</div>
 									<?php
 										}
