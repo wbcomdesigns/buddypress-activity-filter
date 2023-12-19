@@ -60,7 +60,7 @@ msgid "CPT Activites"
 msgstr ""
 
 #: admin/class-bp-activity-filter-admin-setting.php:241
-msgid "Apply Default Filter on Activity Page"
+msgid "Default Filter for Site Wide Activity"
 msgstr ""
 
 #: admin/class-bp-activity-filter-admin-setting.php:261
@@ -69,7 +69,7 @@ msgid "Everything"
 msgstr "Alles"
 
 #: admin/class-bp-activity-filter-admin-setting.php:294
-msgid "Apply Default Filter on Profile Activity Page"
+msgid "Default Filter On Profile Activity"
 msgstr ""
 
 #: admin/class-bp-activity-filter-admin-setting.php:351

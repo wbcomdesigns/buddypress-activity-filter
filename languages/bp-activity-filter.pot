@@ -140,7 +140,7 @@ msgid "Default Filter Settings"
 msgstr ""
 
 #: admin/class-bp-activity-filter-admin-setting.php:278
-msgid "Apply Default Filter on Activity Page"
+msgid "Default Filter for Site Wide Activity"
 msgstr ""
 
 #: admin/class-bp-activity-filter-admin-setting.php:285
@@ -149,7 +149,7 @@ msgid "Everything"
 msgstr ""
 
 #: admin/class-bp-activity-filter-admin-setting.php:329
-msgid "Apply Default Filter on Profile Activity Page"
+msgid "Default Filter On Profile Activity"
 msgstr ""
 
 #: admin/class-bp-activity-filter-admin-setting.php:393
