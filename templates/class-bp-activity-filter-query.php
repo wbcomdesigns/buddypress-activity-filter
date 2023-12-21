@@ -158,7 +158,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				} else {
 					$query = 'action=' . $action;
 				}
-			} elseif ( $defult_activity_stream == -1 && ( 1 == $_BP_COOKIE['bpaf-default-filter'] ) || empty( $query ) || ( 1 == $query_size ) ) {
+			} elseif ($defult_activity_stream == -1 && (isset($_BP_COOKIE['bpaf-default-filter']) && 1 == $_BP_COOKIE['bpaf-default-filter']) || empty($query) || (1 == $query_size)) {
 				$count                = 0;
 				$action               = '';
 				$admin_setting_object = new WbCom_BP_Activity_Filter_Admin_Setting();
