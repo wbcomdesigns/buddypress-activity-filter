@@ -283,5 +283,24 @@ function bpfilter_activation_redirect_settings( $plugin ) {
 			exit;
 		}
 	}
+	if ( $plugin == $_REQUEST['plugin'] && class_exists( 'Buddypress' ) ) {
+		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action']  == 'activate-plugin' && isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] == $plugin) { //phpcs:ignore		
+			set_transient( '_bpfilter_is_new_install', true, 30 );
+		}
+	}
 }
 add_action( 'activated_plugin', 'bpfilter_activation_redirect_settings' );
+
+/**
+ * Bpfilter_do_activation_redirect
+ *
+ * @return void
+ */
+function bpfilter_do_activation_redirect() {
+	if ( get_transient( '_bpfilter_is_new_install' ) ) {
+		delete_transient( '_bpfilter_is_new_install' );
+		wp_safe_redirect( admin_url( 'admin.php?page=bp_activity_filter_settings' ) );
+
+	}
+}
+add_action( 'admin_init', 'bpfilter_do_activation_redirect' );
