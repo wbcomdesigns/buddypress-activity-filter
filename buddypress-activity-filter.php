@@ -8,7 +8,7 @@
  * Plugin Name:       Wbcom Designs - BuddyPress Activity Filter
  * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-activity-filter/
  * Description:       It will help set the default filter option with BuddyPress Activity, & also allow disabling selected activity types.
- * Version:           2.8.8
+ * Version:           2.8.9
  * Author:            Wbcom Designs<admin@wbcomdesigns.com>
  * Author URI:        https://wbcomdesigns.com/
  * License:           GPL-2.0+
@@ -22,7 +22,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	wp_die( 'Direct Access is not Allowed' );
 }
-define( 'BP_ACTIVITY_FILTER_PLUGIN_VERSION', '2.8.8' );
+define( 'BP_ACTIVITY_FILTER_PLUGIN_VERSION', '2.8.9' );
 
 define( 'BP_ACTIVITY_FILTER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
@@ -45,7 +45,7 @@ function check_required_plugin_is_activated() {
 			$activate = filter_input( INPUT_GET, 'activate' );
 			unset( $activate );
 		}
-	}elseif( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ){
+	} elseif ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) {
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 		add_action( 'admin_notices', 'bp_activity_filter_required_plugin_admin_notice' );
 		if ( null !== filter_input( INPUT_GET, 'activate' ) ) {
