@@ -66,20 +66,26 @@
 }
 
 .wbcom-settings-section-remove-activity-setting {
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
     align-items: center;
     margin: 8px 0;
     gap: 5px;
 }
+
 .form-table .wbcom-settings-section-remove-activity-setting input[type=checkbox] {
     width: 22px;
     height: 22px;
     min-width: 22px;
     font-size: 0 !important;
-    background:transparent !important;
+    background: transparent !important;
     border: 1px solid #999 !important;
-    border-radius:6px !important;
+    border-radius: 6px !important;
 }
+
 .form-table .wbcom-settings-section-remove-activity-setting input[type=checkbox]:before {
     content: "";
     bottom: 0 !important;
@@ -87,21 +93,26 @@
     top: 0px !important;
     left: 0px !important;
     width: 20px !important;
-    height: 20px !important;    
+    height: 20px !important;
+    -webkit-transition: all .3s;
     transition: all .3s;
-    background:transparent !important;
-    box-shadow: none !important;    
+    background: transparent !important;
+    box-shadow: none !important;
 }
+
 .wbcom-settings-section-remove-activity-setting input[type=checkbox]:checked::before {
+    -webkit-transform: unset !important;
+    -ms-transform: unset !important;
     transform: unset !important;
     content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%233582c4%27%2F%3E%3C%2Fsvg%3E") !important;
 }
 
-.wbcom-admin-option-wrap .form-table .wbcom-settings-section-remove-activity-setting input[type=checkbox]:after{
+.wbcom-admin-option-wrap .form-table .wbcom-settings-section-remove-activity-setting input[type=checkbox]:after {
     display: none !important;
 }
+
 .wbcom-admin-option-wrap .form-table .wbcom-settings-section-remove-activity-setting input[type=checkbox]:checked {
-    background:#f6f7fe !important;
+    background: #f6f7fe !important;
 }
 
 
@@ -242,7 +253,6 @@
     vertical-align: middle;
     text-align: center;
     -webkit-user-select: none;
-    -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
     /* Support: IE <= 11 */
@@ -367,6 +377,7 @@ button.ui-button::-moz-focus-inner {
 .ui-controlgroup-vertical .ui-spinner-input {
     /* Support: IE8 only, Android < 4.4 only */
     width: 75%;
+    width: -webkit-calc(100% - 2.4em);
     width: calc(100% - 2.4em);
 }
 
@@ -921,6 +932,7 @@ button.ui-button::-moz-focus-inner {
 
 .ui-slider.ui-state-disabled .ui-slider-handle,
 .ui-slider.ui-state-disabled .ui-slider-range {
+    -webkit-filter: inherit;
     filter: inherit;
 }
 
@@ -1467,7 +1479,6 @@ a.ui-button:active,
 }
 
 .ui-widget-shadow {
-    -webkit-box-shadow: 0px 0px 5px #666666;
     box-shadow: 0px 0px 5px #666666;
 }
 
@@ -1627,9 +1638,7 @@ table.form-table td.filter-option {
         font-weight: bold;
     }
 
-    /*
-    Label the data
-    */
+    /* Label the data */
     #bp_activity_filter_cpt_setting_form td:before {
         content: attr(data-title);
     }
@@ -1647,15 +1656,15 @@ table.form-table td.filter-option {
 
 @media only screen and (max-width: 480px) {
     #bp_activity_filter_cpt_setting_form td:before {
-        position: absolute;
-        top: 8px;
-        left: 10px;
-        width: 28%;
-        padding-right: 10px;
-        white-space: nowrap;
-        text-align: left;
-        font-weight: bold;
         font-size: 12px;
+        left: 15px;
+    }
+
+    #bp_activity_filter_cpt_setting_form table.form-table td {
+        padding-bottom: 20px !important;
+        padding-top: 30px !important;
+        padding-right: 15px !important;
+        padding-left: 15px !important;
     }
 }
 
