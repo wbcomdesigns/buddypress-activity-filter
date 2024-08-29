@@ -559,20 +559,21 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			check_ajax_referer('bp_activity_filter_nonce', 'nonce', true);
 
 			if (!current_user_can('manage_options')) {
-				wp_send_json_error('Permission denied.');
+				wp_send_json_error(__('Permission denied.', 'bp-activity-filter'));
 			}
 
 			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : '';
 			parse_str($form_data, $setting_form_data);
 
-			$bp_default_filter_name = isset($setting_form_data['bp-default-filter-name']) ? sanitize_text_field($setting_form_data['bp-default-filter-name']) : '';
-			$bp_default_profile_filter_name = isset($setting_form_data['bp-default-profile-filter-name']) ? sanitize_text_field($setting_form_data['bp-default-profile-filter-name']) : '';
+			$bp_default_filter_name = sanitize_text_field($setting_form_data['bp-default-filter-name'] ?? '');
+			$bp_default_profile_filter_name = sanitize_text_field($setting_form_data['bp-default-profile-filter-name'] ?? '');
 
 			bp_update_option('bp-default-filter-name', $bp_default_filter_name);
 			bp_update_option('bp-default-profile-filter-name', $bp_default_profile_filter_name);
 
 			wp_send_json_success();
 		}
+
 
 
 		/**
