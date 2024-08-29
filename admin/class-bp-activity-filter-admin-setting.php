@@ -21,17 +21,14 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		public function __construct()
 		{
 
-			/**
-			 * You need to hook bp_register_admin_settings to register your settings
-			 */
-			add_action('admin_menu', array(&$this, 'bp_activity_filter_admin_menu'), 100);
-			add_action('network_admin_menu', array(&$this, 'bp_activity_filter_admin_menu'), 100);
+			// Hook to register settings
+			add_action('admin_menu', array($this, 'bp_activity_filter_admin_menu'), 100);
+			add_action('network_admin_menu', array($this, 'bp_activity_filter_admin_menu'), 100);
 
 			add_action('wp_ajax_bp_activity_filter_save_display_settings', array($this, 'bp_activity_filter_save_display_settings'));
-
 			add_action('wp_ajax_bp_activity_filter_save_hide_settings', array($this, 'bp_activity_filter_save_hide_settings'));
-
 			add_action('wp_ajax_bp_activity_filter_save_cpt_settings', array($this, 'bp_activity_filter_save_cpt_settings'));
+
 			add_action('in_admin_header', array($this, 'bp_activity_filter_hide_all_admin_notices_from_setting_page'));
 		}
 
@@ -39,7 +36,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * BP Share activity filter
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 */
 		public function bp_activity_filter_admin_menu()
 		{
@@ -50,7 +47,15 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			}
 
 			if (empty($GLOBALS['admin_page_hooks']['wbcomplugins'])) {
-				add_menu_page(esc_html__('WB Plugins', 'bp-activity-filter'), esc_html__('WB Plugins', 'bp-activity-filter'), 'manage_options', 'wbcomplugins', array($this, 'bp_activity_filter_section_settings'), 'dashicons-lightbulb', 59);
+				add_menu_page(
+					esc_html__('WB Plugins', 'bp-activity-filter'),
+					esc_html__('WB Plugins', 'bp-activity-filter'),
+					'manage_options',
+					'wbcomplugins',
+					array($this, 'bp_activity_filter_section_settings'),
+					'dashicons-lightbulb',
+					59
+				);
 				add_submenu_page('wbcomplugins', esc_html__('General', 'bp-activity-filter'), esc_html__('General', 'bp-activity-filter'), 'manage_options', 'wbcomplugins');
 			}
 			add_submenu_page('wbcomplugins', esc_html__('BP Activity Filter', 'bp-activity-filter'), esc_html__('BP Activity Filter', 'bp-activity-filter'), 'manage_options', 'bp_activity_filter_settings', array($this, 'bp_activity_filter_section_settings'));
@@ -60,12 +65,12 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * Settings page content
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 */
 		public function bp_activity_filter_section_settings()
 		{
-			$tab = filter_input(INPUT_GET, 'tab') ? filter_input(INPUT_GET, 'tab') : 'bpaf_welcome';
-?>
+			$tab = sanitize_text_field(filter_input(INPUT_GET, 'tab')) ?: 'bpaf_welcome';
+		?>
 			<div class="wrap">
 				<div class="wbcom-bb-plugins-offer-wrapper">
 					<div id="wb_admin_logo">
@@ -105,28 +110,25 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * Get all labels.
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 */
 		public function bpaf_get_labels()
 		{
-			/* Argument to pass in callback */
 			$filter_actions = buddypress()->activity->actions;
 			$actions        = array();
+
 			foreach (get_object_vars($filter_actions) as $property => $value) {
 				$actions[] = $property;
 			}
+
 			$labels = array();
-			foreach ($actions as $key => $value) {
-				foreach (get_object_vars($filter_actions->$value) as $prop => $val) {
-					if (!empty($val['label'])) {
-						$labels[$val['key']] = $val['label'];
-					} else {
-						$labels[$val['key']] = $val['value'];
-					}
+			foreach ($actions as $value) {
+				foreach (get_object_vars($filter_actions->$value) as $val) {
+					$label_key = $val['key'];
+					$label_value = !empty($val['label']) ? $val['label'] : $val['value'];
+					$labels[$label_key] = $label_value;
 				}
 			}
-
-			// On member pages, default to 'member', unless this is a user's Groups activity.
 
 			$context = '';
 			if (bp_is_user()) {
@@ -135,27 +137,20 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				} else {
 					$context = 'member';
 				}
-
-				// On individual group pages, default to 'group'.
 			} elseif (bp_is_active('groups') && bp_is_group()) {
 				$context = 'group';
-				// 'activity' everywhere else.
 			} else {
 				$context = 'activity';
 			}
 
 			$default_filters = array();
-			// Walk through the registered actions, and prepare an the select box options.
-
 			foreach (bp_activity_get_actions() as $actions) {
 				foreach ($actions as $action) {
-					if (!in_array($context, (array) $action['context'])) {
+					if (!in_array($context, (array) $action['context'], true)) {
 						continue;
 					}
 
-					// Friends activity collapses two filters into one.
-
-					if (in_array($action['key'], array('friendship_accepted', 'friendship_created'))) {
+					if (in_array($action['key'], array('friendship_accepted', 'friendship_created'), true)) {
 						$action['key'] = 'friendship_accepted,friendship_created';
 					}
 					$default_filters[$action['key']] = $action['label'];
@@ -169,7 +164,6 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			}
 
 			$labels = array_reverse(array_unique(array_reverse($labels)));
-			$labels = array_reverse($labels);
 			return $labels;
 		}
 
@@ -177,7 +171,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * Display tabs.
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string $current Current Admin tab.
 		 */
@@ -187,13 +181,13 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				'bpaf_welcome'          => esc_html__('Welcome', 'bp-activity-filter'),
 				'bpaf_display_activity' => esc_html__('Default Filter', 'bp-activity-filter'),
 				'bpaf_hide_activity'    => esc_html__('Remove Activity', 'bp-activity-filter'),
-				'bpaf_cpt_activity'     => esc_html__('CPT Activites', 'bp-activity-filter'),
+				'bpaf_cpt_activity'     => esc_html__('CPT Activities', 'bp-activity-filter'),
 			);
 
-			$tab_html = '<div class="wbcom-tabs-section"><div class="nav-tab-wrapper"><div class="wb-responsive-menu"><span>' . esc_html('Menu') . '</span><input class="wb-toggle-btn" type="checkbox" id="wb-toggle-btn"><label class="wb-toggle-icon" for="wb-toggle-btn"><span class="wb-icon-bars"></span></label></div><ul>';
+			$tab_html = '<div class="wbcom-tabs-section"><div class="nav-tab-wrapper"><div class="wb-responsive-menu"><span>' . esc_html__('Menu', 'bp-activity-filter') . '</span><input class="wb-toggle-btn" type="checkbox" id="wb-toggle-btn"><label class="wb-toggle-icon" for="wb-toggle-btn"><span class="wb-icon-bars"></span></label></div><ul>';
 			foreach ($bpaf_tabs as $bpaf_tab => $bpaf_name) {
-				$class     = ($bpaf_tab == $current) ? 'nav-tab-active' : '';
-				$tab_html .= '<li><a class="nav-tab ' . $class . '" id="' . esc_attr($bpaf_tab) . '" href="admin.php?page=bp_activity_filter_settings&tab=' . $bpaf_tab . '">' . $bpaf_name . '</a></li>';
+				$class     = ($bpaf_tab === $current) ? 'nav-tab-active' : '';
+				$tab_html .= '<li><a class="nav-tab ' . esc_attr($class) . '" id="' . esc_attr($bpaf_tab) . '" href="admin.php?page=bp_activity_filter_settings&tab=' . esc_attr($bpaf_tab) . '">' . esc_html($bpaf_name) . '</a></li>';
 			}
 
 			$tab_html .= '</div></ul></div>';
@@ -202,15 +196,15 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		}
 
 		/**
-		 * Display content according tabs
+		 * Display content according to tabs
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 * @param string $bpaf_tab Tabs.
 		 */
 		public function bpaf_include_admin_setting_tabs($bpaf_tab)
 		{
-			$bpaf_tab = filter_input(INPUT_GET, 'tab') ? filter_input(INPUT_GET, 'tab') : $bpaf_tab;
+			$bpaf_tab = sanitize_text_field(filter_input(INPUT_GET, 'tab')) ?: $bpaf_tab;
 
 			switch ($bpaf_tab) {
 				case 'bpaf_welcome':
@@ -235,7 +229,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * Display content of welcome tab section
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 */
 		public function bpaf_welcome_section()
 		{
@@ -248,16 +242,15 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * Display content of Display Activity tab section
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 */
 		public function bpaf_display_activity_section()
 		{
-			global $bp;
-			$actions = (function_exists('bp_activity_get_actions_for_context')) ? bp_activity_get_actions_for_context('activity') : array();
+			$actions = function_exists('bp_activity_get_actions_for_context') ? bp_activity_get_actions_for_context('activity') : array();
 			$labels  = array();
+
 			foreach ($actions as $action) {
-				// Friends activity collapses two filters into one.
-				if (in_array($action['key'], array('friendship_accepted', 'friendship_created'))) {
+				if (in_array($action['key'], array('friendship_accepted', 'friendship_created'), true)) {
 					$action['key'] = 'friendship_accepted,friendship_created';
 				}
 
@@ -266,17 +259,13 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				}
 			}
 
-			/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
 			$bp_default_activity_value = bp_get_option('bp-default-filter-name');
 			$bp_hidden_filters_value   = bp_get_option('bp-hidden-filters-name');
-			if (is_array($bp_hidden_filters_value) && in_array($bp_default_activity_value, $bp_hidden_filters_value)) {
+
+			if (is_array($bp_hidden_filters_value) && in_array($bp_default_activity_value, $bp_hidden_filters_value, true)) {
 				bp_update_option('bp-default-filter-name', '-1');
 			}
-			$bp_default_activity_value = bp_get_option('bp-default-filter-name');
-			if (empty($bp_default_activity_value)) {
-				$bp_default_activity_value = -1;
-			}
-
+			$bp_default_activity_value = bp_get_option('bp-default-filter-name') ?: -1;
 		?>
 			<div class="wbcom-tab-content">
 				<div class="wbcom-wrapper-admin">
@@ -296,15 +285,12 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									<div class="wbcom-settings-section-select">
 										<p><label for="bp-default-filter-name"><?php esc_html_e('Select the default filter for site-wide activity display.', 'bp-activity-filter'); ?></label></p>
 										<select id="bp-default-filter-name" name="bp-default-filter-name">
-											<option value="-1" <?php echo ($bp_default_activity_value == -1) ? 'selected="selected"' : ''; ?>><?php esc_html_e('Everything', 'bp-activity-filter'); ?></option>
+											<option value="-1" <?php selected($bp_default_activity_value, -1); ?>><?php esc_html_e('Everything', 'bp-activity-filter'); ?></option>
 											<?php
 											foreach ($labels as $key => $value) :
 												if (!empty($value)) {
-													$disabled = '';
-													if (!empty($bp_hidden_filters_value) && in_array($key, $bp_hidden_filters_value)) {
-														$disabled = 'disabled="disabled"';
-													}
-													$selected = ($bp_default_activity_value == $key) ? 'selected="selected"' : '';
+													$disabled = (!empty($bp_hidden_filters_value) && in_array($key, $bp_hidden_filters_value, true)) ? 'disabled="disabled"' : '';
+													$selected = ($bp_default_activity_value === $key) ? 'selected="selected"' : '';
 											?>
 													<option value="<?php echo esc_attr($key); ?>" <?php echo esc_attr($selected); ?> <?php echo esc_attr($disabled); ?>>
 														<?php echo esc_html($value); ?>
@@ -319,16 +305,10 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 							</div>
 							<div class="filter-table form-table">
 								<?php
-								/* if you use bp_get_option(), then you are sure to get the option for the blog BuddyPress is activated on */
-								$bp_default_activity_value = bp_get_option('bp-default-profile-filter-name');
-								$bp_hidden_filters_value   = bp_get_option('bp-hidden-filters-name');
+								$bp_default_profile_activity_value = bp_get_option('bp-default-profile-filter-name') ?: -1;
 
-								if (is_array($bp_hidden_filters_value) && in_array($bp_default_activity_value, $bp_hidden_filters_value)) {
+								if (is_array($bp_hidden_filters_value) && in_array($bp_default_profile_activity_value, $bp_hidden_filters_value, true)) {
 									bp_update_option('bp-default-profile-filter-name', '-1');
-								}
-								$bp_default_activity_value = bp_get_option('bp-default-profile-filter-name');
-								if (empty($bp_default_activity_value)) {
-									$bp_default_activity_value = -1;
 								}
 								?>
 								<div class="wbcom-settings-section-wrap">
@@ -338,17 +318,13 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									<div class="wbcom-settings-section-select">
 										<p><label for="bp-default-profile-filter-name"><?php esc_html_e('Choose the default filter for profile-specific activity display.', 'bp-activity-filter'); ?></label></p>
 										<select id="bp-default-profile-filter-name" name="bp-default-profile-filter-name">
-											<option value="-1" <?php echo ($bp_default_activity_value == -1) ? 'selected="selected"' : ''; ?>><?php esc_html_e('Everything', 'bp-activity-filter'); ?></option>
+											<option value="-1" <?php selected($bp_default_profile_activity_value, -1); ?>><?php esc_html_e('Everything', 'bp-activity-filter'); ?></option>
 											<?php
-											unset($labels['new_member']);
-											unset($labels['updated_profile']);
+											unset($labels['new_member'], $labels['updated_profile']);
 											foreach ($labels as $key => $value) :
 												if (!empty($value)) {
-													$disabled = '';
-													if (!empty($bp_hidden_filters_value) && in_array($key, $bp_hidden_filters_value)) {
-														$disabled = 'disabled="disabled"';
-													}
-													$selected = ($bp_default_activity_value == $key) ? 'selected="selected"' : '';
+													$disabled = (!empty($bp_hidden_filters_value) && in_array($key, $bp_hidden_filters_value, true)) ? 'disabled="disabled"' : '';
+													$selected = ($bp_default_profile_activity_value === $key) ? 'selected="selected"' : '';
 											?>
 													<option value="<?php echo esc_attr($key); ?>" <?php echo esc_attr($selected); ?> <?php echo esc_attr($disabled); ?>>
 														<?php echo esc_html($value); ?>
@@ -376,66 +352,49 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * Display content of Hide Activity tab section
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 */
 		public function bpaf_hide_activity_section()
 		{
-			global $bp;
-
-			// Fetch activity actions and initialize labels array.
 			$activity_actions = function_exists('bp_activity_get_actions') ? bp_activity_get_actions() : array();
 			$labels = array();
 
-			// Process activity actions to populate labels.
 			foreach ($activity_actions as $component => $actions) {
 				foreach ($actions as $action_key => $action_values) {
-					// Collapse friendship actions into one.
-					if (in_array($action_key, array('friendship_accepted', 'friendship_created'))) {
+					if (in_array($action_key, array('friendship_accepted', 'friendship_created'), true)) {
 						$action_key = 'friendship_accepted,friendship_created';
 					}
-
-					// Add unique action labels.
-					if (!array_key_exists($action_key, $labels)) {
-						$labels[$action_key] = $action_values['value'];
-					}
+					$labels[$action_key] = $action_values['value'];
 				}
 			}
 
-			// Remove specific labels if present.
 			foreach (['activity_update', 'activity_comment', 'new_blog_post', 'new_blog_comment'] as $unwanted_key) {
-				if (array_key_exists($unwanted_key, $labels)) {
-					unset($labels[$unwanted_key]);
-				}
+				unset($labels[$unwanted_key]);
 			}
 
-			// Define an associative array with your new, professional labels.
-			$professional_labels = [
-				'new_member' => 'New Member Registered',
-				'new_avatar' => 'Profile Picture Updated',
-				'new_cover_photo' => 'Cover Photo Updated',
-				'updated_profile' => 'Profile Updated',
-				'friendship_accepted,friendship_created' => 'Friendship Status Changed',
-				'friends_register_activity_action' => 'Friendship Activity Registered',
-				'created_group' => 'New Group Created',
-				'joined_group' => 'Joined a Group',
-				'group_details_updated' => 'Group Details Updated',
-				'new_group_avatar' => 'Group Avatar Updated',
-				'new_group_cover_photo' => 'Group Cover Photo Updated',
-				'bbp_topic_create' => 'Forum Topic Created',
-				'bbp_reply_create' => 'Forum Reply Posted'
-			];
+			$professional_labels = array(
+				'new_member' => esc_html__('New Member Registered', 'bp-activity-filter'),
+				'new_avatar' => esc_html__('Profile Picture Updated', 'bp-activity-filter'),
+				'new_cover_photo' => esc_html__('Cover Photo Updated', 'bp-activity-filter'),
+				'updated_profile' => esc_html__('Profile Updated', 'bp-activity-filter'),
+				'friendship_accepted,friendship_created' => esc_html__('Friendship Status Changed', 'bp-activity-filter'),
+				'friends_register_activity_action' => esc_html__('Friendship Activity Registered', 'bp-activity-filter'),
+				'created_group' => esc_html__('New Group Created', 'bp-activity-filter'),
+				'joined_group' => esc_html__('Joined a Group', 'bp-activity-filter'),
+				'group_details_updated' => esc_html__('Group Details Updated', 'bp-activity-filter'),
+				'new_group_avatar' => esc_html__('Group Avatar Updated', 'bp-activity-filter'),
+				'new_group_cover_photo' => esc_html__('Group Cover Photo Updated', 'bp-activity-filter'),
+				'bbp_topic_create' => esc_html__('Forum Topic Created', 'bp-activity-filter'),
+				'bbp_reply_create' => esc_html__('Forum Reply Posted', 'bp-activity-filter')
+			);
 
-			// Update the original $labels array with professional labels.
 			foreach ($labels as $key => &$value) {
-				if (array_key_exists($key, $professional_labels)) {
+				if (isset($professional_labels[$key])) {
 					$value = $professional_labels[$key];
 				}
 			}
 
-			// Fetch hidden filters option.
 			$bp_hidden_filters_value = bp_get_option('bp-hidden-filters-name');
-
-			// Output form with checkboxes.
 		?>
 			<div class="wbcom-tab-content">
 				<div class="wbcom-wrapper-admin">
@@ -451,7 +410,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 								<div class="wbcom-settings-section-wrap">
 									<?php foreach ($labels as $key => $value) :
 										if (!empty($value)) {
-											$checked = in_array($key, (array)$bp_hidden_filters_value) ? " checked='checked' " : '';
+											$checked = in_array($key, (array)$bp_hidden_filters_value, true) ? " checked='checked' " : '';
 									?>
 											<div class="wbcom-settings-section-remove-activity-setting">
 												<input id="<?php echo esc_attr($key . '-checkbox'); ?>" name="bp-hidden-filters-name[]" type="checkbox" value="<?php echo esc_attr($key); ?>" <?php echo esc_attr($checked); ?> />
@@ -474,14 +433,13 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		}
 
 		/**
-		 * Display content of Display Activity tab section
+		 * Display content of Custom post type Activity tab section
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 */
 		public function bpaf_cpt_activity_section()
 		{
-
 			$cpt_filter_val = bp_get_option('bp-cpt-filters-settings');
 		?>
 			<div class="wbcom-tab-content">
@@ -510,8 +468,8 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									'exclude_from_search' => false,
 								);
 
-								$output   = 'names'; // names or objects, note names is the default.
-								$operator = 'and'; // 'and' or 'or'
+								$output   = 'names';
+								$operator = 'and';
 
 								$post_types = get_post_types($args, $output, $operator);
 
@@ -523,29 +481,11 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 										$post_details = get_post_type_object($post_type);
 
-										if (!empty($cpt_filter_val)) {
-											$saved_settings = (isset($cpt_filter_val['bpaf_admin_settings'][$post_type])) ? $cpt_filter_val['bpaf_admin_settings'][$post_type] : array();
-										}
+										$saved_settings = isset($cpt_filter_val['bpaf_admin_settings'][$post_type]) ? $cpt_filter_val['bpaf_admin_settings'][$post_type] : array();
 
-										if (!empty($saved_settings) && array_key_exists('display_type', $saved_settings)) {
-											$display_type = $saved_settings['display_type'];
-										} else {
-											$display_type = '';
-										}
+										$display_type = $saved_settings['display_type'] ?? '';
+										$value = $saved_settings['new_label'] ?? '';
 
-										if (!empty($saved_settings) && array_key_exists('group', $saved_settings)) {
-
-											$group = $saved_settings['group'];
-										} else {
-
-											$group = '';
-										}
-
-										if (isset($saved_settings['new_label'])) {
-											$value = $saved_settings['new_label'];
-										} else {
-											$value = '';
-										}
 								?>
 
 										<tr>
@@ -555,7 +495,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 												<input id="<?php echo esc_attr($post_type . '_radio'); ?>" name="<?php echo esc_attr("bpaf_admin_settings[$post_type][display_type]"); ?>" type="checkbox" value="enable" <?php checked($display_type, 'enable'); ?> />
 											</td>
 											<td class="filter-option" data-title="Upload Label">
-												<input id="<?php echo esc_attr($post_type . '_text'); ?>" placeholder='<?php echo esc_html(strtolower($post_details->labels->singular_name)); ?>' name='<?php echo esc_attr("bpaf_admin_settings[$post_type][new_label]"); ?>' type="text" value="<?php echo esc_attr($value); ?>" />
+												<input id="<?php echo esc_attr($post_type . '_text'); ?>" placeholder='<?php echo esc_attr(strtolower($post_details->labels->singular_name)); ?>' name='<?php echo esc_attr("bpaf_admin_settings[$post_type][new_label]"); ?>' type="text" value="<?php echo esc_attr($value); ?>" />
 											</td>
 										</tr>
 
@@ -588,31 +528,41 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * Save content of Display Activity tab section
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 */
 		public function bp_activity_filter_save_display_settings()
 		{
-			// Check for nonce security.
-			$admin_nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
-			if (!wp_verify_nonce($admin_nonce, 'bp_activity_filter_nonce')) {
-				die('Busted!');
-			}
-			$form_data = isset($_POST['form_data']) ? sanitize_text_field(wp_unslash($_POST['form_data'])) : '';
+			check_ajax_referer('bp_activity_filter_nonce', 'nonce');
+
+			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : '';
 			parse_str($form_data, $setting_form_data);
 
-			$form_details = filter_var_array($setting_form_data, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-			$bp_default_filter_name = $form_details['bp-default-filter-name'];
-			if ('friendship_acceptedfriendship_created' == $bp_default_filter_name) {
+			// Sanitize the input data using WordPress functions
+			$form_details = [];
+			foreach ($setting_form_data as $key => $value) {
+				if ($key === 'bp-default-filter-name' || $key === 'bp-default-profile-filter-name') {
+					$form_details[$key] = sanitize_text_field($value);
+				} elseif ($key === 'some_url_field') { // Example, replace with actual field key
+					$form_details[$key] = esc_url_raw($value);
+				} else {
+					$form_details[$key] = sanitize_text_field($value);
+				}
+			}
+
+			$bp_default_filter_name = $form_details['bp-default-filter-name'] ?? '-1';
+			$bp_default_profile_filter_name = $form_details['bp-default-profile-filter-name'] ?? '-1';
+
+			if ($bp_default_filter_name === 'friendship_acceptedfriendship_created') {
 				$freindship = explode('ed', $bp_default_filter_name);
 				$bp_default_filter_name = $freindship[0] . 'ed,' . $freindship[1] . 'ed';
 			}
-			$bp_default_profile_filter_name = $form_details['bp-default-profile-filter-name'];
-			if ('friendship_acceptedfriendship_created' == $bp_default_profile_filter_name) {
+
+			if ($bp_default_profile_filter_name === 'friendship_acceptedfriendship_created') {
 				$freindship = explode('ed', $bp_default_profile_filter_name);
 				$bp_default_profile_filter_name = $freindship[0] . 'ed,' . $freindship[1] . 'ed';
 			}
-			bp_update_option('bp-default-filter-name', $bp_default_filter_name);
 
+			bp_update_option('bp-default-filter-name', $bp_default_filter_name);
 			bp_update_option('bp-default-profile-filter-name', $bp_default_profile_filter_name);
 
 			wp_die();
@@ -622,20 +572,23 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * Save content of Hide Activity tab section
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 */
 		public function bp_activity_filter_save_hide_settings()
 		{
-			$admin_nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
-			if (!wp_verify_nonce($admin_nonce, 'bp_activity_filter_nonce')) {
-				die('Busted!');
-			}
-			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			check_ajax_referer('bp_activity_filter_nonce', 'nonce');
+
+			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : '';
 			parse_str($form_data, $setting_form_data);
 
-			$form_details = filter_var_array( $setting_form_data, FILTER_SANITIZE_SPECIAL_CHARS );
+			// Sanitize the input data using WordPress functions
+			$form_details = [];
+			foreach ($setting_form_data as $key => $value) {
+				$form_details[$key] = sanitize_text_field($value);
+			}
 
-			$bp_hidden_filter_name = (isset($form_details['bp-hidden-filters-name'])) ? $form_details['bp-hidden-filters-name'] : array();
+			$bp_hidden_filter_name = $form_details['bp-hidden-filters-name'] ?? array();
+
 			bp_update_option('bp-hidden-filters-name', $bp_hidden_filter_name);
 
 			wp_die();
@@ -645,18 +598,21 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * Save content of Custom post type Activity tab section
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 */
 		public function bp_activity_filter_save_cpt_settings()
 		{
-			$admin_nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
-			if (!wp_verify_nonce($admin_nonce, 'bp_activity_filter_nonce')) {
-				die('Busted!');
-			}
-			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			check_ajax_referer('bp_activity_filter_nonce', 'nonce');
+
+			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : '';
 			parse_str($form_data, $cpt_settings_data);
 
-			$cpt_settings_details = filter_var_array( $cpt_settings_data, FILTER_SANITIZE_SPECIAL_CHARS );
+			// Sanitize the input data using WordPress functions
+			$cpt_settings_details = [];
+			foreach ($cpt_settings_data as $key => $value) {
+				$cpt_settings_details[$key] = sanitize_text_field($value);
+			}
+
 			bp_update_option('bp-cpt-filters-settings', $cpt_settings_details);
 
 			wp_die();
@@ -670,7 +626,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		public function bp_activity_filter_hide_all_admin_notices_from_setting_page()
 		{
 			$wbcom_pages_array  = array('wbcomplugins', 'wbcom-plugins-page', 'wbcom-support-page', 'bp_activity_filter_settings');
-			$wbcom_setting_page = filter_input(INPUT_GET, 'page') ? filter_input(INPUT_GET, 'page') : '';
+			$wbcom_setting_page = sanitize_text_field(filter_input(INPUT_GET, 'page')) ?: '';
 
 			if (in_array($wbcom_setting_page, $wbcom_pages_array, true)) {
 				remove_all_actions('admin_notices');
@@ -679,8 +635,6 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		}
 	}
 }
-
-
 
 if (class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 	$admin_setting_obj = new WbCom_BP_Activity_Filter_Admin_Setting();
