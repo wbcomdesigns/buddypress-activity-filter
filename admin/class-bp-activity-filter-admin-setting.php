@@ -615,20 +615,21 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 */
 		public function bp_activity_filter_save_hide_settings()
 		{
-			$admin_nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
-			if (!wp_verify_nonce($admin_nonce, 'bp_activity_filter_nonce')) {
-				wp_send_json_error('Nonce verification failed.');
+			check_ajax_referer('bp_activity_filter_nonce', 'nonce', true);
+
+			if (!current_user_can('manage_options')) {
+				wp_send_json_error('Permission denied.');
 			}
-			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : '';
 			parse_str($form_data, $setting_form_data);
 
-			$form_details = filter_var_array($setting_form_data, FILTER_SANITIZE_STRING);
-
-			$bp_hidden_filter_name = (isset($form_details['bp-hidden-filters-name'])) ? $form_details['bp-hidden-filters-name'] : array();
+			$bp_hidden_filter_name = isset($setting_form_data['bp-hidden-filters-name']) ? array_map('sanitize_text_field', $setting_form_data['bp-hidden-filters-name']) : array();
 			bp_update_option('bp-hidden-filters-name', $bp_hidden_filter_name);
 
-			wp_die();
+			wp_send_json_success();
 		}
+
 
 		/**
 		 * Save content of Custom post type Activity tab section
