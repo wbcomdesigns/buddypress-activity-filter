@@ -588,10 +588,10 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 */
 		public function bp_activity_filter_save_display_settings()
 		{
-			// Check for nonce security.
-			$admin_nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
-			if (!wp_verify_nonce($admin_nonce, 'bp_activity_filter_nonce')) {
-				wp_send_json_error('Nonce verification failed.');
+			check_ajax_referer('bp_activity_filter_nonce', 'nonce', true);
+
+			if (!current_user_can('manage_options')) {
+				wp_send_json_error('Permission denied.');
 			}
 
 			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : '';
@@ -600,21 +600,12 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			$bp_default_filter_name = isset($setting_form_data['bp-default-filter-name']) ? sanitize_text_field($setting_form_data['bp-default-filter-name']) : '';
 			$bp_default_profile_filter_name = isset($setting_form_data['bp-default-profile-filter-name']) ? sanitize_text_field($setting_form_data['bp-default-profile-filter-name']) : '';
 
-			if ('friendship_acceptedfriendship_created' == $bp_default_filter_name) {
-				$freindship = explode('ed', $bp_default_filter_name);
-				$bp_default_filter_name = $freindship[0] . 'ed,' . $freindship[1] . 'ed';
-			}
-			$bp_default_profile_filter_name = $form_details['bp-default-profile-filter-name'];
-			if ('friendship_acceptedfriendship_created' == $bp_default_profile_filter_name) {
-				$freindship = explode('ed', $bp_default_profile_filter_name);
-				$bp_default_profile_filter_name = $freindship[0] . 'ed,' . $freindship[1] . 'ed';
-			}
 			bp_update_option('bp-default-filter-name', $bp_default_filter_name);
-
 			bp_update_option('bp-default-profile-filter-name', $bp_default_profile_filter_name);
 
-			wp_die();
+			wp_send_json_success();
 		}
+
 
 		/**
 		 * Save content of Hide Activity tab section
