@@ -39,12 +39,6 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 */
 		public function bp_activity_filter_admin_menu()
 		{
-			if (is_network_admin()) {
-				$admin_url = 'network/admin.php?page=bp_activity_filter_settings';
-			} else {
-				$admin_url = 'admin.php?page=bp_activity_filter_settings';
-			}
-
 			if (empty($GLOBALS['admin_page_hooks']['wbcomplugins'])) {
 				add_menu_page(esc_html__('WB Plugins', 'bp-activity-filter'), esc_html__('WB Plugins', 'bp-activity-filter'), 'manage_options', 'wbcomplugins', array($this, 'bp_activity_filter_section_settings'), 'dashicons-lightbulb', 59);
 				add_submenu_page('wbcomplugins', esc_html__('General', 'bp-activity-filter'), esc_html__('General', 'bp-activity-filter'), 'manage_options', 'wbcomplugins');
