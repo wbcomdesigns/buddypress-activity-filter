@@ -17,8 +17,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 		 * Constructor
 		 */
 		public function __construct() {
-			// transition_post_status.
-			add_action( 'transition_post_status', array( &$this, 'bpaf_customize_page_tracking_args' ), 999, 3 );
+			add_action( 'transition_post_status', array( $this, 'bpaf_customize_page_tracking_args' ), 999, 3 );
 		}
 
 		/**
