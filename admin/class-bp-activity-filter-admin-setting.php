@@ -639,18 +639,21 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 */
 		public function bp_activity_filter_save_cpt_settings()
 		{
-			$admin_nonce = isset($_POST['nonce']) ? sanitize_text_field(wp_unslash($_POST['nonce'])) : '';
-			if (!wp_verify_nonce($admin_nonce, 'bp_activity_filter_nonce')) {
-				wp_send_json_error('Nonce verification failed.');
+			check_ajax_referer('bp_activity_filter_nonce', 'nonce', true);
+
+			if (!current_user_can('manage_options')) {
+				wp_send_json_error('Permission denied.');
 			}
-			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : '';
 			parse_str($form_data, $cpt_settings_data);
 
-			$cpt_settings_details = filter_var_array($cpt_settings_data, FILTER_SANITIZE_STRING);
+			$cpt_settings_details = isset($cpt_settings_data) ? array_map('sanitize_text_field', $cpt_settings_data) : array();
 			bp_update_option('bp-cpt-filters-settings', $cpt_settings_details);
 
-			wp_die();
+			wp_send_json_success();
 		}
+
 
 		/**
 		 * Hide all notices from the setting page.
