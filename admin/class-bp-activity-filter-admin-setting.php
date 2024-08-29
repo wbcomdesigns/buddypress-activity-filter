@@ -20,20 +20,16 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 */
 		public function __construct()
 		{
-
-			/**
-			 * You need to hook bp_register_admin_settings to register your settings
-			 */
-			add_action('admin_menu', array(&$this, 'bp_activity_filter_admin_menu'), 100);
-			add_action('network_admin_menu', array(&$this, 'bp_activity_filter_admin_menu'), 100);
+			add_action('admin_menu', array($this, 'bp_activity_filter_admin_menu'), 100);
+			add_action('network_admin_menu', array($this, 'bp_activity_filter_admin_menu'), 100);
 
 			add_action('wp_ajax_bp_activity_filter_save_display_settings', array($this, 'bp_activity_filter_save_display_settings'));
-
 			add_action('wp_ajax_bp_activity_filter_save_hide_settings', array($this, 'bp_activity_filter_save_hide_settings'));
-
 			add_action('wp_ajax_bp_activity_filter_save_cpt_settings', array($this, 'bp_activity_filter_save_cpt_settings'));
+
 			add_action('in_admin_header', array($this, 'bp_activity_filter_hide_all_admin_notices_from_setting_page'));
 		}
+
 
 		/**
 		 * BP Share activity filter
