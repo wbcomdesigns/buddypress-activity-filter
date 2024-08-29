@@ -631,10 +631,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 */
 		public function bp_activity_filter_hide_all_admin_notices_from_setting_page()
 		{
-			$wbcom_pages_array  = array('wbcomplugins', 'wbcom-plugins-page', 'wbcom-support-page', 'bp_activity_filter_settings');
-			$wbcom_setting_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+			$wbcom_setting_page = sanitize_text_field($_GET['page'] ?? '');
 
-			if (in_array($wbcom_setting_page, $wbcom_pages_array, true)) {
+			if (in_array($wbcom_setting_page, array('wbcomplugins', 'wbcom-plugins-page', 'wbcom-support-page', 'bp_activity_filter_settings'), true)) {
 				remove_all_actions('admin_notices');
 				remove_all_actions('all_admin_notices');
 			}
