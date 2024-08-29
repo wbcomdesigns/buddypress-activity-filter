@@ -99,52 +99,29 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 */
 		public function bpaf_get_labels()
 		{
-			/* Argument to pass in callback */
 			$filter_actions = buddypress()->activity->actions;
-			$actions        = array();
-			foreach (get_object_vars($filter_actions) as $property => $value) {
-				$actions[] = $property;
-			}
+			$actions        = array_keys(get_object_vars($filter_actions));
 			$labels = array();
-			foreach ($actions as $key => $value) {
-				foreach (get_object_vars($filter_actions->$value) as $prop => $val) {
-					if (!empty($val['label'])) {
-						$labels[$val['key']] = $val['label'];
-					} else {
-						$labels[$val['key']] = $val['value'];
-					}
+
+			foreach ($actions as $value) {
+				foreach (get_object_vars($filter_actions->$value) as $val) {
+					$labels[$val['key']] = !empty($val['label']) ? $val['label'] : $val['value'];
 				}
 			}
 
-			// On member pages, default to 'member', unless this is a user's Groups activity.
-
-			$context = '';
+			$context = 'activity';
 			if (bp_is_user()) {
-				if (bp_is_active('groups') && bp_is_current_action(bp_get_groups_slug())) {
-					$context = 'member_groups';
-				} else {
-					$context = 'member';
-				}
-
-				// On individual group pages, default to 'group'.
+				$context = (bp_is_active('groups') && bp_is_current_action(bp_get_groups_slug())) ? 'member_groups' : 'member';
 			} elseif (bp_is_active('groups') && bp_is_group()) {
 				$context = 'group';
-				// 'activity' everywhere else.
-			} else {
-				$context = 'activity';
 			}
 
 			$default_filters = array();
-			// Walk through the registered actions, and prepare an the select box options.
-
 			foreach (bp_activity_get_actions() as $actions) {
 				foreach ($actions as $action) {
 					if (!in_array($context, (array) $action['context'])) {
 						continue;
 					}
-
-					// Friends activity collapses two filters into one.
-
 					if (in_array($action['key'], array('friendship_accepted', 'friendship_created'))) {
 						$action['key'] = 'friendship_accepted,friendship_created';
 					}
@@ -153,15 +130,12 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			}
 
 			foreach ($default_filters as $key => $value) {
-				if (!array_key_exists($key, $labels)) {
-					$labels[$key] = $value;
-				}
+				$labels[$key] = $labels[$key] ?? $value;
 			}
 
-			$labels = array_reverse(array_unique(array_reverse($labels)));
-			$labels = array_reverse($labels);
-			return $labels;
+			return array_reverse(array_unique(array_reverse($labels)));
 		}
+
 
 		/**
 		 * Display tabs.
