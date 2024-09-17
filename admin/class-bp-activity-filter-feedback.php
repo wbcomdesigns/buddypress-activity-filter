@@ -3,16 +3,13 @@
  * Plugin review class.
  * Prompts users to give a review of the plugin on WordPress.org after a period of usage.
  *
- * Heavily based on code by Rhys Wynne
- * https://winwar.co.uk/2014/10/ask-wordpress-plugin-reviews-week/
- *
  * @package BuddyPress_Activity_Filter
  */
 
 if ( ! class_exists( 'BP_Activity_Filter_Feedback' ) ) :
 
 	/**
-	 * The feedback.
+	 * The feedback class.
 	 */
 	class BP_Activity_Filter_Feedback {
 
@@ -54,20 +51,16 @@ if ( ! class_exists( 'BP_Activity_Filter_Feedback' ) ) :
 		/**
 		 * Class constructor.
 		 *
-		 * @param string $args Arguments.
+		 * @param array $args Arguments.
 		 */
 		public function __construct( $args ) {
-			$this->slug = $args['slug'];
-			$this->name = $args['name'];
+			$this->slug = sanitize_text_field( $args['slug'] );
+			$this->name = sanitize_text_field( $args['name'] );
 
 			$this->date_option  = $this->slug . '_activation_date';
 			$this->nobug_option = $this->slug . '_no_bug';
 
-			if ( isset( $args['time_limit'] ) ) {
-				$this->time_limit = $args['time_limit'];
-			} else {
-				$this->time_limit = WEEK_IN_SECONDS;
-			}
+			$this->time_limit = isset( $args['time_limit'] ) ? intval( $args['time_limit'] ) : WEEK_IN_SECONDS;
 
 			// Add actions.
 			add_action( 'admin_init', array( $this, 'check_installation_date' ) );
@@ -75,14 +68,15 @@ if ( ! class_exists( 'BP_Activity_Filter_Feedback' ) ) :
 		}
 
 		/**
-		 * Seconds to words.
+		 * Convert seconds to human-readable time.
 		 *
-		 * @param string $seconds Seconds in time.
+		 * @param int $seconds Time in seconds.
+		 * @return string Human-readable time.
 		 */
 		public function seconds_to_words( $seconds ) {
 
 			// Get the years.
-			$years = ( intval( $seconds ) / YEAR_IN_SECONDS ) % 100;
+			$years = floor( $seconds / YEAR_IN_SECONDS );
 			if ( $years > 1 ) {
 				/* translators: Number of years */
 				return sprintf( __( '%s years', 'bp-activity-filter' ), $years );
@@ -91,7 +85,7 @@ if ( ! class_exists( 'BP_Activity_Filter_Feedback' ) ) :
 			}
 
 			// Get the weeks.
-			$weeks = ( intval( $seconds ) / WEEK_IN_SECONDS ) % 52;
+			$weeks = floor( $seconds / WEEK_IN_SECONDS ) % 52;
 			if ( $weeks > 1 ) {
 				/* translators: Number of weeks */
 				return sprintf( __( '%s weeks', 'bp-activity-filter' ), $weeks );
@@ -100,7 +94,7 @@ if ( ! class_exists( 'BP_Activity_Filter_Feedback' ) ) :
 			}
 
 			// Get the days.
-			$days = ( intval( $seconds ) / DAY_IN_SECONDS ) % 7;
+			$days = floor( $seconds / DAY_IN_SECONDS ) % 7;
 			if ( $days > 1 ) {
 				/* translators: Number of days */
 				return sprintf( __( '%s days', 'bp-activity-filter' ), $days );
@@ -109,7 +103,7 @@ if ( ! class_exists( 'BP_Activity_Filter_Feedback' ) ) :
 			}
 
 			// Get the hours.
-			$hours = ( intval( $seconds ) / HOUR_IN_SECONDS ) % 24;
+			$hours = floor( $seconds / HOUR_IN_SECONDS ) % 24;
 			if ( $hours > 1 ) {
 				/* translators: Number of hours */
 				return sprintf( __( '%s hours', 'bp-activity-filter' ), $hours );
@@ -118,7 +112,7 @@ if ( ! class_exists( 'BP_Activity_Filter_Feedback' ) ) :
 			}
 
 			// Get the minutes.
-			$minutes = ( intval( $seconds ) / MINUTE_IN_SECONDS ) % 60;
+			$minutes = floor( $seconds / MINUTE_IN_SECONDS ) % 60;
 			if ( $minutes > 1 ) {
 				/* translators: Number of minutes */
 				return sprintf( __( '%s minutes', 'bp-activity-filter' ), $minutes );
@@ -134,6 +128,8 @@ if ( ! class_exists( 'BP_Activity_Filter_Feedback' ) ) :
 			} elseif ( $seconds > 0 ) {
 				return __( 'a second', 'bp-activity-filter' );
 			}
+
+			return __( 'just now', 'bp-activity-filter' );
 		}
 
 		/**
@@ -160,7 +156,7 @@ if ( ! class_exists( 'BP_Activity_Filter_Feedback' ) ) :
 			$screen = get_current_screen();
 
 			if ( isset( $screen->base ) && 'plugins' === $screen->base ) {
-				$no_bug_url = wp_nonce_url( admin_url( '?' . $this->nobug_option . '=true' ), 'bp-activity-filter-feedback-nounce' );
+				$no_bug_url = wp_nonce_url( admin_url( '?' . $this->nobug_option . '=true' ), 'bp-activity-filter-feedback-nonce' );
 				$time       = $this->seconds_to_words( time() - get_site_option( $this->date_option ) );
 				?>
 
@@ -292,8 +288,8 @@ if ( ! class_exists( 'BP_Activity_Filter_Feedback' ) ) :
 		 */
 		public function set_no_bug() {
 
-			// Bail out if not on correct page.
-			if ( ! isset( $_GET['_wpnonce'] ) || ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'bp-activity-filter-feedback-nounce' ) || ! is_admin() || ! isset( $_GET[ $this->nobug_option ] ) || ! current_user_can( 'manage_options' ) ) ) {
+			// Bail out if not on the correct page.
+			if ( ! isset( $_GET['_wpnonce'] ) || ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'bp-activity-filter-feedback-nonce' ) || ! is_admin() || ! isset( $_GET[ $this->nobug_option ] ) || ! current_user_can( 'manage_options' ) ) ) {
 				return;
 			}
 

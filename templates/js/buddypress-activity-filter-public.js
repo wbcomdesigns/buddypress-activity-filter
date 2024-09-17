@@ -1,36 +1,29 @@
 (function($) {
   'use strict';
 
+  // Ensure jQuery.cookie plugin is used properly and cookie is set when the page is unloaded.
   window.onbeforeunload = function(e) {
-    jQuery.cookie("bpaf-default-filter", "1", {
+    $.cookie("bpaf-default-filter", "1", {
       path: '/'
     });
-    jQuery("#activity-filter-by option[value='" + bpaf_js_object.default_filter + "']").prop('selected', true);
+    $("#activity-filter-by option[value='" + bpaf_js_object.default_filter + "']").prop('selected', true);
   };
-});
 
-window.wp = window.wp || {};
-window.bp = window.bp || {};
-jQuery(document).ready(function($) {
-  window.onbeforeunload = function(e) {
-    jQuery.cookie("bpaf-default-filter", "1", {
+  $(document).ready(function() {
+    // Set the default filter cookie when the document is ready
+    $.cookie("bpaf-default-filter", "1", {
       path: '/'
     });
-  };
-  jQuery.cookie("bpaf-default-filter", "1", {
-    path: '/'
-  });
-  //console.log(bpaf_js_object.default_filter);
-  jQuery("#activity-filter-by option[value='" + bpaf_js_object.default_filter + "']").prop('selected', true);
-  // jQuery('#activity-filter-by').append(jQuery('<option></option>')
-  //   .attr('value', bpaf_js_object.default_filter)
-  //   .text(bpaf_js_object.default_filter.replace(/_/, ' ').toUpperCase())
-  //   .prop('selected', true)
-  // );
 
-  jQuery('#activity-filter-by').on('click', function() {
-    jQuery.cookie("bpaf-default-filter", null, {
-      path: '/'
+    // Select the default filter option in the dropdown
+    $("#activity-filter-by option[value='" + bpaf_js_object.default_filter + "']").prop('selected', true);
+
+    // Clear the cookie when the activity filter dropdown is clicked
+    $('#activity-filter-by').on('click', function() {
+      $.removeCookie("bpaf-default-filter", {
+        path: '/'
+      });
     });
   });
-});
+
+})(jQuery);

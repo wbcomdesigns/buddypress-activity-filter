@@ -1,189 +1,221 @@
 <?php
 /**
- * Including CSS  for addmin setting.
+ * Including CSS for admin setting.
  *
  * @package BuddyPress_Activity_Filter
  */
 
-if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
+ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
 
-	/**
-	 * Including CSS  for addmin setting.
-	 *
-	 * @package BuddyPress_Activity_Filter
-	 */
-	class WbCom_BP_Activity_Filter_Add_Post_Type_Support {
-		/**
-		 * Constructor
-		 */
-		public function __construct() {
-			// transition_post_status.
-			add_action( 'transition_post_status', array( &$this, 'bpaf_customize_page_tracking_args' ), 999, 3 );
-		}
+    /**
+     * Class for adding post type support to BuddyPress activity.
+     *
+     * @package BuddyPress_Activity_Filter
+     */
+    class WbCom_BP_Activity_Filter_Add_Post_Type_Support {
 
-		/**
-		 * Fire a callback only when my-custom-post-type posts are transitioned to 'publish'.
-		 *
-		 * @param string  $new_status New post status.
-		 * @param string  $old_status Old post status.
-		 * @param WP_Post $post       Post object.
-		 */
-		public function bpaf_customize_page_tracking_args( $new_status, $old_status, $post ) {
-			global $bp;
-			$post_id   = $post->ID;
-			$all_posts = '';
+        /**
+         * Constructor
+         */
+        public function __construct() {
+            // Hook into post status transition to handle custom post type support.
+            add_action( 'transition_post_status', array( $this, 'bpaf_customize_page_tracking_args' ), 999, 3 );
+        }
 
-			// bail out if not published.
-			if ( 'publish' === $old_status || 'publish' !== $new_status ) {
-				return;
-			}
+        /**
+         * Fire a callback only when my-custom-post-type posts are transitioned to 'publish'.
+         *
+         * @param string  $new_status New post status.
+         * @param string  $old_status Old post status.
+         * @param WP_Post $post       Post object.
+         */
+        public function bpaf_customize_page_tracking_args( $new_status, $old_status, $post ) {
+            // Bail out if post is not being published.
+            if ( 'publish' === $old_status || 'publish' !== $new_status ) {
+                return;
+            }
 
-			$get_post_type = get_post_type( $post_id );
-			if ( ! isset( $get_post_type ) || empty( $get_post_type ) ) {
-				return;
-			}
+            $post_id      = $post->ID;
+            $post_type    = get_post_type( $post_id );
+            $filter_types = bp_get_option( 'bp-cpt-filters-settings' );
 
-			$cpt_filter_setting = bp_get_option( 'bp-cpt-filters-settings' );
-			if ( ! empty( $cpt_filter_setting ) ) {
-				if ( array_key_exists( 'bpaf_admin_settings', $cpt_filter_setting ) ) {
-					$all_posts = $cpt_filter_setting['bpaf_admin_settings'];
-				}
-			}
-			if ( isset( $all_posts ) && is_array( $all_posts ) ) {
-				foreach ( $all_posts as $post_type => $details ) {
-					if ( $get_post_type == $post_type ) {
-						$post_details     = get_post_type_object( $post_type );
-						$filter_type      = $details['display_type'];
-						$post_type_rename = $details['new_label'];
-						if ( empty( $post_type_rename ) ) {
-							$post_type_rename = $post_details->labels->singular_name;
-						}
+            // Bail out if post type is not set or is not being filtered.
+            if ( ! isset( $post_type ) || empty( $filter_types ) || ! isset( $filter_types['bpaf_admin_settings'] ) ) {
+                return;
+            }
 
-						if ( 'groups' == $filter_type ) {
+            $all_posts = $filter_types['bpaf_admin_settings'];
 
-							$group_args = array(
-								'order'   => 'DESC',
-								'orderby' => 'date_created',
-							);
-							$allgroups  = groups_get_groups( $group_args );
-							$groupids   = array();
-							foreach ( $allgroups['groups'] as $key => $value ) {
-								array_push( $groupids, $value->id );
-							}
-							if ( ! empty( $groupids ) ) {
-								foreach ( $groupids as $key => $value ) {
-									// post detail for use.
-									$post_author = get_the_author_meta( 'display_name', $post->post_author );
-									$post_author = '<a href="' . bp_get_loggedin_user_link() . '">' . $post_author . '</a>';
-									$post_title  = '<a href="' . get_the_permalink( $post_id ) . '">' . get_the_title( $post_id ) . '</a>';
+            if ( isset( $all_posts[ $post_type ] ) ) {
+                $this->bpaf_handle_post_type( $post, $all_posts[ $post_type ] );
+            }
+        }
 
-									$post_excerpt    = wp_trim_words( $post->post_content );
-									$post_thumb      = get_the_post_thumbnail( $post_id );
-									$post_excerpt    = $post_thumb . '<br/>' . $post_excerpt;
-									$post_link       = get_the_permalink( $post_id );
-									$group           = groups_get_group( array( 'group_id' => $value ) );
-									$group_permalink = trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/' . $group->slug . '/' );
-									// add activity.
+        /**
+         * Handle the post type according to the specified filter type.
+         *
+         * @param WP_Post $post Post object.
+         * @param array   $details Filter details for the post type.
+         */
+        protected function bpaf_handle_post_type( $post, $details ) {
+            $post_type_object = get_post_type_object( $post->post_type );
+            $filter_type      = $details['display_type'];
+            $post_type_label  = ! empty( $details['new_label'] ) ? $details['new_label'] : $post_type_object->labels->singular_name;
 
-									$action      = '<a id="group-' . esc_attr( $group->id ) . '" class="new-group" href="' . bp_get_group_permalink( $group ) . '">' . $group->name . '</a>';
-									$post_action = '';
-									$post_action = apply_filters( 'bpaf_groups_content_override', $post_author, $post_type_rename, $post_title, $action );
-									if ( isset( $post_action ) ) {
-										$post_action = $post_author . ' added a new ' . $post_type_rename . ', ' . $post_title . ' in the group ' . $action;
-									}
+            if ( 'groups' === $filter_type ) {
+                $this->bpaf_handle_groups_filter( $post, $post_type_label );
+            } elseif ( 'main_activity' === $filter_type || 'enable' === $filter_type ) {
+                $this->bpaf_add_activity( $post, $post_type_label, 'activity' );
+            }
+        }
 
-									$prep_args = array(
-										'id'            => false,                  // Pass an existing activity ID to update an existing entry.
-										'action'        => $post_action,                     // The activity action - e.g. "Jon Doe published an update".
-										'content'       => $post_link,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!".
-										'component'     => 'groups',                  // The name/ID of the component e.g. groups, profile, mycomponent.
-										'type'          => 'activity_update',                  // The activity type e.g. activity_update, profile_updated.
-										'primary_link'  => $post_link,                     // Optional: The primary URL for this item in RSS feeds (defaults to activity permalink).
-										'user_id'       => bp_loggedin_user_id(),  // Optional: The user to record the activity for, can be false if this activity is not for a user.
-										'item_id'       => $value,                  // Optional: The ID of the specific item being recorded, e.g. a blog_id.
-										'secondary_item_id' => false,                  // Optional: A second ID used to further filter e.g. a comment_id.
-										'recorded_time' => bp_core_current_time(), // The GMT time that this activity was recorded.
-										'hide_sitewide' => true,                  // Should this be hidden on the sitewide activity stream?
-										'is_spam'       => false,                  // Is this activity item to be marked as spam?
-										'error_type'    => 'bool',
-									);
-									bp_activity_add( $prep_args );
-								}
-							}
-						} elseif ( 'main_activity' == $filter_type ) {
-							// post detail for use.
-							$post_author = get_the_author_meta( 'display_name', $post->post_author );
-							$post_author = '<a href="' . bp_get_loggedin_user_link() . '">' . $post_author . '</a>';
-							$post_title  = '<a href="' . get_the_permalink( $post_id ) . '">' . get_the_title( $post_id ) . '</a>';
+        /**
+         * Handle group-related post types.
+         *
+         * @param WP_Post $post Post object.
+         * @param string  $post_type_label The label for the post type.
+         */
+        protected function bpaf_handle_groups_filter( $post, $post_type_label ) {
+            $group_ids = $this->bpaf_get_all_group_ids();
 
-							$post_excerpt = wp_trim_words( $post->post_content );
-							$post_thumb   = get_the_post_thumbnail( $post_id );
-							$post_excerpt = $post_thumb . '<br/>' . $post_excerpt;
-							$post_link    = get_the_permalink( $post_id );
-							$post_action  = '';
-							$post_action  = apply_filters( 'bpaf_main_activity_content_override', $post_author, $post_type_rename, $post_title );
-							if ( isset( $post_action ) ) {
-								$post_action = $post_author . ' added a new ' . $post_type_rename . ', ' . $post_title;
-							}
-							// add activity.
-							$prep_args = array(
-								'id'                => false,                  // Pass an existing activity ID to update an existing entry.
-								'action'            => $post_action,                     // The activity action - e.g. "Jon Doe published an update".
-								'content'           => $post_link,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!".
-								'component'         => 'activity',                  // The name/ID of the component e.g. groups, profile, mycomponent.
-								'type'              => 'new_blog_post',                  // The activity type e.g. activity_update, profile_updated.
-								'primary_link'      => $post_link,                     // Optional: The primary URL for this item in RSS feeds (defaults to activity permalink).
-								'user_id'           => bp_loggedin_user_id(),  // Optional: The user to record the activity for, can be false if this activity is not for a user.
-								'item_id'           => $post_id,                  // Optional: The ID of the specific item being recorded, e.g. a blog_id.
-								'secondary_item_id' => false,                  // Optional: A second ID used to further filter e.g. a comment_id.
-								'recorded_time'     => bp_core_current_time(), // The GMT time that this activity was recorded.
-								'hide_sitewide'     => false,                  // Should this be hidden on the sitewide activity stream?
-								'is_spam'           => false,                  // Is this activity item to be marked as spam?
-								'error_type'        => 'bool',
-							);
-							bp_activity_add( $prep_args );
-						} elseif ( 'enable' == $filter_type ) {
-							$post_author = get_the_author_meta( 'display_name', $post->post_author );
-							$post_author = '<a href="' . bp_get_loggedin_user_link() . '">' . $post_author . '</a>';
-							$post_title  = '<a href="' . get_the_permalink( $post_id ) . '">' . get_the_title( $post_id ) . '</a>';
+            if ( ! empty( $group_ids ) ) {
+                foreach ( $group_ids as $group_id ) {
+                    $group_permalink = $this->bpaf_get_group_permalink( $group_id );
+                    $action = sprintf(
+                        '%s added a new %s, %s in the group %s',
+                        $this->bpaf_get_post_author_link( $post->post_author ),
+                        $post_type_label,
+                        $this->bpaf_get_post_title_link( $post->ID ),
+                        $this->bpaf_get_group_link( $group_id )
+                    );
 
-							$post_excerpt = wp_trim_words( $post->post_content );
-							$post_thumb   = get_the_post_thumbnail( $post_id );
-							$post_excerpt = $post_thumb . '<br/>' . $post_excerpt;
-							$post_link    = get_the_permalink( $post_id );
-							$post_action  = '';
-							$post_action  = apply_filters( 'bpaf_main_activity_content_override', $post_author, $post_type_rename, $post_title );
-							if ( isset( $post_action ) ) {
-								$post_action = $post_author . ' added a new ' . $post_type_rename . ', ' . $post_title;
-							}
-							// add activity.
-							$prep_args = array(
-								'id'                => false,                  // Pass an existing activity ID to update an existing entry.
-								'action'            => $post_action,                     // The activity action - e.g. "Jon Doe published an update"
-								'content'           => $post_link,                     // Optional: The content of the activity item e.g. "BuddyPress is awesome guys!"
-								'component'         => 'activity',                  // The name/ID of the component e.g. groups, profile, mycomponent.
-								'type'              => 'new_blog_post',                  // The activity type e.g. activity_update, profile_updated.
-								'primary_link'      => $post_link,                     // Optional: The primary URL for this item in RSS feeds (defaults to activity permalink).
-								'user_id'           => bp_loggedin_user_id(),  // Optional: The user to record the activity for, can be false if this activity is not for a user.
-								'item_id'           => $post_id,                  // Optional: The ID of the specific item being recorded, e.g. a blog_id.
-								'secondary_item_id' => false,                  // Optional: A second ID used to further filter e.g. a comment_id.
-								'recorded_time'     => bp_core_current_time(), // The GMT time that this activity was recorded.
-								'hide_sitewide'     => false,                  // Should this be hidden on the sitewide activity stream?
-								'is_spam'           => false,                  // Is this activity item to be marked as spam?
-								'error_type'        => 'bool',
-							);
-							bp_activity_add( $prep_args );
+                    $this->bpaf_add_activity( $post, $post_type_label, 'groups', $group_id, $action );
+                }
+            }
+        }
 
-						} else {
-						}
-					}
-				}
-			}
+        /**
+         * Add an activity entry.
+         *
+         * @param WP_Post $post Post object.
+         * @param string  $post_type_label The label for the post type.
+         * @param string  $component The component where the activity is added.
+         * @param int     $item_id The item ID related to the activity.
+         * @param string  $action Custom action string.
+         */
+        protected function bpaf_add_activity( $post, $post_type_label, $component, $item_id = 0, $action = '' ) {
+            if ( empty( $action ) ) {
+                $action = sprintf(
+                    '%s added a new %s, %s',
+                    $this->bpaf_get_post_author_link( $post->post_author ),
+                    $post_type_label,
+                    $this->bpaf_get_post_title_link( $post->ID )
+                );
+            }
 
-		}
+            $args = array(
+                'action'            => $action,
+                'content'           => $this->bpaf_get_post_link( $post->ID ),
+                'component'         => $component,
+                'type'              => 'new_blog_post',
+                'primary_link'      => $this->bpaf_get_post_link( $post->ID ),
+                'user_id'           => bp_loggedin_user_id(),
+                'item_id'           => $item_id ?: $post->ID,
+                'secondary_item_id' => false,
+                'recorded_time'     => bp_core_current_time(),
+                'hide_sitewide'     => false,
+                'is_spam'           => false,
+            );
 
-	}
+            bp_activity_add( $args );
+        }
+
+        /**
+         * Get all group IDs.
+         *
+         * @return array Array of group IDs.
+         */
+        protected function bpaf_get_all_group_ids() {
+            $group_args = array(
+                'order'   => 'DESC',
+                'orderby' => 'date_created',
+            );
+            $groups = groups_get_groups( $group_args );
+
+            return wp_list_pluck( $groups['groups'], 'id' );
+        }
+
+        /**
+         * Get the permalink of a group.
+         *
+         * @param int $group_id Group ID.
+         *
+         * @return string Group permalink.
+         */
+        protected function bpaf_get_group_permalink( $group_id ) {
+            return trailingslashit( bp_get_root_domain() . '/' . bp_get_groups_root_slug() . '/' . groups_get_group( array( 'group_id' => $group_id ) )->slug . '/' );
+        }
+
+        /**
+         * Get the link to a post author.
+         *
+         * @param int $author_id Author ID.
+         *
+         * @return string Author link.
+         */
+        protected function bpaf_get_post_author_link( $author_id ) {
+            return sprintf(
+                '<a href="%s">%s</a>',
+                bp_get_loggedin_user_link(),
+                get_the_author_meta( 'display_name', $author_id )
+            );
+        }
+
+        /**
+         * Get the title link for a post.
+         *
+         * @param int $post_id Post ID.
+         *
+         * @return string Post title link.
+         */
+        protected function bpaf_get_post_title_link( $post_id ) {
+            return sprintf(
+                '<a href="%s">%s</a>',
+                get_the_permalink( $post_id ),
+                get_the_title( $post_id )
+            );
+        }
+
+        /**
+         * Get the link for a post.
+         *
+         * @param int $post_id Post ID.
+         *
+         * @return string Post link.
+         */
+        protected function bpaf_get_post_link( $post_id ) {
+            return get_the_permalink( $post_id );
+        }
+
+        /**
+         * Get the link to a group.
+         *
+         * @param int $group_id Group ID.
+         *
+         * @return string Group link.
+         */
+        protected function bpaf_get_group_link( $group_id ) {
+            return sprintf(
+                '<a id="group-%s" class="new-group" href="%s">%s</a>',
+                esc_attr( $group_id ),
+                bp_get_group_permalink( groups_get_group( array( 'group_id' => $group_id ) ) ),
+                groups_get_group( array( 'group_id' => $group_id ) )->name
+            );
+        }
+    }
 }
+
 if ( class_exists( 'WbCom_BP_Activity_Filter_Add_Post_Type_Support' ) ) {
-	$support_includer = new WbCom_BP_Activity_Filter_Add_Post_Type_Support();
+    new WbCom_BP_Activity_Filter_Add_Post_Type_Support();
 }
+
