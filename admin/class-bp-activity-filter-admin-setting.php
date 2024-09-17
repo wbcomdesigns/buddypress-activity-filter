@@ -443,24 +443,20 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * @access public
 		 * @since    1.0.0
 		 */
-		public function bpaf_cpt_activity_section()
-		{
-
+		public function bpaf_cpt_activity_section() {
 			$cpt_filter_val = bp_get_option('bp-cpt-filters-settings');
 		?>
 			<div class="wbcom-tab-content">
 				<div class="wbcom-wrapper-admin">
 					<div class="wbcom-admin-title-section">
-						<h3>
-							<?php echo esc_html__('BuddyPress Activity Integration', 'bp-activity-filter'); ?>
-						</h3>
+						<h3><?php echo esc_html__('BuddyPress Activity Integration', 'bp-activity-filter'); ?></h3>
 					</div>
 					<div class="wbcom-welcome-head">
 						<p class="description"><?php echo esc_html__('Enable BuddyPress Activity Posting for selected Post Type', 'bp-activity-filter'); ?></p>
 					</div>
 					<div class="wbcom-admin-option-wrap wbcom-admin-option-wrap-view">
 						<form method="post" novalidate="novalidate" id="bp_activity_filter_cpt_setting_form">
-
+		
 							<table class="filter-table form-table">
 								<thead>
 									<th class="th-title"><?php echo esc_html__('Post Type', 'bp-activity-filter'); ?></th>
@@ -473,70 +469,61 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									'_builtin'            => false,
 									'exclude_from_search' => false,
 								);
-
-								$output   = 'names'; // names or objects, note names is the default.
-								$operator = 'and'; // 'and' or 'or'
-
+		
+								$output   = 'objects'; // fetch objects instead of names
+								$operator = 'and'; 
+		
 								$post_types = get_post_types($args, $output, $operator);
-
+		
 								echo '<tbody>';
-
+		
 								if (!empty($post_types) && is_array($post_types)) :
-
-									foreach ($post_types as $post_type) {
-
-										$post_details = get_post_type_object($post_type);
-
-										if (!empty($cpt_filter_val)) {
-											$saved_settings = (isset($cpt_filter_val['bpaf_admin_settings'][$post_type])) ? $cpt_filter_val['bpaf_admin_settings'][$post_type] : array();
-										}
-
-										if (!empty($saved_settings) && array_key_exists('display_type', $saved_settings)) {
-											$display_type = $saved_settings['display_type'];
-										} else {
-											$display_type = '';
-										}
-
-										if (!empty($saved_settings) && array_key_exists('group', $saved_settings)) {
-
-											$group = $saved_settings['group'];
-										} else {
-
-											$group = '';
-										}
-
-										if (isset($saved_settings['new_label'])) {
-											$value = $saved_settings['new_label'];
-										} else {
-											$value = '';
-										}
+		
+									foreach ($post_types as $post_type => $post_details) {
+		
+										$saved_settings = isset($cpt_filter_val['bpaf_admin_settings'][$post_type]) ? $cpt_filter_val['bpaf_admin_settings'][$post_type] : array();
+		
+										$display_type = isset($saved_settings['display_type']) ? $saved_settings['display_type'] : '';
+										$value = isset($saved_settings['new_label']) ? $saved_settings['new_label'] : '';
+		
 								?>
-
+		
 										<tr>
-
-											<td scope="row" data-title="Post Type"><label class="filter-description"><?php echo esc_html($post_details->label); ?></label></td>
-											<td class="filter-option" data-title="Enable/Disable">
-												<input id="<?php echo esc_attr($post_type . '_radio'); ?>" name="<?php echo esc_attr("bpaf_admin_settings[$post_type][display_type]"); ?>" type="checkbox" value="enable" <?php checked($display_type, 'enable'); ?> />
+											<td scope="row" data-title="Post Type">
+												<label class="filter-description"><?php echo esc_html($post_details->label); ?></label>
 											</td>
-											<td class="filter-option" data-title="Upload Label">
-												<input id="<?php echo esc_attr($post_type . '_text'); ?>" placeholder='<?php echo esc_html(strtolower($post_details->labels->singular_name)); ?>' name='<?php echo esc_attr("bpaf_admin_settings[$post_type][new_label]"); ?>' type="text" value="<?php echo esc_attr($value); ?>" />
+											<td class="filter-option" data-title="Enable/Disable">
+												<input id="<?php echo esc_attr($post_type . '_radio'); ?>" 
+													name="<?php echo esc_attr("bpaf_admin_settings[$post_type][display_type]"); ?>" 
+													type="checkbox" 
+													value="enable" 
+													<?php checked($display_type, 'enable'); ?> 
+												/>
+											</td>
+											<td class="filter-option" data-title="Name for activities">
+												<input id="<?php echo esc_attr($post_type . '_text'); ?>" 
+													placeholder='<?php echo esc_html(strtolower($post_details->labels->singular_name)); ?>' 
+													name='<?php echo esc_attr("bpaf_admin_settings[$post_type][new_label]"); ?>' 
+													type="text" 
+													value="<?php echo esc_attr($value); ?>" 
+												/>
 											</td>
 										</tr>
-
+		
 								<?php
 									}
-
+		
 								else :
 									echo '<div class="notice">';
 									echo '<p class="description">' . esc_html__('Sorry, it seems you do not have any custom post type available to allow in the activity stream.', 'bp-activity-filter') . '</p>';
 									echo '</div>';
-
+		
 								endif;
-
+		
 								?>
 								</tbody>
 							</table>
-
+		
 							<div class="submit">
 								<a id="bp_activity_filter_cpt_setting_form_submit" class="button button-primary"><?php esc_html_e('Save Settings', 'bp-activity-filter'); ?></a>
 								<div class="spinner"></div>
@@ -545,8 +532,8 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 					</div>
 				</div>
 			</div>
-<?php
-		}
+		<?php
+		}		
 
 		/**
 		 * Save content of Display Activity tab section
@@ -604,10 +591,9 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 * Save content of Custom post type Activity tab section
 		 *
 		 * @access public
-		 * @since    1.0.0
+		 * @since 1.0.0
 		 */
-		public function bp_activity_filter_save_cpt_settings()
-		{
+		public function bp_activity_filter_save_cpt_settings() {
 			check_ajax_referer('bp_activity_filter_nonce', 'nonce', true);
 
 			if (!current_user_can('manage_options')) {
@@ -615,13 +601,25 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			}
 
 			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : '';
+			
+			// Parse the serialized form data.
 			parse_str($form_data, $cpt_settings_data);
 
-			$cpt_settings_details = isset($cpt_settings_data) ? array_map('sanitize_text_field', $cpt_settings_data) : array();
-			bp_update_option('bp-cpt-filters-settings', $cpt_settings_details);
+			// Ensure that $cpt_settings_data['bpaf_admin_settings'] exists and is an array.
+			if (isset($cpt_settings_data['bpaf_admin_settings']) && is_array($cpt_settings_data['bpaf_admin_settings'])) {
+				// Sanitize nested array values.
+				foreach ($cpt_settings_data['bpaf_admin_settings'] as $post_type => $settings) {
+					$cpt_settings_data['bpaf_admin_settings'][$post_type]['display_type'] = isset($settings['display_type']) ? sanitize_text_field($settings['display_type']) : '';
+					$cpt_settings_data['bpaf_admin_settings'][$post_type]['new_label'] = isset($settings['new_label']) ? sanitize_text_field($settings['new_label']) : '';
+				}
+			}
+
+			// Update the option with sanitized data.
+			bp_update_option('bp-cpt-filters-settings', $cpt_settings_data);
 
 			wp_send_json_success();
 		}
+
 
 
 		/**
