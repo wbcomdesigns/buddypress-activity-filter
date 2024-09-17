@@ -6,10 +6,11 @@
  */
 
 if ( ! class_exists( 'WbCom_BP_Activity_Filter_Public_Setting' ) ) {
+
 	/**
 	 * Defining class for Filter dropdown option for public setting.
 	 *
-	 *  @package BuddyPress_Activity_Filter
+	 * @package BuddyPress_Activity_Filter
 	 */
 	class WbCom_BP_Activity_Filter_Public_Setting {
 
@@ -46,9 +47,14 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Public_Setting' ) ) {
 
 			$filters_db = bp_get_option( 'bp-hidden-filters-name' );
 
+			// Ensure $filters_db is always an array
+			if ( ! is_array( $filters_db ) ) {
+				$filters_db = array();
+			}
+
 			if ( ! empty( $filters_db ) ) {
-				foreach ( $filters as  $key => $value ) {
-					if ( in_array( $key, $filters_db ) ) {
+				foreach ( $filters as $key => $value ) {
+					if ( in_array( $key, $filters_db, true ) ) {
 						unset( $filters[ $key ] );
 					}
 				}
@@ -64,14 +70,15 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Public_Setting' ) ) {
 					}
 				}
 			}
+
 			$bp_template_option = bp_get_option( '_bp_theme_package_id' );
 			if ( class_exists( 'BBP_BuddyPress_Activity' ) ) {
 				remove_action( 'bp_activity_filter_options', array( bbpress()->extend->buddypress->activity, 'activity_filter_options' ), 10 );
 				add_action( 'bp_activity_filter_options', array( $this, 'bp_activity_filter_options' ), 10 );
 			}
-			if ( 'nouveau' == $bp_template_option ) {
+			if ( 'nouveau' === $bp_template_option ) {
 				if ( class_exists( 'Youzify' ) ) {
-						return $output;
+					return $output;
 				} else {
 					return array(
 						'filters' => $filters,
@@ -81,7 +88,6 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Public_Setting' ) ) {
 			} else {
 				return $output;
 			}
-
 		}
 
 		/**
@@ -91,12 +97,18 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Public_Setting' ) ) {
 		 */
 		public function bp_activity_filter_options() {
 			$filters_db = bp_get_option( 'bp-hidden-filters-name' );
-			if ( ! in_array( 'bbp_topic_create', $filters_db ) ) {
+
+			// Ensure $filters_db is always an array
+			if ( ! is_array( $filters_db ) ) {
+				$filters_db = array();
+			}
+
+			if ( ! in_array( 'bbp_topic_create', $filters_db, true ) ) {
 				?>
 				<option value="bbp_topic_create"><?php esc_html_e( 'Topics', 'bp-activity-filter' ); ?></option>
 				<?php
 			}
-			if ( ! in_array( 'bbp_reply_create', $filters_db ) ) {
+			if ( ! in_array( 'bbp_reply_create', $filters_db, true ) ) {
 				?>
 				<option value="bbp_reply_create"><?php esc_html_e( 'Replies', 'bp-activity-filter' ); ?></option>
 				<?php
