@@ -620,9 +620,6 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 		/**
 		 * Save content of Hide Activity tab section
-		 *
-		 * @access public
-		 * @since    1.0.0
 		 */
 		public function bp_activity_filter_save_hide_settings()
 		{
@@ -630,12 +627,13 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			if (!wp_verify_nonce($admin_nonce, 'bp_activity_filter_nonce')) {
 				die('Busted!');
 			}
+
 			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			parse_str($form_data, $setting_form_data);
 
-			$form_details = filter_var_array($setting_form_data, FILTER_SANITIZE_STRING);
+			$form_details = filter_var_array($setting_form_data, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+			$bp_hidden_filter_name = isset($form_details['bp-hidden-filters-name']) ? array_map('sanitize_text_field', $form_details['bp-hidden-filters-name']) : array();
 
-			$bp_hidden_filter_name = (isset($form_details['bp-hidden-filters-name'])) ? $form_details['bp-hidden-filters-name'] : array();
 			bp_update_option('bp-hidden-filters-name', $bp_hidden_filter_name);
 
 			wp_die();
@@ -643,9 +641,6 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 		/**
 		 * Save content of Custom post type Activity tab section
-		 *
-		 * @access public
-		 * @since    1.0.0
 		 */
 		public function bp_activity_filter_save_cpt_settings()
 		{
@@ -653,10 +648,11 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			if (!wp_verify_nonce($admin_nonce, 'bp_activity_filter_nonce')) {
 				die('Busted!');
 			}
+
 			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			parse_str($form_data, $cpt_settings_data);
 
-			$cpt_settings_details = filter_var_array($cpt_settings_data, FILTER_SANITIZE_STRING);
+			$cpt_settings_details = filter_var_array($cpt_settings_data, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 			bp_update_option('bp-cpt-filters-settings', $cpt_settings_details);
 
 			wp_die();
@@ -664,13 +660,11 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 
 		/**
 		 * Hide all notices from the setting page.
-		 *
-		 * @return void
 		 */
 		public function bp_activity_filter_hide_all_admin_notices_from_setting_page()
 		{
-			$wbcom_pages_array  = array('wbcomplugins', 'wbcom-plugins-page', 'wbcom-support-page', 'bp_activity_filter_settings');
-			$wbcom_setting_page = filter_input(INPUT_GET, 'page') ? filter_input(INPUT_GET, 'page') : '';
+			$wbcom_pages_array  = array('wbcomplugins', 'bp_activity_filter_settings');
+			$wbcom_setting_page = filter_input(INPUT_GET, 'page') ? sanitize_text_field(filter_input(INPUT_GET, 'page')) : '';
 
 			if (in_array($wbcom_setting_page, $wbcom_pages_array, true)) {
 				remove_all_actions('admin_notices');
