@@ -43,7 +43,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				add_menu_page(esc_html__('WB Plugins', 'bp-activity-filter'), esc_html__('WB Plugins', 'bp-activity-filter'), 'manage_options', 'wbcomplugins', array($this, 'bp_activity_filter_section_settings'), 'dashicons-lightbulb', 59);
 				add_submenu_page('wbcomplugins', esc_html__('General', 'bp-activity-filter'), esc_html__('General', 'bp-activity-filter'), 'manage_options', 'wbcomplugins');
 			}
-			add_submenu_page('wbcomplugins', esc_html__('BP Activity Filter', 'bp-activity-filter'), esc_html__('BP Activity Filter', 'bp-activity-filter'), 'manage_options', 'bp_activity_filter_settings', array($this, 'bp_activity_filter_section_settings'));
+			add_submenu_page('wbcomplugins', esc_html__('Activity Filter', 'bp-activity-filter'), esc_html__('Activity Filter', 'bp-activity-filter'), 'manage_options', 'bp_activity_filter_settings', array($this, 'bp_activity_filter_section_settings'));
 		}
 
 		/**
