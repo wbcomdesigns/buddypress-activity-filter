@@ -1,7 +1,6 @@
 === Wbcom Designs - BuddyPress Activity Filter ===
-
-Contributors: vapvarun,wbcomdesigns
-Tags: buddypress,activity-filter, activity, filter, BuddyPress Activity, Activity Filter, Default Activity, Hide Activity, BuddyPress default activity
+Contributors: vapvarun, wbcomdesigns
+Tags: buddypress, activity-filter, filter, BuddyPress activity, hide activity, default activity, custom post type activity
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
 Tested up to: 6.5.0
@@ -9,46 +8,40 @@ Stable tag: 2.8.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-
-Streamline your BuddyPress Activity with ease. Set default filters, remove specific activity types, and enable public Custom Post Type (CPT) activities effortlessly. Enhance user engagement and content control.
-
+Easily manage your BuddyPress Activity Stream by filtering specific activity types, setting default filters, and enabling public Custom Post Types (CPT) activities to enhance content visibility and user engagement.
 
 == Description ==
 
-Take charge of your activity feed by setting default and personalized activity listings for your website. With this feature, administrators can finely tune the front-end display of activities to match their desired user experience.
-Choose your preferred default activity view, switching from the all-inclusive 'Everything' option to more specific views like 'Post Updates.' This flexibility empowers you to curate the content that takes center stage on your platform, enhancing user engagement.
-Elevate your content strategy by enabling activities from custom post types upon their publication. This ensures that every piece of content gets the attention it deserves, right from the moment it goes live.
+The **BuddyPress Activity Filter** plugin helps site administrators customize the activity feed by setting default activity types and hiding irrelevant content. It also allows you to include activities from Custom Post Types (CPT) in the BuddyPress activity stream, ensuring that custom content is well-represented.
 
+### Features:
+- Set default activity filters for a cleaner user experience.
+- Hide unwanted activity types from appearing in the frontend.
+- Enable Custom Post Type (CPT) activities in BuddyPress activity streams.
 
-=== THEME - WORDPRESS THEME WITH OUTSTANDING BUDDYPRESS SUPPORT ===
-* [FREE BuddyPress Theme: BuddyX](https://wordpress.org/themes/buddyx/) - Offers unique layouts with clean code and easy-to-customize options, giving you a whole new way to visualize BuddyPress.
+### Recommended Premium Add-ons for BuddyPress Communities:
+Enhance your BuddyPress community with these premium extensions:
 
-#### OUR ADON PLUGINS TO FURTHER IMPROVE YOUR BUDDYPRESS OR BUDDYBOSS PLATFORM COMMUNITY
-Check out free community add-ons by Wbcom Designs:
+- **[BuddyPress Hashtags](https://wbcomdesigns.com/downloads/buddypress-hashtags/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
+  Allow members to use hashtags in BuddyPress activities and bbPress topics to make content easier to find.
+  
+- **[BuddyPress Polls](https://wbcomdesigns.com/downloads/buddypress-polls/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
+  Add poll functionality to BuddyPress activity posts, enabling members to create and participate in polls within the community.
+  
+- **[BuddyPress Quotes](https://wbcomdesigns.com/downloads/buddypress-quotes/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
+  Allow users to post status updates with engaging background images or colors, creating visually appealing activity posts.
+  
+- **[BuddyPress Status & Reactions](https://wbcomdesigns.com/downloads/buddypress-status/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
+  Enable custom statuses for profiles and provide a wide range of emoji reactions for activity posts.
+  
+- **[BuddyPress Sticky Post](https://wbcomdesigns.com/downloads/buddypress-sticky-post/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
+  Pin important activity posts to the top of the activity feed to ensure maximum visibility.
+  
+- **[BuddyPress Profanity Filter](https://wbcomdesigns.com/downloads/buddypress-profanity/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
+  Automatically censor inappropriate words in BuddyPress activities and private messages.
 
-* **[Wbcom Designs - BuddyPress Member Reviews](https://wordpress.org/plugins/bp-user-profile-reviews/)** Allow members to add ratings or feedback to other community members.
-* **[Wbcom Designs - BuddyPress Group Reviews](https://wordpress.org/plugins/review-buddypress-groups/)** Allow members to add ratings or feedback to BuddyPress groups.
-* **[Wbcom Designs - BuddyPress Activity Social Share](https://wordpress.org/plugins/bp-activity-social-share/)** Allow members to share activities on their social profiles like Facebook, Twitter, What's App, and LinkedIn with OG metadata.
-* **[Wbcom Designs - Private Community with BP Lock](https://wordpress.org/plugins/lock-my-bp/)** A plugin to make your community private and only accessible to logged-in users. It also allows you to keep select pages or component public.
-* **[Wbcom Designs - BuddyPress Job Manager](https://wordpress.org/plugins/bp-job-manager/)** Allows you to integrate the WP Job Manager plugin to BuddyPress.
-* **[Wbcom Designs - Check-ins for BuddyPress Activity](https://wordpress.org/plugins/bp-check-in/)** Allow members to add their location or post their Check-ins updates to the activity.
-* **[Wbcom Designs - BuddyPress Favorite Notification](https://wordpress.org/plugins/bp-favorite-notification/)** Allow members to be notified after any like or favorite on their BuddyPress activity.
-* **[Wbcom Designs - Shortcodes & Elementor Widgets For BuddyPress](https://wordpress.org/plugins/shortcodes-for-buddypress/)** It offers shortcodes and elementor widgets for the activity listing, member's directory display, and the group's directory on any post/page.
-
-Check out paid community add-ons by Wbcom Designs:
-
-* **[Wbcom Designs - BuddyPress Hashtags](https://wbcomdesigns.com/downloads/buddypress-hashtags/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)** Allows members to use hashtags in BuddyPress or BuddyBoss Platform activities and bbPress topics.
-* **[Wbcom Designs - BuddyPress Polls](https://wbcomdesigns.com/downloads/buddypress-polls/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  It allows you to extend BuddyPress or BuddyBoss Platform Activity for members to publish Polls with various options. It works perfectly for individual activities and group activities.
-* **[Wbcom Designs - BuddyPress Quotes](https://wbcomdesigns.com/downloads/buddypress-quotes/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)** It allows the feature to let members post their activity updates with interactive background selection such as colors and images set by the site administrator to tell a more expressive story.
-* **[Wbcom Designs - BuddyPress Status & Reaction](https://wbcomdesigns.com/downloads/buddypress-status/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)** Allow your members to set a status icon and tagline on their profile and offer an extensive set of icons to react to published activities.
-* **[Wbcom Designs - BuddyPress Profanity](https://wbcomdesigns.com/downloads/buddypress-profanity/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)** Allow you to censor content in your community! Easily Censor all the unwanted words in activities, and private message contents by specifying a list of keywords to be filtered.
-* **[Wbcom Designs - BuddyPress Sticky Post](https://wbcomdesigns.com/downloads/buddypress-sticky-post/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)** Allows site administrators to prioritize certain activities over others. It lets the admin pin up site-wide and group activities to the top of the activity list.
-* **[Wbcom Designs - BuddyPress Auto Friends](https://wbcomdesigns.com/downloads/buddypress-auto-friends/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)** Allow the site admin to select global friends for all his members and add bulk international friends.
-* **[Wbcom Designs - Shortcodes & Elementor Widgets For BuddyPress Pro](https://wordpress.org/plugins/shortcodes-for-buddypress/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)** It offers shortcodes and elementor widgets with various argument parameters for the activity listing, member's directory display, and the group's directory on any post/page.
-
-
-= EXPERT SUPPORT =
-We are ready to provide incredible support. Ask your questions at [contact us directly](https://wbcomdesigns.com/support/).
+- **[WP Stories](https://wbcomdesigns.com/downloads/wp-stories/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
+  Add the popular stories feature to your BuddyPress community, allowing members to share stories in the form of short videos or images.
 
 
 == Installation ==
@@ -62,25 +55,14 @@ We are ready to provide incredible support. Ask your questions at [contact us di
 
 == Frequently Asked Questions ==
 
-= By default, which filters will be displayed in the activity dropdown? =
+= What is the default activity filter? =  
+By default, the "Everything" filter is shown in the activity feed.
 
-By default, all everything will be displayed.
+= Can I hide specific activity types? =  
+Yes, you can select which activity types to hide in the plugin settings.
 
-= By default, which filters will be hidden in the activity dropdown? =
-
-By default, no filter will be hidden.
-
-= If I selected 'Display in Groups,' what would happen? =
-
-If you selected the 'Display in Groups' option, all BuddyPress groups display this activity when you add a new post in that specific custom post type.
-
-= What will be displayed if the 'Rename in Activity Stream' field is empty?=
-
-If this field is empty, then the singular label of the custom post type will be displayed.
-
-= How can the custom post-type activity content display on the front end be modified?=
-
-You can modify activity content by using the given filters.
+= How do Custom Post Type activities display in the activity stream? =  
+Custom Post Type activities are automatically added to the activity stream when published.
 
 == Screenshots ==
 
