@@ -4,7 +4,7 @@ Tags: buddypress, activity-filter, filter, BuddyPress activity, hide activity, d
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
 Tested up to: 6.5.0
-Stable tag: 2.8.9
+Stable tag: 2.9.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +16,7 @@ The **BuddyPress Activity Filter** plugin helps site administrators customize th
 
 ### Features:
 - Set default activity filters for a cleaner user experience.
-- Hide unwanted activity types from appearing in the frontend.
+- Hide unwanted activity types from appearing on the front end.
 - Enable Custom Post Type (CPT) activities in BuddyPress activity streams.
 
 ### Recommended Premium Add-ons for BuddyPress Communities:
@@ -41,7 +41,7 @@ Enhance your BuddyPress community with these premium extensions:
   Automatically censor inappropriate words in BuddyPress activities and private messages.
 
 - **[WP Stories](https://wbcomdesigns.com/downloads/wp-stories/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
-  Add the popular stories feature to your BuddyPress community, allowing members to share stories in the form of short videos or images.
+  Add the popular stories feature to your BuddyPress community, allowing members to share stories as short videos or images.
 
 
 == Installation ==
@@ -77,6 +77,15 @@ Custom Post Type activities are automatically added to the activity stream when 
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+= 2.9.0 =
+* Enhancement: Ensured lowercase post type names when no new label is provided.
+* Fix: Corrected typos and updated the readme for clarity.
+* Code Compliance: Removed deprecated filters, unused variables, and modernized PHP code.
+* Security: Replaced FILTER_SANITIZE_STRING with sanitize_text_field() and added nonce validation for improved security.
+* Optimization: Improved handling of undefined values and data sanitization.
+* Access Control: Added proper permissions for managing options.
+* UI Update: Managed backend options and improved responsive design.
+
 = 2.8.9 =
 * Fix: Fix: Compatibility check with WordPress 6.5.0
 
