@@ -3,7 +3,7 @@ Contributors: vapvarun, wbcomdesigns
 Tags: buddypress, activity-filter, filter, BuddyPress activity, hide activity, default activity, custom post type activity
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
-Tested up to: 6.5.0
+Tested up to: 6.6.2
 Stable tag: 2.9.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
