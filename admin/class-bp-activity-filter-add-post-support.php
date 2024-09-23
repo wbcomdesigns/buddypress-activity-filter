@@ -60,7 +60,11 @@
         protected function bpaf_handle_post_type( $post, $details ) {
             $post_type_object = get_post_type_object( $post->post_type );
             $filter_type      = $details['display_type'];
-            $post_type_label  = ! empty( $details['new_label'] ) ? $details['new_label'] : $post_type_object->labels->singular_name;
+            
+            // Ensure the post type label is in lowercase
+            $post_type_label  = ! empty( $details['new_label'] ) 
+                ? $details['new_label'] 
+                : strtolower( $post_type_object->labels->singular_name );
 
             if ( 'groups' === $filter_type ) {
                 $this->bpaf_handle_groups_filter( $post, $post_type_label );
@@ -68,6 +72,7 @@
                 $this->bpaf_add_activity( $post, $post_type_label, 'activity' );
             }
         }
+
 
         /**
          * Handle group-related post types.
