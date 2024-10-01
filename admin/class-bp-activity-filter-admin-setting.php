@@ -556,7 +556,12 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 			$bp_default_profile_filter_name = sanitize_text_field($setting_form_data['bp-default-profile-filter-name'] ?? '');
 
 			bp_update_option('bp-default-filter-name', $bp_default_filter_name);
-			bp_update_option('bp-default-profile-filter-name', $bp_default_profile_filter_name);
+			bp_update_option('bp-default-profile-filter-name', $bp_default_profile_filter_name);			
+			// Delete the cookie for set the admin filter
+			if ( isset( $_COOKIE['bpaf-default-filter'] ) ) {
+				setcookie( 'bpaf-default-filter', '', time() - 3600, '/' );					
+			}
+				
 
 			wp_send_json_success();
 		}
