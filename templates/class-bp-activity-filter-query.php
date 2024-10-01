@@ -240,6 +240,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			if ( isset( $_COOKIE['bp-activity-filter'] ) ) {
 				return;
 			}
+			
+			// Check if it's a single activity view, and return early if true.
+			if ( bp_is_single_activity() ) {
+				return;
+			}
+	
 			// additional check for activity dir and profile activity.
 			if ( ! bp_is_activity_directory() && ! bp_is_user_activity() ) {
 				return;
