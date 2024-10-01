@@ -77,6 +77,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 		 */
 		public function filtering_activity_default( $query, $object ) {
 			global $bp;
+			
+			 // Check if it's a single activity view, and return the original query if true
+			 if ( bp_is_single_activity() ) {
+				return $query;
+			}
+
 			$query_size = '';
 			if ( 'activity' != $object ) {
 				return $query;
