@@ -236,31 +236,33 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 		 * @since BuddyPress 1.6.0
 		 */
 		public function bpaf_bp_set_default_activity_filter() {
-			// If the filter is already set, do not do anything ok.
+			// If the filter is already set, do not do anything.
 			if ( isset( $_COOKIE['bp-activity-filter'] ) ) {
 				return;
 			}
-			
-			// Check if it's a single activity view, and return early if true.
-			if ( bp_is_single_activity() ) {
+
+			// Check if it's a single activity view, or specific tabs (mentions, favorites, etc.), and return early if true.
+			if ( bp_is_single_activity() || bp_is_current_action('mentions') || bp_is_current_action('favorites') || bp_is_current_action('friends') || bp_is_current_action('groups') ) {
 				return;
 			}
-	
-			// additional check for activity dir and profile activity.
+
+			// Additional check for activity directory and profile activity.
 			if ( ! bp_is_activity_directory() && ! bp_is_user_activity() ) {
 				return;
 			}
+
 			if ( bp_is_user_activity() ) {
 				$filter = bp_get_option( 'bp-default-profile-filter-name' );
 			} else {
 				$filter = bp_get_option( 'bp-default-filter-name' );
 			}
-			// Set filter to our respective filter.,
-			// In this case, I am setting filter to the 'Updates' filter.
+
+			// Set filter to our respective filter. In this case, I am setting the filter to the 'Updates' filter.
 			$expires = time() + 1800;
 			setcookie( 'bp-activity-filter', $filter, $expires, '/' );
 			$_COOKIE['bp-activity-filter'] = $filter;
 		}
+
 
 	}
 }
