@@ -39,7 +39,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			if ( bp_is_user_activity() && bp_current_action() === 'just-me' ) {
 				// Only set the filter for the "just-me" tab in the profile activity
 				$default_activity_stream = bp_get_option( 'bp-default-profile-filter-name' );
-			} else if ( ! bp_is_user_activity() ) {
+			} elseif ( ! bp_is_user_activity() ) {
 				// Set the filter for sitewide activity
 				$default_activity_stream = bp_get_option( 'bp-default-filter-name' );
 			} else {
@@ -85,8 +85,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				return $query;
 			}
 
-			$query = wp_parse_args( $query, array() );
-
+			$query      = wp_parse_args( $query, array() );
+			$query_size = 0;
 			// Skip if this is for mentions, friends, favorites, or groups tabs
 			if ( bp_is_activity_directory() && isset( $query['scope'] ) && ( 'mentions' === $query['scope'] || 'friends' === $query['scope'] || 'favorites' === $query['scope'] || 'groups' === $query['scope'] ) ) {
 				return build_query( $query );
