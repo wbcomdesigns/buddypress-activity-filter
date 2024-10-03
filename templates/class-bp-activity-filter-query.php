@@ -85,21 +85,19 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				return $query;
 			}
 
+			$query = wp_parse_args( $query, array() );
+
 			// Skip if this is for mentions, friends, favorites, or groups tabs
-			if ( bp_is_current_action('mentions') || bp_is_current_action('favorites') || bp_is_current_action('friends') || bp_is_current_action('groups') ) {
-				return $query;
+			if ( bp_is_activity_directory() && isset( $query['scope'] ) && ( 'mentions' === $query['scope'] || 'friends' === $query['scope'] || 'favorites' === $query['scope'] || 'groups' === $query['scope'] ) ) {
+				return build_query( $query );
+			} elseif ( bp_is_user_activity() && ( bp_is_current_action( 'mentions' ) || bp_is_current_action( 'favorites' ) || bp_is_current_action( 'friends' ) || bp_is_current_action( 'groups' ) ) ) {
+				return build_query( $query );
 			}
 
 			// Check if hashtags plugin is active and return if true to avoid conflicts
 			$active_plugins = get_option( 'active_plugins' );
 			if ( in_array( 'buddypress-hashtag/buddypress-hashtags.php', $active_plugins ) ) {
 				return $query;
-			}
-
-			// Retrieve cookie or parse post data for default filter logic
-			$bpaf_filter_nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
-			if ( wp_verify_nonce( $bpaf_filter_nonce, '_wpnonce_activity_filter' ) ) {
-				return true;
 			}
 
 			if ( ! empty( $_POST['cookie'] ) ) {
@@ -109,11 +107,9 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			}
 
 			// Parse the query if available
-			if ( ! empty( $query ) ) {
-				$bp_query     = explode( '&', $query );
-				$bp_query_arr = $bp_query;
-				$page         = array_pop( $bp_query_arr );
-				$qs           = explode( '=', $page );
+			if ( ! empty( $query ) && is_array( $query ) ) {
+				$page = array_pop( $query );
+				$qs   = explode( '=', $page );
 				if ( 'page' === $qs[0] ) {
 					$size       = $qs[1];
 					$query_size = count( $bp_query );
@@ -130,7 +126,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				$default_activity_stream = bp_get_option( 'bp-default-profile-filter-name' );
 			} else {
 				$default_activity_stream = bp_get_option( 'bp-default-filter-name' );
-				$page_actions           = bp_activity_get_actions_for_context( 'activity' );
+				$page_actions            = bp_activity_get_actions_for_context( 'activity' );
 			}
 
 			// Handle hidden activity streams (custom settings)
@@ -139,13 +135,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 
 			// If the cookie indicates default filtering, apply it
 			if ( ( isset( $_BP_COOKIE['bpaf-default-filter'] ) && $default_activity_stream != -1 ) && ( 1 == $_BP_COOKIE['bpaf-default-filter'] ) ) {
-				$query = wp_parse_args( $query, array() );
-				$count = 0;
+				$count  = 0;
 				$action = '';
 
 				// Fetch labels for custom activity filter
 				$admin_setting_object = new WbCom_BP_Activity_Filter_Admin_Setting();
-				$labels = $admin_setting_object->bpaf_get_labels();
+				$labels               = $admin_setting_object->bpaf_get_labels();
 
 				// Loop through the labels to build the action query
 				foreach ( $labels as $l_key => $l_value ) {
@@ -168,12 +163,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 					$query = 'action=' . $action;
 				}
 			} elseif ( $default_activity_stream == -1 && isset( $_BP_COOKIE['bpaf-default-filter'] ) && 1 == $_BP_COOKIE['bpaf-default-filter'] || empty( $query ) || 1 == $query_size ) {
-				$count = 0;
+				$count  = 0;
 				$action = '';
 
 				// Fetch labels again for this case
 				$admin_setting_object = new WbCom_BP_Activity_Filter_Admin_Setting();
-				$labels = $admin_setting_object->bpaf_get_labels();
+				$labels               = $admin_setting_object->bpaf_get_labels();
 
 				// Loop through the labels and build the action query
 				foreach ( $labels as $l_key => $l_value ) {
@@ -239,7 +234,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			}
 
 			// Skip filtering for specific tabs (mentions, favorites, friends, groups)
-			if ( bp_is_single_activity() || bp_is_current_action('mentions') || bp_is_current_action('favorites') || bp_is_current_action('friends') || bp_is_current_action('groups') ) {
+			if ( bp_is_single_activity() || bp_is_current_action( 'mentions' ) || bp_is_current_action( 'favorites' ) || bp_is_current_action( 'friends' ) || bp_is_current_action( 'groups' ) ) {
 				return;
 			}
 
@@ -251,7 +246,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			// Apply filter only to "just-me" or sitewide activity
 			if ( bp_is_user_activity() ) {
 				$filter = bp_get_option( 'bp-default-profile-filter-name' );
-			} else {
+			} elseif ( bp_is_activity_directory() ) {
 				$filter = bp_get_option( 'bp-default-filter-name' );
 			}
 

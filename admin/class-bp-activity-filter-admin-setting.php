@@ -260,7 +260,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 									<div class="wbcom-settings-section-select">
 										<p><label for="bp-default-filter-name"><?php esc_html_e('Select the default filter for site-wide activity display.', 'bp-activity-filter'); ?></label></p>
 										<select id="bp-default-filter-name" name="bp-default-filter-name">
-											<option value="-1" <?php echo ($bp_default_activity_value == -1) ? 'selected="selected"' : ''; ?>><?php esc_html_e('Everything', 'bp-activity-filter'); ?></option>
+											<option value="0" <?php echo ($bp_default_activity_value == 0) ? 'selected="selected"' : ''; ?>><?php esc_html_e('Everything', 'bp-activity-filter'); ?></option>
 											<?php
 											foreach ($labels as $key => $value) :
 												if (!empty($value)) {
