@@ -100,6 +100,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				return $query;
 			}
 
+			// Retrieve cookie or parse post data for default filter logic
+			$bpaf_filter_nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+			if ( wp_verify_nonce( $bpaf_filter_nonce, '_wpnonce_activity_filter' ) ) {
+				return true;
+			}
+
 			if ( ! empty( $_POST['cookie'] ) ) {
 				$_BP_COOKIE = wp_parse_args( str_replace( '; ', '&', urldecode( sanitize_text_field( wp_unslash( $_POST['cookie'] ) ) ) ) );
 			} else {

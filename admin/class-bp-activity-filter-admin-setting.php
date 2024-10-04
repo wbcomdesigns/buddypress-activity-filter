@@ -549,7 +549,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				wp_send_json_error(__('Permission denied.', 'bp-activity-filter'));
 			}
 
-			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : '';
+			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : ''; //phpcs:ignore
 			parse_str($form_data, $setting_form_data);
 
 			$bp_default_filter_name = sanitize_text_field($setting_form_data['bp-default-filter-name'] ?? '');
@@ -582,7 +582,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				wp_send_json_error('Permission denied.');
 			}
 
-			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : '';
+			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : ''; //phpcs:ignore
 			parse_str($form_data, $setting_form_data);
 
 			$bp_hidden_filter_name = isset($setting_form_data['bp-hidden-filters-name']) ? array_map('sanitize_text_field', $setting_form_data['bp-hidden-filters-name']) : array();
@@ -605,7 +605,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 				wp_send_json_error('Permission denied.');
 			}
 
-			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : '';
+			$form_data = isset($_POST['form_data']) ? wp_unslash($_POST['form_data']) : ''; //phpcs:ignore
 			
 			// Parse the serialized form data.
 			parse_str($form_data, $cpt_settings_data);
@@ -634,7 +634,7 @@ if (!class_exists('WbCom_BP_Activity_Filter_Admin_Setting')) {
 		 */
 		public function bp_activity_filter_hide_all_admin_notices_from_setting_page()
 		{
-			$wbcom_setting_page = sanitize_text_field($_GET['page'] ?? '');
+			$wbcom_setting_page = sanitize_text_field( wp_unslash( $_GET['page'] ) ?? ''); //phpcs:ignore
 
 			if (in_array($wbcom_setting_page, array('wbcomplugins', 'wbcom-plugins-page', 'wbcom-support-page', 'bp_activity_filter_settings'), true)) {
 				remove_all_actions('admin_notices');

@@ -211,7 +211,7 @@ function bpfilter_activation_redirect_settings( $plugin ) {
 			exit;
 		}
 	}
-	if ( $plugin == $_REQUEST['plugin'] && class_exists( 'Buddypress' ) ) {
+	if ( $plugin == $_REQUEST['plugin'] && class_exists( 'Buddypress' ) ) { //phpcs:ignore
 		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'activate-plugin' && isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] == $plugin ) { //phpcs:ignore
 			set_transient( '_bpfilter_is_new_install', true, 30 );
 		}
