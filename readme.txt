@@ -4,7 +4,7 @@ Tags: buddypress, activity-filter, filter, BuddyPress activity, hide activity, d
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
 Tested up to: 6.6.2
-Stable tag: 2.9.0
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,15 @@ Custom Post Type activities are automatically added to the activity stream when 
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+= 3.0.0 =
+* Fixed: PHP warning issue.
+* Fixed: Issue in filtering activities.
+* Fixed: The activity filter is now applied correctly when viewing "just-me" or "sitewide" activities.
+* Fixed: Bypass default activity filter on profile other tabs.
+* Fixed: Issue with the activity filter on single activity views.
+* Improved: Deleting cookies when saving admin options.
+* Added: Check to prevent setting the default activity filter on single activity views.
+
 = 2.9.0 =
 * Enhancement: Ensured lowercase post type names when no new label is provided.
 * Fix: Corrected typos and updated the readme for clarity.
