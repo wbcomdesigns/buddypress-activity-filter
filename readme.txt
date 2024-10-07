@@ -4,7 +4,7 @@ Tags: buddypress, activity-filter, filter, BuddyPress activity, hide activity, d
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 4.0
 Tested up to: 6.6.2
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,12 @@ Custom Post Type activities are automatically added to the activity stream when 
 4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
 
 == Changelog ==
+
+= 3.0.1 =
+* Fixed: Warning related to page parameter in activity query.
+* Fixed: Pagination issue for activity streams where "Load More" button was not functioning correctly.
+* Improvement: Added a check to ensure that $page is a string before processing, improving overall query handling.
+
 = 3.0.0 =
 * Fixed: PHP warning issue.
 * Fixed: Issue in filtering activities.
