@@ -62,16 +62,12 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			);
 		}
 
-
-
-
-
 		/**
-		 * Modifying activity loop for default activity.
-		 *
-		 * @param  string $query  Current query string.
-		 * @param  string $object Current template component.
-		 */
+		* Modifying activity loop for default activity.
+		*
+		* @param  string $query  Current query string.
+		* @param  string $object Current template component.
+		*/
 		public function filtering_activity_default( $query, $object ) {
 			global $bp;
 
@@ -87,6 +83,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 
 			$query      = wp_parse_args( $query, array() );
 			$query_size = 0;
+			
 			// Skip if this is for mentions, friends, favorites, or groups tabs
 			if ( bp_is_activity_directory() && isset( $query['scope'] ) && ( 'mentions' === $query['scope'] || 'friends' === $query['scope'] || 'favorites' === $query['scope'] || 'groups' === $query['scope'] ) ) {
 				return build_query( $query );
@@ -115,10 +112,14 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			// Parse the query if available
 			if ( ! empty( $query ) && is_array( $query ) ) {
 				$page = array_pop( $query );
-				$qs   = explode( '=', $page );
-				if ( 'page' === $qs[0] ) {
-					$size       = $qs[1];
-					$query_size = count( $bp_query );
+
+				// Ensure that $page is a string before passing it to explode
+				if ( is_string( $page ) ) {
+					$qs   = explode( '=', $page );
+					if ( 'page' === $qs[0] ) {
+						$size       = $qs[1];
+						$query_size = count( $bp_query );
+					}
 				}
 			} else {
 				$bp_query = array();
