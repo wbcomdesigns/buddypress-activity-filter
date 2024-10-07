@@ -63,11 +63,11 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 		}
 
 		/**
-		* Modifying activity loop for default activity.
-		*
-		* @param  string $query  Current query string.
-		* @param  string $object Current template component.
-		*/
+		 * Modifying activity loop for default activity.
+		 *
+		 * @param  string $query  Current query string.
+		 * @param  string $object Current template component.
+		 */
 		public function filtering_activity_default( $query, $object ) {
 			global $bp;
 
@@ -76,18 +76,18 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				return $query;
 			}
 
-			// Ensure this is for activity component, otherwise return original query
+			// Ensure this is for the activity component, otherwise return the original query
 			if ( 'activity' !== $object ) {
 				return $query;
 			}
 
-			$query      = wp_parse_args( $query, array() );
-			$query_size = 0;
-			
+			// Parse the query
+			$query = wp_parse_args( $query, array() );
+
 			// Skip if this is for mentions, friends, favorites, or groups tabs
-			if ( bp_is_activity_directory() && isset( $query['scope'] ) && ( 'mentions' === $query['scope'] || 'friends' === $query['scope'] || 'favorites' === $query['scope'] || 'groups' === $query['scope'] ) ) {
+			if ( bp_is_activity_directory() && isset( $query['scope'] ) && in_array( $query['scope'], array( 'mentions', 'friends', 'favorites', 'groups' ) ) ) {
 				return build_query( $query );
-			} elseif ( bp_is_user_activity() && ( bp_is_current_action( 'mentions' ) || bp_is_current_action( 'favorites' ) || bp_is_current_action( 'friends' ) || bp_is_current_action( 'groups' ) ) ) {
+			} elseif ( bp_is_user_activity() && in_array( bp_current_action(), array( 'mentions', 'favorites', 'friends', 'groups' ) ) ) {
 				return build_query( $query );
 			}
 
@@ -103,30 +103,35 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				return true;
 			}
 
+			// Parse cookie or POST data to determine default filters
 			if ( ! empty( $_POST['cookie'] ) ) {
 				$_BP_COOKIE = wp_parse_args( str_replace( '; ', '&', urldecode( sanitize_text_field( wp_unslash( $_POST['cookie'] ) ) ) ) );
 			} else {
 				$_BP_COOKIE = &$_COOKIE;
 			}
 
-			// Parse the query if available
+			// Handle pagination dynamically (get page number from POST or query)
 			if ( ! empty( $query ) && is_array( $query ) ) {
-				$page = array_pop( $query );
-
-				// Ensure that $page is a string before passing it to explode
-				if ( is_string( $page ) ) {
-					$qs   = explode( '=', $page );
-					if ( 'page' === $qs[0] ) {
-						$size       = $qs[1];
-						$query_size = count( $bp_query );
-					}
+				if ( isset( $_POST['page'] ) && is_numeric( $_POST['page'] ) ) {
+					$page = intval( $_POST['page'] );
+				} elseif ( isset( $query['page'] ) && is_numeric( $query['page'] ) ) {
+					$page = intval( $query['page'] );
+				} else {
+					$page = 1; // Default to page 1 if no page parameter is found
 				}
+
+				// Add the 'page' parameter to the query string
+				$query['page'] = $page;
 			} else {
-				$bp_query = array();
-				$size     = count( $bp_query );
+				$page = 1;
+				$query = array( 'page' => $page ); // Default page 1 when query is empty
 			}
 
-			// Set default activity stream based on whether it's group, user, or sitewide activity
+			// Initialize bp_query if not already set
+			$bp_query = isset( $bp_query ) ? $bp_query : array();
+			$size     = count( $bp_query );
+
+			// Set default activity stream based on group, user, or sitewide activity
 			if ( bp_is_group_activity() ) {
 				$default_activity_stream = -1;
 			} elseif ( bp_is_user_activity() && bp_current_action() === 'just-me' ) {
@@ -140,8 +145,8 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 			$hidden_activity_stream = bp_get_option( 'bp-hidden-filters-name' );
 			$activity_hidden        = ! empty( $hidden_activity_stream ) ? $hidden_activity_stream : array();
 
-			// If the cookie indicates default filtering, apply it
-			if ( ( isset( $_BP_COOKIE['bpaf-default-filter'] ) && $default_activity_stream != -1 ) && ( 1 == $_BP_COOKIE['bpaf-default-filter'] ) ) {
+			// Apply default filter if cookie is set or return custom action query
+			if ( isset( $_BP_COOKIE['bpaf-default-filter'] ) && $default_activity_stream != -1 && 1 == $_BP_COOKIE['bpaf-default-filter'] ) {
 				$count  = 0;
 				$action = '';
 
@@ -149,7 +154,7 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				$admin_setting_object = new WbCom_BP_Activity_Filter_Admin_Setting();
 				$labels               = $admin_setting_object->bpaf_get_labels();
 
-				// Loop through the labels to build the action query
+				// Build action query from custom activity filter labels
 				foreach ( $labels as $l_key => $l_value ) {
 					if ( ! empty( $l_value ) && ! in_array( $l_key, $activity_hidden ) ) {
 						$action .= $count === 0 ? $l_key : ',' . $l_key;
@@ -157,14 +162,14 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 					}
 				}
 
-				// Set the query based on the default activity stream or custom filter
+				// Set the query based on default activity stream or custom filter
 				if ( $default_activity_stream != -1 ) {
 					$query = 'action=' . $default_activity_stream;
 					if ( isset( $_POST['scope'] ) && $_POST['scope'] !== '' ) {
 						$query .= '&scope=' . sanitize_text_field( wp_unslash( $_POST['scope'] ) );
 					}
 					if ( ! empty( $page ) ) {
-						$query .= '&' . $page;
+						$query .= '&page=' . $page;
 					}
 				} else {
 					$query = 'action=' . $action;
@@ -173,11 +178,11 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 				$count  = 0;
 				$action = '';
 
-				// Fetch labels again for this case
+				// Fetch labels for this case
 				$admin_setting_object = new WbCom_BP_Activity_Filter_Admin_Setting();
 				$labels               = $admin_setting_object->bpaf_get_labels();
 
-				// Loop through the labels and build the action query
+				// Build action query from custom activity filter labels
 				foreach ( $labels as $l_key => $l_value ) {
 					if ( ! empty( $l_value ) && ! in_array( $l_key, $activity_hidden ) ) {
 						$action .= $count === 0 ? $l_key : ',' . $l_key;
@@ -185,17 +190,19 @@ if ( ! class_exists( 'WbCom_BP_Activity_Filter_Activity_Stream' ) ) {
 					}
 				}
 
+				// Set action and pagination in query
 				$query = 'action=' . $action;
 				if ( isset( $_POST['scope'] ) && $_POST['scope'] !== '' ) {
 					$query .= '&scope=' . sanitize_text_field( wp_unslash( $_POST['scope'] ) );
 				}
 				if ( ! empty( $page ) ) {
-					$query .= '&' . $page;
+					$query .= '&page=' . $page;
 				}
 			}
 
 			return $query;
 		}
+
 
 
 		/**
