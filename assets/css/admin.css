@@ -1,0 +1,467 @@
+/**
+ * BuddyPress Activity Filter Admin Styles
+ *
+ * @package BuddyPress_Activity_Filter
+ * @since 4.0.0
+ */
+
+/* Admin wrapper */
+.bp-activity-filter-admin {
+	max-width: 1200px;
+}
+
+/* Navigation tabs */
+.nav-tab-wrapper {
+	margin-bottom: 20px;
+	border-bottom: 1px solid #ccc;
+}
+
+.nav-tab {
+	position: relative;
+	text-decoration: none;
+	color: #0073aa;
+	border: 1px solid #ccc;
+	border-bottom: none;
+	background: #f1f1f1;
+	padding: 10px 12px;
+	margin-right: 5px;
+}
+
+.nav-tab:hover {
+	background: #fff;
+	color: #0073aa;
+}
+
+.nav-tab-active {
+	background: #fff;
+	color: #000;
+	border-bottom: 1px solid #fff;
+	margin-bottom: -1px;
+}
+
+/* Form tables */
+.form-table {
+	margin-top: 20px;
+}
+
+.form-table th {
+	width: 200px;
+	font-weight: 600;
+	vertical-align: top;
+	padding: 20px 10px 20px 0;
+}
+
+.form-table td {
+	padding: 15px 10px;
+}
+
+.form-table select {
+	min-width: 300px;
+	max-width: 100%;
+}
+
+.form-table input[type="text"] {
+	width: 300px;
+	max-width: 100%;
+}
+
+.form-table input[type="checkbox"] {
+	margin-right: 8px;
+}
+
+.form-table label {
+	display: inline-block;
+	margin-bottom: 8px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+.form-table fieldset label {
+	display: block;
+	margin-bottom: 10px;
+}
+
+.form-table .description {
+	margin-top: 5px;
+	font-style: italic;
+	color: #666;
+	font-size: 13px;
+}
+
+/* Custom Post Type Settings */
+.cpt-setting-item {
+	margin-bottom: 20px;
+	padding: 20px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	background: #f9f9f9;
+	transition: all 0.3s ease;
+}
+
+.cpt-setting-item:hover {
+	border-color: #999;
+	background: #fff;
+}
+
+.cpt-setting-item.disabled {
+	opacity: 0.6;
+	background: #f5f5f5;
+}
+
+.cpt-header {
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #eee;
+}
+
+.cpt-main-label {
+	display: block;
+	font-size: 16px;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.cpt-main-label strong {
+	color: #333;
+}
+
+.cpt-meta {
+	font-size: 12px;
+	color: #666;
+	font-weight: normal;
+	margin-left: 8px;
+}
+
+.cpt-description {
+	margin-bottom: 15px;
+}
+
+.cpt-description .description {
+	margin: 0;
+	font-style: italic;
+	color: #666;
+	font-size: 13px;
+}
+
+.cpt-settings {
+	margin-top: 15px;
+}
+
+.cpt-label-setting {
+	display: block;
+	margin-bottom: 15px;
+}
+
+.cpt-label-input {
+	width: 300px;
+	max-width: 100%;
+	margin-top: 5px;
+}
+
+.cpt-enable-checkbox {
+	margin-right: 10px;
+	transform: scale(1.1);
+}
+
+/* Post Type Info */
+.cpt-capabilities {
+	margin: 15px 0;
+	padding: 12px;
+	background: #fff;
+	border: 1px solid #e1e1e1;
+	border-radius: 4px;
+}
+
+.cpt-capabilities strong {
+	display: block;
+	margin-bottom: 8px;
+	color: #333;
+	font-size: 13px;
+}
+
+.cpt-info-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.cpt-info-list li {
+	display: flex;
+	align-items: center;
+	margin-bottom: 5px;
+	font-size: 12px;
+}
+
+.cpt-info-list .dashicons {
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+	margin-right: 6px;
+	color: #666;
+}
+
+.cpt-info-list code {
+	margin-left: 5px;
+	padding: 1px 4px;
+	background: #f1f1f1;
+	font-size: 11px;
+}
+
+/* Activity Preview */
+.cpt-preview {
+	margin-top: 15px;
+	padding: 12px;
+	background: #e7f3ff;
+	border: 1px solid #b3d9ff;
+	border-radius: 4px;
+}
+
+.cpt-preview strong {
+	display: block;
+	margin-bottom: 8px;
+	color: #0073aa;
+	font-size: 13px;
+}
+
+.activity-preview-text {
+	font-size: 13px;
+	color: #333;
+	padding: 8px;
+	background: #fff;
+	border-radius: 3px;
+	border-left: 3px solid #0073aa;
+}
+
+.activity-preview-text a {
+	color: #0073aa;
+	text-decoration: none;
+}
+
+/* Global Settings */
+.cpt-global-settings {
+	margin-top: 25px;
+	padding: 15px;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.cpt-global-settings h4 {
+	margin: 0 0 10px 0;
+	color: #333;
+	font-size: 14px;
+}
+
+.cpt-global-settings label {
+	display: block;
+	margin-bottom: 0;
+}
+
+.cpt-global-settings input[type="checkbox"] {
+	margin-right: 8px;
+}
+
+/* Hidden Activities Tab */
+.bp-activity-checkbox-label {
+	display: block;
+	margin-bottom: 8px;
+	padding: 5px 8px;
+	background: #f9f9f9;
+	border: 1px solid #e1e1e1;
+	border-radius: 3px;
+	transition: background-color 0.2s ease;
+	cursor: pointer;
+}
+
+.bp-activity-checkbox-label:hover {
+	background: #f0f0f0;
+	border-color: #999;
+}
+
+.bp-activity-checkbox-label input[type="checkbox"]:checked + .checkbox-label-text {
+	text-decoration: line-through;
+	color: #666;
+}
+
+.bp-activity-checkbox {
+	margin-right: 8px;
+	transform: scale(1.1);
+}
+
+.checkbox-label-text {
+	font-weight: 500;
+	margin-right: 10px;
+}
+
+.activity-key {
+	font-size: 11px;
+	color: #666;
+	background: #f1f1f1;
+	padding: 1px 4px;
+	border-radius: 2px;
+	float: right;
+}
+
+.hidden-activities-actions {
+	margin-top: 15px;
+	padding-top: 10px;
+	border-top: 1px solid #eee;
+}
+
+.hidden-activities-actions .button {
+	margin-right: 10px;
+}
+
+#bp-hidden-activities-fieldset {
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+#bp-hidden-activities-fieldset legend {
+	display: none;
+}
+
+/* Notice styles */
+.notice {
+	margin: 15px 0;
+}
+
+.notice.notice-info {
+	border-left-color: #00a0d2;
+}
+
+.notice p {
+	margin: 0.5em 0;
+	padding: 2px;
+}
+
+/* Submit button area */
+.submit {
+	margin-top: 20px;
+	padding-top: 20px;
+	border-top: 1px solid #ddd;
+}
+
+/* Settings sections */
+.settings-section {
+	margin-bottom: 30px;
+}
+
+.settings-section h2 {
+	color: #333;
+	font-size: 23px;
+	font-weight: 400;
+	margin: 0 0 10px 0;
+	padding: 0;
+}
+
+.settings-section p {
+	margin-top: 0;
+	margin-bottom: 15px;
+	color: #666;
+}
+
+/* Loading states */
+.loading {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.spinner {
+	background: url(../../../../../wp-admin/images/spinner.gif) no-repeat;
+	background-size: 20px 20px;
+	display: none;
+	float: right;
+	opacity: 0.7;
+	width: 20px;
+	height: 20px;
+	margin: 2px 5px 0;
+}
+
+.spinner.is-active {
+	display: block;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+	.spinner {
+		background-image: url(../../../../../wp-admin/images/spinner-2x.gif);
+	}
+}
+
+/* Responsive design */
+@media screen and (max-width: 782px) {
+	.form-table th,
+	.form-table td {
+		display: block;
+		width: 100%;
+		padding: 10px 0;
+	}
+	
+	.form-table th {
+		padding-bottom: 5px;
+	}
+	
+	.form-table select,
+	.form-table input[type="text"] {
+		width: 100%;
+		max-width: 400px;
+	}
+	
+	.nav-tab-wrapper {
+		border-bottom: 1px solid #ccc;
+	}
+	
+	.nav-tab {
+		display: block;
+		margin: 0 0 -1px 0;
+		border-radius: 0;
+	}
+	
+	.cpt-setting-item input[type="text"] {
+		width: 100%;
+		max-width: 300px;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.bp-activity-filter-admin {
+		margin: 0 -20px;
+		padding: 0 20px;
+	}
+	
+	.form-table select,
+	.form-table input[type="text"],
+	.cpt-setting-item input[type="text"] {
+		max-width: 100%;
+	}
+}
+
+/* Accessibility improvements */
+.form-table input:focus,
+.form-table select:focus {
+	border-color: #0073aa;
+	box-shadow: 0 0 0 1px #0073aa;
+	outline: 2px solid transparent;
+}
+
+.nav-tab:focus {
+	outline: 2px solid #0073aa;
+	outline-offset: -2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+	.nav-tab {
+		border-color: #000;
+	}
+	
+	.nav-tab-active {
+		background: #fff;
+		border-color: #000;
+	}
+	
+	.cpt-setting-item {
+		border-color: #000;
+	}
+}

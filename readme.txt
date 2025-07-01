@@ -1,198 +1,175 @@
-=== Wbcom Designs - BuddyPress Activity Filter ===
-Contributors: vapvarun, wbcomdesigns
-Tags: buddypress, activity-filter, filter, BuddyPress activity, hide activity, default activity, custom post type activity
+=== BuddyPress Activity Filter ===
+Contributors: wbcomdesigns, vapvarun
+Tags: buddypress, activity-filter, filter, buddypress-activity, hide-activity, default-activity, custom-post-type-activity
 Donate link: https://wbcomdesigns.com/donate/
-Requires at least: 4.0
-Tested up to: 6.6.2
-Stable tag: 3.0.1
+Requires at least: 5.0
+Tested up to: 6.6
+Requires PHP: 7.4
+Stable tag: 4.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Easily manage your BuddyPress Activity Stream by filtering specific activity types, setting default filters, and enabling public Custom Post Types (CPT) activities to enhance content visibility and user engagement.
+Easily manage your BuddyPress Activity Stream by filtering specific activity types, setting default filters, and enabling public Custom Post Types (CPT) activities.
 
 == Description ==
 
-The **BuddyPress Activity Filter** plugin helps site administrators customize the activity feed by setting default activity types and hiding irrelevant content. It also allows you to include activities from Custom Post Types (CPT) in the BuddyPress activity stream, ensuring that custom content is well-represented.
+The **BuddyPress Activity Filter** plugin helps site administrators customize the activity feed by setting default activity types and hiding irrelevant content. It also allows you to include activities from Custom Post Types (CPT) in the BuddyPress activity stream.
 
-### Features:
-- Set default activity filters for a cleaner user experience.
-- Hide unwanted activity types from appearing on the front end.
-- Enable Custom Post Type (CPT) activities in BuddyPress activity streams.
+### ✨ Key Features
 
-### Recommended Premium Add-ons for BuddyPress Communities:
-Enhance your BuddyPress community with these premium extensions:
+- **Default Activity Filters**: Set different default filters for site-wide and profile-specific activity streams
+- **Hide Unwanted Activities**: Remove specific activity types from appearing in the activity feed
+- **Custom Post Type Support**: Enable activity generation for custom post types when published
+- **Clean & Lightweight**: Optimized code with minimal performance impact
+- **Theme Compatible**: Works with BuddyPress default theme and Nouveau theme package
+- **Easy Administration**: Simple settings interface with intuitive controls
 
-- **[BuddyPress Hashtags](https://wbcomdesigns.com/downloads/buddypress-hashtags/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
-  Allow members to use hashtags in BuddyPress activities and bbPress topics to make content easier to find.
-  
-- **[BuddyPress Polls](https://wbcomdesigns.com/downloads/buddypress-polls/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
-  Add poll functionality to BuddyPress activity posts, enabling members to create and participate in polls within the community.
-  
-- **[BuddyPress Quotes](https://wbcomdesigns.com/downloads/buddypress-quotes/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
-  Allow users to post status updates with engaging background images or colors, creating visually appealing activity posts.
-  
-- **[BuddyPress Status & Reactions](https://wbcomdesigns.com/downloads/buddypress-status/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
-  Enable custom statuses for profiles and provide a wide range of emoji reactions for activity posts.
-  
-- **[BuddyPress Sticky Post](https://wbcomdesigns.com/downloads/buddypress-sticky-post/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
-  Pin important activity posts to the top of the activity feed to ensure maximum visibility.
-  
-- **[BuddyPress Profanity Filter](https://wbcomdesigns.com/downloads/buddypress-profanity/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
-  Automatically censor inappropriate words in BuddyPress activities and private messages.
+### 🎯 Perfect For
 
-- **[WP Stories](https://wbcomdesigns.com/downloads/wp-stories/?utm_source=wp.org&utm_medium=plugins&utm_campaign=wp.org)**  
-  Add the popular stories feature to your BuddyPress community, allowing members to share stories as short videos or images.
+- Community sites wanting to streamline their activity feeds
+- Sites with custom post types that need activity integration
+- Administrators who want granular control over activity visibility
+- Communities looking to improve user experience with focused content
 
+### 🔧 Configuration Options
+
+**Default Filters Tab:**
+- Site-wide Activity Default: Set the default filter for main activity streams
+- Profile Activity Default: Set the default filter for user profile activity pages
+
+**Hidden Activities Tab:**
+- Select specific activity types to hide from all activity streams
+- Professional activity labels for better clarity
+
+**Custom Post Types Tab:**
+- Enable activity generation for any public custom post type
+- Customize activity labels for each post type
+- Automatic activity creation when CPT posts are published
+
+### 🌟 Premium Extensions
+
+Enhance your BuddyPress community with these premium add-ons:
+
+- **[BuddyPress Hashtags](https://wbcomdesigns.com/downloads/buddypress-hashtags/)** - Add hashtag functionality to activities
+- **[BuddyPress Polls](https://wbcomdesigns.com/downloads/buddypress-polls/)** - Create and participate in polls
+- **[BuddyPress Quotes](https://wbcomdesigns.com/downloads/buddypress-quotes/)** - Share quotes with beautiful backgrounds
+- **[BuddyPress Status & Reactions](https://wbcomdesigns.com/downloads/buddypress-status/)** - Custom statuses and emoji reactions
+- **[BuddyPress Sticky Post](https://wbcomdesigns.com/downloads/buddypress-sticky-post/)** - Pin important activities
+- **[WP Stories](https://wbcomdesigns.com/downloads/wp-stories/)** - Add Instagram-like stories feature
+
+### 💡 Use Cases
+
+1. **Corporate Communities**: Hide member registration activities, focus on business updates
+2. **Educational Sites**: Highlight course activities, hide profile updates
+3. **E-commerce Communities**: Show product activities, hide friendship notifications
+4. **News Sites**: Display article publications as activities automatically
+
+### 🛠️ Developer Friendly
+
+- Clean, documented code following WordPress standards
+- Multiple hooks and filters for customization
+- Modular architecture for easy extension
+- Compatible with popular BuddyPress themes
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/buddypress-activity-filter` directory, or install the plugin directly through the WordPress plugins screen.
-
-2. Activate the plugin through the \'Plugins\' screen in WordPress
-
-3. Use the Settings-> BuddyPress -> Options -> Activity Filter Settings screen to set the default activity type and hide specific activity type(s).
-
+1. Upload the plugin files to `/wp-content/plugins/buddypress-activity-filter/` or install directly through WordPress admin
+2. Activate the plugin through the 'Plugins' screen in WordPress
+3. Navigate to Settings > Activity Filter to configure your preferences
+4. Set your default filters and hidden activities as needed
+5. Enable custom post types if desired
 
 == Frequently Asked Questions ==
 
-= What is the default activity filter? =  
-By default, the "Everything" filter is shown in the activity feed.
+= What is the default activity filter? =
 
-= Can I hide specific activity types? =  
-Yes, you can select which activity types to hide in the plugin settings.
+By default, "Everything" is shown in the activity feed. You can change this to any specific activity type like "Status Updates", "New Blog Posts", etc.
 
-= How do Custom Post Type activities display in the activity stream? =  
-Custom Post Type activities are automatically added to the activity stream when published.
+= Can I hide specific activity types completely? =
+
+Yes! Use the "Hidden Activities" tab to select which activity types should never appear in the activity stream.
+
+= How do Custom Post Type activities appear? =
+
+When you enable a custom post type, publishing a new post of that type will automatically create an activity entry showing the author, post type, and post title with a link.
+
+= Will this work with my theme? =
+
+Yes, the plugin is compatible with BuddyPress default themes and the Nouveau theme package. It also works with most third-party BuddyPress themes.
+
+= Does this affect existing activities? =
+
+No, the plugin only affects the display and filtering of activities. Existing activities remain unchanged in the database.
+
+= Can I customize the activity text for custom post types? =
+
+Yes, when enabling a custom post type, you can specify a custom label that will be used in the activity text instead of the default post type name.
+
+= Is this compatible with BuddyBoss? =
+
+No, BuddyBoss has similar built-in features, so this plugin is not compatible and will display a notice if BuddyBoss is detected.
+
+= How do I reset to default settings? =
+
+Simply deactivate and reactivate the plugin, or set all filters back to "Everything" and uncheck all hidden activities.
 
 == Screenshots ==
 
-1. The screenshot shows settings to select the activity type to display on the activity page by default, corresponding to screenshot-1.(png|jpg|jpeg|gif).
-
-2. The screenshot shows settings to select activity/activities you want to hide from the dropdown list on activity options, which corresponds to
-
-   screenshot-2.(png|jpg|jpeg|gif).
-
-3. The screenshot shows settings to add custom post-type activities, corresponding to screenshot-3.(png|jpg|jpeg|gif).
-
-4. The screenshot shows FAQ(s) , corresponds to screenshot-4.(png|jpg|jpeg|gif).
+1. **Default Filters Settings** - Configure default activity filters for site-wide and profile streams
+2. **Hidden Activities Management** - Select which activity types to hide from the feed
+3. **Custom Post Type Integration** - Enable activity generation for custom post types
+4. **Frontend Activity Filter** - Clean activity filter dropdown on the frontend
 
 == Changelog ==
 
+= 4.0.0 =
+* **Major Update**: Complete plugin rewrite with modern WordPress standards
+* **New**: Modular class-based architecture for better maintainability
+* **New**: Enhanced admin interface with tabbed navigation
+* **New**: Improved frontend JavaScript with better AJAX handling
+* **New**: Professional activity labels for better user experience
+* **New**: Better theme compatibility and responsive design
+* **New**: Comprehensive helper functions and utilities
+* **Improved**: Performance optimization with reduced database queries
+* **Improved**: Security enhancements with proper nonce validation
+* **Improved**: Code documentation and WordPress coding standards compliance
+* **Fixed**: Various PHP warnings and compatibility issues
+* **Fixed**: Cookie handling for default filters
+* **Fixed**: Activity filtering edge cases
+
 = 3.0.1 =
-* Fixed: Warning related to page parameter in activity query.
-* Fixed: Pagination issue for activity streams where "Load More" button was not functioning correctly.
-* Improvement: Added a check to ensure that $page is a string before processing, improving overall query handling.
+* Fixed: Warning related to page parameter in activity query
+* Fixed: Pagination issue for activity streams where "Load More" button was not functioning correctly
+* Improvement: Added check to ensure $page is a string before processing
 
 = 3.0.0 =
-* Fixed: PHP warning issue.
-* Fixed: Issue in filtering activities.
-* Fixed: The activity filter is now applied correctly when viewing "just-me" or "sitewide" activities.
-* Fixed: Bypass default activity filter on profile other tabs.
-* Fixed: Issue with the activity filter on single activity views.
-* Improved: Deleting cookies when saving admin options.
-* Added: Check to prevent setting the default activity filter on single activity views.
+* Fixed: PHP warning issue
+* Fixed: Issue in filtering activities
+* Fixed: Activity filter applied correctly when viewing "just-me" or "sitewide" activities
+* Fixed: Bypass default activity filter on profile other tabs
+* Improved: Cookie deletion when saving admin options
+* Added: Check to prevent setting default activity filter on single activity views
 
 = 2.9.0 =
-* Enhancement: Ensured lowercase post type names when no new label is provided.
-* Fix: Corrected typos and updated the readme for clarity.
-* Code Compliance: Removed deprecated filters, unused variables, and modernized PHP code.
-* Security: Replaced FILTER_SANITIZE_STRING with sanitize_text_field() and added nonce validation for improved security.
-* Optimization: Improved handling of undefined values and data sanitization.
-* Access Control: Added proper permissions for managing options.
-* UI Update: Managed backend options and improved responsive design.
+* Enhancement: Ensured lowercase post type names when no new label is provided
+* Fix: Corrected typos and updated readme for clarity
+* Code Compliance: Removed deprecated filters and modernized PHP code
+* Security: Replaced deprecated functions with modern alternatives
+* Optimization: Improved data sanitization and validation
 
-= 2.8.9 =
-* Fix: Fix: Compatibility check with WordPress 6.5.0
+== Upgrade Notice ==
 
-= 2.8.7 =
-* Fix: BuddyPress v12 support
+= 4.0.0 =
+This is a major update with significant improvements. Please backup your site before updating. The plugin has been completely rewritten for better performance and maintainability while maintaining all existing functionality.
 
-= 2.8.6 =
-* Fix - Fixed phpcs error
-* Fix - (#116) Fixed activity filter issue
-* Fix - (#114) Fixed query monitor issue
+== Support ==
 
-= 2.8.5 =
-* Fix - Disabled the plugin for bb due to similar features
-* Fix - add default placeholder for cpt types
-* Fix - (#111) Updated UI type checkbox and radio
+For support, documentation, and feature requests, please visit:
 
-= 2.8.3 =
-* Fix - (#153)Fixed compatibility issue with BuddyPress Hashtag plugin 
+- **Documentation**: [Plugin Documentation](https://docs.wbcomdesigns.com/doc_category/buddypress-activity-filter/)
+- **Support Forum**: [WordPress.org Support](https://wordpress.org/support/plugin/bp-activity-filter/)
+- **Premium Support**: [Wbcom Designs Support](https://wbcomdesigns.com/support/)
 
-= 2.8.2 =
-* Fix - Updated Admin wrapper 
+== Contributing ==
 
-= 2.8.1 =
-* Fix - (#97) Fixed remove activity settings are not saving
-
-= 2.8.0 =
-* Fix - Fixed phpcs error
-* Fix - Removed install plugin button from the wrapper
-* Fix - (#95) Fixed embed links issue
-* Fix - (#95) Fixed Activity UI issue
-* Fix - (#93) Fixed default activity filter issue with php 8
-
-= 2.7.0 =
-* Fix - #88 - Fatal Error Displaying When BuddyPress Activity Component is disabled
-* Fix - #78 - topics and replies do not remove
-* Fix - #89 - Ajax Warning in Remove Activity Tab
-* Fix - Redirect stop when the buddypress plugin does not activate
-
-= 2.6.0 =
-* Fix - Update plugin backend UI
-* Fix - (#75)Fixed load admin script on admin pages for all languages
-
-= 2.5.0 =
-* Fixed - PHPCS Fixes
-* Fixed - Use Display Names instead for nicename for new cpt activities
-
-= 2.4.0 =
-* Fixed #67 - Default filter issue.
-
-= 2.3.0 =
-* Fixed #62 - Group Related Activities 
-* Fixed #59 - Conflict with BuddyPress quotes plugin
-* Fixed #63 - BuddyPress Profile: group activity
-* Fixed: Comment not added when removing "Replied to a status update."
-* Fixed: Add All Register Activity Type in Review Activity Setting & update code
-* Fixed #53 - Error Log
-
-= 2.2.1 =
-* Fix: BuddyPress & BuddyBoss bp-settings are not saved and display the error message.
-
-= 2.2.0 =
-* Enhancement: Added default option for Sitewide Activity & Profile separately
-
-= 2.1.0 =
-* Fix: Compatibility with BuddyPress 5.1.2
-* Fix: Updated UI for enabling CPT updates inside the activity.
-
-= 2.0.1
-* Fix - Compatibility with BuddyPress 4.3.0. #33
-
-= 2.0.0
-* Fix - Compatibility with BuddyPress 4.1.0. #25
-* Enhancement- Improve the Backend UI so that you can manage all the wbcom plugin's settings in one place. #27
-
-= 1.0.6 =
-* Enhancement - Added French translation files – credits to Jean Pierre Michaud
-
-= 1.0.5 =
-* Fix - BuddyPress 3.2.0 Compatible.
-
-= 1.0.4 =
-* Fix - Multisite Support
-
-= 1.0.3 =
-* Fix - Changed plugin setting UI.
-* Enhancement - Add activities settings for the custom post type.
-
-= 1.0.2 =
-* Fix - Default filter fixes
-
-= 1.0.1 =
-* Fix - Admin table fixes
-
-= 1.0.0 =
-* Initial Release
+We welcome contributions! Please see our [GitHub repository](https://github.com/wbcomdesigns/buddypress-activity-filter) for development guidelines and to submit pull requests.

@@ -1,231 +1,316 @@
 <?php
 /**
- *
- * @link              https://wbcomdesigns.com/
- * @since             1.0.0
- *
- * @wordpress-plugin
- * Plugin Name:       Wbcom Designs - BuddyPress Activity Filter
- * Plugin URI:        https://wbcomdesigns.com/downloads/buddypress-activity-filter/
- * Description:       It will help set the default filter option with BuddyPress Activity, & also allow disabling selected activity types.
- * Version:           3.0.1
- * Author:            Wbcom Designs<admin@wbcomdesigns.com>
- * Author URI:        https://wbcomdesigns.com/
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       bp-activity-filter
- * Domain Path:       /languages
+ * Plugin Name: BuddyPress Activity Filter
+ * Plugin URI: https://wordpress.org/plugins/bp-activity-filter/
+ * Description: Filter and manage BuddyPress activity streams with default filters and custom post type support.
+ * Version: 4.0.0
+ * Author: Wbcom Designs
+ * Author URI: https://wbcomdesigns.com/
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: bp-activity-filter
+ * Domain Path: /languages
+ * Requires at least: 5.0
+ * Tested up to: 6.6
+ * Requires PHP: 7.4
+ * Network: true
  *
  * @package BuddyPress_Activity_Filter
  */
 
+// Prevent direct access.
 if ( ! defined( 'ABSPATH' ) ) {
-	wp_die( 'Direct Access is not Allowed' );
+	exit;
 }
-define( 'BP_ACTIVITY_FILTER_PLUGIN_VERSION', '3.0.1' );
-define( 'BP_ACTIVITY_FILTER_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-define( 'BP_ACTIVITY_FILTER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
+// Define plugin constants.
+if ( ! defined( 'BP_ACTIVITY_FILTER_VERSION' ) ) {
+	define( 'BP_ACTIVITY_FILTER_VERSION', '4.0.0' );
+}
+
+if ( ! defined( 'BP_ACTIVITY_FILTER_PLUGIN_DIR' ) ) {
+	define( 'BP_ACTIVITY_FILTER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+}
+
+if ( ! defined( 'BP_ACTIVITY_FILTER_PLUGIN_URL' ) ) {
+	define( 'BP_ACTIVITY_FILTER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
+
+if ( ! defined( 'BP_ACTIVITY_FILTER_BASENAME' ) ) {
+	define( 'BP_ACTIVITY_FILTER_BASENAME', plugin_basename( __FILE__ ) );
+}
 
 /**
- *  Checking for buddypress whether it is active or not
+ * Main plugin class.
  *
- * @author wbcomdesigns
- * @since  3.0.1
+ * @since 4.0.0
  */
-function check_required_plugin_is_activated() {
-	if ( ! class_exists( 'Buddypress' ) ) {
-		deactivate_plugins( plugin_basename( __FILE__ ) );
-		add_action( 'admin_notices', 'bp_activity_filter_required_plugin_admin_notice' );
-		if ( null !== filter_input( INPUT_GET, 'activate' ) ) {
-			$activate = filter_input( INPUT_GET, 'activate' );
-			unset( $activate );
+final class BP_Activity_Filter {
+
+	/**
+	 * Plugin instance.
+	 *
+	 * @since 4.0.0
+	 * @var BP_Activity_Filter
+	 */
+	private static $instance = null;
+
+	/**
+	 * Get plugin instance.
+	 *
+	 * @since 4.0.0
+	 * @return BP_Activity_Filter
+	 */
+	public static function instance() {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
 		}
-	} elseif ( function_exists( 'buddypress' ) && isset( buddypress()->buddyboss ) ) {
-		deactivate_plugins( plugin_basename( __FILE__ ) );
-		add_action( 'admin_notices', 'bp_activity_filter_required_plugin_admin_notice' );
-		if ( null !== filter_input( INPUT_GET, 'activate' ) ) {
-			$activate = filter_input( INPUT_GET, 'activate' );
-			unset( $activate );
-		}
+		return self::$instance;
 	}
-}
-add_action( 'admin_init', 'check_required_plugin_is_activated' );
 
-/**
- * Throw an Alert to tell the Admin why it didn't activate.
- *
- * @author wbcomdesigns
- * @since  3.0.1
- */
-function bp_activity_filter_required_plugin_admin_notice() {
-	$plugin    = esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' );
-	$bp_plugin = esc_html__( 'BuddyPress', 'bp-activity-filter' );
-	echo '<div class="error"><p>';
-	/* translators: %1$s: BuddyPress Activity Filter ;  %2$s: BuddyPress*/
-	echo sprintf( esc_html__( '%1$s is ineffective now as it requires %2$s to be installed and active. It is not compatible with BuddyBoss due to similar features.', 'bp-activity-filter' ), '<strong>' . esc_html( $plugin ) . '</strong>', '<strong>' . esc_html( $bp_plugin ) . '</strong>' );
-	echo '</p></div>';
-	if ( null !== filter_input( INPUT_GET, 'activate' ) ) {
-		$activate = filter_input( INPUT_GET, 'activate' );
-		unset( $activate );
+	/**
+	 * Constructor.
+	 *
+	 * @since 4.0.0
+	 */
+	private function __construct() {
+		$this->setup_hooks();
 	}
-}
 
-/**
- * Defining class WbCom_BP_Activity_Filter is not exist
- */
-if ( ! class_exists( 'WbCom_BP_Activity_Filter' ) ) {
-	class WbCom_BP_Activity_Filter {
-		/**
-		 * Constructor
-		 */
-		public function __construct() {
-			global $bp;
+	/**
+	 * Setup plugin hooks.
+	 *
+	 * @since 4.0.0
+	 */
+	private function setup_hooks() {
+		add_action( 'plugins_loaded', array( $this, 'init' ), 20 );
+		add_action( 'init', array( $this, 'load_textdomain' ) );
 
-			// Add text domain.
-			$this->bp_activity_filter_load_textdomain();
+		// Activation/Deactivation hooks.
+		register_activation_hook( __FILE__, array( $this, 'activate' ) );
+		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
 
-			// Add settings link on plugin listing page.
-			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( &$this, 'bp_activity_filter_plugin_actions' ), 10, 2 );
+		// Plugin action links.
+		add_filter( 'plugin_action_links_' . BP_ACTIVITY_FILTER_BASENAME, array( $this, 'plugin_action_links' ) );
+	}
 
-			// Include admin settings, scripts, and other files.
-			require_once plugin_dir_path( __FILE__ ) . 'admin/wbcom/wbcom-admin-settings.php';
-			require_once plugin_dir_path( __FILE__ ) . 'admin/class-bp-activity-filter-admin-script-includer.php';
-			require_once plugin_dir_path( __FILE__ ) . 'admin/class-bp-activity-filter-admin-setting.php';
-			require_once plugin_dir_path( __FILE__ ) . 'admin/class-bp-activity-filter-admin-setting-save.php';
-			require_once plugin_dir_path( __FILE__ ) . 'admin/class-bp-activity-filter-feedback.php';
-			require_once plugin_dir_path( __FILE__ ) . 'templates/class-bp-activity-filter-dropdown.php';
-			require_once plugin_dir_path( __FILE__ ) . 'admin/class-bp-activity-filter-add-post-support.php';
-			require_once plugin_dir_path( __FILE__ ) . 'templates/class-bp-activity-filter-query.php';
+	/**
+	 * Initialize the plugin.
+	 *
+	 * @since 4.0.0
+	 */
+	public function init() {
+		// Check if BuddyPress is active.
+		if ( ! $this->is_buddypress_active() ) {
+			add_action( 'admin_notices', array( $this, 'buddypress_required_notice' ) );
+			return;
 		}
 
-		/**
-		 * Load plugin textdomain.
-		 */
-		public function bp_activity_filter_load_textdomain() {
-			$domain = 'bp-activity-filter';
-			$locale = apply_filters( 'plugin_locale', get_locale(), $domain );
-			load_textdomain( $domain, 'languages/' . $domain . '-' . $locale . '.pot' );
-			load_plugin_textdomain( $domain, false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
+		// Check if BuddyBoss is active (incompatible).
+		if ( $this->is_buddyboss_active() ) {
+			add_action( 'admin_notices', array( $this, 'buddyboss_incompatible_notice' ) );
+			return;
 		}
 
+		// Include required files.
+		$this->includes();
+
+		// Initialize components.
+		$this->init_components();
+
 		/**
-		 * Adds the Settings link to the plugin activate/deactivate page.
+		 * Fires after BuddyPress Activity Filter is fully initialized.
 		 *
-		 * @param string $links Action Links.
-		 * @param string $file Path to the plugin file relative to the plugins directory.
+		 * @since 4.0.0
 		 */
-		public function bp_activity_filter_plugin_actions( $links, $file ) {
-			$settings_link = '<a href="' . admin_url( 'admin.php?page=bp_activity_filter_settings' ) . '">' . __( 'Settings', 'bp-activity-filter' ) . '</a>';
-			array_unshift( $links, $settings_link ); // Add settings link before others.
-			return $links;
+		do_action( 'bp_activity_filter_init' );
+	}
+
+	/**
+	 * Load plugin textdomain.
+	 *
+	 * @since 4.0.0
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain(
+			'bp-activity-filter',
+			false,
+			dirname( BP_ACTIVITY_FILTER_BASENAME ) . '/languages'
+		);
+	}
+
+	/**
+	 * Include required files.
+	 *
+	 * @since 4.0.0
+	 */
+	private function includes() {
+		// Include classes.
+		require_once BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-bp-activity-filter-helper.php';
+		require_once BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-bp-activity-filter-migration.php';
+		require_once BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-bp-activity-filter-admin.php';
+		require_once BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-bp-activity-filter-frontend.php';
+		require_once BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-bp-activity-filter-cpt.php';
+		
+		// Include debug class if WP_DEBUG is enabled.
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			require_once BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-bp-activity-filter-debug.php';
 		}
 	}
+
+	/**
+	 * Initialize components.
+	 *
+	 * @since 4.0.0
+	 */
+	private function init_components() {
+		// Initialize migration system first
+		new BP_Activity_Filter_Migration();
+
+		// Initialize admin.
+		if ( is_admin() ) {
+			BP_Activity_Filter_Admin::instance();
+		}
+
+		// Initialize frontend.
+		BP_Activity_Filter_Frontend::instance();
+
+		// Initialize CPT support.
+		BP_Activity_Filter_CPT::instance();
+	}
+
+	/**
+	 * Plugin activation.
+	 *
+	 * @since 4.0.0
+	 */
+	public function activate() {
+		// Set default options.
+		$default_options = array(
+			'bp_activity_filter_default'         => '0',
+			'bp_activity_filter_profile_default' => '-1',
+			'bp_activity_filter_hidden'          => array(),
+			'bp_activity_filter_cpt_settings'    => array(),
+		);
+
+		foreach ( $default_options as $option => $value ) {
+			if ( false === get_option( $option ) ) {
+				add_option( $option, $value );
+			}
+		}
+
+		// Set activation redirect flag.
+		set_transient( 'bp_activity_filter_activation_redirect', true, 30 );
+	}
+
+	/**
+	 * Plugin deactivation.
+	 *
+	 * @since 4.0.0
+	 */
+	public function deactivate() {
+		// Clean up transients.
+		delete_transient( 'bp_activity_filter_activation_redirect' );
+	}
+
+	/**
+	 * Add plugin action links.
+	 *
+	 * @since 4.0.0
+	 * @param array $links Plugin action links.
+	 * @return array Modified plugin action links.
+	 */
+	public function plugin_action_links( $links ) {
+		$settings_link = sprintf(
+			'<a href="%s">%s</a>',
+			admin_url( 'options-general.php?page=bp-activity-filter' ),
+			esc_html__( 'Settings', 'bp-activity-filter' )
+		);
+
+		array_unshift( $links, $settings_link );
+		return $links;
+	}
+
+	/**
+	 * Check if BuddyPress is active.
+	 *
+	 * @since 4.0.0
+	 * @return bool
+	 */
+	private function is_buddypress_active() {
+		return class_exists( 'BuddyPress' );
+	}
+
+	/**
+	 * Check if BuddyBoss is active.
+	 *
+	 * @since 4.0.0
+	 * @return bool
+	 */
+	private function is_buddyboss_active() {
+		return function_exists( 'buddypress' ) && isset( buddypress()->buddyboss );
+	}
+
+	/**
+	 * BuddyPress required notice.
+	 *
+	 * @since 4.0.0
+	 */
+	public function buddypress_required_notice() {
+		?>
+		<div class="notice notice-error">
+			<p>
+				<?php
+				printf(
+					/* translators: %s: BuddyPress plugin name */
+					esc_html__( 'BuddyPress Activity Filter requires %s to be installed and active.', 'bp-activity-filter' ),
+					'<strong>BuddyPress</strong>'
+				);
+				?>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * BuddyBoss incompatible notice.
+	 *
+	 * @since 4.0.0
+	 */
+	public function buddyboss_incompatible_notice() {
+		?>
+		<div class="notice notice-error">
+			<p>
+				<?php esc_html_e( 'BuddyPress Activity Filter is not compatible with BuddyBoss due to similar built-in features.', 'bp-activity-filter' ); ?>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Prevent cloning.
+	 *
+	 * @since 4.0.0
+	 */
+	private function __clone() {}
+
+	/**
+	 * Prevent unserializing.
+	 *
+	 * @since 4.0.0
+	 */
+	private function __wakeup() {}
 }
 
 /**
- * Check Configuration.
- */
-function bpfilter_check_config() {
-	global $bp;
-
-	$config = array(
-		'blog_status'    => false,
-		'network_active' => false,
-		'network_status' => true,
-	);
-
-	if ( get_current_blog_id() == bp_get_root_blog_id() ) {
-		$config['blog_status'] = true;
-	}
-
-	$network_plugins = get_site_option( 'active_sitewide_plugins', array() );
-
-	// No Network plugins.
-	if ( empty( $network_plugins ) ) {
-		$check[] = $bp->basename;
-	}
-	$check[] = BP_ACTIVITY_FILTER_PLUGIN_BASENAME;
-
-	// Are they active on the network?
-	$network_active = array_diff( $check, array_keys( $network_plugins ) );
-
-	// If plugin is network activated but not BuddyPress, config is not ok.
-	if ( count( $network_active ) == 1 ) {
-		$config['network_status'] = false;
-	}
-
-	// Check if network-activated.
-	$config['network_active'] = isset( $network_plugins[ BP_ACTIVITY_FILTER_PLUGIN_BASENAME ] );
-
-	// If BuddyPress config is different than this plugin's config.
-	if ( ! $config['blog_status'] || ! $config['network_status'] ) {
-		if ( ! bp_core_do_network_admin() && ! $config['blog_status'] ) {
-			add_action( 'admin_notices', 'bpfilter_same_blog' );
-		}
-		if ( bp_core_do_network_admin() && ! $config['network_status'] ) {
-			add_action( 'admin_notices', 'bpfilter_same_network_config' );
-		}
-		return false;
-	}
-	return true;
-}
-
-/**
- * Fires inside the 'bp_include' function, where plugins should include files.
+ * Get the main plugin instance.
  *
- * @since 1.2.5
+ * @since 4.0.0
+ * @return BP_Activity_Filter
  */
-add_action( 'bp_include', 'bp_activity_filter_init' );
-function bp_activity_filter_init() {
-	if ( bpfilter_check_config() && class_exists( 'WbCom_BP_Activity_Filter' ) ) {
-		$GLOBALS['activity_filter'] = new WbCom_BP_Activity_Filter();
-	}
+function bp_activity_filter() {
+	return BP_Activity_Filter::instance();
 }
 
-/**
- * Show error if BuddyPress Activity Filter is not activated on the same blog as BuddyPress.
- */
-function bpfilter_same_blog() {
-	echo '<div class="error"><p>' . esc_html__( 'BuddyPress Activity Filter requires to be activated on the blog where BuddyPress is activated.', 'bp-activity-filter' ) . '</p></div>';
-}
-
-/**
- * Show error if BuddyPress and this plugin do not share the same network configuration.
- */
-function bpfilter_same_network_config() {
-	echo '<div class="error"><p>' . esc_html__( 'BuddyPress Activity Filter and BuddyPress need to share the same network configuration.', 'bp-activity-filter' ) . '</p></div>';
-}
-
-/**
- * Redirect to plugin settings page after activation.
- *
- * @since  1.0.0
- *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- */
-function bpfilter_activation_redirect_settings( $plugin ) {
-	$active_plugins = get_option( 'active_plugins' );
-	if ( plugin_basename( __FILE__ ) === $plugin && class_exists( 'Buddypress' ) && ! in_array( 'buddyboss-platform/bp-loader.php', $active_plugins ) ) {
-		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'activate' && isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] == $plugin ) { //phpcs:ignore
-			wp_safe_redirect( admin_url( 'admin.php?page=bp_activity_filter_settings' ) );
-			exit;
-		}
-	}
-	if ( $plugin == $_REQUEST['plugin'] && class_exists( 'Buddypress' ) ) { //phpcs:ignore
-		if ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'activate-plugin' && isset( $_REQUEST['plugin'] ) && $_REQUEST['plugin'] == $plugin ) { //phpcs:ignore
-			set_transient( '_bpfilter_is_new_install', true, 30 );
-		}
-	}
-}
-add_action( 'activated_plugin', 'bpfilter_activation_redirect_settings' );
-
-/**
- * Bpfilter_do_activation_redirect
- */
-function bpfilter_do_activation_redirect() {
-	if ( get_transient( '_bpfilter_is_new_install' ) ) {
-		delete_transient( '_bpfilter_is_new_install' );
-		wp_safe_redirect( admin_url( 'admin.php?page=bp_activity_filter_settings' ) );
-	}
-}
-add_action( 'admin_init', 'bpfilter_do_activation_redirect' );
+// Initialize the plugin.
+bp_activity_filter();
