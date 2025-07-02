@@ -151,11 +151,6 @@ final class BP_Activity_Filter {
 		require_once BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-bp-activity-filter-admin.php';
 		require_once BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-bp-activity-filter-frontend.php';
 		require_once BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-bp-activity-filter-cpt.php';
-		
-		// Include debug class if WP_DEBUG is enabled.
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			require_once BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-bp-activity-filter-debug.php';
-		}
 	}
 
 	/**

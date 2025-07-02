@@ -267,14 +267,14 @@ class BP_Activity_Filter_Admin {
 		$current_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'default';
 		
 		// Handle form submission
-		if ( isset( $_POST['submit'] ) ) {
+		if ( isset( $_POST['bp_activity_filter_submit'] ) && '1' === $_POST['bp_activity_filter_submit'] ) {
 			$this->save_settings();
 		}
 		?>
 		<div class="wrap bp-activity-filter-admin">
 			<h1><?php esc_html_e( 'BuddyPress Activity Filter', 'bp-activity-filter' ); ?></h1>
 
-			<?php settings_errors(); ?>
+			<?php settings_errors( 'bp_activity_filter_settings' ); ?>
 
 			<nav class="nav-tab-wrapper">
 				<a href="<?php echo esc_url( admin_url( 'options-general.php?page=bp-activity-filter&tab=default' ) ); ?>" 
@@ -293,6 +293,8 @@ class BP_Activity_Filter_Admin {
 
 			<form method="post" action="">
 				<?php wp_nonce_field( 'bp_activity_filter_save_settings', 'bp_activity_filter_nonce' ); ?>
+				<input type="hidden" name="current_tab" value="<?php echo esc_attr( $current_tab ); ?>" />
+				<input type="hidden" name="bp_activity_filter_submit" value="1" />
 
 				<?php
 				switch ( $current_tab ) {
@@ -401,26 +403,9 @@ class BP_Activity_Filter_Admin {
 	private function render_hidden_activities_tab() {
 		$hidden_activities = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_hidden', array() );
 		$activity_actions = BP_Activity_Filter_Helper::get_activity_actions();
-
-		// Debug info for hidden tab
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			echo '<!-- Hidden Activities Debug: ';
-			echo 'Current hidden: ' . print_r( $hidden_activities, true );
-			echo 'Available actions: ' . print_r( array_keys( $activity_actions ), true );
-			echo '-->';
-		}
 		?>
 		<h2><?php esc_html_e( 'Hidden Activity Types', 'bp-activity-filter' ); ?></h2>
 		<p><?php esc_html_e( 'Select activity types to hide from the activity stream.', 'bp-activity-filter' ); ?></p>
-
-		<?php if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) : ?>
-			<div style="background: #f0f8ff; border: 1px solid #0073aa; padding: 10px; margin: 10px 0;">
-				<strong>🔍 Debug Info:</strong><br>
-				Current hidden activities: <code><?php echo esc_html( print_r( $hidden_activities, true ) ); ?></code><br>
-				POST data from last save: <code><?php echo esc_html( print_r( $_POST['bp_activity_filter_hidden'] ?? 'Not set', true ) ); ?></code><br>
-				Total activity types: <code><?php echo count( $activity_actions ); ?></code>
-			</div>
-		<?php endif; ?>
 
 		<table class="form-table" role="presentation">
 			<tbody>
@@ -432,26 +417,20 @@ class BP_Activity_Filter_Admin {
 						<?php else : ?>
 							<fieldset id="bp-hidden-activities-fieldset">
 								<legend class="screen-reader-text"><?php esc_html_e( 'Select activity types to hide', 'bp-activity-filter' ); ?></legend>
-								<?php 
-								$counter = 0;
-								foreach ( $activity_actions as $key => $label ) : 
+								<?php foreach ( $activity_actions as $key => $label ) : ?>
+									<?php
 									$is_checked = in_array( $key, $hidden_activities, true );
 									$checkbox_id = 'bp_hidden_' . sanitize_html_class( $key );
-									$counter++;
-								?>
+									?>
 									<label for="<?php echo esc_attr( $checkbox_id ); ?>" class="bp-activity-checkbox-label">
 										<input type="checkbox" 
 											   id="<?php echo esc_attr( $checkbox_id ); ?>"
 											   name="bp_activity_filter_hidden[]" 
 											   value="<?php echo esc_attr( $key ); ?>" 
 											   <?php checked( $is_checked ); ?>
-											   class="bp-activity-checkbox"
-											   data-debug="checkbox-<?php echo $counter; ?>">
+											   class="bp-activity-checkbox">
 										<span class="checkbox-label-text"><?php echo esc_html( $label ); ?></span>
 										<code class="activity-key"><?php echo esc_html( $key ); ?></code>
-										<?php if ( $is_checked ) : ?>
-											<span class="checked-indicator" style="color: red; font-weight: bold;">✓ HIDDEN</span>
-										<?php endif; ?>
 									</label><br>
 								<?php endforeach; ?>
 							</fieldset>
@@ -463,30 +442,12 @@ class BP_Activity_Filter_Admin {
 								<button type="button" id="deselect-all-hidden" class="button button-secondary">
 									<?php esc_html_e( 'Deselect All', 'bp-activity-filter' ); ?>
 								</button>
-								<?php if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) : ?>
-									<button type="button" id="debug-form-data" class="button button-secondary" style="background: #ff9800; color: white;">
-										🐛 Debug Form Data
-									</button>
-									<button type="button" id="emergency-fix" class="button button-secondary" style="background: #dc3545; color: white;">
-										🚨 Emergency Fix
-									</button>
-								<?php endif; ?>
 							</div>
 
 							<p class="description">
 								<strong><?php esc_html_e( 'Note:', 'bp-activity-filter' ); ?></strong>
 								<?php esc_html_e( 'Checked activity types will be hidden from the activity stream and will not appear in the filter dropdown.', 'bp-activity-filter' ); ?>
 							</p>
-
-							<!-- Debug info -->
-							<?php if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) : ?>
-								<div style="margin-top: 20px; padding: 10px; background: #f0f0f0; border: 1px solid #ccc;">
-									<strong>Debug Info:</strong><br>
-									Current hidden activities: <code><?php echo esc_html( print_r( $hidden_activities, true ) ); ?></code><br>
-									Total available activities: <code><?php echo count( $activity_actions ); ?></code><br>
-									Form action: <code><?php echo esc_html( $_SERVER['REQUEST_URI'] ?? 'unknown' ); ?></code>
-								</div>
-							<?php endif; ?>
 						<?php endif; ?>
 					</td>
 				</tr>
@@ -502,44 +463,6 @@ class BP_Activity_Filter_Admin {
 			$('#deselect-all-hidden').on('click', function() {
 				$('#bp-hidden-activities-fieldset input[type="checkbox"]').prop('checked', false);
 			});
-
-			<?php if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) : ?>
-			$('#debug-form-data').on('click', function() {
-				var checkedValues = [];
-				$('#bp-hidden-activities-fieldset input[type="checkbox"]:checked').each(function() {
-					checkedValues.push($(this).val());
-				});
-				
-				var formData = $('form').serialize();
-				
-				alert('Checked values: ' + JSON.stringify(checkedValues) + '\n\nForm data: ' + formData);
-				console.log('Debug - Checked values:', checkedValues);
-				console.log('Debug - Form data:', formData);
-			});
-
-			$('#emergency-fix').on('click', function() {
-				var checkedValues = [];
-				$('#bp-hidden-activities-fieldset input[type="checkbox"]:checked').each(function() {
-					checkedValues.push($(this).val());
-				});
-				
-				if (checkedValues.length === 0) {
-					alert('Please select some activities first, then click Emergency Fix');
-					return;
-				}
-				
-				if (confirm('Emergency Fix will bypass the form and directly save: ' + checkedValues.join(', ') + '\n\nContinue?')) {
-					var url = window.location.href;
-					url += (url.indexOf('?') > -1 ? '&' : '?') + 'emergency_hidden_fix=1&values=' + encodeURIComponent(checkedValues.join(','));
-					window.location.href = url;
-				}
-			});
-
-			// Add change listener to checkboxes for debugging
-			$('#bp-hidden-activities-fieldset input[type="checkbox"]').on('change', function() {
-				console.log('Checkbox changed:', $(this).val(), 'Checked:', $(this).is(':checked'));
-			});
-			<?php endif; ?>
 		});
 		</script>
 		<?php
@@ -805,58 +728,61 @@ class BP_Activity_Filter_Admin {
 			return;
 		}
 
-		$updated = false;
-		
-		// Get current tab from form data (more reliable than GET)
 		$current_tab = isset( $_POST['current_tab'] ) ? sanitize_text_field( $_POST['current_tab'] ) : 'default';
-		
-		// Fallback to GET if form doesn't have it
-		if ( empty( $current_tab ) || 'default' === $current_tab ) {
-			$current_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'default';
+		$updated = false;
+
+		try {
+			// Process settings based on current tab
+			switch ( $current_tab ) {
+				case 'hidden':
+					$updated = $this->save_hidden_activities();
+					break;
+					
+				case 'cpt':
+					$updated = $this->save_cpt_settings();
+					break;
+					
+				case 'default':
+				default:
+					$updated = $this->save_default_filters();
+					break;
+			}
+
+			// Clear activity filter cookies
+			$this->clear_activity_filter_cookies();
+
+			// Show success message
+			if ( $updated ) {
+				add_settings_error(
+					'bp_activity_filter_settings',
+					'settings_updated',
+					esc_html__( 'Settings saved successfully.', 'bp-activity-filter' ),
+					'updated'
+				);
+			} else {
+				add_settings_error(
+					'bp_activity_filter_settings',
+					'no_changes',
+					esc_html__( 'No changes were made to the settings.', 'bp-activity-filter' ),
+					'updated'
+				);
+			}
+
+			/**
+			 * Fires after settings are saved.
+			 *
+			 * @since 4.0.0
+			 */
+			do_action( 'bp_activity_filter_settings_saved' );
+
+		} catch ( Exception $e ) {
+			add_settings_error(
+				'bp_activity_filter_settings',
+				'save_error',
+				esc_html__( 'Error saving settings: ', 'bp-activity-filter' ) . $e->getMessage(),
+				'error'
+			);
 		}
-
-		// Debug logging - enhanced
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( '[BP Activity Filter] === SAVE SETTINGS START ===' );
-			error_log( '[BP Activity Filter] Current tab (POST): ' . ( $_POST['current_tab'] ?? 'not set' ) );
-			error_log( '[BP Activity Filter] Current tab (GET): ' . ( $_GET['tab'] ?? 'not set' ) );
-			error_log( '[BP Activity Filter] Final current tab: ' . $current_tab );
-			error_log( '[BP Activity Filter] POST method: ' . $_SERVER['REQUEST_METHOD'] );
-			error_log( '[BP Activity Filter] Form action: ' . $_SERVER['REQUEST_URI'] );
-			error_log( '[BP Activity Filter] All POST keys: ' . implode( ', ', array_keys( $_POST ) ) );
-		}
-
-		// Process settings based on current tab and available data
-		switch ( $current_tab ) {
-			case 'hidden':
-				$updated = $this->save_hidden_activities() || $updated;
-				break;
-				
-			case 'cpt':
-				$updated = $this->save_cpt_settings() || $updated;
-				break;
-				
-			case 'default':
-			default:
-				$updated = $this->save_default_filters() || $updated;
-				break;
-		}
-
-		// Clear activity filter cookies
-		$this->clear_activity_filter_cookies();
-
-		/**
-		 * Fires after settings are saved.
-		 *
-		 * @since 4.0.0
-		 */
-		do_action( 'bp_activity_filter_settings_saved' );
-
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( '[BP Activity Filter] === SAVE SETTINGS END === Updated: ' . ( $updated ? 'YES' : 'NO' ) );
-		}
-
-		return $updated;
 	}
 
 	/**
@@ -872,22 +798,22 @@ class BP_Activity_Filter_Admin {
 		if ( isset( $_POST['bp_activity_filter_default'] ) ) {
 			$default_filter = sanitize_text_field( $_POST['bp_activity_filter_default'] );
 			$old_value = get_option( 'bp_activity_filter_default' );
-			$result = update_option( 'bp_activity_filter_default', $default_filter );
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( '[BP Activity Filter] Default filter - Old: ' . $old_value . ', New: ' . $default_filter . ', Result: ' . ( $result ? 'SUCCESS' : 'FAILED' ) );
+			
+			if ( $old_value !== $default_filter ) {
+				update_option( 'bp_activity_filter_default', $default_filter );
+				$updated = true;
 			}
-			$updated = true;
 		}
 
 		// Save profile default filter
 		if ( isset( $_POST['bp_activity_filter_profile_default'] ) ) {
 			$profile_default = sanitize_text_field( $_POST['bp_activity_filter_profile_default'] );
 			$old_value = get_option( 'bp_activity_filter_profile_default' );
-			$result = update_option( 'bp_activity_filter_profile_default', $profile_default );
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( '[BP Activity Filter] Profile default - Old: ' . $old_value . ', New: ' . $profile_default . ', Result: ' . ( $result ? 'SUCCESS' : 'FAILED' ) );
+			
+			if ( $old_value !== $profile_default ) {
+				update_option( 'bp_activity_filter_profile_default', $profile_default );
+				$updated = true;
 			}
-			$updated = true;
 		}
 
 		return $updated;
@@ -903,14 +829,7 @@ class BP_Activity_Filter_Admin {
 		$hidden = array();
 		
 		if ( isset( $_POST['bp_activity_filter_hidden'] ) && is_array( $_POST['bp_activity_filter_hidden'] ) ) {
-			// Process the submitted checkbox values
-			$raw_hidden = $_POST['bp_activity_filter_hidden'];
-			
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( '[BP Activity Filter] Processing hidden activities array...' );
-			}
-			
-			foreach ( $raw_hidden as $activity_key ) {
+			foreach ( $_POST['bp_activity_filter_hidden'] as $activity_key ) {
 				$sanitized_key = sanitize_text_field( $activity_key );
 				if ( ! empty( $sanitized_key ) ) {
 					$hidden[] = $sanitized_key;
@@ -918,21 +837,17 @@ class BP_Activity_Filter_Admin {
 			}
 		}
 		
-		// CRITICAL: Always save the hidden activities option
+		// Get old value to check if there's actually a change
 		$old_hidden = get_option( 'bp_activity_filter_hidden', array() );
-		$hidden_result = update_option( 'bp_activity_filter_hidden', $hidden );
 		
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( '[BP Activity Filter] === HIDDEN ACTIVITIES PROCESSING ===' );
-			error_log( '[BP Activity Filter] Raw POST data: ' . print_r( $_POST['bp_activity_filter_hidden'] ?? 'NOT SET', true ) );
-			error_log( '[BP Activity Filter] Processed array: ' . print_r( $hidden, true ) );
-			error_log( '[BP Activity Filter] Old value in DB: ' . print_r( $old_hidden, true ) );
-			error_log( '[BP Activity Filter] Update result: ' . ( $hidden_result ? 'SUCCESS' : 'FAILED' ) );
-			error_log( '[BP Activity Filter] New value from DB: ' . print_r( get_option( 'bp_activity_filter_hidden' ), true ) );
-			error_log( '[BP Activity Filter] === END HIDDEN ACTIVITIES ===' );
+		// Check if values are different
+		$is_different = ( serialize( $old_hidden ) !== serialize( $hidden ) );
+		
+		if ( $is_different ) {
+			return update_option( 'bp_activity_filter_hidden', $hidden );
 		}
 		
-		return true; // Always return true since we always process this
+		return false;
 	}
 
 	/**
@@ -942,10 +857,10 @@ class BP_Activity_Filter_Admin {
 	 * @return bool Whether any settings were updated.
 	 */
 	private function save_cpt_settings() {
-		$updated = false;
+		$old_cpt_settings = get_option( 'bp_activity_filter_cpt_settings', array() );
+		$cpt_settings = array();
 
 		if ( isset( $_POST['bp_activity_filter_cpt_settings'] ) && is_array( $_POST['bp_activity_filter_cpt_settings'] ) ) {
-			$cpt_settings = array();
 			foreach ( $_POST['bp_activity_filter_cpt_settings'] as $post_type => $settings ) {
 				$post_type = sanitize_text_field( $post_type );
 				
@@ -962,28 +877,22 @@ class BP_Activity_Filter_Admin {
 					);
 				}
 			}
-			
-			$old_cpt = get_option( 'bp_activity_filter_cpt_settings', array() );
-			$cpt_result = update_option( 'bp_activity_filter_cpt_settings', $cpt_settings );
-			
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( '[BP Activity Filter] CPT settings - Old: ' . print_r( $old_cpt, true ) );
-				error_log( '[BP Activity Filter] CPT settings - New: ' . print_r( $cpt_settings, true ) );
-				error_log( '[BP Activity Filter] CPT settings update result: ' . ( $cpt_result ? 'SUCCESS' : 'FAILED' ) );
-			}
-			$updated = true;
-		} else {
-			// Ensure CPT settings option exists
-			if ( false === get_option( 'bp_activity_filter_cpt_settings' ) ) {
-				add_option( 'bp_activity_filter_cpt_settings', array() );
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					error_log( '[BP Activity Filter] Created missing CPT settings option' );
-				}
-				$updated = true;
-			}
+		}
+		
+		// Check if settings actually changed
+		$is_different = ( serialize( $old_cpt_settings ) !== serialize( $cpt_settings ) );
+		
+		if ( $is_different ) {
+			return update_option( 'bp_activity_filter_cpt_settings', $cpt_settings );
+		}
+		
+		// Ensure CPT settings option exists
+		if ( false === get_option( 'bp_activity_filter_cpt_settings' ) ) {
+			add_option( 'bp_activity_filter_cpt_settings', array() );
+			return true;
 		}
 
-		return $updated;
+		return false;
 	}
 
 	/**
