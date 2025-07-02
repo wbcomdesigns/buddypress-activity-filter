@@ -1,6 +1,6 @@
 <?php
 /**
- * Fixed Admin class for BP Activity Filter
+ * Admin class for BP Activity Filter
  *
  * @package BuddyPress_Activity_Filter
  * @since 4.0.0
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * BP Activity Filter Admin Class - Fixed Version
+ * BP Activity Filter Admin Class
  */
 class BP_Activity_Filter_Admin {
 
@@ -61,11 +61,7 @@ class BP_Activity_Filter_Admin {
      */
     private function setup_hooks() {
         add_action( 'admin_init', array( $this, 'register_settings' ) );
-        add_action( 'admin_init', array( $this, 'handle_activation_redirect' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
-        add_action( 'admin_notices', array( $this, 'display_admin_notices' ) );
-        add_action( 'wp_ajax_bp_activity_filter_test_action', array( $this, 'handle_ajax_test' ) );
-        add_filter( 'plugin_action_links_' . plugin_basename( BP_ACTIVITY_FILTER_PLUGIN_DIR . 'buddypress-activity-filter.php' ), array( $this, 'plugin_action_links' ) );
     }
 
     /**
@@ -107,14 +103,12 @@ class BP_Activity_Filter_Admin {
 
                     <div class="submit">
                         <?php submit_button( esc_html__( 'Save Settings', 'bp-activity-filter' ), 'primary', 'submit', false, array( 'id' => 'bp-activity-filter-submit' ) ); ?>
-                        <span class="spinner" id="bp-activity-filter-spinner"></span>
                     </div>
                 </form>
             </div>
         </div>
         
         <style>
-        /* Basic styling for the settings page */
         .bp-activity-filter-admin .nav-tab-wrapper {
             border-bottom: 1px solid #c3c4c7;
             margin: 0;
@@ -814,21 +808,6 @@ class BP_Activity_Filter_Admin {
     }
 
     /**
-     * Handle activation redirect.
-     *
-     * @since 4.0.0
-     */
-    public function handle_activation_redirect() {
-        if ( get_transient( 'bp_activity_filter_activation_redirect' ) ) {
-            delete_transient( 'bp_activity_filter_activation_redirect' );
-            if ( ! isset( $_GET['activate-multi'] ) && ! wp_doing_ajax() ) {
-                wp_safe_redirect( admin_url( 'admin.php?page=wbcom-activity-filter' ) );
-                exit;
-            }
-        }
-    }
-
-    /**
      * Enqueue admin scripts and styles.
      *
      * @since 4.0.0
@@ -855,51 +834,5 @@ class BP_Activity_Filter_Admin {
                 'currentTab'   => $this->get_current_tab(),
             )
         );
-    }
-
-    /**
-     * Display admin notices.
-     *
-     * @since 4.0.0
-     */
-    public function display_admin_notices() {
-        // Show notices only on our admin pages
-        $screen = get_current_screen();
-        if ( ! $screen || false === strpos( $screen->id, 'activity-filter' ) ) {
-            return;
-        }
-    }
-
-    /**
-     * Handle AJAX test action.
-     *
-     * @since 4.0.0
-     */
-    public function handle_ajax_test() {
-        check_ajax_referer( 'bp_activity_filter_admin', 'nonce' );
-
-        if ( ! current_user_can( 'manage_options' ) ) {
-            wp_die( esc_html__( 'Insufficient permissions.', 'bp-activity-filter' ) );
-        }
-
-        wp_send_json_success( array( 'message' => esc_html__( 'AJAX test successful!', 'bp-activity-filter' ) ) );
-    }
-
-    /**
-     * Add plugin action links.
-     *
-     * @since 4.0.0
-     * @param array $links Existing plugin action links.
-     * @return array Modified plugin action links.
-     */
-    public function plugin_action_links( $links ) {
-        $settings_link = sprintf(
-            '<a href="%s">%s</a>',
-            esc_url( admin_url( 'admin.php?page=wbcom-activity-filter' ) ),
-            esc_html__( 'Settings', 'bp-activity-filter' )
-        );
-
-        array_unshift( $links, $settings_link );
-        return $links;
     }
 }

@@ -2,11 +2,7 @@
 /**
  * Frontend functionality for BuddyPress Activity Filter.
  *
- * Handles all frontend functionality including activity filtering,
- * default filter application, and user interface modifications.
- *
  * @package BuddyPress_Activity_Filter
- * @subpackage Frontend
  * @since 4.0.0
  */
 
@@ -17,9 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Frontend class for managing activity filtering and display.
- *
- * Handles frontend activity filtering, default filter application,
- * activity query modifications, and user interface enhancements.
  *
  * @since 4.0.0
  */
@@ -88,10 +81,6 @@ class BP_Activity_Filter_Frontend {
 		// Activity prevention hooks.
 		add_action( 'bp_activity_before_save', array( $this, 'maybe_prevent_activity_save' ), 5 );
 		add_action( 'friends_friendship_accepted', array( $this, 'maybe_prevent_friendship_activity' ), 5, 4 );
-
-		// Theme compatibility hooks.
-		add_action( 'bp_nouveau_enqueue_scripts', array( $this, 'nouveau_compatibility' ) );
-		add_action( 'bp_legacy_theme_enqueue_scripts', array( $this, 'legacy_compatibility' ) );
 	}
 
 	/**
@@ -108,38 +97,41 @@ class BP_Activity_Filter_Frontend {
 		// Determine default filter based on context.
 		$default_filter = $this->get_default_filter();
 
-		// Enqueue frontend script.
-		wp_enqueue_script(
-			'bp-activity-filter-frontend',
-			BP_ACTIVITY_FILTER_PLUGIN_URL . 'assets/js/frontend.js',
-			array( 'jquery' ),
-			BP_ACTIVITY_FILTER_VERSION,
-			true
-		);
+		// Enqueue frontend script if it exists.
+		$script_path = BP_ACTIVITY_FILTER_PLUGIN_DIR . 'assets/js/frontend.js';
+		if ( file_exists( $script_path ) ) {
+			wp_enqueue_script(
+				'bp-activity-filter-frontend',
+				BP_ACTIVITY_FILTER_PLUGIN_URL . 'assets/js/frontend.js',
+				array( 'jquery' ),
+				BP_ACTIVITY_FILTER_VERSION,
+				true
+			);
 
-		// Localize script with frontend data.
-		wp_localize_script(
-			'bp-activity-filter-frontend',
-			'bpActivityFilter',
-			array(
-				'defaultFilter'       => $default_filter,
-				'currentAction'       => bp_current_action(),
-				'isUserActivity'      => bp_is_user_activity(),
-				'isActivityDir'       => bp_is_activity_directory(),
-				'isSingleActivity'    => bp_is_single_activity(),
-				'hiddenActivities'    => $this->get_hidden_activities(),
-				'ajaxUrl'             => admin_url( 'admin-ajax.php' ),
-				'nonce'               => wp_create_nonce( 'bp_activity_filter_frontend' ),
-				'cookiePath'          => COOKIEPATH,
-				'cookieDomain'        => COOKIE_DOMAIN,
-				'strings'             => array(
-					'everything'      => esc_html__( 'Everything', 'bp-activity-filter' ),
-					'loading'         => esc_html__( 'Loading...', 'bp-activity-filter' ),
-					'error'           => esc_html__( 'Error loading activities.', 'bp-activity-filter' ),
-					'noActivities'    => esc_html__( 'No activities found.', 'bp-activity-filter' ),
-				),
-			)
-		);
+			// Localize script with frontend data.
+			wp_localize_script(
+				'bp-activity-filter-frontend',
+				'bpActivityFilter',
+				array(
+					'defaultFilter'       => $default_filter,
+					'currentAction'       => bp_current_action(),
+					'isUserActivity'      => bp_is_user_activity(),
+					'isActivityDir'       => bp_is_activity_directory(),
+					'isSingleActivity'    => bp_is_single_activity(),
+					'hiddenActivities'    => $this->get_hidden_activities(),
+					'ajaxUrl'             => admin_url( 'admin-ajax.php' ),
+					'nonce'               => wp_create_nonce( 'bp_activity_filter_frontend' ),
+					'cookiePath'          => COOKIEPATH,
+					'cookieDomain'        => COOKIE_DOMAIN,
+					'strings'             => array(
+						'everything'      => esc_html__( 'Everything', 'bp-activity-filter' ),
+						'loading'         => esc_html__( 'Loading...', 'bp-activity-filter' ),
+						'error'           => esc_html__( 'Error loading activities.', 'bp-activity-filter' ),
+						'noActivities'    => esc_html__( 'No activities found.', 'bp-activity-filter' ),
+					),
+				)
+			);
+		}
 	}
 
 	/**
@@ -435,11 +427,6 @@ class BP_Activity_Filter_Frontend {
 			}
 		}
 
-		// Check for hashtags plugin compatibility.
-		if ( $this->is_hashtags_plugin_active() ) {
-			return true;
-		}
-
 		/**
 		 * Filter whether activity filtering should be skipped.
 		 *
@@ -448,21 +435,6 @@ class BP_Activity_Filter_Frontend {
 		 * @param bool $skip_filtering Whether to skip filtering.
 		 */
 		return apply_filters( 'bp_activity_filter_skip_filtering', false );
-	}
-
-	/**
-	 * Check if hashtags plugin is active.
-	 *
-	 * @since 4.0.0
-	 * @return bool True if hashtags plugin is active.
-	 */
-	private function is_hashtags_plugin_active() {
-		if ( ! function_exists( 'get_option' ) ) {
-			return false;
-		}
-
-		$active_plugins = get_option( 'active_plugins', array() );
-		return in_array( 'buddypress-hashtag/buddypress-hashtags.php', $active_plugins, true );
 	}
 
 	/**
@@ -655,152 +627,6 @@ class BP_Activity_Filter_Frontend {
 		// Set global cookies for immediate use.
 		$_COOKIE['bp-activity-filter'] = $filter;
 		$_COOKIE['bp_activity_filter_apply'] = '1';
-	}
-
-	/**
-	 * Theme compatibility for BuddyPress Nouveau.
-	 *
-	 * @since 4.0.0
-	 */
-	public function nouveau_compatibility() {
-		if ( ! $this->is_activity_page() ) {
-			return;
-		}
-
-		// Add specific Nouveau compatibility scripts/styles if needed.
-		add_action( 'wp_footer', array( $this, 'nouveau_footer_scripts' ) );
-	}
-
-	/**
-	 * Theme compatibility for BuddyPress Legacy.
-	 *
-	 * @since 4.0.0
-	 */
-	public function legacy_compatibility() {
-		if ( ! $this->is_activity_page() ) {
-			return;
-		}
-
-		// Add specific Legacy compatibility scripts/styles if needed.
-		add_action( 'wp_footer', array( $this, 'legacy_footer_scripts' ) );
-	}
-
-	/**
-	 * Add footer scripts for Nouveau theme compatibility.
-	 *
-	 * @since 4.0.0
-	 */
-	public function nouveau_footer_scripts() {
-		?>
-		<script type="text/javascript">
-		/* BuddyPress Activity Filter - Nouveau Compatibility */
-		jQuery(document).ready(function($) {
-			// Additional Nouveau-specific JavaScript if needed
-		});
-		</script>
-		<?php
-	}
-
-	/**
-	 * Add footer scripts for Legacy theme compatibility.
-	 *
-	 * @since 4.0.0
-	 */
-	public function legacy_footer_scripts() {
-		?>
-		<script type="text/javascript">
-		/* BuddyPress Activity Filter - Legacy Compatibility */
-		jQuery(document).ready(function($) {
-			// Additional Legacy-specific JavaScript if needed
-		});
-		</script>
-		<?php
-	}
-
-	/**
-	 * Get current user's activity filter preference.
-	 *
-	 * @since 4.0.0
-	 * @return string User's preferred filter.
-	 */
-	public function get_user_filter_preference() {
-		if ( ! is_user_logged_in() ) {
-			return $this->get_default_filter();
-		}
-
-		$user_preference = get_user_meta( get_current_user_id(), 'bp_activity_filter_preference', true );
-		
-		return ! empty( $user_preference ) ? $user_preference : $this->get_default_filter();
-	}
-
-	/**
-	 * Save user's activity filter preference.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $filter Filter value to save.
-	 * @return bool True on success, false on failure.
-	 */
-	public function save_user_filter_preference( $filter ) {
-		if ( ! is_user_logged_in() ) {
-			return false;
-		}
-
-		$sanitized_filter = BP_Activity_Filter_Helper::sanitize_filter_value( $filter );
-		
-		return update_user_meta( get_current_user_id(), 'bp_activity_filter_preference', $sanitized_filter );
-	}
-
-	/**
-	 * Clear all activity filter related data.
-	 *
-	 * @since 4.0.0
-	 */
-	public function clear_filter_data() {
-		// Clear cookies.
-		$this->clear_filter_cookies();
-		
-		// Clear cache.
-		$this->activity_actions_cache = null;
-		$this->default_filters_cache = array();
-	}
-
-	/**
-	 * Clear filter-related cookies.
-	 *
-	 * @since 4.0.0
-	 */
-	private function clear_filter_cookies() {
-		$cookies_to_clear = array(
-			'bp-activity-filter',
-			'bp_activity_filter_apply',
-		);
-
-		foreach ( $cookies_to_clear as $cookie ) {
-			if ( isset( $_COOKIE[ $cookie ] ) ) {
-				setcookie( $cookie, '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN );
-				unset( $_COOKIE[ $cookie ] );
-			}
-		}
-	}
-
-	/**
-	 * Get plugin statistics for debugging.
-	 *
-	 * @since 4.0.0
-	 * @return array Plugin statistics.
-	 */
-	public function get_plugin_stats() {
-		return array(
-			'default_filter'      => $this->get_default_filter(),
-			'hidden_activities'   => count( $this->get_hidden_activities() ),
-			'is_activity_page'    => $this->is_activity_page(),
-			'theme_package'       => function_exists( 'bp_get_option' ) ? bp_get_option( '_bp_theme_package_id' ) : 'unknown',
-			'cache_status'        => array(
-				'actions_cached'  => null !== $this->activity_actions_cache,
-				'defaults_cached' => ! empty( $this->default_filters_cache ),
-			),
-		);
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Enhanced Wbcom Integration for BP Activity Filter with All Dashboard Tabs
+ * Wbcom Integration for BP Activity Filter
  * 
  * @package BuddyPress_Activity_Filter
  * @version 4.0.0
@@ -164,28 +164,8 @@ class BP_Activity_Filter_Wbcom_Integration {
         <div class="wbcom-welcome-panel">
             <h2><?php esc_html_e('Welcome to Wbcom Designs Dashboard', 'bp-activity-filter'); ?></h2>
             <p class="about-description">
-                <?php esc_html_e('Your central hub for managing all Wbcom Designs plugins. We create premium WordPress and BuddyPress solutions to enhance your community experience.', 'bp-activity-filter'); ?>
+                <?php esc_html_e('Your central hub for managing BuddyPress Activity Filter and other Wbcom Designs plugins.', 'bp-activity-filter'); ?>
             </p>
-            
-            <!-- Quick Stats -->
-            <div class="wbcom-stats-overview">
-                <div class="stat-box">
-                    <div class="stat-number">1</div>
-                    <div class="stat-label"><?php esc_html_e('Total Plugins', 'bp-activity-filter'); ?></div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number">1</div>
-                    <div class="stat-label"><?php esc_html_e('Active Plugins', 'bp-activity-filter'); ?></div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number"><?php echo esc_html(get_bloginfo('version')); ?></div>
-                    <div class="stat-label"><?php esc_html_e('WordPress Version', 'bp-activity-filter'); ?></div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number"><?php echo function_exists('buddypress') ? esc_html(buddypress()->version) : esc_html__('N/A', 'bp-activity-filter'); ?></div>
-                    <div class="stat-label"><?php esc_html_e('BuddyPress Version', 'bp-activity-filter'); ?></div>
-                </div>
-            </div>
             
             <div class="wbcom-welcome-panel-columns">
                 <div class="wbcom-welcome-panel-column">
@@ -430,6 +410,44 @@ class BP_Activity_Filter_Wbcom_Integration {
     }
     
     /**
+     * Get premium themes data
+     */
+    private function get_premium_themes() {
+        return array(
+            array(
+                'name'        => 'Reign Theme',
+                'description' => 'Modern BuddyPress community theme with advanced customization options, multiple layouts, and integrated social features.',
+                'price'       => '$99',
+                'url'         => 'https://wbcomdesigns.com/downloads/reign-buddypress-theme/',
+                'demo_url'    => 'https://reign-theme.com/',
+                'features'    => array(
+                    'Drag & drop page builder integration',
+                    'Multiple header and layout options',
+                    'Advanced BuddyPress styling',
+                    'WooCommerce compatibility',
+                    'Mobile-responsive design',
+                    'SEO optimized structure'
+                ),
+            ),
+            array(
+                'name'        => 'BuddyX Theme',
+                'description' => 'Clean and modern BuddyPress theme perfect for communities, with focus on user experience and performance.',
+                'price'       => '$79',
+                'url'         => 'https://wbcomdesigns.com/downloads/buddyx-theme/',
+                'demo_url'    => 'https://buddyx.com/',
+                'features'    => array(
+                    'Gutenberg block editor support',
+                    'Multiple community layouts',
+                    'Advanced member directory',
+                    'Event management integration',
+                    'Learning management system support',
+                    'Performance optimized'
+                ),
+            ),
+        );
+    }
+    
+    /**
      * Get premium plugins data
      */
     private function get_premium_plugins() {
@@ -480,44 +498,6 @@ class BP_Activity_Filter_Wbcom_Integration {
     }
     
     /**
-     * Get premium themes data
-     */
-    private function get_premium_themes() {
-        return array(
-            array(
-                'name'        => 'Reign Theme',
-                'description' => 'Modern BuddyPress community theme with advanced customization options, multiple layouts, and integrated social features.',
-                'price'       => '$99',
-                'url'         => 'https://wbcomdesigns.com/downloads/reign-buddypress-theme/',
-                'demo_url'    => 'https://reign-theme.com/',
-                'features'    => array(
-                    'Drag & drop page builder integration',
-                    'Multiple header and layout options',
-                    'Advanced BuddyPress styling',
-                    'WooCommerce compatibility',
-                    'Mobile-responsive design',
-                    'SEO optimized structure'
-                ),
-            ),
-            array(
-                'name'        => 'BuddyX Theme',
-                'description' => 'Clean and modern BuddyPress theme perfect for communities, with focus on user experience and performance.',
-                'price'       => '$79',
-                'url'         => 'https://wbcomdesigns.com/downloads/buddyx-theme/',
-                'demo_url'    => 'https://buddyx.com/',
-                'features'    => array(
-                    'Gutenberg block editor support',
-                    'Multiple community layouts',
-                    'Advanced member directory',
-                    'Event management integration',
-                    'Learning management system support',
-                    'Performance optimized'
-                ),
-            ),
-        );
-    }
-    
-    /**
      * Get dashboard styles
      */
     private function get_dashboard_styles() {
@@ -544,37 +524,6 @@ class BP_Activity_Filter_Wbcom_Integration {
             padding: 20px;
             border-radius: 4px;
             margin-bottom: 20px;
-        }
-        
-        .wbcom-stats-overview {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-            padding: 20px 0;
-            border-top: 1px solid #f0f0f1;
-            border-bottom: 1px solid #f0f0f1;
-        }
-        
-        .stat-box {
-            text-align: center;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e2e4e7;
-        }
-        
-        .stat-number {
-            font-size: 32px;
-            font-weight: bold;
-            color: #0073aa;
-            line-height: 1;
-        }
-        
-        .stat-label {
-            font-size: 13px;
-            color: #646970;
-            margin-top: 5px;
         }
         
         .wbcom-welcome-panel-columns {
@@ -706,8 +655,14 @@ class BP_Activity_Filter_Wbcom_Integration {
             font-size: 13px;
         }
         
-        /* Premium Plugins/Themes Lists */
-        .premium-plugins-list,
+        /* Premium Plugins Lists */
+        .premium-plugins-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
         .premium-themes-list {
             display: grid;
             grid-template-columns: 1fr;
@@ -832,17 +787,6 @@ class BP_Activity_Filter_Wbcom_Integration {
             border-top: 1px solid #f0f0f1;
         }
         
-        .center-text {
-            text-align: center;
-            margin: 0;
-        }
-        
-        .button-large {
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
         /* News Section */
         .wbcom-news-section {
             max-width: 800px;
@@ -857,6 +801,26 @@ class BP_Activity_Filter_Wbcom_Integration {
         .news-loading .spinner {
             float: none;
             margin: 0 auto 15px;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .spinner {
+            background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEwIDJWNiIgc3Ryb2tlPSIjMDA3M2FhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTggMTBIMTQiIHN0cm9rZT0iIzAwNzNhYSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGF0aCBkPSJNMTAgMThWMTQiIHN0cm9rZT0iIzAwNzNhYSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTYgMTBIMiIgc3Ryb2tlPSIjMDA3M2FhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K) no-repeat center;
+            background-size: 20px 20px;
+            display: none;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        
+        .spinner.is-active {
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         .news-item {
@@ -881,13 +845,20 @@ class BP_Activity_Filter_Wbcom_Integration {
             font-size: 14px;
         }
         
+        .center-text {
+            text-align: center;
+            margin: 0;
+        }
+        
+        .button-large {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
         @media (max-width: 768px) {
             .wbcom-welcome-panel-columns {
                 grid-template-columns: 1fr;
-            }
-            
-            .wbcom-stats-overview {
-                grid-template-columns: repeat(2, 1fr);
             }
             
             .wbcom-plugins-grid {
