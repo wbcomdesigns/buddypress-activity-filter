@@ -104,18 +104,8 @@ class Wbcom_Designs_Menu {
 	 * @since 4.0.0
 	 */
 	private function __construct() {
-		// Debug logging
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'Wbcom_Designs_Menu::__construct() called' );
-			error_log( 'Current hook: ' . current_action() );
-			error_log( 'Admin menu hooks will be added now...' );
-		}
-
-		// CRITICAL FIX: Create main menu immediately if we're already in admin_menu hook
+		// Create main menu immediately if we're already in admin_menu hook
 		if ( 'admin_menu' === current_action() ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'IMMEDIATE: We are in admin_menu hook, creating main menu now' );
-			}
 			$this->create_main_menu();
 		} else {
 			// Create main menu first with highest priority
@@ -126,31 +116,6 @@ class Wbcom_Designs_Menu {
 		add_action( 'admin_menu', array( $this, 'add_dashboard_submenu' ), 5 );
 		// Add menu styles
 		add_action( 'admin_head', array( $this, 'add_menu_styles' ) );
-		
-		// Debug: Add hook to check menu creation at different priorities
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			add_action( 'admin_menu', function() {
-				error_log( 'admin_menu priority 1 fired - main menu should be created' );
-			}, 1 );
-			
-			add_action( 'admin_menu', function() {
-				error_log( 'admin_menu priority 5 fired - dashboard submenu should be created' );
-			}, 5 );
-			
-			add_action( 'admin_menu', function() {
-				error_log( 'admin_menu priority 999 fired - checking final menu state' );
-				global $menu;
-				if ( is_array( $menu ) ) {
-					foreach ( $menu as $item ) {
-						if ( isset( $item[2] ) && $item[2] === 'wbcom-designs' ) {
-							error_log( 'FOUND: Wbcom Designs menu exists in final menu array' );
-							return;
-						}
-					}
-					error_log( 'NOT FOUND: Wbcom Designs menu missing from final menu array' );
-				}
-			}, 999 );
-		}
 	}
 
 	/**
@@ -159,22 +124,9 @@ class Wbcom_Designs_Menu {
 	 * @since 4.0.0
 	 */
 	public function create_main_menu() {
-		// Debug logging
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'Wbcom_Designs_Menu::create_main_menu() called' );
-			error_log( 'Current user can manage options: ' . ( current_user_can( 'manage_options' ) ? 'YES' : 'NO' ) );
-		}
-
 		// Check if main menu already exists.
 		if ( $this->main_menu_exists() ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Main Wbcom menu already exists, skipping creation' );
-			}
 			return;
-		}
-
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'Creating main Wbcom menu...' );
 		}
 
 		$menu_hook = add_menu_page(
@@ -186,10 +138,6 @@ class Wbcom_Designs_Menu {
 			$this->menu_icon,
 			$this->menu_position
 		);
-
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'Main menu creation result: ' . ( $menu_hook ? $menu_hook : 'FALSE' ) );
-		}
 	}
 
 	/**
@@ -217,28 +165,14 @@ class Wbcom_Designs_Menu {
 	private function main_menu_exists() {
 		global $menu;
 		
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'Checking if main Wbcom menu exists...' );
-		}
-		
 		if ( ! is_array( $menu ) ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Global $menu is not an array: ' . gettype( $menu ) );
-			}
 			return false;
 		}
 
 		foreach ( $menu as $menu_item ) {
 			if ( isset( $menu_item[2] ) && $this->menu_slug === $menu_item[2] ) {
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					error_log( 'Main Wbcom menu already exists with slug: ' . $this->menu_slug );
-				}
 				return true;
 			}
-		}
-
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'Main Wbcom menu does NOT exist, will create it' );
 		}
 		
 		return false;
@@ -259,16 +193,8 @@ class Wbcom_Designs_Menu {
 	 * @return string|false Menu hook suffix or false on failure.
 	 */
 	public function add_submenu( $plugin_key, $page_title, $menu_title, $capability, $menu_slug, $function, $position = null ) {
-		// Debug logging
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( "Adding submenu: {$plugin_key} -> {$menu_slug}" );
-		}
-
-		// CRITICAL FIX: Ensure main menu exists before adding submenu
+		// Ensure main menu exists before adding submenu
 		if ( ! $this->main_menu_exists() ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( "FORCE CREATING: Main menu doesn't exist, creating it now before adding submenu" );
-			}
 			$this->create_main_menu();
 		}
 
@@ -301,10 +227,6 @@ class Wbcom_Designs_Menu {
 			$function,
 			$priority
 		);
-
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( "Submenu added. Hook: " . ( $hook_suffix ? $hook_suffix : 'FALSE' ) );
-		}
 
 		// Sort submenus after adding.
 		add_action( 'admin_menu', array( $this, 'sort_submenus' ), 999 );

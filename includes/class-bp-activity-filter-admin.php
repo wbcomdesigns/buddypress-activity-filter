@@ -60,11 +60,6 @@ class BP_Activity_Filter_Admin {
 	 * @since 4.0.0
 	 */
 	private function __construct() {
-		// Debug logging
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'BP_Activity_Filter_Admin::__construct() called' );
-		}
-		
 		$this->setup_hooks();
 	}
 
@@ -74,24 +69,12 @@ class BP_Activity_Filter_Admin {
 	 * @since 4.0.0
 	 */
 	private function setup_hooks() {
-		// Debug logging
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'BP_Activity_Filter_Admin::setup_hooks() called' );
-		}
-
-		add_action( 'admin_menu', array( $this, 'add_admin_menu' ), 20 ); // Much later priority to ensure Wbcom menu is created first
+		add_action( 'admin_menu', array( $this, 'add_admin_menu' ), 20 );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_init', array( $this, 'handle_activation_redirect' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 		add_action( 'admin_notices', array( $this, 'display_admin_notices' ) );
 		add_action( 'wp_ajax_bp_activity_filter_test_action', array( $this, 'handle_ajax_test' ) );
-
-		// Debug: Hook into admin_menu to log when it fires
-		add_action( 'admin_menu', function() {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'admin_menu hook fired - BP_Activity_Filter_Admin is active' );
-			}
-		}, 1 );
 	}
 
 	/**
@@ -100,19 +83,10 @@ class BP_Activity_Filter_Admin {
 	 * @since 4.0.0
 	 */
 	public function add_admin_menu() {
-		// Debug logging
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( '=== BP_Activity_Filter_Admin::add_admin_menu() STARTED ===' );
-			error_log( 'Current user ID: ' . get_current_user_id() );
-			error_log( 'Current user can manage options: ' . ( current_user_can( 'manage_options' ) ? 'YES' : 'NO' ) );
-			error_log( 'Is admin: ' . ( is_admin() ? 'YES' : 'NO' ) );
-			error_log( 'Wbcom_Designs_Menu class exists: ' . ( class_exists( 'Wbcom_Designs_Menu' ) ? 'YES' : 'NO' ) );
-		}
-
 		$page_hook = false;
 		$using_unified_menu = false;
 
-		// EMERGENCY FIX: Create main Wbcom menu if it doesn't exist
+		// Emergency fix: Create main Wbcom menu if it doesn't exist
 		global $menu;
 		$main_menu_exists = false;
 		if ( is_array( $menu ) ) {
@@ -125,10 +99,6 @@ class BP_Activity_Filter_Admin {
 		}
 
 		if ( ! $main_menu_exists ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'EMERGENCY: Creating main Wbcom menu because it does not exist' );
-			}
-			
 			$main_menu_hook = add_menu_page(
 				esc_html__( 'Wbcom Designs', 'bp-activity-filter' ),
 				esc_html__( 'Wbcom Designs', 'bp-activity-filter' ),
@@ -138,69 +108,37 @@ class BP_Activity_Filter_Admin {
 				'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEwIDJMMTMuMDkgOC4yNkwyMCA5TDE0IDEyTDE1IDIwTDEwIDE3TDUgMjBMNiAxMkwwIDlMNi45MSA4LjI2TDEwIDJaIiBmaWxsPSIjYTdhYWFkIi8+Cjwvc3ZnPgo=',
 				58.5
 			);
-			
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'EMERGENCY: Main menu creation result: ' . ( $main_menu_hook ? $main_menu_hook : 'FAILED' ) );
-			}
 		}
 
 		// Try to use unified menu system
 		if ( class_exists( 'Wbcom_Designs_Menu' ) ) {
 			try {
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					error_log( 'Attempting to create Wbcom_Designs_Menu instance...' );
-				}
-
 				// Get the unified menu instance
 				$wbcom_menu = Wbcom_Designs_Menu::instance();
 
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					error_log( 'Wbcom_Designs_Menu instance created successfully' );
-					error_log( 'Attempting to add submenu...' );
-				}
-
 				// Add our submenu to the Wbcom Designs menu
 				$page_hook = $wbcom_menu->add_submenu(
-					'activity-filter', // Plugin key (matches priority array)
-					esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' ), // Page title
-					esc_html__( 'Activity Filter', 'bp-activity-filter' ), // Menu title
-					'manage_options', // Capability
-					'wbcom-activity-filter', // Menu slug (updated to avoid conflicts)
-					array( $this, 'admin_page' ) // Callback function
+					'activity-filter',
+					esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' ),
+					esc_html__( 'Activity Filter', 'bp-activity-filter' ),
+					'manage_options',
+					'wbcom-activity-filter',
+					array( $this, 'admin_page' )
 				);
 
 				if ( $page_hook ) {
 					$using_unified_menu = true;
-					if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-						error_log( 'SUCCESS: Unified submenu added. Hook: ' . $page_hook );
-					}
-				} else {
-					if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-						error_log( 'WARNING: Unified submenu returned FALSE' );
-					}
 				}
 
 			} catch ( Exception $e ) {
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					error_log( 'ERROR: Exception creating unified menu: ' . $e->getMessage() );
-				}
+				// Fallback to settings menu if unified menu fails
 			} catch ( Error $e ) {
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					error_log( 'FATAL ERROR: Fatal error creating unified menu: ' . $e->getMessage() );
-				}
-			}
-		} else {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Wbcom_Designs_Menu class not found, will use fallback' );
+				// Fallback to settings menu if unified menu fails
 			}
 		}
 
 		// If unified menu didn't work, add submenu directly to emergency main menu
 		if ( ! $page_hook && $main_menu_exists ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Adding submenu directly to emergency main menu...' );
-			}
-
 			$page_hook = add_submenu_page(
 				'wbcom-designs',
 				esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' ),
@@ -209,18 +147,10 @@ class BP_Activity_Filter_Admin {
 				'wbcom-activity-filter',
 				array( $this, 'admin_page' )
 			);
-
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Direct submenu added. Hook: ' . ( $page_hook ? $page_hook : 'FALSE' ) );
-			}
 		}
 
 		// Fallback: If unified menu fails, create individual menu
 		if ( ! $page_hook ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Using fallback menu creation under Settings...' );
-			}
-
 			$page_hook = add_options_page(
 				esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' ),
 				esc_html__( 'Activity Filter', 'bp-activity-filter' ),
@@ -228,18 +158,10 @@ class BP_Activity_Filter_Admin {
 				'bp-activity-filter',
 				array( $this, 'admin_page' )
 			);
-
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Fallback menu added. Hook: ' . ( $page_hook ? $page_hook : 'FALSE' ) );
-			}
 		}
 
 		// Emergency fallback: Create a top-level menu if all else fails
 		if ( ! $page_hook ) {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'EMERGENCY: Creating top-level menu as last resort...' );
-			}
-
 			$page_hook = add_menu_page(
 				esc_html__( 'Activity Filter', 'bp-activity-filter' ),
 				esc_html__( 'Activity Filter', 'bp-activity-filter' ),
@@ -249,37 +171,11 @@ class BP_Activity_Filter_Admin {
 				'dashicons-filter',
 				30
 			);
-
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Emergency menu added. Hook: ' . ( $page_hook ? $page_hook : 'STILL FAILED!' ) );
-			}
 		}
 
 		// Add help tab on our admin page
 		if ( $page_hook ) {
 			add_action( "load-{$page_hook}", array( $this, 'add_help_tab' ) );
-			
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'Help tab hook added for: ' . $page_hook );
-				error_log( 'Menu type used: ' . ( $using_unified_menu ? 'UNIFIED' : 'FALLBACK' ) );
-			}
-		} else {
-			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-				error_log( 'CRITICAL ERROR: No page hook created - menu will not appear!' );
-				error_log( 'Dumping global $menu variable...' );
-				global $menu;
-				if ( is_array( $menu ) ) {
-					foreach ( $menu as $index => $menu_item ) {
-						error_log( "Menu item {$index}: " . print_r( $menu_item, true ) );
-					}
-				} else {
-					error_log( 'Global $menu is not an array: ' . gettype( $menu ) );
-				}
-			}
-		}
-
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( '=== BP_Activity_Filter_Admin::add_admin_menu() FINISHED ===' );
 		}
 	}
 
@@ -591,11 +487,6 @@ class BP_Activity_Filter_Admin {
 			}
 		}
 
-		// Debug logging
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( "Admin scripts check - Hook: {$hook_suffix}, Should enqueue: " . ( $should_enqueue ? 'YES' : 'NO' ) );
-		}
-
 		if ( ! $should_enqueue ) {
 			return;
 		}
@@ -644,11 +535,16 @@ class BP_Activity_Filter_Admin {
 	 * @return string Current tab slug.
 	 */
 	private function get_current_tab() {
-		if ( ! empty( $this->current_tab ) ) {
-			return $this->current_tab;
+		// Get tab from URL parameter
+		$tab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'default';
+		
+		// Validate tab
+		$valid_tabs = array( 'default', 'hidden', 'cpt' );
+		if ( ! in_array( $tab, $valid_tabs, true ) ) {
+			$tab = 'default';
 		}
-
-		$this->current_tab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'default';
+		
+		$this->current_tab = $tab;
 		return $this->current_tab;
 	}
 
@@ -671,19 +567,6 @@ class BP_Activity_Filter_Admin {
 				esc_attr( $class ),
 				esc_html( $message )
 			);
-		}
-
-		// Debug notice for menu troubleshooting
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && current_user_can( 'manage_options' ) ) {
-			$current_screen = get_current_screen();
-			if ( $current_screen && strpos( $current_screen->id, 'activity-filter' ) !== false ) {
-				echo '<div class="notice notice-info"><p>';
-				echo '<strong>Debug Info:</strong> ';
-				echo 'Screen ID: ' . esc_html( $current_screen->id ) . ' | ';
-				echo 'Hook Suffix: ' . esc_html( $current_screen->base ) . ' | ';
-				echo 'Unified Menu: ' . ( class_exists( 'Wbcom_Designs_Menu' ) ? 'Available' : 'Missing' );
-				echo '</p></div>';
-			}
 		}
 	}
 
@@ -715,22 +598,6 @@ class BP_Activity_Filter_Admin {
 			$this->save_settings();
 		}
 
-		// Debug info at top if WP_DEBUG is enabled
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && current_user_can( 'manage_options' ) ) {
-			?>
-			<div class="notice notice-info">
-				<h4>Debug Information</h4>
-				<ul>
-					<li><strong>Plugin Version:</strong> <?php echo esc_html( BP_ACTIVITY_FILTER_VERSION ); ?></li>
-					<li><strong>PHP Version:</strong> <?php echo esc_html( PHP_VERSION ); ?></li>
-					<li><strong>WordPress Version:</strong> <?php echo esc_html( get_bloginfo( 'version' ) ); ?></li>
-					<li><strong>Current User:</strong> <?php echo esc_html( wp_get_current_user()->display_name ); ?> (ID: <?php echo esc_html( get_current_user_id() ); ?>)</li>
-					<li><strong>Menu Location:</strong> <?php echo class_exists( 'Wbcom_Designs_Menu' ) ? 'Unified Wbcom Menu' : 'Settings Submenu'; ?></li>
-					<li><strong>Screen ID:</strong> <?php echo esc_html( get_current_screen()->id ); ?></li>
-				</ul>
-			</div>
-			<?php
-		}
 		?>
 		<div class="wrap bp-activity-filter-admin">
 			<h1><?php esc_html_e( 'BuddyPress Activity Filter', 'bp-activity-filter' ); ?></h1>
@@ -769,13 +636,9 @@ class BP_Activity_Filter_Admin {
 			'cpt'     => esc_html__( 'Custom Post Types', 'bp-activity-filter' ),
 		);
 
-		// Determine current page URL
-		$base_url = '';
-		if ( class_exists( 'Wbcom_Designs_Menu' ) ) {
-			$base_url = admin_url( 'admin.php?page=wbcom-activity-filter' );
-		} else {
-			$base_url = admin_url( 'options-general.php?page=bp-activity-filter' );
-		}
+		// Get current page URL properly
+		$current_url = add_query_arg( array(), admin_url( 'admin.php' ) );
+		$base_url = add_query_arg( array( 'page' => 'wbcom-activity-filter' ), $current_url );
 
 		foreach ( $tabs as $tab_key => $tab_label ) {
 			$url = add_query_arg( array( 'tab' => $tab_key ), $base_url );

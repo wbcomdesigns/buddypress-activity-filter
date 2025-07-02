@@ -88,7 +88,11 @@ class BP_Activity_Filter_Migration {
 		// If this is a fresh install, set current version and skip migration
 		if ( '0' === $db_version && ! $this->has_legacy_options() ) {
 			update_option( $this->db_version_key, $this->current_version );
-			update_option( $this->migration_flag_key, 'fresh_install' );
+			update_option( $this->migration_flag_key, array(
+				'status' => 'fresh_install',
+				'timestamp' => current_time( 'mysql' ),
+				'to_version' => $this->current_version
+			) );
 			return;
 		}
 
@@ -126,9 +130,6 @@ class BP_Activity_Filter_Migration {
 	 * @param string $from_version Version migrating from.
 	 */
 	private function run_migration( $from_version ) {
-		// Log migration start
-		BP_Activity_Filter_Helper::log( "Starting migration from version {$from_version} to {$this->current_version}" );
-
 		$migration_data = array(
 			'from_version' => $from_version,
 			'to_version'   => $this->current_version,
@@ -158,16 +159,15 @@ class BP_Activity_Filter_Migration {
 			$migration_data['status'] = 'completed';
 			update_option( $this->migration_flag_key, $migration_data );
 
-			// Log success
-			BP_Activity_Filter_Helper::log( 'Migration completed successfully' );
-
 		} catch ( Exception $e ) {
 			$migration_data['status'] = 'failed';
 			$migration_data['error'] = $e->getMessage();
 			update_option( $this->migration_flag_key, $migration_data );
 
-			// Log error
-			BP_Activity_Filter_Helper::log( 'Migration failed: ' . $e->getMessage(), 'error' );
+			// Log error for debugging
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( 'BP Activity Filter Migration failed: ' . $e->getMessage() );
+			}
 		}
 	}
 
@@ -189,7 +189,6 @@ class BP_Activity_Filter_Migration {
 			if ( false === get_option( $option ) ) {
 				add_option( $option, $default_value );
 				$migration_data['created_missing_options'][ $option ] = $default_value;
-				BP_Activity_Filter_Helper::log( "Created missing option: {$option} with default value" );
 			}
 		}
 	}
@@ -205,14 +204,12 @@ class BP_Activity_Filter_Migration {
 			$legacy_value = get_option( $legacy_key );
 			
 			if ( false === $legacy_value ) {
-				BP_Activity_Filter_Helper::log( "Legacy option {$legacy_key} does not exist, skipping" );
 				continue; // Option doesn't exist
 			}
 
 			// Check if new option already has a value (don't overwrite manual settings)
 			$existing_new_value = get_option( $new_key );
 			if ( false !== $existing_new_value && ! empty( $existing_new_value ) ) {
-				BP_Activity_Filter_Helper::log( "New option {$new_key} already has value, skipping migration from {$legacy_key}" );
 				continue;
 			}
 
@@ -226,8 +223,6 @@ class BP_Activity_Filter_Migration {
 				'new_value' => $migrated_value,
 				'success' => $update_result
 			);
-
-			BP_Activity_Filter_Helper::log( "Migrated option: {$legacy_key} -> {$new_key}, success: " . ( $update_result ? 'YES' : 'NO' ) );
 		}
 	}
 
@@ -332,7 +327,6 @@ class BP_Activity_Filter_Migration {
 
 		if ( ! empty( $deprecated_options ) ) {
 			$migration_data['cleaned_up_options'] = $deprecated_options;
-			BP_Activity_Filter_Helper::log( 'Cleaned up deprecated options: ' . implode( ', ', $deprecated_options ) );
 		}
 	}
 
@@ -349,7 +343,7 @@ class BP_Activity_Filter_Migration {
 		}
 
 		// Don't show notice for fresh installs
-		if ( 'fresh_install' === $migration_data ) {
+		if ( isset( $migration_data['status'] ) && 'fresh_install' === $migration_data['status'] ) {
 			return;
 		}
 
@@ -359,7 +353,7 @@ class BP_Activity_Filter_Migration {
 		}
 
 		$screen = get_current_screen();
-		if ( ! $screen || 'settings_page_bp-activity-filter' === $screen->id ) {
+		if ( $screen && strpos( $screen->id, 'activity-filter' ) !== false ) {
 			return; // Don't show on plugin settings page
 		}
 
@@ -404,7 +398,7 @@ class BP_Activity_Filter_Migration {
 				<?php endif; ?>
 				
 				<p>
-					<a href="<?php echo esc_url( admin_url( 'options-general.php?page=bp-activity-filter' ) ); ?>" class="button button-primary">
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=wbcom-activity-filter' ) ); ?>" class="button button-primary">
 						<?php esc_html_e( 'Review Settings', 'bp-activity-filter' ); ?>
 					</a>
 					<button type="button" class="button button-secondary bp-activity-filter-dismiss-notice">
@@ -421,7 +415,7 @@ class BP_Activity_Filter_Migration {
 					<?php endif; ?>
 				</p>
 				<p>
-					<a href="<?php echo esc_url( admin_url( 'options-general.php?page=bp-activity-filter' ) ); ?>" class="button button-primary">
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=wbcom-activity-filter' ) ); ?>" class="button button-primary">
 						<?php esc_html_e( 'Check Settings', 'bp-activity-filter' ); ?>
 					</a>
 				</p>

@@ -62,7 +62,6 @@ class BP_Activity_Filter_Helper {
 	 * Apply professional labels to activity actions.
 	 *
 	 * @since 4.0.0
-	 *
 	 * @param array $labels Current labels.
 	 * @return array Modified labels.
 	 */

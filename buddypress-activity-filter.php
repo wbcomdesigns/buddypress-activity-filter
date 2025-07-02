@@ -201,7 +201,7 @@ final class BP_Activity_Filter {
 		$include_files = array(
 			'includes/class-bp-activity-filter-helper.php',
 			'includes/class-bp-activity-filter-migration.php',
-			'includes/class-wbcom-designs-menu.php',        // Add unified menu system
+			'includes/class-wbcom-designs-menu.php',
 			'includes/class-bp-activity-filter-admin.php',
 			'includes/class-bp-activity-filter-frontend.php',
 			'includes/class-bp-activity-filter-cpt.php',
@@ -320,7 +320,7 @@ final class BP_Activity_Filter {
 	public function plugin_action_links( $links ) {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
-			esc_url( admin_url( 'options-general.php?page=bp-activity-filter' ) ),
+			esc_url( admin_url( 'admin.php?page=wbcom-activity-filter' ) ),
 			esc_html__( 'Settings', 'bp-activity-filter' )
 		);
 
