@@ -1,16 +1,16 @@
 <?php
 /**
- * Wbcom Shared Admin System - Main Coordinator (Fixed)
+ * Wbcom Shared Admin System - Main Coordinator (Fixed for Duplicates)
  * 
  * @package Wbcom_Shared_Admin
- * @version 2.1.1
+ * @version 2.1.2
  */
 
 if (!defined('ABSPATH')) exit;
 
 class Wbcom_Shared_Loader {
     
-    const VERSION = '2.1.1';
+    const VERSION = '2.1.2';
     const GLOBAL_KEY = 'wbcom_shared_system';
     
     private static $instance = null;
@@ -165,10 +165,9 @@ class Wbcom_Shared_Loader {
         // Load required classes
         $this->load_shared_classes();
         
-        // Initialize main menu and dashboard - use later priority to ensure all plugins are registered
+        // Initialize main menu and dashboard
         add_action('admin_menu', array($this, 'create_main_menu'), 5);
         add_action('admin_menu', array($this, 'add_plugin_submenus'), 10);
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_shared_assets'));
         
         // Version check and conflict resolution
         add_action('admin_init', array($this, 'check_version_conflicts'));
@@ -213,7 +212,7 @@ class Wbcom_Shared_Loader {
         }
         
         add_menu_page(
-            'Wbcom Designs', // Use plain text to avoid translation issues
+            'Wbcom Designs',
             'Wbcom Designs',
             'manage_options',
             'wbcom-designs',
@@ -234,7 +233,7 @@ class Wbcom_Shared_Loader {
     }
     
     /**
-     * Add submenu for registered plugins
+     * Add submenu for registered plugins - FIXED FOR DUPLICATES
      */
     public function add_plugin_submenus() {
         foreach ($this->registered_plugins as $plugin) {
@@ -256,10 +255,140 @@ class Wbcom_Shared_Loader {
                     $plugin['name'],
                     'manage_options',
                     $menu_slug,
-                    '__return_null' // Plugin handles its own rendering
+                    array($this, 'render_plugin_page') // Use our callback instead of __return_null
                 );
             }
         }
+    }
+    
+    /**
+     * Render plugin page - Routes to the appropriate plugin callback
+     */
+    public function render_plugin_page() {
+        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+        
+        // Find the plugin that matches this page
+        foreach ($this->registered_plugins as $plugin) {
+            $plugin_slug = $this->extract_menu_slug($plugin['settings_url']);
+            
+            if ($plugin_slug === $current_page) {
+                // Try to call the plugin's render method
+                $this->call_plugin_render_method($plugin);
+                return;
+            }
+        }
+        
+        // Fallback if no plugin found
+        $this->render_plugin_not_found();
+    }
+    
+    /**
+     * Call the plugin's render method
+     */
+    private function call_plugin_render_method($plugin) {
+        $plugin_slug = $plugin['slug'];
+        
+        // Try different possible function names and class methods
+        $possible_callbacks = array(
+            // Function-based callbacks
+            $plugin_slug . '_render_admin_page',
+            str_replace('-', '_', $plugin_slug) . '_render_admin_page',
+            
+            // Class-based callbacks (most common pattern)
+            array('BP_Activity_Filter', 'render_admin_page'),
+            array(str_replace('-', '_', $plugin_slug), 'render_admin_page'),
+            
+            // Instance-based callbacks
+            array($plugin_slug . '_instance', 'render_admin_page'),
+        );
+        
+        // Try to find and call the callback
+        foreach ($possible_callbacks as $callback) {
+            if (is_callable($callback)) {
+                call_user_func($callback);
+                return;
+            }
+        }
+        
+        // Try to get plugin instance and call render method
+        if (function_exists('bp_activity_filter')) {
+            $instance = bp_activity_filter();
+            if ($instance && method_exists($instance, 'render_admin_page')) {
+                $instance->render_admin_page();
+                return;
+            }
+        }
+        
+        // Final fallback
+        $this->render_plugin_fallback($plugin);
+    }
+    
+    /**
+     * Render fallback page for plugins
+     */
+    private function render_plugin_fallback($plugin) {
+        ?>
+        <div class="wrap">
+            <h1><?php echo esc_html($plugin['name']); ?></h1>
+            <div class="notice notice-info">
+                <p>
+                    <strong>Plugin Loaded Successfully!</strong><br>
+                    The plugin is active but the admin interface is loading. Please check that all plugin files are properly installed.
+                </p>
+            </div>
+            
+            <div class="card">
+                <h2>Plugin Information</h2>
+                <table class="form-table">
+                    <tr>
+                        <th>Version:</th>
+                        <td><?php echo esc_html($plugin['version']); ?></td>
+                    </tr>
+                    <tr>
+                        <th>Status:</th>
+                        <td><span style="color: #00a32a;">✓ Active</span></td>
+                    </tr>
+                    <tr>
+                        <th>Description:</th>
+                        <td><?php echo esc_html($plugin['description']); ?></td>
+                    </tr>
+                </table>
+                
+                <?php if (!empty($plugin['docs_url']) || !empty($plugin['support_url'])) : ?>
+                    <p>
+                        <?php if (!empty($plugin['docs_url'])) : ?>
+                            <a href="<?php echo esc_url($plugin['docs_url']); ?>" target="_blank" class="button button-secondary">
+                                <span class="dashicons dashicons-book"></span>
+                                Documentation
+                            </a>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($plugin['support_url'])) : ?>
+                            <a href="<?php echo esc_url($plugin['support_url']); ?>" target="_blank" class="button button-secondary">
+                                <span class="dashicons dashicons-sos"></span>
+                                Get Support
+                            </a>
+                        <?php endif; ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Render page when plugin not found
+     */
+    private function render_plugin_not_found() {
+        ?>
+        <div class="wrap">
+            <h1>Plugin Not Found</h1>
+            <div class="notice notice-error">
+                <p>The requested plugin page could not be found or is not properly registered.</p>
+            </div>
+            <p><a href="<?php echo esc_url(admin_url('admin.php?page=wbcom-designs')); ?>" class="button button-primary">← Back to Dashboard</a></p>
+        </div>
+        <?php
     }
     
     /**
@@ -335,18 +464,6 @@ class Wbcom_Shared_Loader {
         }
         </style>
         <?php
-    }
-    
-    /**
-     * Enqueue shared assets - DISABLED 
-     * 
-     * Note: Asset loading is handled by individual plugin integration classes
-     * to ensure correct paths and prevent conflicts
-     */
-    public function enqueue_shared_assets($hook_suffix) {
-        // Disabled - let individual plugins handle their asset loading
-        // This prevents path conflicts and duplicate loading
-        return;
     }
     
     /**

@@ -173,15 +173,6 @@
          */
         removeCookie: function(name) {
             document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax';
-        },
-
-        /**
-         * Debug logging
-         */
-        log: function(message) {
-            if (window.console && window.console.log) {
-                console.log('[BP Activity Filter] ' + message);
-            }
         }
     };
 

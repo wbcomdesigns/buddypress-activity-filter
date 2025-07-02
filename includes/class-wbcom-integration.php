@@ -1,6 +1,6 @@
 <?php
 /**
- * Wbcom Integration for BP Activity Filter - With Shared Assets Loading
+ * Wbcom Integration for BP Activity Filter - Main Menu Only
  * 
  * @package BuddyPress_Activity_Filter
  * @version 4.0.0
@@ -27,11 +27,11 @@ class BP_Activity_Filter_Wbcom_Integration {
         
         $this->plugin_data = array(
             'slug'         => 'bp-activity-filter',
-            'name'         => 'BuddyPress Activity Filter', // Plain text to avoid translation issues
+            'name'         => 'BuddyPress Activity Filter',
             'version'      => BP_ACTIVITY_FILTER_VERSION,
             'settings_url' => admin_url('admin.php?page=wbcom-activity-filter'),
             'icon'         => 'dashicons-filter',
-            'priority'     => 5, // High priority as it's a core plugin
+            'priority'     => 5,
             'description'  => 'Filter and manage BuddyPress activity streams with default filters and custom post type support.',
             'status'       => 'active',
             'has_premium'  => false,
@@ -48,8 +48,8 @@ class BP_Activity_Filter_Wbcom_Integration {
         // Load shared system
         $this->load_shared_system();
         
-        // Setup admin menu
-        add_action('admin_menu', array($this, 'setup_admin_menu'), 10);
+        // ONLY setup main Wbcom menu - plugins handle their own submenus
+        add_action('admin_menu', array($this, 'ensure_main_menu'), 5);
         
         // Enqueue shared assets for Wbcom pages
         add_action('admin_enqueue_scripts', array($this, 'enqueue_shared_assets'), 5);
@@ -71,16 +71,147 @@ class BP_Activity_Filter_Wbcom_Integration {
             if (class_exists('Wbcom_Shared_Loader')) {
                 $success = Wbcom_Shared_Loader::register_plugin($this->plugin_data);
                 $this->shared_system_loaded = $success;
-                
-                if (!$success && defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log('BP Activity Filter: Failed to register with Wbcom shared system');
-                }
-            }
-        } else {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('BP Activity Filter: Shared system loader not found at: ' . $loader_path);
             }
         }
+    }
+    
+    /**
+     * Ensure main Wbcom Designs menu exists - DON'T CREATE SUBMENUS
+     *
+     * @since 4.0.0
+     */
+    public function ensure_main_menu() {
+        // Only create main menu if it doesn't exist
+        if (!$this->wbcom_menu_exists()) {
+            add_menu_page(
+                'Wbcom Designs',
+                'Wbcom Designs',
+                'manage_options',
+                'wbcom-designs',
+                array($this, 'render_dashboard'),
+                $this->get_menu_icon(),
+                58.5
+            );
+            
+            // Add dashboard as first submenu
+            add_submenu_page(
+                'wbcom-designs',
+                'Dashboard',
+                'Dashboard',
+                'manage_options',
+                'wbcom-designs',
+                array($this, 'render_dashboard')
+            );
+        }
+    }
+    
+    /**
+     * Render main dashboard
+     */
+    public function render_dashboard() {
+        try {
+            if (class_exists('Wbcom_Shared_Dashboard')) {
+                $dashboard = new Wbcom_Shared_Dashboard($this->get_registered_plugins());
+                $dashboard->render_dashboard();
+            } else {
+                $this->render_fallback_dashboard();
+            }
+        } catch (Exception $e) {
+            $this->render_fallback_dashboard();
+        }
+    }
+    
+    /**
+     * Render fallback dashboard
+     */
+    private function render_fallback_dashboard() {
+        ?>
+        <div class="wrap">
+            <h1>🌟 Wbcom Designs</h1>
+            
+            <div class="notice notice-info">
+                <p><strong>Welcome to Wbcom Designs!</strong> Your plugins are being loaded...</p>
+            </div>
+            
+            <div class="card">
+                <h2>Installed Wbcom Plugins</h2>
+                <ul>
+                    <li>
+                        <strong>BuddyPress Activity Filter</strong> 
+                        (v<?php echo esc_html(BP_ACTIVITY_FILTER_VERSION); ?>)
+                        - <a href="<?php echo esc_url(admin_url('admin.php?page=wbcom-activity-filter')); ?>">Settings</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>Quick Links</h2>
+                <p>
+                    <a href="https://wbcomdesigns.com/support/" target="_blank" class="button button-secondary">Get Support</a>
+                    <a href="https://wbcomdesigns.com/downloads/" target="_blank" class="button button-secondary">Browse Premium Plugins</a>
+                    <a href="https://docs.wbcomdesigns.com/" target="_blank" class="button button-secondary">Documentation</a>
+                </p>
+            </div>
+        </div>
+        
+        <style>
+        .card {
+            background: #fff;
+            border: 1px solid #c3c4c7;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .card h2 {
+            margin-top: 0;
+        }
+        </style>
+        <?php
+    }
+    
+    /**
+     * Get menu icon
+     */
+    private function get_menu_icon() {
+        $svg = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 2L13.09 8.26L20 9L14 12L15 20L10 17L5 20L6 12L0 9L6.91 8.26L10 2Z" fill="#a7aaad"/>
+        </svg>';
+        
+        return 'data:image/svg+xml;base64,' . base64_encode($svg);
+    }
+    
+    /**
+     * Get registered plugins from shared system
+     */
+    private function get_registered_plugins() {
+        if (class_exists('Wbcom_Shared_Loader')) {
+            $instance = Wbcom_Shared_Loader::get_instance();
+            if ($instance) {
+                return $instance->get_registered_plugins();
+            }
+        }
+        
+        // Fallback: return this plugin's data
+        return array($this->plugin_data['slug'] => $this->plugin_data);
+    }
+    
+    /**
+     * Check if Wbcom menu exists
+     */
+    private function wbcom_menu_exists() {
+        global $menu;
+        
+        if (!is_array($menu)) {
+            return false;
+        }
+        
+        foreach ($menu as $item) {
+            if (isset($item[2]) && $item[2] === 'wbcom-designs') {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     /**
@@ -94,12 +225,9 @@ class BP_Activity_Filter_Wbcom_Integration {
         
         // Check if already enqueued to prevent duplicates
         if (wp_style_is('wbcom-shared-admin', 'enqueued') || wp_style_is('wbcom-shared-admin', 'done')) {
-            // Just add our integration styles
-            $this->add_integration_styles();
             return;
         }
         
-        // Use correct URL calculation
         $assets_url = BP_ACTIVITY_FILTER_PLUGIN_URL . 'includes/shared-admin/';
         $version = BP_ACTIVITY_FILTER_VERSION;
         
@@ -115,17 +243,9 @@ class BP_Activity_Filter_Wbcom_Integration {
                 array(),
                 $version
             );
-            
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('Wbcom: Enqueued CSS from ' . $assets_url . 'wbcom-shared-admin.css');
-            }
         } else {
             // Fallback: add basic inline styles
             $this->add_fallback_styles();
-            
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('Wbcom: CSS file not found at ' . $css_file);
-            }
         }
         
         // Enqueue JS
@@ -151,18 +271,7 @@ class BP_Activity_Filter_Wbcom_Integration {
                     'success' => __('Settings saved successfully.', 'bp-activity-filter'),
                 )
             ));
-            
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('Wbcom: Enqueued JS from ' . $assets_url . 'wbcom-shared-admin.js');
-            }
-        } else {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('Wbcom: JS file not found at ' . $js_file);
-            }
         }
-        
-        // Add plugin-specific styles for better integration
-        $this->add_integration_styles();
     }
     
     /**
@@ -202,7 +311,6 @@ class BP_Activity_Filter_Wbcom_Integration {
      */
     private function add_fallback_styles() {
         wp_add_inline_style('wp-admin', '
-            /* Wbcom Shared Admin Fallback Styles */
             .wbcom-shared-dashboard h1 {
                 display: flex;
                 align-items: center;
@@ -216,28 +324,6 @@ class BP_Activity_Filter_Wbcom_Integration {
                 padding: 2px 8px;
                 border-radius: 12px;
                 font-weight: normal;
-            }
-            
-            .wbcom-dashboard-content {
-                display: flex;
-                gap: 20px;
-                margin-top: 20px;
-            }
-            
-            .wbcom-dashboard-main {
-                flex: 1;
-            }
-            
-            .wbcom-dashboard-sidebar {
-                width: 300px;
-            }
-            
-            .wbcom-welcome-panel {
-                background: #fff;
-                border: 1px solid #c3c4c7;
-                padding: 20px;
-                margin-bottom: 20px;
-                border-radius: 4px;
             }
             
             .nav-tab {
@@ -254,266 +340,15 @@ class BP_Activity_Filter_Wbcom_Integration {
                 margin-top: -1px;
             }
             
-            @media (max-width: 768px) {
-                .wbcom-dashboard-content {
-                    flex-direction: column;
-                }
-                .wbcom-dashboard-sidebar {
-                    width: 100%;
-                }
-            }
-        ');
-    }
-    
-    /**
-     * Add integration-specific styles
-     */
-    private function add_integration_styles() {
-        wp_add_inline_style('wp-admin', '
-            .wbcom-integration-notice {
-                background: #e7f3ff;
-                border-left: 4px solid #0073aa;
-                padding: 12px;
-                margin: 15px 0;
-            }
-            
-            .wbcom-integration-notice p {
-                margin: 0;
-                color: #0073aa;
-            }
-            
-            .bp-activity-filter-admin .nav-tab {
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-            }
-            
-            .bp-activity-filter-admin .wbcom-version {
-                font-size: 12px;
-                background: #0073aa;
-                color: #fff;
-                padding: 2px 6px;
-                border-radius: 10px;
-                margin-left: 8px;
-            }
-            
-            .wbcom-debug-info {
-                position: fixed;
-                bottom: 10px;
-                right: 10px;
-                background: rgba(0,0,0,0.8);
-                color: #fff;
-                padding: 10px;
-                font-size: 11px;
+            .card {
+                background: #fff;
+                border: 1px solid #c3c4c7;
+                padding: 20px;
+                margin: 20px 0;
                 border-radius: 4px;
-                z-index: 9999;
-                max-width: 250px;
-                display: none;
-            }
-            
-            .wbcom-debug-info.show {
-                display: block;
-            }
-            
-            .wbcom-shared-loading {
-                text-align: center;
-                padding: 40px;
-                color: #666;
-            }
-            
-            .wbcom-shared-loading .spinner {
-                visibility: visible;
-                float: none;
-                margin: 0 auto 10px;
+                box-shadow: 0 1px 1px rgba(0,0,0,.04);
             }
         ');
-    }
-    
-    /**
-     * Setup admin menu (shared or fallback)
-     */
-    public function setup_admin_menu() {
-        if ($this->shared_system_loaded && $this->wbcom_menu_exists()) {
-            // Add submenu to shared Wbcom menu
-            $this->add_submenu_to_shared();
-        } else {
-            // Fallback: create standalone menu
-            $this->create_standalone_menu();
-        }
-    }
-    
-    /**
-     * Add submenu to shared Wbcom menu
-     */
-    private function add_submenu_to_shared() {
-        add_submenu_page(
-            'wbcom-designs',
-            $this->plugin_data['name'],
-            'Activity Filter', // Use plain text
-            'manage_options',
-            'wbcom-activity-filter',
-            array($this, 'render_settings_page')
-        );
-    }
-    
-    /**
-     * Create standalone menu if shared system not available
-     */
-    private function create_standalone_menu() {
-        add_menu_page(
-            $this->plugin_data['name'],
-            'Activity Filter', // Use plain text
-            'manage_options',
-            'wbcom-activity-filter',
-            array($this, 'render_settings_page'),
-            $this->plugin_data['icon'],
-            59
-        );
-        
-        // Add submenu for consistency
-        add_submenu_page(
-            'wbcom-activity-filter',
-            'Settings', // Use plain text
-            'Settings',
-            'manage_options',
-            'wbcom-activity-filter',
-            array($this, 'render_settings_page')
-        );
-    }
-    
-    /**
-     * Render settings page
-     */
-    public function render_settings_page() {
-        // Add debug info if in debug mode
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            $this->add_debug_info();
-        }
-        
-        // Load admin class and render
-        if (class_exists('BP_Activity_Filter_Admin')) {
-            $admin = BP_Activity_Filter_Admin::instance();
-            $admin->render_settings_page();
-        } else {
-            $this->render_fallback_page();
-        }
-    }
-    
-    /**
-     * Add debug information to page
-     */
-    private function add_debug_info() {
-        ?>
-        <div class="wbcom-debug-info" id="wbcom-debug-info">
-            <strong>Debug Info:</strong><br>
-            Shared System: <?php echo $this->shared_system_loaded ? 'LOADED' : 'NOT LOADED'; ?><br>
-            CSS File: <?php echo file_exists($this->shared_path . 'wbcom-shared-admin.css') ? 'EXISTS' : 'MISSING'; ?><br>
-            JS File: <?php echo file_exists($this->shared_path . 'wbcom-shared-admin.js') ? 'EXISTS' : 'MISSING'; ?><br>
-            Shared Path: <?php echo is_dir($this->shared_path) ? 'EXISTS' : 'MISSING'; ?><br>
-            <button type="button" onclick="this.parentNode.style.display='none'" style="float: right; background: none; border: none; color: #fff; cursor: pointer;">×</button>
-        </div>
-        
-        <script>
-        // Show debug info for 10 seconds
-        setTimeout(function() {
-            var debug = document.getElementById('wbcom-debug-info');
-            if (debug) {
-                debug.classList.add('show');
-                setTimeout(function() {
-                    debug.classList.remove('show');
-                }, 10000);
-            }
-        }, 1000);
-        </script>
-        <?php
-    }
-    
-    /**
-     * Render fallback page if admin class not found
-     */
-    private function render_fallback_page() {
-        ?>
-        <div class="wrap">
-            <h1>
-                <span class="dashicons dashicons-filter" style="margin-right: 10px; color: #0073aa;"></span>
-                <?php echo esc_html($this->plugin_data['name']); ?>
-            </h1>
-            <div class="notice notice-error">
-                <p>
-                    <strong><?php esc_html_e('Error:', 'bp-activity-filter'); ?></strong>
-                    <?php esc_html_e('Admin class not found. Please ensure the plugin is properly installed and BuddyPress is active.', 'bp-activity-filter'); ?>
-                </p>
-            </div>
-            
-            <div class="card">
-                <h2><?php esc_html_e('Plugin Information', 'bp-activity-filter'); ?></h2>
-                <table class="form-table">
-                    <tr>
-                        <th><?php esc_html_e('Version:', 'bp-activity-filter'); ?></th>
-                        <td><?php echo esc_html($this->plugin_data['version']); ?></td>
-                    </tr>
-                    <tr>
-                        <th><?php esc_html_e('Status:', 'bp-activity-filter'); ?></th>
-                        <td>
-                            <?php if (function_exists('buddypress')) : ?>
-                                <span style="color: #00a32a;">✓ <?php esc_html_e('BuddyPress Active', 'bp-activity-filter'); ?></span>
-                            <?php else : ?>
-                                <span style="color: #d63638;">✗ <?php esc_html_e('BuddyPress Required', 'bp-activity-filter'); ?></span>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?php esc_html_e('Shared System:', 'bp-activity-filter'); ?></th>
-                        <td>
-                            <?php if ($this->shared_system_loaded) : ?>
-                                <span style="color: #00a32a;">✓ <?php esc_html_e('Loaded', 'bp-activity-filter'); ?></span>
-                            <?php else : ?>
-                                <span style="color: #dba617;">⚠ <?php esc_html_e('Standalone Mode', 'bp-activity-filter'); ?></span>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?php esc_html_e('Shared Assets:', 'bp-activity-filter'); ?></th>
-                        <td>
-                            CSS: <?php echo file_exists($this->shared_path . 'wbcom-shared-admin.css') ? '✓' : '✗'; ?><br>
-                            JS: <?php echo file_exists($this->shared_path . 'wbcom-shared-admin.js') ? '✓' : '✗'; ?>
-                        </td>
-                    </tr>
-                </table>
-                
-                <p>
-                    <a href="<?php echo esc_url($this->plugin_data['docs_url']); ?>" target="_blank" class="button button-secondary">
-                        <span class="dashicons dashicons-book"></span>
-                        <?php esc_html_e('Documentation', 'bp-activity-filter'); ?>
-                    </a>
-                    
-                    <a href="<?php echo esc_url($this->plugin_data['support_url']); ?>" target="_blank" class="button button-secondary">
-                        <span class="dashicons dashicons-sos"></span>
-                        <?php esc_html_e('Get Support', 'bp-activity-filter'); ?>
-                    </a>
-                </p>
-            </div>
-        </div>
-        <?php
-    }
-    
-    /**
-     * Check if Wbcom menu exists
-     */
-    private function wbcom_menu_exists() {
-        global $menu;
-        
-        if (!is_array($menu)) {
-            return false;
-        }
-        
-        foreach ($menu as $item) {
-            if (isset($item[2]) && $item[2] === 'wbcom-designs') {
-                return true;
-            }
-        }
-        
-        return false;
     }
     
     /**
@@ -529,17 +364,6 @@ class BP_Activity_Filter_Wbcom_Integration {
             return;
         }
         ?>
-        <div class="wbcom-integration-notice">
-            <p>
-                <strong><?php esc_html_e('Wbcom Integration Active', 'bp-activity-filter'); ?></strong> - 
-                <?php 
-                printf(
-                    esc_html__('This plugin is integrated with the Wbcom Designs dashboard. %s', 'bp-activity-filter'),
-                    '<a href="' . esc_url(admin_url('admin.php?page=wbcom-designs')) . '">' . esc_html__('View Dashboard', 'bp-activity-filter') . '</a>'
-                );
-                ?>
-            </p>
-        </div>
         <?php
     }
     

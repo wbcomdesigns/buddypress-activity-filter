@@ -126,7 +126,7 @@ class BP_Activity_Filter_Migration {
 			update_option( $this->db_version_key, $this->current_version );
 
 		} catch ( Exception $e ) {
-			// Log error for debugging
+			// Fail silently in production, log in debug mode
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 				error_log( 'BP Activity Filter Migration failed: ' . $e->getMessage() );
 			}
