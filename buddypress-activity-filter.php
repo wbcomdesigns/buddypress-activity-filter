@@ -14,23 +14,6 @@
  * Tested up to: 6.6
  * Requires PHP: 7.4
  * Network: true
- *
- * @package BuddyPress_Activity_Filter
- * @version 4.0.0
- * @author Wbcom Designs
- * @copyright 2024 Wbcom Designs
- * @license GPL-2.0-or-later
- * @link https://wbcomdesigns.com/
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
  */
 
 // Prevent direct access.
@@ -56,11 +39,7 @@ if ( ! defined( 'BP_ACTIVITY_FILTER_BASENAME' ) ) {
 }
 
 /**
- * Main plugin class with Wbcom Shared Admin Integration.
- *
- * Handles plugin initialization, dependency checks, and core functionality setup.
- * Includes integration with Wbcom Shared Admin system for unified dashboard experience.
- * Uses singleton pattern to ensure only one instance exists.
+ * Main plugin class
  *
  * @since 4.0.0
  */
@@ -93,8 +72,6 @@ final class BP_Activity_Filter {
 	/**
 	 * Get plugin instance.
 	 *
-	 * Implements singleton pattern to ensure only one instance exists.
-	 *
 	 * @since 4.0.0
 	 * @return BP_Activity_Filter The single instance of the plugin.
 	 */
@@ -108,9 +85,6 @@ final class BP_Activity_Filter {
 	/**
 	 * Constructor.
 	 *
-	 * Private constructor to prevent direct instantiation.
-	 * Sets up plugin hooks and initialization.
-	 *
 	 * @since 4.0.0
 	 */
 	private function __construct() {
@@ -120,16 +94,13 @@ final class BP_Activity_Filter {
 	/**
 	 * Setup plugin hooks.
 	 *
-	 * Registers activation/deactivation hooks and core initialization.
-	 * Includes early initialization of Wbcom shared admin system.
-	 *
 	 * @since 4.0.0
 	 */
 	private function setup_hooks() {
 		add_action( 'plugins_loaded', array( $this, 'init' ), 20 );
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
-		// Initialize Wbcom shared admin integration early (admin only)
+		// Initialize Wbcom integration early (admin only)
 		if ( is_admin() ) {
 			add_action( 'plugins_loaded', array( $this, 'init_wbcom_integration' ), 5 );
 		}
@@ -144,10 +115,7 @@ final class BP_Activity_Filter {
 	}
 
 	/**
-	 * Initialize Wbcom shared admin integration.
-	 *
-	 * Loads and initializes the Wbcom shared admin system that provides
-	 * unified dashboard experience across all Wbcom plugins.
+	 * Initialize Wbcom integration.
 	 *
 	 * @since 4.0.0
 	 */
@@ -162,19 +130,10 @@ final class BP_Activity_Filter {
 				$this->wbcom_integration = new BP_Activity_Filter_Wbcom_Integration();
 			}
 		}
-
-		// Log integration status for debugging
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			$status = $this->wbcom_integration ? 'loaded' : 'failed';
-			error_log( "BP Activity Filter: Wbcom integration {$status}" );
-		}
 	}
 
 	/**
 	 * Initialize the plugin.
-	 *
-	 * Checks for BuddyPress availability and compatibility,
-	 * then loads plugin components if requirements are met.
 	 *
 	 * @since 4.0.0
 	 */
@@ -225,18 +184,10 @@ final class BP_Activity_Filter {
 			false,
 			dirname( BP_ACTIVITY_FILTER_BASENAME ) . '/languages'
 		);
-
-		// Log if textdomain loading fails in debug mode.
-		if ( ! $loaded && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'BP Activity Filter: Failed to load textdomain from ' . dirname( BP_ACTIVITY_FILTER_BASENAME ) . '/languages' );
-		}
 	}
 
 	/**
 	 * Include required files.
-	 *
-	 * Loads all necessary class files for the plugin.
-	 * Note: Admin menu creation is now handled by Wbcom integration.
 	 *
 	 * @since 4.0.0
 	 */
@@ -256,7 +207,6 @@ final class BP_Activity_Filter {
 			} else {
 				wp_die(
 					sprintf(
-						/* translators: %s: file path */
 						esc_html__( 'BuddyPress Activity Filter: Required file missing: %s', 'bp-activity-filter' ),
 						esc_html( $file )
 					)
@@ -268,9 +218,6 @@ final class BP_Activity_Filter {
 	/**
 	 * Initialize plugin components.
 	 *
-	 * Sets up admin interface, frontend functionality, CPT support,
-	 * and migration system. Admin menu is now handled by Wbcom integration.
-	 *
 	 * @since 4.0.0
 	 */
 	private function init_components() {
@@ -279,7 +226,7 @@ final class BP_Activity_Filter {
 			new BP_Activity_Filter_Migration();
 		}
 
-		// Initialize admin interface (settings only - menu handled by Wbcom integration).
+		// Initialize admin interface.
 		if ( is_admin() && class_exists( 'BP_Activity_Filter_Admin' ) ) {
 			BP_Activity_Filter_Admin::instance();
 		}
@@ -297,8 +244,6 @@ final class BP_Activity_Filter {
 
 	/**
 	 * Plugin activation callback.
-	 *
-	 * Sets up default options and prepares the plugin for first use.
 	 *
 	 * @since 4.0.0
 	 */
@@ -327,7 +272,7 @@ final class BP_Activity_Filter {
 			}
 		}
 
-		// Set activation redirect flag for Wbcom dashboard.
+		// Set activation redirect flag.
 		set_transient( 'bp_activity_filter_activation_redirect', true, 30 );
 
 		// Flush rewrite rules if needed.
@@ -336,8 +281,6 @@ final class BP_Activity_Filter {
 
 	/**
 	 * Plugin deactivation callback.
-	 *
-	 * Cleans up temporary data and performs deactivation tasks.
 	 *
 	 * @since 4.0.0
 	 */
@@ -355,8 +298,6 @@ final class BP_Activity_Filter {
 	/**
 	 * Add plugin action links in the plugins list.
 	 *
-	 * Updated to point to the new Wbcom dashboard location.
-	 *
 	 * @since 4.0.0
 	 * @param array $links Existing plugin action links.
 	 * @return array Modified plugin action links.
@@ -364,7 +305,7 @@ final class BP_Activity_Filter {
 	public function plugin_action_links( $links ) {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
-			esc_url( admin_url( 'admin.php?page=wbcom-activity-filter' ) ), // Updated URL
+			esc_url( admin_url( 'admin.php?page=wbcom-activity-filter' ) ),
 			esc_html__( 'Settings', 'bp-activity-filter' )
 		);
 
@@ -416,8 +357,6 @@ final class BP_Activity_Filter {
 	/**
 	 * Check if BuddyBoss is active.
 	 *
-	 * BuddyBoss has similar built-in features, making this plugin incompatible.
-	 *
 	 * @since 4.0.0
 	 * @return bool True if BuddyBoss is detected.
 	 */
@@ -439,7 +378,6 @@ final class BP_Activity_Filter {
 			<p>
 				<?php
 				printf(
-					/* translators: %s: BuddyPress plugin name with link */
 					esc_html__( 'This plugin requires %s to be installed and active.', 'bp-activity-filter' ),
 					'<a href="' . esc_url( admin_url( 'plugin-install.php?s=buddypress&tab=search&type=term' ) ) . '"><strong>BuddyPress</strong></a>'
 				);
@@ -463,7 +401,6 @@ final class BP_Activity_Filter {
 			<p>
 				<?php
 				printf(
-					/* translators: %1$s: minimum version, %2$s: current version */
 					esc_html__( 'This plugin requires BuddyPress version %1$s or higher. You are running version %2$s.', 'bp-activity-filter' ),
 					esc_html( $this->min_bp_version ),
 					esc_html( buddypress()->version )
@@ -543,7 +480,7 @@ final class BP_Activity_Filter {
 	}
 
 	/**
-	 * Handle activation redirect to Wbcom dashboard.
+	 * Handle activation redirect.
 	 *
 	 * @since 4.0.0
 	 */
@@ -552,7 +489,6 @@ final class BP_Activity_Filter {
 			delete_transient( 'bp_activity_filter_activation_redirect' );
 			
 			if ( ! isset( $_GET['activate-multi'] ) && ! wp_doing_ajax() ) {
-				// Redirect to Wbcom dashboard instead of old admin page
 				wp_safe_redirect( admin_url( 'admin.php?page=wbcom-designs' ) );
 				exit;
 			}
@@ -588,8 +524,6 @@ final class BP_Activity_Filter {
 
 /**
  * Get the main plugin instance.
- *
- * Function to access the single plugin instance.
  *
  * @since 4.0.0
  * @return BP_Activity_Filter The single instance of the plugin.

@@ -1,9 +1,6 @@
 <?php
 /**
- * Enhanced Admin Menu Integration for BP Activity Filter - Production Ready
- *
- * This file provides a robust, production-ready admin menu system with
- * proper error handling, fallback mechanisms, and enhanced UI.
+ * Fixed Admin class for BP Activity Filter
  *
  * @package BuddyPress_Activity_Filter
  * @since 4.0.0
@@ -15,15 +12,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Enhanced BP Activity Filter Admin Class - Production Ready
+ * BP Activity Filter Admin Class - Fixed Version
  */
-class BP_Activity_Filter_Admin_Enhanced {
+class BP_Activity_Filter_Admin {
 
     /**
      * Class instance.
      *
      * @since 4.0.0
-     * @var BP_Activity_Filter_Admin_Enhanced|null Singleton instance.
+     * @var BP_Activity_Filter_Admin|null Singleton instance.
      */
     private static $instance = null;
 
@@ -36,26 +33,10 @@ class BP_Activity_Filter_Admin_Enhanced {
     private $current_tab = 'default';
 
     /**
-     * Menu creation method used.
-     *
-     * @since 4.0.0
-     * @var string Method used to create the menu.
-     */
-    private $menu_method = 'none';
-
-    /**
-     * Page hook suffix.
-     *
-     * @since 4.0.0
-     * @var string|false Page hook suffix or false if failed.
-     */
-    private $page_hook = false;
-
-    /**
      * Get class instance.
      *
      * @since 4.0.0
-     * @return BP_Activity_Filter_Admin_Enhanced Singleton instance.
+     * @return BP_Activity_Filter_Admin Singleton instance.
      */
     public static function instance() {
         if ( is_null( self::$instance ) ) {
@@ -79,237 +60,20 @@ class BP_Activity_Filter_Admin_Enhanced {
      * @since 4.0.0
      */
     private function setup_hooks() {
-        add_action( 'admin_menu', array( $this, 'create_admin_menu' ), 15 );
         add_action( 'admin_init', array( $this, 'register_settings' ) );
         add_action( 'admin_init', array( $this, 'handle_activation_redirect' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
         add_action( 'admin_notices', array( $this, 'display_admin_notices' ) );
-        add_action( 'admin_head', array( $this, 'add_admin_head_styles' ) );
         add_action( 'wp_ajax_bp_activity_filter_test_action', array( $this, 'handle_ajax_test' ) );
         add_filter( 'plugin_action_links_' . plugin_basename( BP_ACTIVITY_FILTER_PLUGIN_DIR . 'buddypress-activity-filter.php' ), array( $this, 'plugin_action_links' ) );
     }
 
     /**
-     * Create admin menu with multiple fallback strategies.
-     *
-     * @since 4.0.0
-     * @return string|false Page hook string on success, false on failure.
-     */
-    public function create_admin_menu() {
-        $this->page_hook = false;
-
-        // Strategy 1: Try unified Wbcom menu system
-        if ( class_exists( 'Wbcom_Designs_Menu' ) ) {
-            $this->page_hook = $this->try_unified_menu();
-            if ( $this->page_hook ) {
-                $this->menu_method = 'unified_menu';
-            }
-        }
-
-        // Strategy 2: Try existing Wbcom menu
-        if ( ! $this->page_hook ) {
-            $this->page_hook = $this->try_existing_wbcom_menu();
-            if ( $this->page_hook ) {
-                $this->menu_method = 'existing_wbcom_menu';
-            }
-        }
-
-        // Strategy 3: Create our own Wbcom menu
-        if ( ! $this->page_hook ) {
-            $this->page_hook = $this->create_wbcom_menu();
-            if ( $this->page_hook ) {
-                $this->menu_method = 'created_wbcom_menu';
-            }
-        }
-
-        // Strategy 4: Use WordPress settings menu
-        if ( ! $this->page_hook ) {
-            $this->page_hook = $this->add_to_settings_menu();
-            if ( $this->page_hook ) {
-                $this->menu_method = 'settings_menu';
-            }
-        }
-
-        // Strategy 5: Create standalone menu (last resort)
-        if ( ! $this->page_hook ) {
-            $this->page_hook = $this->create_standalone_menu();
-            if ( $this->page_hook ) {
-                $this->menu_method = 'standalone_menu';
-            }
-        }
-
-        // Add help tabs if successful
-        if ( $this->page_hook ) {
-            add_action( "load-{$this->page_hook}", array( $this, 'add_help_tabs' ) );
-        }
-
-        // Store menu creation info for debugging
-        update_option( 'bp_activity_filter_menu_info', array(
-            'method'      => $this->menu_method,
-            'page_hook'   => $this->page_hook,
-            'timestamp'   => current_time( 'mysql' ),
-            'wp_version'  => get_bloginfo( 'version' ),
-            'php_version' => PHP_VERSION,
-        ) );
-
-        return $this->page_hook;
-    }
-
-    /**
-     * Try to use unified Wbcom menu system.
-     *
-     * @since 4.0.0
-     * @return string|false Page hook on success, false on failure.
-     */
-    private function try_unified_menu() {
-        try {
-            $wbcom_menu = Wbcom_Designs_Menu::instance();
-            $menu_status = $wbcom_menu->get_menu_status();
-
-            if ( ! ( $menu_status['menu_exists'] || $menu_status['menu_created'] ) ) {
-                return false;
-            }
-
-            return $wbcom_menu->add_submenu(
-                'activity-filter',
-                esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' ),
-                esc_html__( 'Activity Filter', 'bp-activity-filter' ),
-                'manage_options',
-                'wbcom-activity-filter',
-                array( $this, 'admin_page' )
-            );
-        } catch ( Exception $e ) {
-            error_log( 'BP Activity Filter: Unified menu error - ' . $e->getMessage() );
-            return false;
-        }
-    }
-
-    /**
-     * Try to add to existing Wbcom menu.
-     *
-     * @since 4.0.0
-     * @return string|false Page hook on success, false on failure.
-     */
-    private function try_existing_wbcom_menu() {
-        if ( ! $this->wbcom_menu_exists() ) {
-            return false;
-        }
-
-        return add_submenu_page(
-            'wbcom-designs',
-            esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' ),
-            esc_html__( 'Activity Filter', 'bp-activity-filter' ),
-            'manage_options',
-            'wbcom-activity-filter',
-            array( $this, 'admin_page' )
-        );
-    }
-
-    /**
-     * Create Wbcom menu if it doesn't exist.
-     *
-     * @since 4.0.0
-     * @return string|false Page hook on success, false on failure.
-     */
-    private function create_wbcom_menu() {
-        // Create main menu
-        $main_menu = add_menu_page(
-            esc_html__( 'Wbcom Designs', 'bp-activity-filter' ),
-            esc_html__( 'Wbcom Designs', 'bp-activity-filter' ),
-            'manage_options',
-            'wbcom-designs',
-            array( $this, 'wbcom_dashboard_page' ),
-            $this->get_menu_icon(),
-            58.5
-        );
-
-        if ( ! $main_menu ) {
-            return false;
-        }
-
-        // Add our submenu
-        return add_submenu_page(
-            'wbcom-designs',
-            esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' ),
-            esc_html__( 'Activity Filter', 'bp-activity-filter' ),
-            'manage_options',
-            'wbcom-activity-filter',
-            array( $this, 'admin_page' )
-        );
-    }
-
-    /**
-     * Add to WordPress settings menu.
-     *
-     * @since 4.0.0
-     * @return string|false Page hook on success, false on failure.
-     */
-    private function add_to_settings_menu() {
-        return add_options_page(
-            esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' ),
-            esc_html__( 'Activity Filter', 'bp-activity-filter' ),
-            'manage_options',
-            'bp-activity-filter-settings',
-            array( $this, 'admin_page' )
-        );
-    }
-
-    /**
-     * Create standalone menu as last resort.
-     *
-     * @since 4.0.0
-     * @return string|false Page hook on success, false on failure.
-     */
-    private function create_standalone_menu() {
-        return add_menu_page(
-            esc_html__( 'Activity Filter', 'bp-activity-filter' ),
-            esc_html__( 'Activity Filter', 'bp-activity-filter' ),
-            'manage_options',
-            'bp-activity-filter-standalone',
-            array( $this, 'admin_page' ),
-            'dashicons-filter',
-            30
-        );
-    }
-
-    /**
-     * Check if Wbcom menu exists.
-     *
-     * @since 4.0.0
-     * @return bool True if menu exists, false otherwise.
-     */
-    private function wbcom_menu_exists() {
-        global $menu;
-
-        if ( ! is_array( $menu ) ) {
-            return false;
-        }
-
-        foreach ( $menu as $item ) {
-            if ( isset( $item[2] ) && $item[2] === 'wbcom-designs' ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Get menu icon as base64 SVG.
-     *
-     * @since 4.0.0
-     * @return string Base64 encoded SVG icon.
-     */
-    private function get_menu_icon() {
-        return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEwIDJMMTMuMDkgOC4yNkwyMCA5TDE0IDEyTDE1IDIwTDEwIDE3TDUgMjBMNiAxMkwwIDlMNi45MSA4LjI2TDEwIDJaIiBmaWxsPSIjYTdhYWFkIi8+Cjwvc3ZnPgo=';
-    }
-
-    /**
-     * Display admin page content with enhanced UI.
+     * Render settings page content.
      *
      * @since 4.0.0
      */
-    public function admin_page() {
+    public function render_settings_page() {
         $current_tab = $this->get_current_tab();
         
         // Handle form submission
@@ -325,7 +89,6 @@ class BP_Activity_Filter_Admin_Enhanced {
                 <span class="wbcom-version">v<?php echo esc_html( BP_ACTIVITY_FILTER_VERSION ); ?></span>
             </h1>
 
-            <?php $this->render_menu_method_notice(); ?>
             <?php settings_errors( 'bp_activity_filter_settings' ); ?>
 
             <div class="tab-content-wrapper">
@@ -349,56 +112,71 @@ class BP_Activity_Filter_Admin_Enhanced {
                 </form>
             </div>
         </div>
-        <?php
-    }
-
-    /**
-     * Render menu method notice for debugging.
-     *
-     * @since 4.0.0
-     */
-    private function render_menu_method_notice() {
-        if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG || ! current_user_can( 'manage_options' ) ) {
-            return;
+        
+        <style>
+        /* Basic styling for the settings page */
+        .bp-activity-filter-admin .nav-tab-wrapper {
+            border-bottom: 1px solid #c3c4c7;
+            margin: 0;
+            background: #f8f9fa;
         }
-
-        $method_labels = array(
-            'unified_menu'        => 'Unified Wbcom Menu System',
-            'existing_wbcom_menu' => 'Existing Wbcom Menu',
-            'created_wbcom_menu'  => 'Created Wbcom Menu',
-            'settings_menu'       => 'WordPress Settings Menu',
-            'standalone_menu'     => 'Standalone Menu',
-        );
-
-        $method_colors = array(
-            'unified_menu'        => 'notice-success',
-            'existing_wbcom_menu' => 'notice-success',
-            'created_wbcom_menu'  => 'notice-info',
-            'settings_menu'       => 'notice-warning',
-            'standalone_menu'     => 'notice-error',
-        );
-
-        $method_label = isset( $method_labels[ $this->menu_method ] ) ? $method_labels[ $this->menu_method ] : $this->menu_method;
-        $notice_class = isset( $method_colors[ $this->menu_method ] ) ? $method_colors[ $this->menu_method ] : 'notice-info';
-
-        ?>
-        <div class="notice <?php echo esc_attr( $notice_class ); ?> notice-alt" style="margin-top: 10px;">
-            <p>
-                <strong><?php esc_html_e( 'Debug Info:', 'bp-activity-filter' ); ?></strong>
-                <?php
-                printf(
-                    /* translators: %s: Menu creation method */
-                    esc_html__( 'Menu created using: %s', 'bp-activity-filter' ),
-                    '<code>' . esc_html( $method_label ) . '</code>'
-                );
-                ?>
-            </p>
-        </div>
+        
+        .bp-activity-filter-admin .nav-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 16px;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            color: #646970;
+            text-decoration: none;
+        }
+        
+        .bp-activity-filter-admin .nav-tab:hover {
+            background: #fff;
+            color: #0073aa;
+        }
+        
+        .bp-activity-filter-admin .nav-tab-active {
+            background: #fff;
+            color: #0073aa;
+            border-bottom-color: #0073aa;
+        }
+        
+        .tab-content-wrapper {
+            background: #fff;
+            border: 1px solid #c3c4c7;
+            border-radius: 0 0 4px 4px;
+            margin-top: -1px;
+        }
+        
+        .settings-section {
+            padding: 20px;
+        }
+        
+        .form-table th {
+            width: 220px;
+            padding: 20px;
+        }
+        
+        .form-table td {
+            padding: 20px;
+        }
+        
+        .wbcom-version {
+            font-size: 14px;
+            color: #666;
+            background: #f0f0f1;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        </style>
         <?php
     }
 
     /**
-     * Render admin navigation tabs with enhanced styling.
+     * Render admin navigation tabs.
      *
      * @since 4.0.0
      * @param string $current_tab Current active tab.
@@ -419,7 +197,7 @@ class BP_Activity_Filter_Admin_Enhanced {
             ),
         );
 
-        $base_url = $this->get_admin_page_url();
+        $base_url = admin_url( 'admin.php?page=wbcom-activity-filter' );
 
         foreach ( $tabs as $tab_key => $tab_data ) {
             $url = add_query_arg( array( 'tab' => $tab_key ), $base_url );
@@ -438,27 +216,6 @@ class BP_Activity_Filter_Admin_Enhanced {
                 esc_html( $tab_data['title'] )
             );
         }
-    }
-
-    /**
-     * Get current admin page URL.
-     *
-     * @since 4.0.0
-     * @return string Admin page URL.
-     */
-    private function get_admin_page_url() {
-        $page_map = array(
-            'unified_menu'        => 'wbcom-activity-filter',
-            'existing_wbcom_menu' => 'wbcom-activity-filter',
-            'created_wbcom_menu'  => 'wbcom-activity-filter',
-            'settings_menu'       => 'bp-activity-filter-settings',
-            'standalone_menu'     => 'bp-activity-filter-standalone',
-        );
-
-        $page_slug = isset( $page_map[ $this->menu_method ] ) ? $page_map[ $this->menu_method ] : 'wbcom-activity-filter';
-        $admin_page = ( 'settings_menu' === $this->menu_method ) ? 'options-general.php' : 'admin.php';
-
-        return admin_url( $admin_page . '?page=' . $page_slug );
     }
 
     /**
@@ -582,28 +339,24 @@ class BP_Activity_Filter_Admin_Enhanced {
                                         $is_checked = in_array( $key, $hidden_activities, true );
                                         $checkbox_id = 'bp_hidden_' . sanitize_html_class( $key );
                                         ?>
-                                        <label for="<?php echo esc_attr( $checkbox_id ); ?>" class="bp-activity-checkbox-label <?php echo $is_checked ? 'checked' : ''; ?>">
+                                        <label for="<?php echo esc_attr( $checkbox_id ); ?>" style="display: block; margin-bottom: 8px;">
                                             <input type="checkbox" 
                                                    id="<?php echo esc_attr( $checkbox_id ); ?>"
                                                    name="bp_activity_filter_hidden[]" 
                                                    value="<?php echo esc_attr( $key ); ?>" 
                                                    <?php checked( $is_checked ); ?>
-                                                   class="bp-activity-checkbox">
-                                            <div class="checkbox-content">
-                                                <span class="checkbox-label-text"><?php echo esc_html( $label ); ?></span>
-                                                <code class="activity-key"><?php echo esc_html( $key ); ?></code>
-                                            </div>
+                                                   style="margin-right: 8px;">
+                                            <?php echo esc_html( $label ); ?>
+                                            <code style="margin-left: 8px; font-size: 11px; color: #666;"><?php echo esc_html( $key ); ?></code>
                                         </label>
                                     <?php endforeach; ?>
                                 </fieldset>
                                 
-                                <div class="hidden-activities-actions">
+                                <div style="margin-top: 15px;">
                                     <button type="button" id="select-all-hidden" class="button button-secondary">
-                                        <span class="dashicons dashicons-yes"></span>
                                         <?php esc_html_e( 'Select All', 'bp-activity-filter' ); ?>
                                     </button>
-                                    <button type="button" id="deselect-all-hidden" class="button button-secondary">
-                                        <span class="dashicons dashicons-no"></span>
+                                    <button type="button" id="deselect-all-hidden" class="button button-secondary" style="margin-left: 8px;">
                                         <?php esc_html_e( 'Deselect All', 'bp-activity-filter' ); ?>
                                     </button>
                                 </div>
@@ -620,6 +373,18 @@ class BP_Activity_Filter_Admin_Enhanced {
                 </tbody>
             </table>
         </div>
+        
+        <script>
+        jQuery(document).ready(function($) {
+            $('#select-all-hidden').on('click', function() {
+                $('#bp-hidden-activities-fieldset input[type="checkbox"]').prop('checked', true);
+            });
+            
+            $('#deselect-all-hidden').on('click', function() {
+                $('#bp-hidden-activities-fieldset input[type="checkbox"]').prop('checked', false);
+            });
+        });
+        </script>
         <?php
     }
 
@@ -687,20 +452,18 @@ class BP_Activity_Filter_Admin_Enhanced {
         $post_count = wp_count_posts( $post_type );
         $total_posts = isset( $post_count->publish ) ? $post_count->publish : 0;
         ?>
-        <div class="cpt-setting-item <?php echo $enabled ? '' : 'disabled'; ?>" data-post-type="<?php echo esc_attr( $post_type ); ?>">
-            <div class="cpt-header">
-                <label class="cpt-main-label">
+        <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px;">
+            <div style="margin-bottom: 10px;">
+                <label style="display: flex; align-items: center; font-weight: 600;">
                     <input type="checkbox" 
                            name="bp_activity_filter_cpt_settings[<?php echo esc_attr( $post_type ); ?>][enabled]" 
                            value="1" <?php checked( $enabled ); ?>
-                           class="cpt-enable-checkbox"
-                           id="cpt_<?php echo esc_attr( $post_type ); ?>_enabled">
-                    <strong><?php echo esc_html( $post_type_obj->label ); ?></strong>
-                    <span class="cpt-meta">
+                           style="margin-right: 8px;">
+                    <?php echo esc_html( $post_type_obj->label ); ?>
+                    <span style="font-size: 12px; color: #666; margin-left: 8px;">
                         (<?php echo esc_html( $post_type ); ?>) - 
                         <?php 
                         printf( 
-                            /* translators: %d: number of posts */
                             _n( '%d post', '%d posts', $total_posts, 'bp-activity-filter' ), 
                             number_format_i18n( $total_posts )
                         ); 
@@ -710,95 +473,22 @@ class BP_Activity_Filter_Admin_Enhanced {
             </div>
             
             <?php if ( ! empty( $post_type_obj->description ) ) : ?>
-                <div class="cpt-description">
-                    <p class="description"><?php echo esc_html( $post_type_obj->description ); ?></p>
-                </div>
+                <p style="margin: 8px 0; color: #666; font-size: 13px;"><?php echo esc_html( $post_type_obj->description ); ?></p>
             <?php endif; ?>
 
-            <div class="cpt-settings" style="<?php echo $enabled ? '' : 'display: none;'; ?>">
-                <div class="cpt-label-setting">
-                    <label for="cpt_<?php echo esc_attr( $post_type ); ?>_label">
-                        <?php esc_html_e( 'Custom Activity Label (optional):', 'bp-activity-filter' ); ?>
-                    </label>
-                    <input type="text" 
-                           id="cpt_<?php echo esc_attr( $post_type ); ?>_label"
-                           name="bp_activity_filter_cpt_settings[<?php echo esc_attr( $post_type ); ?>][label]" 
-                           value="<?php echo esc_attr( $label ); ?>" 
-                           placeholder="<?php echo esc_attr( strtolower( $post_type_obj->labels->singular_name ) ); ?>"
-                           class="cpt-label-input"
-                           <?php echo $enabled ? '' : 'disabled'; ?>>
-                    <p class="description">
-                        <?php esc_html_e( 'Leave empty to use the default post type name. This text will appear in activity entries like "John published a new [label]: Post Title"', 'bp-activity-filter' ); ?>
-                    </p>
-                </div>
-
-                <?php $this->render_cpt_info( $post_type_obj ); ?>
-                <?php $this->render_cpt_preview( $post_type_obj, $label ); ?>
-            </div>
-        </div>
-        <?php
-    }
-
-    /**
-     * Render CPT information section.
-     *
-     * @since 4.0.0
-     * @param WP_Post_Type $post_type_obj Post type object.
-     */
-    private function render_cpt_info( $post_type_obj ) {
-        ?>
-        <div class="cpt-capabilities">
-            <strong><?php esc_html_e( 'Post Type Information:', 'bp-activity-filter' ); ?></strong>
-            <ul class="cpt-info-list">
-                <li>
-                    <span class="dashicons dashicons-visibility"></span>
-                    <?php esc_html_e( 'Public:', 'bp-activity-filter' ); ?> 
-                    <code><?php echo $post_type_obj->public ? esc_html__( 'Yes', 'bp-activity-filter' ) : esc_html__( 'No', 'bp-activity-filter' ); ?></code>
-                </li>
-                <li>
-                    <span class="dashicons dashicons-admin-settings"></span>
-                    <?php esc_html_e( 'Admin Interface:', 'bp-activity-filter' ); ?> 
-                    <code><?php echo $post_type_obj->show_ui ? esc_html__( 'Enabled', 'bp-activity-filter' ) : esc_html__( 'Disabled', 'bp-activity-filter' ); ?></code>
-                </li>
-                <li>
-                    <span class="dashicons dashicons-menu-alt"></span>
-                    <?php esc_html_e( 'Menu Position:', 'bp-activity-filter' ); ?> 
-                    <code><?php echo $post_type_obj->show_in_menu ? esc_html__( 'Shown', 'bp-activity-filter' ) : esc_html__( 'Hidden', 'bp-activity-filter' ); ?></code>
-                </li>
-                <?php if ( ! empty( $post_type_obj->capability_type ) ) : ?>
-                    <li>
-                        <span class="dashicons dashicons-admin-users"></span>
-                        <?php esc_html_e( 'Capability Type:', 'bp-activity-filter' ); ?> 
-                        <code><?php echo esc_html( $post_type_obj->capability_type ); ?></code>
-                    </li>
-                <?php endif; ?>
-            </ul>
-        </div>
-        <?php
-    }
-
-    /**
-     * Render CPT activity preview.
-     *
-     * @since 4.0.0
-     * @param WP_Post_Type $post_type_obj Post type object.
-     * @param string       $label         Custom label.
-     */
-    private function render_cpt_preview( $post_type_obj, $label ) {
-        ?>
-        <div class="cpt-preview">
-            <strong><?php esc_html_e( 'Activity Preview:', 'bp-activity-filter' ); ?></strong>
-            <div class="activity-preview-text">
-                <?php
-                $preview_label = ! empty( $label ) ? $label : strtolower( $post_type_obj->labels->singular_name );
-                printf(
-                    /* translators: 1: Author name, 2: Post type label, 3: Post title */
-                    esc_html__( '%1$s published a new %2$s: %3$s', 'bp-activity-filter' ),
-                    '<strong>' . esc_html__( 'John Doe', 'bp-activity-filter' ) . '</strong>',
-                    '<em>' . esc_html( $preview_label ) . '</em>',
-                    '<a href="#">' . esc_html__( 'Sample Post Title', 'bp-activity-filter' ) . '</a>'
-                );
-                ?>
+            <div style="margin-top: 10px;">
+                <label for="cpt_<?php echo esc_attr( $post_type ); ?>_label" style="display: block; margin-bottom: 5px; font-weight: 500;">
+                    <?php esc_html_e( 'Custom Activity Label (optional):', 'bp-activity-filter' ); ?>
+                </label>
+                <input type="text" 
+                       id="cpt_<?php echo esc_attr( $post_type ); ?>_label"
+                       name="bp_activity_filter_cpt_settings[<?php echo esc_attr( $post_type ); ?>][label]" 
+                       value="<?php echo esc_attr( $label ); ?>" 
+                       placeholder="<?php echo esc_attr( strtolower( $post_type_obj->labels->singular_name ) ); ?>"
+                       style="width: 100%; max-width: 400px; padding: 6px;">
+                <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">
+                    <?php esc_html_e( 'Leave empty to use the default post type name. This text will appear in activity entries like "John published a new [label]: Post Title"', 'bp-activity-filter' ); ?>
+                </p>
             </div>
         </div>
         <?php
@@ -812,73 +502,23 @@ class BP_Activity_Filter_Admin_Enhanced {
      */
     private function render_cpt_global_settings( $cpt_settings ) {
         ?>
-        <div class="cpt-global-settings">
-            <h4><?php esc_html_e( 'Global Settings', 'bp-activity-filter' ); ?></h4>
-            <label for="cpt_global_hide_sitewide">
+        <div style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-left: 4px solid #0073aa;">
+            <h4 style="margin: 0 0 10px 0;"><?php esc_html_e( 'Global Settings', 'bp-activity-filter' ); ?></h4>
+            <label style="display: flex; align-items: flex-start; gap: 8px;">
                 <input type="checkbox" 
-                       id="cpt_global_hide_sitewide"
                        name="bp_activity_filter_cpt_settings[_global][hide_sitewide]" 
                        value="1" 
-                       <?php checked( isset( $cpt_settings['_global']['hide_sitewide'] ) ? $cpt_settings['_global']['hide_sitewide'] : false ); ?>>
+                       <?php checked( isset( $cpt_settings['_global']['hide_sitewide'] ) ? $cpt_settings['_global']['hide_sitewide'] : false ); ?>
+                       style="margin-top: 2px;">
                 <div>
                     <?php esc_html_e( 'Hide custom post type activities from site-wide activity stream', 'bp-activity-filter' ); ?>
-                    <p class="description">
+                    <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">
                         <?php esc_html_e( 'When enabled, custom post type activities will only appear in the author\'s profile activity stream, not in the main site-wide activity feed. This helps reduce clutter in the main activity stream while still giving authors credit on their profiles.', 'bp-activity-filter' ); ?>
                     </p>
                 </div>
             </label>
         </div>
         <?php
-    }
-
-    /**
-     * Wbcom dashboard page (fallback).
-     *
-     * @since 4.0.0
-     */
-    public function wbcom_dashboard_page() {
-        if ( class_exists( 'Wbcom_Designs_Menu' ) ) {
-            $menu = Wbcom_Designs_Menu::instance();
-            $menu->dashboard_page();
-        } else {
-            ?>
-            <div class="wrap wbcom-dashboard">
-                <h1>
-                    <span class="dashicons dashicons-star-filled" style="margin-right: 10px; color: #0073aa;"></span>
-                    <?php esc_html_e( 'Wbcom Designs', 'bp-activity-filter' ); ?>
-                </h1>
-                
-                <div class="wbcom-welcome-panel">
-                    <h2><?php esc_html_e( 'Welcome to Wbcom Designs', 'bp-activity-filter' ); ?></h2>
-                    <p class="about-description">
-                        <?php esc_html_e( 'Your central hub for managing Wbcom Designs plugins. We create premium WordPress and BuddyPress solutions to enhance your community experience.', 'bp-activity-filter' ); ?>
-                    </p>
-                    
-                    <div class="wbcom-welcome-panel-column-container">
-                        <div class="wbcom-welcome-panel-column">
-                            <h3><?php esc_html_e( 'Active Plugins', 'bp-activity-filter' ); ?></h3>
-                            <ul class="wbcom-action-list">
-                                <li>
-                                    <a href="<?php echo esc_url( $this->get_admin_page_url() ); ?>" class="button button-primary">
-                                        <span class="dashicons dashicons-filter"></span>
-                                        <?php esc_html_e( 'Activity Filter Settings', 'bp-activity-filter' ); ?>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="wbcom-welcome-panel-column">
-                            <h3><?php esc_html_e( 'Quick Links', 'bp-activity-filter' ); ?></h3>
-                            <ul class="wbcom-action-list">
-                                <li><a href="https://wbcomdesigns.com/support/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Get Support', 'bp-activity-filter' ); ?></a></li>
-                                <li><a href="https://wbcomdesigns.com/downloads/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Browse Plugins', 'bp-activity-filter' ); ?></a></li>
-                                <li><a href="https://docs.wbcomdesigns.com/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Documentation', 'bp-activity-filter' ); ?></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <?php
-        }
     }
 
     /**
@@ -944,84 +584,6 @@ class BP_Activity_Filter_Admin_Enhanced {
     }
 
     /**
-     * Sanitize default filter values.
-     *
-     * @since 4.0.0
-     * @param string $input Raw input value.
-     * @return string Sanitized filter value.
-     */
-    public function sanitize_default_filter( $input ) {
-        if ( empty( $input ) ) {
-            return '0';
-        }
-
-        $input = sanitize_text_field( $input );
-        $valid_actions = array_keys( BP_Activity_Filter_Helper::get_activity_actions() );
-        $valid_actions[] = '0';
-        $valid_actions[] = '-1';
-
-        return in_array( $input, $valid_actions, true ) ? $input : '0';
-    }
-
-    /**
-     * Sanitize hidden activities array.
-     *
-     * @since 4.0.0
-     * @param mixed $input Raw input value.
-     * @return array Sanitized array of activity types.
-     */
-    public function sanitize_hidden_activities( $input ) {
-        if ( ! is_array( $input ) ) {
-            return array();
-        }
-
-        $sanitized = array();
-        $valid_actions = array_keys( BP_Activity_Filter_Helper::get_activity_actions() );
-
-        foreach ( $input as $activity_type ) {
-            $activity_type = sanitize_text_field( $activity_type );
-            if ( ! empty( $activity_type ) && in_array( $activity_type, $valid_actions, true ) ) {
-                $sanitized[] = $activity_type;
-            }
-        }
-
-        return array_unique( $sanitized );
-    }
-
-    /**
-     * Sanitize CPT settings array.
-     *
-     * @since 4.0.0
-     * @param mixed $input Raw input value.
-     * @return array Sanitized CPT settings.
-     */
-    public function sanitize_cpt_settings( $input ) {
-        if ( ! is_array( $input ) ) {
-            return array();
-        }
-
-        $sanitized = array();
-        $valid_post_types = get_post_types( array( 'public' => true ), 'names' );
-
-        foreach ( $input as $post_type => $settings ) {
-            $post_type = sanitize_text_field( $post_type );
-            
-            if ( '_global' === $post_type ) {
-                $sanitized[ $post_type ] = array(
-                    'hide_sitewide' => ! empty( $settings['hide_sitewide'] ),
-                );
-            } elseif ( in_array( $post_type, $valid_post_types, true ) ) {
-                $sanitized[ $post_type ] = array(
-                    'enabled' => ! empty( $settings['enabled'] ),
-                    'label'   => isset( $settings['label'] ) ? sanitize_text_field( $settings['label'] ) : '',
-                );
-            }
-        }
-
-        return $sanitized;
-    }
-
-    /**
      * Save plugin settings from form submission.
      *
      * @since 4.0.0
@@ -1066,8 +628,6 @@ class BP_Activity_Filter_Admin_Enhanced {
                     break;
             }
 
-            $this->clear_activity_filter_cookies();
-
             if ( $updated ) {
                 add_settings_error(
                     'bp_activity_filter_settings',
@@ -1089,7 +649,6 @@ class BP_Activity_Filter_Admin_Enhanced {
                 'bp_activity_filter_settings',
                 'save_error',
                 sprintf(
-                    /* translators: %s: Error message */
                     esc_html__( 'Error saving settings: %s', 'bp-activity-filter' ),
                     esc_html( $e->getMessage() )
                 ),
@@ -1177,22 +736,81 @@ class BP_Activity_Filter_Admin_Enhanced {
     }
 
     /**
-     * Clear activity filter cookies.
+     * Sanitize default filter values.
      *
      * @since 4.0.0
+     * @param string $input Raw input value.
+     * @return string Sanitized filter value.
      */
-    private function clear_activity_filter_cookies() {
-        $cookies_to_clear = array(
-            'bp-activity-filter',
-            'bp_activity_filter_apply',
-        );
+    public function sanitize_default_filter( $input ) {
+        if ( empty( $input ) ) {
+            return '0';
+        }
 
-        foreach ( $cookies_to_clear as $cookie ) {
-            if ( isset( $_COOKIE[ $cookie ] ) ) {
-                setcookie( $cookie, '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN );
-                unset( $_COOKIE[ $cookie ] );
+        $input = sanitize_text_field( $input );
+        $valid_actions = array_keys( BP_Activity_Filter_Helper::get_activity_actions() );
+        $valid_actions[] = '0';
+        $valid_actions[] = '-1';
+
+        return in_array( $input, $valid_actions, true ) ? $input : '0';
+    }
+
+    /**
+     * Sanitize hidden activities array.
+     *
+     * @since 4.0.0
+     * @param mixed $input Raw input value.
+     * @return array Sanitized array of activity types.
+     */
+    public function sanitize_hidden_activities( $input ) {
+        if ( ! is_array( $input ) ) {
+            return array();
+        }
+
+        $sanitized = array();
+        $valid_actions = array_keys( BP_Activity_Filter_Helper::get_activity_actions() );
+
+        foreach ( $input as $activity_type ) {
+            $activity_type = sanitize_text_field( $activity_type );
+            if ( ! empty( $activity_type ) && in_array( $activity_type, $valid_actions, true ) ) {
+                $sanitized[] = $activity_type;
             }
         }
+
+        return array_unique( $sanitized );
+    }
+
+    /**
+     * Sanitize CPT settings array.
+     *
+     * @since 4.0.0
+     * @param mixed $input Raw input value.
+     * @return array Sanitized CPT settings.
+     */
+    public function sanitize_cpt_settings( $input ) {
+        if ( ! is_array( $input ) ) {
+            return array();
+        }
+
+        $sanitized = array();
+        $valid_post_types = get_post_types( array( 'public' => true ), 'names' );
+
+        foreach ( $input as $post_type => $settings ) {
+            $post_type = sanitize_text_field( $post_type );
+            
+            if ( '_global' === $post_type ) {
+                $sanitized[ $post_type ] = array(
+                    'hide_sitewide' => ! empty( $settings['hide_sitewide'] ),
+                );
+            } elseif ( in_array( $post_type, $valid_post_types, true ) ) {
+                $sanitized[ $post_type ] = array(
+                    'enabled' => ! empty( $settings['enabled'] ),
+                    'label'   => isset( $settings['label'] ) ? sanitize_text_field( $settings['label'] ) : '',
+                );
+            }
+        }
+
+        return $sanitized;
     }
 
     /**
@@ -1204,7 +822,7 @@ class BP_Activity_Filter_Admin_Enhanced {
         if ( get_transient( 'bp_activity_filter_activation_redirect' ) ) {
             delete_transient( 'bp_activity_filter_activation_redirect' );
             if ( ! isset( $_GET['activate-multi'] ) && ! wp_doing_ajax() ) {
-                wp_safe_redirect( $this->get_admin_page_url() );
+                wp_safe_redirect( admin_url( 'admin.php?page=wbcom-activity-filter' ) );
                 exit;
             }
         }
@@ -1228,79 +846,15 @@ class BP_Activity_Filter_Admin_Enhanced {
             return;
         }
 
-        wp_enqueue_style(
-            'bp-activity-filter-admin',
-            BP_ACTIVITY_FILTER_PLUGIN_URL . 'assets/css/admin.css',
-            array(),
-            BP_ACTIVITY_FILTER_VERSION
-        );
-
-        wp_enqueue_script(
-            'bp-activity-filter-admin',
-            BP_ACTIVITY_FILTER_PLUGIN_URL . 'assets/js/admin.js',
-            array( 'jquery' ),
-            BP_ACTIVITY_FILTER_VERSION,
-            true
-        );
-
         wp_localize_script(
-            'bp-activity-filter-admin',
+            'jquery',
             'bpActivityFilterAdmin',
             array(
                 'nonce'        => wp_create_nonce( 'bp_activity_filter_admin' ),
                 'ajaxUrl'      => admin_url( 'admin-ajax.php' ),
                 'currentTab'   => $this->get_current_tab(),
-                'strings'      => array(
-                    'saving'           => esc_html__( 'Saving...', 'bp-activity-filter' ),
-                    'saved'            => esc_html__( 'Settings saved!', 'bp-activity-filter' ),
-                    'error'            => esc_html__( 'Error saving settings.', 'bp-activity-filter' ),
-                    'confirmReset'     => esc_html__( 'Are you sure you want to reset all settings?', 'bp-activity-filter' ),
-                    'selectAll'        => esc_html__( 'Select All', 'bp-activity-filter' ),
-                    'deselectAll'      => esc_html__( 'Deselect All', 'bp-activity-filter' ),
-                ),
             )
         );
-    }
-
-    /**
-     * Add admin head styles for immediate styling.
-     *
-     * @since 4.0.0
-     */
-    public function add_admin_head_styles() {
-        $screen = get_current_screen();
-        if ( ! $screen || false === strpos( $screen->id, 'activity-filter' ) ) {
-            return;
-        }
-
-        ?>
-        <style>
-        /* Immediate styling to prevent flash of unstyled content */
-        .bp-activity-filter-admin {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .bp-activity-filter-admin.loaded {
-            opacity: 1;
-        }
-        .nav-tab-wrapper {
-            margin-bottom: 0 !important;
-        }
-        .tab-content-wrapper {
-            background: #fff;
-            border: 1px solid #c3c4c7;
-            border-radius: 0 0 4px 4px;
-        }
-        </style>
-        <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var adminWrap = document.querySelector('.bp-activity-filter-admin');
-            if (adminWrap) {
-                adminWrap.classList.add('loaded');
-            }
-        });
-        </script>
-        <?php
     }
 
     /**
@@ -1314,131 +868,6 @@ class BP_Activity_Filter_Admin_Enhanced {
         if ( ! $screen || false === strpos( $screen->id, 'activity-filter' ) ) {
             return;
         }
-
-        // Additional admin notices can be added here
-    }
-
-    /**
-     * Add help tabs to admin page.
-     *
-     * @since 4.0.0
-     */
-    public function add_help_tabs() {
-        $screen = get_current_screen();
-        if ( ! $screen ) {
-            return;
-        }
-
-        $screen->add_help_tab(
-            array(
-                'id'      => 'bp_activity_filter_overview',
-                'title'   => esc_html__( 'Overview', 'bp-activity-filter' ),
-                'content' => $this->get_help_tab_content_overview(),
-            )
-        );
-
-        $screen->add_help_tab(
-            array(
-                'id'      => 'bp_activity_filter_default_filters',
-                'title'   => esc_html__( 'Default Filters', 'bp-activity-filter' ),
-                'content' => $this->get_help_tab_content_default_filters(),
-            )
-        );
-
-        $screen->add_help_tab(
-            array(
-                'id'      => 'bp_activity_filter_hidden_activities',
-                'title'   => esc_html__( 'Hidden Activities', 'bp-activity-filter' ),
-                'content' => $this->get_help_tab_content_hidden_activities(),
-            )
-        );
-
-        $screen->add_help_tab(
-            array(
-                'id'      => 'bp_activity_filter_custom_post_types',
-                'title'   => esc_html__( 'Custom Post Types', 'bp-activity-filter' ),
-                'content' => $this->get_help_tab_content_custom_post_types(),
-            )
-        );
-
-        $screen->set_help_sidebar(
-            '<p><strong>' . esc_html__( 'For more information:', 'bp-activity-filter' ) . '</strong></p>' .
-            '<p><a href="https://wbcomdesigns.com/support/" target="_blank">' . esc_html__( 'Support', 'bp-activity-filter' ) . '</a></p>' .
-            '<p><a href="https://docs.wbcomdesigns.com/" target="_blank">' . esc_html__( 'Documentation', 'bp-activity-filter' ) . '</a></p>' .
-            '<p><a href="https://wordpress.org/plugins/bp-activity-filter/" target="_blank">' . esc_html__( 'Plugin Page', 'bp-activity-filter' ) . '</a></p>'
-        );
-    }
-
-    /**
-     * Get help tab content for overview.
-     *
-     * @since 4.0.0
-     * @return string Help content HTML.
-     */
-    private function get_help_tab_content_overview() {
-        return '<h3>' . esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' ) . '</h3>' .
-               '<p>' . esc_html__( 'This plugin allows you to customize how BuddyPress activities are displayed and filtered on your site.', 'bp-activity-filter' ) . '</p>' .
-               '<p>' . esc_html__( 'Use the tabs above to configure different aspects of activity filtering:', 'bp-activity-filter' ) . '</p>' .
-               '<ul>' .
-               '<li><strong>' . esc_html__( 'Default Filters:', 'bp-activity-filter' ) . '</strong> ' . esc_html__( 'Set what activity type is shown by default', 'bp-activity-filter' ) . '</li>' .
-               '<li><strong>' . esc_html__( 'Hidden Activities:', 'bp-activity-filter' ) . '</strong> ' . esc_html__( 'Hide specific activity types completely', 'bp-activity-filter' ) . '</li>' .
-               '<li><strong>' . esc_html__( 'Custom Post Types:', 'bp-activity-filter' ) . '</strong> ' . esc_html__( 'Enable activities for custom post types', 'bp-activity-filter' ) . '</li>' .
-               '</ul>';
-    }
-
-    /**
-     * Get help tab content for default filters.
-     *
-     * @since 4.0.0
-     * @return string Help content HTML.
-     */
-    private function get_help_tab_content_default_filters() {
-        return '<h3>' . esc_html__( 'Default Filters', 'bp-activity-filter' ) . '</h3>' .
-               '<p>' . esc_html__( 'Default filters determine what type of activities are shown when users first visit activity streams.', 'bp-activity-filter' ) . '</p>' .
-               '<h4>' . esc_html__( 'Site-wide Activity Default', 'bp-activity-filter' ) . '</h4>' .
-               '<p>' . esc_html__( 'This setting applies to the main activity directory that all users see.', 'bp-activity-filter' ) . '</p>' .
-               '<h4>' . esc_html__( 'Profile Activity Default', 'bp-activity-filter' ) . '</h4>' .
-               '<p>' . esc_html__( 'This setting applies to individual user profile activity streams.', 'bp-activity-filter' ) . '</p>' .
-               '<p><strong>' . esc_html__( 'Note:', 'bp-activity-filter' ) . '</strong> ' . esc_html__( 'Users can still change the filter using the dropdown, but these settings determine what they see initially.', 'bp-activity-filter' ) . '</p>';
-    }
-
-    /**
-     * Get help tab content for hidden activities.
-     *
-     * @since 4.0.0
-     * @return string Help content HTML.
-     */
-    private function get_help_tab_content_hidden_activities() {
-        return '<h3>' . esc_html__( 'Hidden Activities', 'bp-activity-filter' ) . '</h3>' .
-               '<p>' . esc_html__( 'Use this section to completely hide specific types of activities from all activity streams.', 'bp-activity-filter' ) . '</p>' .
-               '<p>' . esc_html__( 'Hidden activities will not appear in:', 'bp-activity-filter' ) . '</p>' .
-               '<ul>' .
-               '<li>' . esc_html__( 'Activity streams (site-wide or profile)', 'bp-activity-filter' ) . '</li>' .
-               '<li>' . esc_html__( 'Activity filter dropdown options', 'bp-activity-filter' ) . '</li>' .
-               '<li>' . esc_html__( 'Activity feeds or notifications', 'bp-activity-filter' ) . '</li>' .
-               '</ul>' .
-               '<p><strong>' . esc_html__( 'Warning:', 'bp-activity-filter' ) . '</strong> ' . esc_html__( 'This affects all users on your site. Use this feature carefully as it cannot be overridden by individual users.', 'bp-activity-filter' ) . '</p>';
-    }
-
-    /**
-     * Get help tab content for custom post types.
-     *
-     * @since 4.0.0
-     * @return string Help content HTML.
-     */
-    private function get_help_tab_content_custom_post_types() {
-        return '<h3>' . esc_html__( 'Custom Post Types', 'bp-activity-filter' ) . '</h3>' .
-               '<p>' . esc_html__( 'Enable automatic activity generation when custom post types are published.', 'bp-activity-filter' ) . '</p>' .
-               '<h4>' . esc_html__( 'Requirements', 'bp-activity-filter' ) . '</h4>' .
-               '<p>' . esc_html__( 'Only custom post types that are public and have admin UI enabled will appear here.', 'bp-activity-filter' ) . '</p>' .
-               '<h4>' . esc_html__( 'How it works', 'bp-activity-filter' ) . '</h4>' .
-               '<p>' . esc_html__( 'When someone publishes a post of the enabled custom post type, an activity entry will be automatically created showing:', 'bp-activity-filter' ) . '</p>' .
-               '<ul>' .
-               '<li>' . esc_html__( 'The author name (linked to their profile)', 'bp-activity-filter' ) . '</li>' .
-               '<li>' . esc_html__( 'The post type name or your custom label', 'bp-activity-filter' ) . '</li>' .
-               '<li>' . esc_html__( 'The post title (linked to the post)', 'bp-activity-filter' ) . '</li>' .
-               '</ul>' .
-               '<p><strong>' . esc_html__( 'Note:', 'bp-activity-filter' ) . '</strong> ' . esc_html__( 'Only new posts published after enabling this feature will generate activities. Existing posts will not create activities.', 'bp-activity-filter' ) . '</p>';
     }
 
     /**
@@ -1466,42 +895,11 @@ class BP_Activity_Filter_Admin_Enhanced {
     public function plugin_action_links( $links ) {
         $settings_link = sprintf(
             '<a href="%s">%s</a>',
-            esc_url( $this->get_admin_page_url() ),
+            esc_url( admin_url( 'admin.php?page=wbcom-activity-filter' ) ),
             esc_html__( 'Settings', 'bp-activity-filter' )
         );
 
         array_unshift( $links, $settings_link );
         return $links;
     }
-
-    /**
-     * Prevent cloning.
-     *
-     * @since 4.0.0
-     */
-    public function __clone() {
-        _doing_it_wrong(
-            __FUNCTION__,
-            esc_html__( 'Cloning instances of this class is forbidden.', 'bp-activity-filter' ),
-            '4.0.0'
-        );
-    }
-
-    /**
-     * Prevent unserializing.
-     *
-     * @since 4.0.0
-     */
-    public function __wakeup() {
-        _doing_it_wrong(
-            __FUNCTION__,
-            esc_html__( 'Unserializing instances of this class is forbidden.', 'bp-activity-filter' ),
-            '4.0.0'
-        );
-    }
-}
-
-// Initialize the enhanced admin class
-if ( is_admin() ) {
-    BP_Activity_Filter_Admin_Enhanced::instance();
 }
