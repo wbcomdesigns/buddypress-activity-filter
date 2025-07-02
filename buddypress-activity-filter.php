@@ -56,9 +56,10 @@ if ( ! defined( 'BP_ACTIVITY_FILTER_BASENAME' ) ) {
 }
 
 /**
- * Main plugin class.
+ * Main plugin class with Wbcom Shared Admin Integration.
  *
  * Handles plugin initialization, dependency checks, and core functionality setup.
+ * Includes integration with Wbcom Shared Admin system for unified dashboard experience.
  * Uses singleton pattern to ensure only one instance exists.
  *
  * @since 4.0.0
@@ -80,6 +81,14 @@ final class BP_Activity_Filter {
 	 * @var string
 	 */
 	private $min_bp_version = '5.0.0';
+
+	/**
+	 * Wbcom integration instance.
+	 *
+	 * @since 4.0.0
+	 * @var BP_Activity_Filter_Wbcom_Integration|null
+	 */
+	private $wbcom_integration = null;
 
 	/**
 	 * Get plugin instance.
@@ -112,12 +121,18 @@ final class BP_Activity_Filter {
 	 * Setup plugin hooks.
 	 *
 	 * Registers activation/deactivation hooks and core initialization.
+	 * Includes early initialization of Wbcom shared admin system.
 	 *
 	 * @since 4.0.0
 	 */
 	private function setup_hooks() {
 		add_action( 'plugins_loaded', array( $this, 'init' ), 20 );
 		add_action( 'init', array( $this, 'load_textdomain' ) );
+
+		// Initialize Wbcom shared admin integration early (admin only)
+		if ( is_admin() ) {
+			add_action( 'plugins_loaded', array( $this, 'init_wbcom_integration' ), 5 );
+		}
 
 		// Activation/Deactivation hooks.
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
@@ -126,6 +141,33 @@ final class BP_Activity_Filter {
 		// Plugin action links.
 		add_filter( 'plugin_action_links_' . BP_ACTIVITY_FILTER_BASENAME, array( $this, 'plugin_action_links' ) );
 		add_filter( 'network_admin_plugin_action_links_' . BP_ACTIVITY_FILTER_BASENAME, array( $this, 'plugin_action_links' ) );
+	}
+
+	/**
+	 * Initialize Wbcom shared admin integration.
+	 *
+	 * Loads and initializes the Wbcom shared admin system that provides
+	 * unified dashboard experience across all Wbcom plugins.
+	 *
+	 * @since 4.0.0
+	 */
+	public function init_wbcom_integration() {
+		// Load Wbcom integration class
+		$integration_file = BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-wbcom-integration.php';
+		
+		if ( file_exists( $integration_file ) ) {
+			require_once $integration_file;
+			
+			if ( class_exists( 'BP_Activity_Filter_Wbcom_Integration' ) ) {
+				$this->wbcom_integration = new BP_Activity_Filter_Wbcom_Integration();
+			}
+		}
+
+		// Log integration status for debugging
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			$status = $this->wbcom_integration ? 'loaded' : 'failed';
+			error_log( "BP Activity Filter: Wbcom integration {$status}" );
+		}
 	}
 
 	/**
@@ -194,6 +236,7 @@ final class BP_Activity_Filter {
 	 * Include required files.
 	 *
 	 * Loads all necessary class files for the plugin.
+	 * Note: Admin menu creation is now handled by Wbcom integration.
 	 *
 	 * @since 4.0.0
 	 */
@@ -201,7 +244,6 @@ final class BP_Activity_Filter {
 		$include_files = array(
 			'includes/class-bp-activity-filter-helper.php',
 			'includes/class-bp-activity-filter-migration.php',
-			'includes/class-wbcom-designs-menu.php',
 			'includes/class-bp-activity-filter-admin.php',
 			'includes/class-bp-activity-filter-frontend.php',
 			'includes/class-bp-activity-filter-cpt.php',
@@ -227,7 +269,7 @@ final class BP_Activity_Filter {
 	 * Initialize plugin components.
 	 *
 	 * Sets up admin interface, frontend functionality, CPT support,
-	 * and migration system.
+	 * and migration system. Admin menu is now handled by Wbcom integration.
 	 *
 	 * @since 4.0.0
 	 */
@@ -237,7 +279,7 @@ final class BP_Activity_Filter {
 			new BP_Activity_Filter_Migration();
 		}
 
-		// Initialize admin interface.
+		// Initialize admin interface (settings only - menu handled by Wbcom integration).
 		if ( is_admin() && class_exists( 'BP_Activity_Filter_Admin' ) ) {
 			BP_Activity_Filter_Admin::instance();
 		}
@@ -285,7 +327,7 @@ final class BP_Activity_Filter {
 			}
 		}
 
-		// Set activation redirect flag.
+		// Set activation redirect flag for Wbcom dashboard.
 		set_transient( 'bp_activity_filter_activation_redirect', true, 30 );
 
 		// Flush rewrite rules if needed.
@@ -313,6 +355,8 @@ final class BP_Activity_Filter {
 	/**
 	 * Add plugin action links in the plugins list.
 	 *
+	 * Updated to point to the new Wbcom dashboard location.
+	 *
 	 * @since 4.0.0
 	 * @param array $links Existing plugin action links.
 	 * @return array Modified plugin action links.
@@ -320,11 +364,17 @@ final class BP_Activity_Filter {
 	public function plugin_action_links( $links ) {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
-			esc_url( admin_url( 'admin.php?page=wbcom-activity-filter' ) ),
+			esc_url( admin_url( 'admin.php?page=wbcom-activity-filter' ) ), // Updated URL
 			esc_html__( 'Settings', 'bp-activity-filter' )
 		);
 
-		array_unshift( $links, $settings_link );
+		$dashboard_link = sprintf(
+			'<a href="%s" style="color: #0073aa; font-weight: 600;">%s</a>',
+			esc_url( admin_url( 'admin.php?page=wbcom-designs' ) ),
+			esc_html__( 'Dashboard', 'bp-activity-filter' )
+		);
+
+		array_unshift( $links, $settings_link, $dashboard_link );
 		return $links;
 	}
 
@@ -473,6 +523,43 @@ final class BP_Activity_Filter {
 	}
 
 	/**
+	 * Get Wbcom integration instance.
+	 *
+	 * @since 4.0.0
+	 * @return BP_Activity_Filter_Wbcom_Integration|null
+	 */
+	public function get_wbcom_integration() {
+		return $this->wbcom_integration;
+	}
+
+	/**
+	 * Check if Wbcom integration is active.
+	 *
+	 * @since 4.0.0
+	 * @return bool True if Wbcom integration is loaded.
+	 */
+	public function is_wbcom_integration_active() {
+		return ! is_null( $this->wbcom_integration );
+	}
+
+	/**
+	 * Handle activation redirect to Wbcom dashboard.
+	 *
+	 * @since 4.0.0
+	 */
+	public function handle_activation_redirect() {
+		if ( get_transient( 'bp_activity_filter_activation_redirect' ) ) {
+			delete_transient( 'bp_activity_filter_activation_redirect' );
+			
+			if ( ! isset( $_GET['activate-multi'] ) && ! wp_doing_ajax() ) {
+				// Redirect to Wbcom dashboard instead of old admin page
+				wp_safe_redirect( admin_url( 'admin.php?page=wbcom-designs' ) );
+				exit;
+			}
+		}
+	}
+
+	/**
 	 * Prevent cloning of the instance.
 	 *
 	 * @since 4.0.0
@@ -513,3 +600,8 @@ function bp_activity_filter() {
 
 // Initialize the plugin.
 bp_activity_filter();
+
+// Handle activation redirect after plugin is fully loaded.
+if ( is_admin() ) {
+	add_action( 'admin_init', array( bp_activity_filter(), 'handle_activation_redirect' ) );
+}
