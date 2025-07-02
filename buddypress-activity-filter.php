@@ -100,9 +100,9 @@ final class BP_Activity_Filter {
 		add_action( 'plugins_loaded', array( $this, 'init' ), 20 );
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
-		// Initialize Wbcom integration early (admin only)
+		// Initialize Wbcom integration early (admin only) - but after init to avoid translation errors
 		if ( is_admin() ) {
-			add_action( 'plugins_loaded', array( $this, 'init_wbcom_integration' ), 5 );
+			add_action( 'init', array( $this, 'init_wbcom_integration' ), 1 );
 		}
 
 		// Activation/Deactivation hooks.
@@ -115,12 +115,44 @@ final class BP_Activity_Filter {
 	}
 
 	/**
-	 * Initialize Wbcom integration.
+	 * Initialize Wbcom integration with new simplified system.
 	 *
 	 * @since 4.0.0
 	 */
 	public function init_wbcom_integration() {
-		// Load Wbcom integration class
+		// Load Wbcom shared system (simplified integration)
+		$shared_loader_path = BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/shared-admin/class-wbcom-shared-loader.php';
+		
+		if ( file_exists( $shared_loader_path ) ) {
+			require_once $shared_loader_path;
+			
+			// Register plugin with shared system - avoid early translation calls
+			if ( class_exists( 'Wbcom_Shared_Loader' ) ) {
+				$success = Wbcom_Shared_Loader::register_plugin( array(
+					'slug'         => 'bp-activity-filter',
+					'name'         => 'BuddyPress Activity Filter', // Use plain text to avoid early translation
+					'version'      => BP_ACTIVITY_FILTER_VERSION,
+					'settings_url' => admin_url( 'admin.php?page=wbcom-activity-filter' ),
+					'icon'         => 'dashicons-filter',
+					'priority'     => 5, // High priority as core plugin
+					'description'  => 'Filter and manage BuddyPress activity streams with default filters and custom post type support.', // Use plain text
+					'status'       => 'active',
+					'has_premium'  => false,
+					'docs_url'     => 'https://docs.wbcomdesigns.com/bp-activity-filter/',
+					'support_url'  => 'https://wbcomdesigns.com/support/',
+				) );
+				
+				if ( defined( 'WP_DEBUG' ) && WP_DEBUG && ! $success ) {
+					error_log( 'BP Activity Filter: Failed to register with Wbcom shared system' );
+				}
+			}
+		} else {
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( 'BP Activity Filter: Shared system loader not found at: ' . $shared_loader_path );
+			}
+		}
+		
+		// Load integration class for fallback and additional features
 		$integration_file = BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-wbcom-integration.php';
 		
 		if ( file_exists( $integration_file ) ) {
@@ -184,6 +216,10 @@ final class BP_Activity_Filter {
 			false,
 			dirname( BP_ACTIVITY_FILTER_BASENAME ) . '/languages'
 		);
+		
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG && ! $loaded ) {
+			error_log( 'BP Activity Filter: Failed to load textdomain from ' . dirname( BP_ACTIVITY_FILTER_BASENAME ) . '/languages' );
+		}
 	}
 
 	/**
@@ -207,6 +243,7 @@ final class BP_Activity_Filter {
 			} else {
 				wp_die(
 					sprintf(
+						/* translators: %s: file path */
 						esc_html__( 'BuddyPress Activity Filter: Required file missing: %s', 'bp-activity-filter' ),
 						esc_html( $file )
 					)
@@ -309,9 +346,11 @@ final class BP_Activity_Filter {
 			esc_html__( 'Settings', 'bp-activity-filter' )
 		);
 
+		// Check if Wbcom dashboard exists
+		$dashboard_url = admin_url( 'admin.php?page=wbcom-designs' );
 		$dashboard_link = sprintf(
 			'<a href="%s" style="color: #0073aa; font-weight: 600;">%s</a>',
-			esc_url( admin_url( 'admin.php?page=wbcom-designs' ) ),
+			esc_url( $dashboard_url ),
 			esc_html__( 'Dashboard', 'bp-activity-filter' )
 		);
 
@@ -378,6 +417,7 @@ final class BP_Activity_Filter {
 			<p>
 				<?php
 				printf(
+					/* translators: %s: BuddyPress plugin link */
 					esc_html__( 'This plugin requires %s to be installed and active.', 'bp-activity-filter' ),
 					'<a href="' . esc_url( admin_url( 'plugin-install.php?s=buddypress&tab=search&type=term' ) ) . '"><strong>BuddyPress</strong></a>'
 				);
@@ -401,6 +441,7 @@ final class BP_Activity_Filter {
 			<p>
 				<?php
 				printf(
+					/* translators: 1: required version, 2: current version */
 					esc_html__( 'This plugin requires BuddyPress version %1$s or higher. You are running version %2$s.', 'bp-activity-filter' ),
 					esc_html( $this->min_bp_version ),
 					esc_html( buddypress()->version )
@@ -489,10 +530,37 @@ final class BP_Activity_Filter {
 			delete_transient( 'bp_activity_filter_activation_redirect' );
 			
 			if ( ! isset( $_GET['activate-multi'] ) && ! wp_doing_ajax() ) {
-				wp_safe_redirect( admin_url( 'admin.php?page=wbcom-designs' ) );
+				// Redirect to Wbcom dashboard if shared system is active, otherwise to plugin settings
+				$redirect_url = admin_url( 'admin.php?page=wbcom-designs' );
+				if ( ! $this->wbcom_menu_exists() ) {
+					$redirect_url = admin_url( 'admin.php?page=wbcom-activity-filter' );
+				}
+				wp_safe_redirect( $redirect_url );
 				exit;
 			}
 		}
+	}
+
+	/**
+	 * Check if Wbcom menu exists.
+	 *
+	 * @since 4.0.0
+	 * @return bool True if Wbcom menu exists.
+	 */
+	private function wbcom_menu_exists() {
+		global $menu;
+		
+		if ( ! is_array( $menu ) ) {
+			return false;
+		}
+		
+		foreach ( $menu as $item ) {
+			if ( isset( $item[2] ) && $item[2] === 'wbcom-designs' ) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	/**
