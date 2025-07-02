@@ -1,53 +1,106 @@
 <?php
 /**
- * Wbcom Shared Dashboard - Complete Implementation
+ * Wbcom Shared Dashboard - Universal Dashboard for All Plugins
  * 
- * Unified dashboard for all Wbcom plugins with full functionality
- * 
- * @package Wbcom_Shared_Admin  
- * @version 1.0.0
+ * @package Wbcom_Shared_Admin
+ * @version 2.0.0
  */
 
 if (!defined('ABSPATH')) exit;
 
 class Wbcom_Shared_Dashboard {
     
-    private static $instance = null;
+    private $registered_plugins = array();
+    private $menu_created = false;
     
-    public static function instance() {
-        if (is_null(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-    
-    private function __construct() {
-        // Initialize dashboard
+    /**
+     * Constructor
+     */
+    public function __construct($plugins = array()) {
+        $this->registered_plugins = $plugins;
+        $this->init();
     }
     
     /**
-     * Render dashboard page
+     * Initialize dashboard
      */
-    public function render($plugins) {
+    private function init() {
+        add_action('admin_menu', array($this, 'create_main_menu'), 5);
+        add_action('admin_menu', array($this, 'add_plugin_submenus'), 10);
+    }
+    
+    /**
+     * Create main Wbcom Designs menu
+     */
+    public function create_main_menu() {
+        if ($this->menu_created) return;
+        
+        add_menu_page(
+            esc_html__('Wbcom Designs', 'wbcom-shared'),
+            esc_html__('Wbcom Designs', 'wbcom-shared'),
+            'manage_options',
+            'wbcom-designs',
+            array($this, 'render_dashboard'),
+            $this->get_menu_icon(),
+            58.5
+        );
+        
+        // Add dashboard as first submenu
+        add_submenu_page(
+            'wbcom-designs',
+            esc_html__('Dashboard', 'wbcom-shared'),
+            esc_html__('Dashboard', 'wbcom-shared'),
+            'manage_options',
+            'wbcom-designs',
+            array($this, 'render_dashboard')
+        );
+        
+        $this->menu_created = true;
+    }
+    
+    /**
+     * Add submenu for each registered plugin
+     */
+    public function add_plugin_submenus() {
+        foreach ($this->registered_plugins as $plugin) {
+            if ($plugin['status'] !== 'active') continue;
+            
+            $menu_slug = $this->extract_menu_slug($plugin['settings_url']);
+            
+            if (empty($menu_slug)) continue;
+            
+            add_submenu_page(
+                'wbcom-designs',
+                $plugin['name'],
+                $plugin['name'],
+                'manage_options',
+                $menu_slug,
+                '__return_null' // Plugin handles its own rendering
+            );
+        }
+    }
+    
+    /**
+     * Render main dashboard
+     */
+    public function render_dashboard() {
         $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'overview';
         ?>
-        <div class="wrap wbcom-dashboard">
+        <div class="wrap wbcom-shared-dashboard">
             <h1>
-                <span class="wbcom-logo">
-                    <?php echo $this->get_wbcom_logo(); ?>
-                </span>
-                <?php esc_html_e('Wbcom Designs', 'bp-activity-filter'); ?>
-                <span class="wbcom-version">v<?php echo esc_html($this->get_dashboard_version()); ?></span>
+                🌟
+                <?php esc_html_e('Wbcom Designs', 'wbcom-shared'); ?>
+                <span class="wbcom-version">v<?php echo esc_html(Wbcom_Shared_Loader::VERSION); ?></span>
             </h1>
             
-            <?php $this->render_admin_notices($plugins); ?>
+            <?php $this->render_admin_notices(); ?>
             
             <div class="wbcom-dashboard-content">
                 <div class="wbcom-dashboard-main">
-                    <?php $this->render_dashboard_tabs($active_tab, $plugins); ?>
+                    <?php $this->render_dashboard_tabs($active_tab); ?>
                 </div>
                 <div class="wbcom-dashboard-sidebar">
-                    <?php $this->render_sidebar_widgets($plugins); ?>
+                    <?php $this->render_sidebar_widgets(); ?>
                 </div>
             </div>
         </div>
@@ -55,55 +108,28 @@ class Wbcom_Shared_Dashboard {
     }
     
     /**
-     * Render admin notices
-     */
-    private function render_admin_notices($plugins) {
-        $active_count = count($plugins);
-        
-        if ($active_count === 0) {
-            ?>
-            <div class="notice notice-warning">
-                <p>
-                    <strong><?php esc_html_e('Welcome to Wbcom Designs!', 'bp-activity-filter'); ?></strong>
-                    <?php esc_html_e('No Wbcom plugins are currently active. Activate plugins to see them here.', 'bp-activity-filter'); ?>
-                </p>
-            </div>
-            <?php
-        } elseif ($active_count === 1) {
-            ?>
-            <div class="notice notice-info">
-                <p>
-                    <strong><?php esc_html_e('Great start!', 'bp-activity-filter'); ?></strong>
-                    <?php esc_html_e('You have 1 Wbcom plugin active. Explore our other plugins to enhance your site further.', 'bp-activity-filter'); ?>
-                </p>
-            </div>
-            <?php
-        }
-    }
-    
-    /**
      * Render dashboard tabs
      */
-    private function render_dashboard_tabs($active_tab, $plugins) {
+    private function render_dashboard_tabs($active_tab) {
         $tabs = array(
             'overview' => array(
-                'title' => esc_html__('Overview', 'bp-activity-filter'),
+                'title' => esc_html__('Overview', 'wbcom-shared'),
                 'icon'  => 'dashicons-dashboard',
             ),
             'plugins' => array(
-                'title' => esc_html__('Installed Plugins', 'bp-activity-filter'),
+                'title' => esc_html__('Installed Plugins', 'wbcom-shared'),
                 'icon'  => 'dashicons-admin-plugins',
             ),
             'premium' => array(
-                'title' => esc_html__('Premium Plugins', 'bp-activity-filter'),
+                'title' => esc_html__('Premium Plugins', 'wbcom-shared'),
                 'icon'  => 'dashicons-star-filled',
             ),
             'themes' => array(
-                'title' => esc_html__('Premium Themes', 'bp-activity-filter'),
+                'title' => esc_html__('Premium Themes', 'wbcom-shared'),
                 'icon'  => 'dashicons-admin-appearance',
             ),
             'news' => array(
-                'title' => esc_html__('News & Updates', 'bp-activity-filter'),
+                'title' => esc_html__('News & Updates', 'wbcom-shared'),
                 'icon'  => 'dashicons-rss',
             ),
         );
@@ -123,7 +149,7 @@ class Wbcom_Shared_Dashboard {
                 <?php
                 switch ($active_tab) {
                     case 'plugins':
-                        $this->render_plugins_tab($plugins);
+                        $this->render_plugins_tab();
                         break;
                     case 'premium':
                         $this->render_premium_tab();
@@ -136,7 +162,7 @@ class Wbcom_Shared_Dashboard {
                         break;
                     case 'overview':
                     default:
-                        $this->render_overview_tab($plugins);
+                        $this->render_overview_tab();
                         break;
                 }
                 ?>
@@ -148,39 +174,39 @@ class Wbcom_Shared_Dashboard {
     /**
      * Render overview tab
      */
-    private function render_overview_tab($plugins) {
-        $stats = $this->get_dashboard_stats($plugins);
+    private function render_overview_tab() {
+        $stats = $this->get_dashboard_stats();
         ?>
         <div class="wbcom-welcome-panel">
-            <h2><?php esc_html_e('Welcome to Wbcom Designs Dashboard', 'bp-activity-filter'); ?></h2>
+            <h2><?php esc_html_e('Welcome to Wbcom Designs Dashboard', 'wbcom-shared'); ?></h2>
             <p class="about-description">
-                <?php esc_html_e('Your central hub for managing all Wbcom Designs plugins. We create premium WordPress and BuddyPress solutions to enhance your community experience.', 'bp-activity-filter'); ?>
+                <?php esc_html_e('Your central hub for managing all Wbcom Designs plugins. We create premium WordPress and BuddyPress solutions to enhance your community experience.', 'wbcom-shared'); ?>
             </p>
             
             <div class="wbcom-stats-overview">
                 <div class="stat-box">
                     <div class="stat-number"><?php echo esc_html($stats['total_plugins']); ?></div>
-                    <div class="stat-label"><?php esc_html_e('Total Plugins', 'bp-activity-filter'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Total Plugins', 'wbcom-shared'); ?></div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-number"><?php echo esc_html($stats['active_plugins']); ?></div>
-                    <div class="stat-label"><?php esc_html_e('Active Plugins', 'bp-activity-filter'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('Active Plugins', 'wbcom-shared'); ?></div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-number"><?php echo esc_html($stats['wp_version']); ?></div>
-                    <div class="stat-label"><?php esc_html_e('WordPress Version', 'bp-activity-filter'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('WordPress Version', 'wbcom-shared'); ?></div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-number"><?php echo esc_html($stats['bp_version']); ?></div>
-                    <div class="stat-label"><?php esc_html_e('BuddyPress Version', 'bp-activity-filter'); ?></div>
+                    <div class="stat-label"><?php esc_html_e('BuddyPress Version', 'wbcom-shared'); ?></div>
                 </div>
             </div>
 
-            <div class="wbcom-welcome-panel-column-container">
+            <div class="wbcom-welcome-panel-columns">
                 <div class="wbcom-welcome-panel-column">
-                    <h3><?php esc_html_e('Active Plugins', 'bp-activity-filter'); ?></h3>
+                    <h3><?php esc_html_e('Active Plugins', 'wbcom-shared'); ?></h3>
                     <ul class="wbcom-action-list">
-                        <?php foreach ($plugins as $plugin) : ?>
+                        <?php foreach ($this->get_active_plugins() as $plugin) : ?>
                             <li>
                                 <a href="<?php echo esc_url($plugin['settings_url']); ?>" class="button button-secondary">
                                     <span class="dashicons <?php echo esc_attr($plugin['icon']); ?>"></span>
@@ -190,28 +216,30 @@ class Wbcom_Shared_Dashboard {
                         <?php endforeach; ?>
                     </ul>
                 </div>
+                
                 <div class="wbcom-welcome-panel-column">
-                    <h3><?php esc_html_e('Quick Links', 'bp-activity-filter'); ?></h3>
+                    <h3><?php esc_html_e('Quick Links', 'wbcom-shared'); ?></h3>
                     <ul class="wbcom-action-list">
-                        <li><a href="https://wbcomdesigns.com/support/" target="_blank" class="button button-secondary"><?php esc_html_e('Get Support', 'bp-activity-filter'); ?></a></li>
-                        <li><a href="https://wbcomdesigns.com/downloads/" target="_blank" class="button button-secondary"><?php esc_html_e('Browse Premium', 'bp-activity-filter'); ?></a></li>
-                        <li><a href="https://docs.wbcomdesigns.com/" target="_blank" class="button button-secondary"><?php esc_html_e('Documentation', 'bp-activity-filter'); ?></a></li>
+                        <li><a href="https://wbcomdesigns.com/support/" target="_blank" class="button button-secondary"><?php esc_html_e('Get Support', 'wbcom-shared'); ?></a></li>
+                        <li><a href="https://wbcomdesigns.com/downloads/" target="_blank" class="button button-secondary"><?php esc_html_e('Browse Premium', 'wbcom-shared'); ?></a></li>
+                        <li><a href="https://docs.wbcomdesigns.com/" target="_blank" class="button button-secondary"><?php esc_html_e('Documentation', 'wbcom-shared'); ?></a></li>
                     </ul>
                 </div>
+                
                 <div class="wbcom-welcome-panel-column">
-                    <h3><?php esc_html_e('System Status', 'bp-activity-filter'); ?></h3>
+                    <h3><?php esc_html_e('System Status', 'wbcom-shared'); ?></h3>
                     <ul class="wbcom-system-status">
                         <li>
                             <span class="status-indicator <?php echo version_compare(get_bloginfo('version'), '5.0', '>=') ? 'active' : 'inactive'; ?>"></span>
-                            <?php esc_html_e('WordPress Version', 'bp-activity-filter'); ?>
+                            <?php esc_html_e('WordPress Version', 'wbcom-shared'); ?>
                         </li>
                         <li>
                             <span class="status-indicator <?php echo function_exists('buddypress') ? 'active' : 'inactive'; ?>"></span>
-                            <?php esc_html_e('BuddyPress Active', 'bp-activity-filter'); ?>
+                            <?php esc_html_e('BuddyPress Active', 'wbcom-shared'); ?>
                         </li>
                         <li>
                             <span class="status-indicator <?php echo defined('WP_DEBUG') && WP_DEBUG ? 'inactive' : 'active'; ?>"></span>
-                            <?php esc_html_e('Production Mode', 'bp-activity-filter'); ?>
+                            <?php esc_html_e('Production Mode', 'wbcom-shared'); ?>
                         </li>
                     </ul>
                 </div>
@@ -221,54 +249,48 @@ class Wbcom_Shared_Dashboard {
     }
     
     /**
-     * Render installed plugins tab
+     * Render plugins tab
      */
-    private function render_plugins_tab($plugins) {
+    private function render_plugins_tab() {
         ?>
         <div class="wbcom-plugins-header">
-            <h2><?php esc_html_e('Installed Wbcom Plugins', 'bp-activity-filter'); ?></h2>
-            <div class="wbcom-plugins-filters">
-                <button type="button" class="button filter-btn active" data-filter="all"><?php esc_html_e('All', 'bp-activity-filter'); ?></button>
-                <button type="button" class="button filter-btn" data-filter="active"><?php esc_html_e('Active', 'bp-activity-filter'); ?></button>
-            </div>
+            <h2><?php esc_html_e('Installed Wbcom Plugins', 'wbcom-shared'); ?></h2>
         </div>
 
         <div class="wbcom-plugins-grid">
-            <?php if (empty($plugins)) : ?>
+            <?php if (empty($this->registered_plugins)) : ?>
                 <div class="wbcom-no-plugins">
                     <div class="no-plugins-icon">
                         <span class="dashicons dashicons-admin-plugins"></span>
                     </div>
-                    <h3><?php esc_html_e('No Wbcom Plugins Found', 'bp-activity-filter'); ?></h3>
-                    <p><?php esc_html_e('Looks like you haven\'t installed any Wbcom Designs plugins yet.', 'bp-activity-filter'); ?></p>
+                    <h3><?php esc_html_e('No Wbcom Plugins Found', 'wbcom-shared'); ?></h3>
+                    <p><?php esc_html_e('Looks like you haven\'t installed any Wbcom Designs plugins yet.', 'wbcom-shared'); ?></p>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=wbcom-designs&tab=premium')); ?>" class="button button-primary">
-                        <?php esc_html_e('Browse Premium Plugins', 'bp-activity-filter'); ?>
+                        <?php esc_html_e('Browse Premium Plugins', 'wbcom-shared'); ?>
                     </a>
                 </div>
             <?php else : ?>
-                <?php foreach ($plugins as $plugin) : ?>
-                    <div class="wbcom-plugin-card plugin-status-active" data-status="active">
+                <?php foreach ($this->registered_plugins as $plugin) : ?>
+                    <div class="wbcom-plugin-card plugin-status-<?php echo esc_attr($plugin['status']); ?>">
                         <div class="plugin-card-top">
                             <div class="plugin-card-header">
                                 <h3><?php echo esc_html($plugin['name']); ?></h3>
-                                <div class="plugin-status-badge active">
-                                    <?php esc_html_e('Active', 'bp-activity-filter'); ?>
+                                <div class="plugin-status-badge <?php echo esc_attr($plugin['status']); ?>">
+                                    <?php echo esc_html(ucfirst($plugin['status'])); ?>
                                 </div>
                             </div>
-                            <p class="plugin-description"><?php echo esc_html(wp_trim_words($plugin['description'], 20)); ?></p>
-                            <?php if (!empty($plugin['version'])) : ?>
-                                <div class="plugin-version">
-                                    <span class="version-label"><?php esc_html_e('Version:', 'bp-activity-filter'); ?></span>
-                                    <span class="version-number"><?php echo esc_html($plugin['version']); ?></span>
-                                </div>
-                            <?php endif; ?>
+                            <p class="plugin-description"><?php echo esc_html($plugin['description']); ?></p>
+                            <div class="plugin-version">
+                                <span class="version-label"><?php esc_html_e('Version:', 'wbcom-shared'); ?></span>
+                                <span class="version-number"><?php echo esc_html($plugin['version']); ?></span>
+                            </div>
                         </div>
                         <div class="plugin-card-bottom">
                             <div class="plugin-actions">
-                                <?php if (!empty($plugin['settings_url'])) : ?>
+                                <?php if ($plugin['status'] === 'active' && !empty($plugin['settings_url'])) : ?>
                                     <a href="<?php echo esc_url($plugin['settings_url']); ?>" class="button button-primary">
                                         <span class="dashicons dashicons-admin-generic"></span>
-                                        <?php esc_html_e('Settings', 'bp-activity-filter'); ?>
+                                        <?php esc_html_e('Settings', 'wbcom-shared'); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -285,11 +307,12 @@ class Wbcom_Shared_Dashboard {
      */
     private function render_premium_tab() {
         $premium_plugins = $this->get_premium_plugins();
+        
         ?>
         <div class="wbcom-premium-section">
             <div class="wbcom-premium-header">
-                <h2><?php esc_html_e('Premium BuddyPress Plugins', 'bp-activity-filter'); ?></h2>
-                <p><?php esc_html_e('Enhance your community with these powerful premium plugins designed specifically for BuddyPress.', 'bp-activity-filter'); ?></p>
+                <h2><?php esc_html_e('Premium BuddyPress Plugins', 'wbcom-shared'); ?></h2>
+                <p><?php esc_html_e('Enhance your community with these powerful premium plugins designed specifically for BuddyPress.', 'wbcom-shared'); ?></p>
             </div>
             
             <div class="premium-plugins-list">
@@ -297,28 +320,24 @@ class Wbcom_Shared_Dashboard {
                     <div class="premium-plugin-item">
                         <div class="plugin-header">
                             <h3><?php echo esc_html($plugin['name']); ?></h3>
-                            <?php if (!empty($plugin['price'])) : ?>
-                                <div class="plugin-price">
-                                    <span class="price-amount"><?php echo esc_html($plugin['price']); ?></span>
-                                </div>
-                            <?php endif; ?>
+                            <div class="plugin-price">
+                                <span class="price-amount"><?php echo esc_html($plugin['price']); ?></span>
+                            </div>
                         </div>
                         <div class="plugin-content">
                             <p class="plugin-description"><?php echo esc_html($plugin['description']); ?></p>
-                            <?php if (!empty($plugin['features'])) : ?>
-                                <ul class="plugin-features">
-                                    <?php foreach (array_slice($plugin['features'], 0, 4) as $feature) : ?>
-                                        <li><span class="dashicons dashicons-yes"></span> <?php echo esc_html($feature); ?></li>
-                                    <?php endforeach; ?>
-                                    <?php if (count($plugin['features']) > 4) : ?>
-                                        <li class="more-features">+ <?php echo count($plugin['features']) - 4; ?> more features</li>
-                                    <?php endif; ?>
-                                </ul>
-                            <?php endif; ?>
+                            <ul class="plugin-features">
+                                <?php foreach (array_slice($plugin['features'], 0, 4) as $feature) : ?>
+                                    <li><span class="dashicons dashicons-yes"></span> <?php echo esc_html($feature); ?></li>
+                                <?php endforeach; ?>
+                                <?php if (count($plugin['features']) > 4) : ?>
+                                    <li class="more-features">+ <?php echo count($plugin['features']) - 4; ?> more features</li>
+                                <?php endif; ?>
+                            </ul>
                         </div>
                         <div class="plugin-actions">
                             <a href="<?php echo esc_url($plugin['url']); ?>" target="_blank" rel="noopener" class="button button-primary">
-                                <?php esc_html_e('View Plugin', 'bp-activity-filter'); ?>
+                                <?php esc_html_e('View Plugin', 'wbcom-shared'); ?>
                                 <span class="dashicons dashicons-external"></span>
                             </a>
                         </div>
@@ -329,7 +348,7 @@ class Wbcom_Shared_Dashboard {
             <div class="premium-footer">
                 <p class="center-text">
                     <a href="https://wbcomdesigns.com/downloads/" target="_blank" rel="noopener" class="button button-secondary button-large">
-                        <?php esc_html_e('Browse All Premium Plugins', 'bp-activity-filter'); ?>
+                        <?php esc_html_e('Browse All Premium Plugins', 'wbcom-shared'); ?>
                         <span class="dashicons dashicons-external"></span>
                     </a>
                 </p>
@@ -343,11 +362,12 @@ class Wbcom_Shared_Dashboard {
      */
     private function render_themes_tab() {
         $premium_themes = $this->get_premium_themes();
+        
         ?>
         <div class="wbcom-themes-section">
             <div class="wbcom-themes-header">
-                <h2><?php esc_html_e('Premium BuddyPress Themes', 'bp-activity-filter'); ?></h2>
-                <p><?php esc_html_e('Professional WordPress themes designed specifically for BuddyPress communities with modern designs and advanced features.', 'bp-activity-filter'); ?></p>
+                <h2><?php esc_html_e('Premium BuddyPress Themes', 'wbcom-shared'); ?></h2>
+                <p><?php esc_html_e('Professional WordPress themes designed specifically for BuddyPress communities.', 'wbcom-shared'); ?></p>
             </div>
             
             <div class="premium-themes-list">
@@ -355,48 +375,32 @@ class Wbcom_Shared_Dashboard {
                     <div class="premium-theme-item">
                         <div class="theme-header">
                             <h3><?php echo esc_html($theme['name']); ?></h3>
-                            <?php if (!empty($theme['price'])) : ?>
-                                <div class="theme-price">
-                                    <span class="price-amount"><?php echo esc_html($theme['price']); ?></span>
-                                </div>
-                            <?php endif; ?>
+                            <div class="theme-price">
+                                <span class="price-amount"><?php echo esc_html($theme['price']); ?></span>
+                            </div>
                         </div>
                         <div class="theme-content">
                             <p class="theme-description"><?php echo esc_html($theme['description']); ?></p>
-                            <?php if (!empty($theme['features'])) : ?>
-                                <ul class="theme-features">
-                                    <?php foreach (array_slice($theme['features'], 0, 4) as $feature) : ?>
-                                        <li><span class="dashicons dashicons-yes"></span> <?php echo esc_html($feature); ?></li>
-                                    <?php endforeach; ?>
-                                    <?php if (count($theme['features']) > 4) : ?>
-                                        <li class="more-features">+ <?php echo count($theme['features']) - 4; ?> more features</li>
-                                    <?php endif; ?>
-                                </ul>
-                            <?php endif; ?>
+                            <ul class="theme-features">
+                                <?php foreach (array_slice($theme['features'], 0, 4) as $feature) : ?>
+                                    <li><span class="dashicons dashicons-yes"></span> <?php echo esc_html($feature); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
                         </div>
                         <div class="theme-actions">
                             <a href="<?php echo esc_url($theme['url']); ?>" target="_blank" rel="noopener" class="button button-primary">
-                                <?php esc_html_e('View Theme', 'bp-activity-filter'); ?>
+                                <?php esc_html_e('View Theme', 'wbcom-shared'); ?>
                                 <span class="dashicons dashicons-external"></span>
                             </a>
                             <?php if (!empty($theme['demo_url'])) : ?>
                                 <a href="<?php echo esc_url($theme['demo_url']); ?>" target="_blank" rel="noopener" class="button button-secondary">
-                                    <?php esc_html_e('Live Demo', 'bp-activity-filter'); ?>
+                                    <?php esc_html_e('Live Demo', 'wbcom-shared'); ?>
                                     <span class="dashicons dashicons-external"></span>
                                 </a>
                             <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
-            </div>
-
-            <div class="themes-footer">
-                <p class="center-text">
-                    <a href="https://wbcomdesigns.com/themes/" target="_blank" rel="noopener" class="button button-secondary button-large">
-                        <?php esc_html_e('Browse All Premium Themes', 'bp-activity-filter'); ?>
-                        <span class="dashicons dashicons-external"></span>
-                    </a>
-                </p>
             </div>
         </div>
         <?php
@@ -409,21 +413,21 @@ class Wbcom_Shared_Dashboard {
         ?>
         <div class="wbcom-news-section">
             <div class="wbcom-news-header">
-                <h2><?php esc_html_e('Latest News from Wbcom Designs', 'bp-activity-filter'); ?></h2>
-                <p><?php esc_html_e('Stay updated with the latest plugin releases, updates, and WordPress community news.', 'bp-activity-filter'); ?></p>
+                <h2><?php esc_html_e('Latest News from Wbcom Designs', 'wbcom-shared'); ?></h2>
+                <p><?php esc_html_e('Stay updated with the latest plugin releases, updates, and WordPress community news.', 'wbcom-shared'); ?></p>
             </div>
             
             <div id="wbcom-news-feed" class="wbcom-news-feed">
                 <div class="news-loading">
                     <span class="spinner is-active"></span>
-                    <p><?php esc_html_e('Loading latest news...', 'bp-activity-filter'); ?></p>
+                    <p><?php esc_html_e('Loading latest news...', 'wbcom-shared'); ?></p>
                 </div>
             </div>
 
-            <div class="news-footer" style="display: none;">
+            <div class="news-footer">
                 <p class="center-text">
                     <a href="https://wbcomdesigns.com/blog/" target="_blank" rel="noopener" class="button button-secondary">
-                        <?php esc_html_e('Visit Our Blog', 'bp-activity-filter'); ?>
+                        <?php esc_html_e('Visit Our Blog', 'wbcom-shared'); ?>
                         <span class="dashicons dashicons-external"></span>
                     </a>
                 </p>
@@ -435,79 +439,90 @@ class Wbcom_Shared_Dashboard {
     /**
      * Render sidebar widgets
      */
-    private function render_sidebar_widgets($plugins) {
+    private function render_sidebar_widgets() {
+        $stats = $this->get_dashboard_stats();
         ?>
         <div class="wbcom-sidebar-widget">
-            <h3><?php esc_html_e('Quick Stats', 'bp-activity-filter'); ?></h3>
-            <?php
-            $stats = $this->get_dashboard_stats($plugins);
-            ?>
+            <h3><?php esc_html_e('Quick Stats', 'wbcom-shared'); ?></h3>
             <ul class="wbcom-stats-list">
                 <li>
                     <strong><?php echo esc_html($stats['total_plugins']); ?></strong>
-                    <span><?php esc_html_e('Plugins Installed', 'bp-activity-filter'); ?></span>
+                    <span><?php esc_html_e('Plugins Installed', 'wbcom-shared'); ?></span>
                 </li>
                 <li>
                     <strong><?php echo esc_html($stats['active_plugins']); ?></strong>
-                    <span><?php esc_html_e('Plugins Active', 'bp-activity-filter'); ?></span>
+                    <span><?php esc_html_e('Plugins Active', 'wbcom-shared'); ?></span>
                 </li>
                 <li>
                     <strong><?php echo esc_html($stats['wp_version']); ?></strong>
-                    <span><?php esc_html_e('WordPress Version', 'bp-activity-filter'); ?></span>
+                    <span><?php esc_html_e('WordPress Version', 'wbcom-shared'); ?></span>
                 </li>
             </ul>
         </div>
 
         <div class="wbcom-sidebar-widget">
-            <h3><?php esc_html_e('Need Help?', 'bp-activity-filter'); ?></h3>
-            <p><?php esc_html_e('Get expert support for all Wbcom Designs plugins and WordPress development.', 'bp-activity-filter'); ?></p>
+            <h3><?php esc_html_e('Need Help?', 'wbcom-shared'); ?></h3>
+            <p><?php esc_html_e('Get expert support for all Wbcom Designs plugins and WordPress development.', 'wbcom-shared'); ?></p>
             <div class="widget-actions">
                 <a href="https://wbcomdesigns.com/support/" target="_blank" class="button button-secondary button-large">
                     <span class="dashicons dashicons-sos"></span>
-                    <?php esc_html_e('Get Support', 'bp-activity-filter'); ?>
+                    <?php esc_html_e('Get Support', 'wbcom-shared'); ?>
                 </a>
-                <a href="https://docs.wbcomdesigns.com/" target="_blank" class="button button-link">
-                    <?php esc_html_e('Documentation', 'bp-activity-filter'); ?>
-                </a>
-            </div>
-        </div>
-
-        <div class="wbcom-sidebar-widget">
-            <h3><?php esc_html_e('Community', 'bp-activity-filter'); ?></h3>
-            <p><?php esc_html_e('Join our community and stay connected with updates and discussions.', 'bp-activity-filter'); ?></p>
-            <div class="widget-actions">
-                <a href="https://wordpress.org/support/plugin/bp-activity-filter/reviews/#new-post" target="_blank" class="button button-secondary">
-                    <span class="dashicons dashicons-star-filled"></span>
-                    <?php esc_html_e('Leave Review', 'bp-activity-filter'); ?>
-                </a>
-                <div class="social-links">
-                    <a href="https://twitter.com/wbcomdesigns" target="_blank" title="<?php esc_attr_e('Follow on Twitter', 'bp-activity-filter'); ?>">
-                        <span class="dashicons dashicons-twitter"></span>
-                    </a>
-                    <a href="https://www.facebook.com/wbcomdesigns/" target="_blank" title="<?php esc_attr_e('Like on Facebook', 'bp-activity-filter'); ?>">
-                        <span class="dashicons dashicons-facebook"></span>
-                    </a>
-                </div>
             </div>
         </div>
         <?php
     }
     
     /**
-     * Get dashboard statistics
+     * Helper methods
      */
-    private function get_dashboard_stats($plugins) {
+    private function get_dashboard_stats() {
         return array(
-            'total_plugins'  => count($plugins),
-            'active_plugins' => count($plugins), // All registered plugins are active
+            'total_plugins'  => count($this->registered_plugins),
+            'active_plugins' => count($this->get_active_plugins()),
             'wp_version'     => get_bloginfo('version'),
-            'bp_version'     => function_exists('buddypress') ? buddypress()->version : __('Not Active', 'bp-activity-filter'),
+            'bp_version'     => function_exists('buddypress') ? buddypress()->version : __('Not Active', 'wbcom-shared'),
         );
     }
     
-    /**
-     * Get list of premium plugins
-     */
+    private function get_active_plugins() {
+        return array_filter($this->registered_plugins, function($plugin) {
+            return $plugin['status'] === 'active';
+        });
+    }
+    
+    private function extract_menu_slug($settings_url) {
+        $parsed = parse_url($settings_url);
+        if (isset($parsed['query'])) {
+            parse_str($parsed['query'], $params);
+            return isset($params['page']) ? $params['page'] : '';
+        }
+        return '';
+    }
+    
+    private function get_menu_icon() {
+        $svg = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 2L13.09 8.26L20 9L14 12L15 20L10 17L5 20L6 12L0 9L6.91 8.26L10 2Z" fill="#a7aaad"/>
+        </svg>';
+        
+        return 'data:image/svg+xml;base64,' . base64_encode($svg);
+    }
+    
+    private function render_admin_notices() {
+        $active_count = count($this->get_active_plugins());
+        
+        if ($active_count === 0) {
+            ?>
+            <div class="notice notice-warning">
+                <p>
+                    <strong><?php esc_html_e('Welcome to Wbcom Designs!', 'wbcom-shared'); ?></strong>
+                    <?php esc_html_e('No Wbcom plugins are currently active. Activate plugins to see them here.', 'wbcom-shared'); ?>
+                </p>
+            </div>
+            <?php
+        }
+    }
+    
     private function get_premium_plugins() {
         return array(
             array(
@@ -552,40 +567,9 @@ class Wbcom_Shared_Dashboard {
                     'User-submitted quotes moderation'
                 ),
             ),
-            array(
-                'name'        => 'BuddyPress Status & Reactions',
-                'description' => 'Advanced member status system with emoji reactions, mood tracking, and comprehensive engagement analytics.',
-                'price'       => '$69',
-                'url'         => 'https://wbcomdesigns.com/downloads/buddypress-status-reactions/',
-                'features'    => array(
-                    'Custom member status indicators',
-                    'Emoji reactions system (like, love, laugh)',
-                    'Advanced mood tracking and analytics',
-                    'Status change notifications',
-                    'Custom status messages and icons',
-                    'Detailed engagement statistics'
-                ),
-            ),
-            array(
-                'name'        => 'BuddyPress Sticky Post',
-                'description' => 'Pin important activities and announcements to the top of activity streams with advanced scheduling features.',
-                'price'       => '$29',
-                'url'         => 'https://wbcomdesigns.com/downloads/buddypress-sticky-post/',
-                'features'    => array(
-                    'Pin activities to top of streams',
-                    'Advanced scheduling and expiration',
-                    'Group-specific sticky posts',
-                    'Priority levels and ordering',
-                    'Bulk sticky post management',
-                    'Analytics and engagement tracking'
-                ),
-            ),
         );
     }
     
-    /**
-     * Get list of premium themes
-     */
     private function get_premium_themes() {
         return array(
             array(
@@ -618,37 +602,6 @@ class Wbcom_Shared_Dashboard {
                     'Performance optimized'
                 ),
             ),
-            array(
-                'name'        => 'SocialPress Theme',
-                'description' => 'Social networking theme with advanced community features, real-time notifications, and modern design.',
-                'price'       => '$89',
-                'url'         => 'https://wbcomdesigns.com/downloads/socialpress-theme/',
-                'demo_url'    => 'https://socialpress-demo.com/',
-                'features'    => array(
-                    'Real-time notifications system',
-                    'Advanced messaging integration',
-                    'Social media style interface',
-                    'Custom profile layouts',
-                    'Activity stream customization',
-                    'Dark mode support'
-                ),
-            ),
         );
-    }
-    
-    /**
-     * Get Wbcom logo SVG
-     */
-    private function get_wbcom_logo() {
-        return '<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16 4L20.944 13.216L32 14.4L22.4 19.2L24 32L16 27.2L8 32L9.6 19.2L0 14.4L11.056 13.216L16 4Z" fill="#0073aa"/>
-        </svg>';
-    }
-    
-    /**
-     * Get dashboard version
-     */
-    private function get_dashboard_version() {
-        return defined('BP_ACTIVITY_FILTER_VERSION') ? BP_ACTIVITY_FILTER_VERSION : '1.0.0';
     }
 }

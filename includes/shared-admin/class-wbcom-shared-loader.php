@@ -1,42 +1,53 @@
 <?php
 /**
- * Wbcom Shared Admin Loader
- * 
- * Ensures only one instance loads across all Wbcom plugins
+ * Wbcom Shared Admin System - Main Coordinator
  * 
  * @package Wbcom_Shared_Admin
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 if (!defined('ABSPATH')) exit;
 
 class Wbcom_Shared_Loader {
     
-    const VERSION = '1.0.0';
-    const GLOBAL_KEY = 'wbcom_shared_admin_instance';
+    const VERSION = '2.0.0';
+    const GLOBAL_KEY = 'wbcom_shared_system';
     
     private static $instance = null;
-    private $is_primary_loader = false;
     private $registered_plugins = array();
+    private $is_primary_loader = false;
     private $loaded_from_plugin = '';
     
     /**
-     * Initialize shared system
+     * Register a plugin with the shared system
      */
-    public static function init($plugin_data) {
-        // Check if already loaded by another plugin
+    public static function register_plugin($plugin_data) {
+        // Validate required plugin data
+        $plugin_data = self::validate_plugin_data($plugin_data);
+        
+        // Get or create shared system instance
+        $shared_system = self::get_shared_instance($plugin_data['slug']);
+        
+        // Register the plugin
+        $shared_system->add_plugin($plugin_data);
+        
+        return $shared_system;
+    }
+    
+    /**
+     * Get shared system instance (singleton across all plugins)
+     */
+    private static function get_shared_instance($plugin_slug) {
+        // Check if instance already exists globally
         if (isset($GLOBALS[self::GLOBAL_KEY])) {
-            // Just register this plugin with existing system
-            $GLOBALS[self::GLOBAL_KEY]->register_plugin($plugin_data);
             return $GLOBALS[self::GLOBAL_KEY];
         }
         
-        // We're the first - create and load the system
+        // Create new instance
         $instance = new self();
         $instance->is_primary_loader = true;
-        $instance->loaded_from_plugin = $plugin_data['slug'];
-        $instance->register_plugin($plugin_data);
-        $instance->load_shared_system();
+        $instance->loaded_from_plugin = $plugin_slug;
+        $instance->init_shared_system();
         
         // Store globally for other plugins
         $GLOBALS[self::GLOBAL_KEY] = $instance;
@@ -45,51 +56,104 @@ class Wbcom_Shared_Loader {
     }
     
     /**
-     * Register a plugin with the shared system
+     * Validate plugin data
      */
-    public function register_plugin($plugin_data) {
+    private static function validate_plugin_data($data) {
+        $defaults = array(
+            'slug'         => '',
+            'name'         => '',
+            'version'      => '1.0.0',
+            'settings_url' => '',
+            'icon'         => 'dashicons-admin-generic',
+            'priority'     => 10,
+            'description'  => '',
+            'status'       => 'active',
+        );
+        
+        $plugin_data = wp_parse_args($data, $defaults);
+        
+        // Validate required fields
+        if (empty($plugin_data['slug']) || empty($plugin_data['name'])) {
+            return false;
+        }
+        
+        // Sanitize data
+        $plugin_data['slug'] = sanitize_key($plugin_data['slug']);
+        $plugin_data['name'] = sanitize_text_field($plugin_data['name']);
+        $plugin_data['version'] = sanitize_text_field($plugin_data['version']);
+        $plugin_data['description'] = sanitize_text_field($plugin_data['description']);
+        $plugin_data['priority'] = absint($plugin_data['priority']);
+        
+        return $plugin_data;
+    }
+    
+    /**
+     * Add plugin to registry
+     */
+    public function add_plugin($plugin_data) {
         $this->registered_plugins[$plugin_data['slug']] = $plugin_data;
         
-        // If system already loaded, integrate immediately
-        if ($this->is_primary_loader && class_exists('Wbcom_Shared_Menu')) {
-            do_action('wbcom_shared_plugin_registered', $plugin_data);
-        }
+        // Sort by priority
+        uasort($this->registered_plugins, function($a, $b) {
+            return $a['priority'] - $b['priority'];
+        });
     }
     
     /**
-     * Load the shared admin system
+     * Initialize the shared admin system
      */
-    private function load_shared_system() {
+    private function init_shared_system() {
         if (!$this->is_primary_loader) return;
         
+        // Load required classes
+        $this->load_shared_classes();
+        
+        // Initialize dashboard
+        add_action('admin_menu', array($this, 'init_dashboard'), 5);
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_shared_assets'));
+    }
+    
+    /**
+     * Load shared system classes
+     */
+    private function load_shared_classes() {
         $base_path = dirname(__FILE__);
         
-        // Load core classes
-        require_once $base_path . '/class-wbcom-shared-menu.php';
-        require_once $base_path . '/class-wbcom-shared-dashboard.php';
+        $classes = array(
+            'class-wbcom-shared-dashboard.php'
+        );
         
-        // Initialize systems
-        add_action('admin_menu', function() {
-            Wbcom_Shared_Menu::instance()->init($this->registered_plugins);
-        }, 5);
-        
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_shared_assets'));
-        
-        // Debug info
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            add_action('admin_notices', array($this, 'debug_notice'), 999);
+        foreach ($classes as $class_file) {
+            $file_path = $base_path . '/' . $class_file;
+            if (file_exists($file_path)) {
+                require_once $file_path;
+            }
         }
     }
     
     /**
-     * Enqueue shared CSS and JS
+     * Initialize dashboard
+     */
+    public function init_dashboard() {
+        if (!class_exists('Wbcom_Shared_Dashboard')) {
+            return;
+        }
+        
+        new Wbcom_Shared_Dashboard($this->registered_plugins);
+    }
+    
+    /**
+     * Enqueue shared assets
      */
     public function enqueue_shared_assets($hook_suffix) {
         // Only load on Wbcom admin pages
-        if (strpos($hook_suffix, 'wbcom') === false) return;
+        if (strpos($hook_suffix, 'wbcom') === false) {
+            return;
+        }
         
         $base_url = plugin_dir_url(__FILE__);
         
+        // Enqueue CSS
         wp_enqueue_style(
             'wbcom-shared-admin',
             $base_url . 'wbcom-shared-admin.css',
@@ -97,6 +161,7 @@ class Wbcom_Shared_Loader {
             self::VERSION
         );
         
+        // Enqueue JS
         wp_enqueue_script(
             'wbcom-shared-admin',
             $base_url . 'wbcom-shared-admin.js',
@@ -105,27 +170,13 @@ class Wbcom_Shared_Loader {
             true
         );
         
-        // Localize for JS
+        // Localize script
         wp_localize_script('wbcom-shared-admin', 'wbcomShared', array(
+            'version' => self::VERSION,
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('wbcom_shared_nonce'),
             'plugins' => $this->registered_plugins
         ));
-    }
-    
-    /**
-     * Debug notice for development
-     */
-    public function debug_notice() {
-        if (!current_user_can('manage_options')) return;
-        
-        $screen = get_current_screen();
-        if (!$screen || strpos($screen->id, 'wbcom') === false) return;
-        
-        echo '<div class="notice notice-info is-dismissible">';
-        echo '<p><strong>Wbcom Debug:</strong> Shared system loaded by: ' . esc_html($this->loaded_from_plugin);
-        echo ' | Registered plugins: ' . count($this->registered_plugins) . '</p>';
-        echo '</div>';
     }
     
     /**
@@ -136,9 +187,11 @@ class Wbcom_Shared_Loader {
     }
     
     /**
-     * Check if this is the primary loader
+     * Get active plugins only
      */
-    public function is_primary() {
-        return $this->is_primary_loader;
+    public function get_active_plugins() {
+        return array_filter($this->registered_plugins, function($plugin) {
+            return $plugin['status'] === 'active';
+        });
     }
 }
