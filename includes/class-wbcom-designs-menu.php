@@ -1,8 +1,9 @@
 <?php
 /**
- * Improved Wbcom Designs Unified Menu System
+ * Improved Wbcom Designs Unified Menu System with Streamlined Premium Tab
  *
  * Enhanced version with better error handling, menu management, and dashboard functionality.
+ * Includes the streamlined premium plugins display without images.
  *
  * @package BuddyPress_Activity_Filter
  * @subpackage Admin
@@ -111,7 +112,6 @@ class Wbcom_Designs_Menu {
 	 * @since 4.0.0
 	 */
 	private function __construct() {
-		// Remove constructor hook for scripts since we're doing it inline
 		add_action( 'admin_menu', array( $this, 'create_main_menu' ), 1 );
 		add_action( 'admin_menu', array( $this, 'add_dashboard_submenu' ), 5 );
 		add_action( 'admin_menu', array( $this, 'sort_submenus' ), 999 );
@@ -135,7 +135,7 @@ class Wbcom_Designs_Menu {
 			esc_html__( 'Wbcom Designs', 'bp-activity-filter' ),
 			'manage_options',
 			$this->menu_slug,
-			array( $this, 'dashboard_page' ), // Use full dashboard instead of emergency
+			array( $this, 'dashboard_page' ),
 			$this->menu_icon,
 			$this->menu_position
 		);
@@ -344,7 +344,7 @@ class Wbcom_Designs_Menu {
 	}
 
 	/**
-	 * Render dashboard tabs.
+	 * Render dashboard tabs with themes included.
 	 *
 	 * @since 4.0.0
 	 * @param string $active_tab Current active tab.
@@ -359,13 +359,17 @@ class Wbcom_Designs_Menu {
 				'title' => esc_html__( 'Installed Plugins', 'bp-activity-filter' ),
 				'icon'  => 'dashicons-admin-plugins',
 			),
-			'news' => array(
-				'title' => esc_html__( 'News & Updates', 'bp-activity-filter' ),
-				'icon'  => 'dashicons-rss',
-			),
 			'premium' => array(
 				'title' => esc_html__( 'Premium Plugins', 'bp-activity-filter' ),
 				'icon'  => 'dashicons-star-filled',
+			),
+			'themes' => array(
+				'title' => esc_html__( 'Premium Themes', 'bp-activity-filter' ),
+				'icon'  => 'dashicons-admin-appearance',
+			),
+			'news' => array(
+				'title' => esc_html__( 'News & Updates', 'bp-activity-filter' ),
+				'icon'  => 'dashicons-rss',
 			),
 		);
 		?>
@@ -386,11 +390,14 @@ class Wbcom_Designs_Menu {
 					case 'plugins':
 						$this->render_plugins_tab();
 						break;
-					case 'news':
-						$this->render_news_tab();
-						break;
 					case 'premium':
 						$this->render_premium_tab();
+						break;
+					case 'themes':
+						$this->render_themes_tab();
+						break;
+					case 'news':
+						$this->render_news_tab();
 						break;
 					case 'overview':
 					default:
@@ -558,7 +565,133 @@ class Wbcom_Designs_Menu {
 	}
 
 	/**
-	 * Render news tab.
+	 * Render premium plugins tab without images.
+	 *
+	 * @since 4.0.0
+	 */
+	private function render_premium_tab() {
+		$premium_plugins = $this->get_premium_plugins();
+		?>
+		<div class="wbcom-premium-section">
+			<div class="wbcom-premium-header">
+				<h2><?php esc_html_e( 'Premium BuddyPress Plugins', 'bp-activity-filter' ); ?></h2>
+				<p><?php esc_html_e( 'Enhance your community with these powerful premium plugins designed specifically for BuddyPress.', 'bp-activity-filter' ); ?></p>
+			</div>
+			
+			<div class="premium-plugins-list">
+				<?php foreach ( $premium_plugins as $plugin ) : ?>
+					<div class="premium-plugin-item">
+						<div class="plugin-header">
+							<h3><?php echo esc_html( $plugin['name'] ); ?></h3>
+							<?php if ( ! empty( $plugin['price'] ) ) : ?>
+								<div class="plugin-price">
+									<span class="price-amount"><?php echo esc_html( $plugin['price'] ); ?></span>
+								</div>
+							<?php endif; ?>
+						</div>
+						<div class="plugin-content">
+							<p class="plugin-description"><?php echo esc_html( $plugin['description'] ); ?></p>
+							<?php if ( ! empty( $plugin['features'] ) ) : ?>
+								<ul class="plugin-features">
+									<?php foreach ( array_slice( $plugin['features'], 0, 4 ) as $feature ) : ?>
+										<li><span class="dashicons dashicons-yes"></span> <?php echo esc_html( $feature ); ?></li>
+									<?php endforeach; ?>
+									<?php if ( count( $plugin['features'] ) > 4 ) : ?>
+										<li class="more-features">+ <?php echo count( $plugin['features'] ) - 4; ?> more features</li>
+									<?php endif; ?>
+								</ul>
+							<?php endif; ?>
+						</div>
+						<div class="plugin-actions">
+							<a href="<?php echo esc_url( $plugin['url'] ); ?>" target="_blank" rel="noopener" class="button button-primary">
+								<?php esc_html_e( 'View Plugin', 'bp-activity-filter' ); ?>
+								<span class="dashicons dashicons-external"></span>
+							</a>
+						</div>
+					</div>
+				<?php endforeach; ?>
+			</div>
+
+			<div class="premium-footer">
+				<p class="center-text">
+					<a href="https://wbcomdesigns.com/downloads/" target="_blank" rel="noopener" class="button button-secondary button-large">
+						<?php esc_html_e( 'Browse All Premium Plugins', 'bp-activity-filter' ); ?>
+						<span class="dashicons dashicons-external"></span>
+					</a>
+				</p>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render themes tab.
+	 *
+	 * @since 4.0.0
+	 */
+	private function render_themes_tab() {
+		$premium_themes = $this->get_premium_themes();
+		?>
+		<div class="wbcom-themes-section">
+			<div class="wbcom-themes-header">
+				<h2><?php esc_html_e( 'Premium BuddyPress Themes', 'bp-activity-filter' ); ?></h2>
+				<p><?php esc_html_e( 'Professional WordPress themes designed specifically for BuddyPress communities with modern designs and advanced features.', 'bp-activity-filter' ); ?></p>
+			</div>
+			
+			<div class="premium-themes-list">
+				<?php foreach ( $premium_themes as $theme ) : ?>
+					<div class="premium-theme-item">
+						<div class="theme-header">
+							<h3><?php echo esc_html( $theme['name'] ); ?></h3>
+							<?php if ( ! empty( $theme['price'] ) ) : ?>
+								<div class="theme-price">
+									<span class="price-amount"><?php echo esc_html( $theme['price'] ); ?></span>
+								</div>
+							<?php endif; ?>
+						</div>
+						<div class="theme-content">
+							<p class="theme-description"><?php echo esc_html( $theme['description'] ); ?></p>
+							<?php if ( ! empty( $theme['features'] ) ) : ?>
+								<ul class="theme-features">
+									<?php foreach ( array_slice( $theme['features'], 0, 4 ) as $feature ) : ?>
+										<li><span class="dashicons dashicons-yes"></span> <?php echo esc_html( $feature ); ?></li>
+									<?php endforeach; ?>
+									<?php if ( count( $theme['features'] ) > 4 ) : ?>
+										<li class="more-features">+ <?php echo count( $theme['features'] ) - 4; ?> more features</li>
+									<?php endif; ?>
+								</ul>
+							<?php endif; ?>
+						</div>
+						<div class="theme-actions">
+							<a href="<?php echo esc_url( $theme['url'] ); ?>" target="_blank" rel="noopener" class="button button-primary">
+								<?php esc_html_e( 'View Theme', 'bp-activity-filter' ); ?>
+								<span class="dashicons dashicons-external"></span>
+							</a>
+							<?php if ( ! empty( $theme['demo_url'] ) ) : ?>
+								<a href="<?php echo esc_url( $theme['demo_url'] ); ?>" target="_blank" rel="noopener" class="button button-secondary">
+									<?php esc_html_e( 'Live Demo', 'bp-activity-filter' ); ?>
+									<span class="dashicons dashicons-external"></span>
+								</a>
+							<?php endif; ?>
+						</div>
+					</div>
+				<?php endforeach; ?>
+			</div>
+
+			<div class="themes-footer">
+				<p class="center-text">
+					<a href="https://wbcomdesigns.com/themes/" target="_blank" rel="noopener" class="button button-secondary button-large">
+						<?php esc_html_e( 'Browse All Premium Themes', 'bp-activity-filter' ); ?>
+						<span class="dashicons dashicons-external"></span>
+					</a>
+				</p>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render news tab with better error handling.
 	 *
 	 * @since 4.0.0
 	 */
@@ -576,59 +709,14 @@ class Wbcom_Designs_Menu {
 					<p><?php esc_html_e( 'Loading latest news...', 'bp-activity-filter' ); ?></p>
 				</div>
 			</div>
-		</div>
-		<?php
-	}
 
-	/**
-	 * Render premium plugins tab.
-	 *
-	 * @since 4.0.0
-	 */
-	private function render_premium_tab() {
-		$premium_plugins = $this->get_premium_plugins();
-		?>
-		<div class="wbcom-premium-section">
-			<div class="wbcom-premium-header">
-				<h2><?php esc_html_e( 'Premium BuddyPress Plugins', 'bp-activity-filter' ); ?></h2>
-				<p><?php esc_html_e( 'Enhance your community with these powerful premium plugins designed specifically for BuddyPress.', 'bp-activity-filter' ); ?></p>
-			</div>
-			
-			<div class="premium-plugins-grid">
-				<?php foreach ( $premium_plugins as $plugin ) : ?>
-					<div class="premium-plugin-card">
-						<div class="plugin-card-header">
-							<?php if ( ! empty( $plugin['image'] ) ) : ?>
-								<div class="plugin-image">
-									<img src="<?php echo esc_url( $plugin['image'] ); ?>" alt="<?php echo esc_attr( $plugin['name'] ); ?>">
-								</div>
-							<?php endif; ?>
-							<h3><?php echo esc_html( $plugin['name'] ); ?></h3>
-							<?php if ( ! empty( $plugin['price'] ) ) : ?>
-								<div class="plugin-price">
-									<span class="price-label"><?php esc_html_e( 'Starting at', 'bp-activity-filter' ); ?></span>
-									<span class="price-amount"><?php echo esc_html( $plugin['price'] ); ?></span>
-								</div>
-							<?php endif; ?>
-						</div>
-						<div class="plugin-card-content">
-							<p class="plugin-description"><?php echo esc_html( $plugin['description'] ); ?></p>
-							<?php if ( ! empty( $plugin['features'] ) ) : ?>
-								<ul class="plugin-features">
-									<?php foreach ( $plugin['features'] as $feature ) : ?>
-										<li><span class="dashicons dashicons-yes"></span> <?php echo esc_html( $feature ); ?></li>
-									<?php endforeach; ?>
-								</ul>
-							<?php endif; ?>
-						</div>
-						<div class="plugin-card-footer">
-							<a href="<?php echo esc_url( $plugin['url'] ); ?>" target="_blank" class="button button-primary button-large">
-								<?php esc_html_e( 'Learn More', 'bp-activity-filter' ); ?>
-								<span class="dashicons dashicons-external"></span>
-							</a>
-						</div>
-					</div>
-				<?php endforeach; ?>
+			<div class="news-footer" style="display: none;">
+				<p class="center-text">
+					<a href="https://wbcomdesigns.com/blog/" target="_blank" rel="noopener" class="button button-secondary">
+						<?php esc_html_e( 'Visit Our Blog', 'bp-activity-filter' ); ?>
+						<span class="dashicons dashicons-external"></span>
+					</a>
+				</p>
 			</div>
 		</div>
 		<?php
@@ -756,7 +844,7 @@ class Wbcom_Designs_Menu {
 	}
 
 	/**
-	 * Get list of premium plugins.
+	 * Get list of premium plugins without images.
 	 *
 	 * @since 4.0.0
 	 * @return array
@@ -765,67 +853,142 @@ class Wbcom_Designs_Menu {
 		return array(
 			array(
 				'name'        => 'BuddyPress Hashtags',
-				'description' => 'Add Instagram-style hashtag functionality to BuddyPress activities with trending tags, search, and analytics.',
-				'price'       => '$29',
+				'description' => 'Add Instagram-style hashtag functionality to BuddyPress activities with trending tags, search, and comprehensive analytics.',
+				'price'       => '$49',
 				'url'         => 'https://wbcomdesigns.com/downloads/buddypress-hashtags/',
-				'image'       => 'https://wbcomdesigns.com/wp-content/uploads/2024/01/hashtags-icon.png',
 				'features'    => array(
-					'Trending hashtags widget',
-					'Hashtag analytics dashboard',
-					'Custom hashtag colors',
-					'Search by hashtags',
+					'Instagram-style hashtag functionality',
+					'Trending hashtags widget and analytics',
+					'Advanced hashtag search and filtering',
+					'Custom hashtag colors and styling',
+					'Hashtag notifications and mentions',
+					'Comprehensive analytics dashboard'
 				),
 			),
 			array(
 				'name'        => 'BuddyPress Polls',
-				'description' => 'Create engaging polls and surveys within your BuddyPress community with real-time results and analytics.',
-				'price'       => '$39',
+				'description' => 'Create engaging polls and surveys within your BuddyPress community with real-time results and advanced analytics.',
+				'price'       => '$59',
 				'url'         => 'https://wbcomdesigns.com/downloads/buddypress-polls/',
-				'image'       => 'https://wbcomdesigns.com/wp-content/uploads/2024/01/polls-icon.png',
 				'features'    => array(
-					'Multiple poll types',
-					'Real-time voting results',
-					'Poll expiration dates',
-					'Voting restrictions',
+					'Multiple poll types (single/multiple choice)',
+					'Real-time voting results with charts',
+					'Poll scheduling and expiration dates',
+					'Voting restrictions and permissions',
+					'Anonymous voting options',
+					'Export results to CSV/PDF'
 				),
 			),
 			array(
 				'name'        => 'BuddyPress Quotes',
-				'description' => 'Share inspirational quotes with beautiful background images and typography options.',
-				'price'       => '$29',
+				'description' => 'Share inspirational quotes with beautiful background templates, custom typography, and social sharing integration.',
+				'price'       => '$39',
 				'url'         => 'https://wbcomdesigns.com/downloads/buddypress-quotes/',
-				'image'       => 'https://wbcomdesigns.com/wp-content/uploads/2024/01/quotes-icon.png',
 				'features'    => array(
-					'50+ background templates',
-					'Custom typography options',
-					'Quote categories',
-					'Social sharing',
+					'100+ beautiful background templates',
+					'Custom typography and font options',
+					'Quote categories and tagging system',
+					'Social media sharing integration',
+					'Quote of the day widget',
+					'User-submitted quotes moderation'
 				),
 			),
 			array(
 				'name'        => 'BuddyPress Status & Reactions',
-				'description' => 'Advanced member status system with emoji reactions, mood tracking, and custom status options.',
-				'price'       => '$49',
-				'url'         => 'https://wbcomdesigns.com/downloads/buddypress-status/',
-				'image'       => 'https://wbcomdesigns.com/wp-content/uploads/2024/01/status-icon.png',
+				'description' => 'Advanced member status system with emoji reactions, mood tracking, and comprehensive engagement analytics.',
+				'price'       => '$69',
+				'url'         => 'https://wbcomdesigns.com/downloads/buddypress-status-reactions/',
 				'features'    => array(
-					'Custom member statuses',
-					'Emoji reactions system',
-					'Mood tracking',
-					'Status analytics',
+					'Custom member status indicators',
+					'Emoji reactions system (like, love, laugh)',
+					'Advanced mood tracking and analytics',
+					'Status change notifications',
+					'Custom status messages and icons',
+					'Detailed engagement statistics'
+				),
+			),
+			array(
+				'name'        => 'BuddyPress Sticky Post',
+				'description' => 'Pin important activities and announcements to the top of activity streams with advanced scheduling features.',
+				'price'       => '$29',
+				'url'         => 'https://wbcomdesigns.com/downloads/buddypress-sticky-post/',
+				'features'    => array(
+					'Pin activities to top of streams',
+					'Advanced scheduling and expiration',
+					'Group-specific sticky posts',
+					'Priority levels and ordering',
+					'Bulk sticky post management',
+					'Analytics and engagement tracking'
 				),
 			),
 			array(
 				'name'        => 'WP Stories',
-				'description' => 'Add Instagram-like stories feature to WordPress with automatic expiration and rich media support.',
-				'price'       => '$59',
+				'description' => 'Add Instagram-like stories feature to WordPress with automatic expiration, rich media support, and viewer analytics.',
+				'price'       => '$79',
 				'url'         => 'https://wbcomdesigns.com/downloads/wp-stories/',
-				'image'       => 'https://wbcomdesigns.com/wp-content/uploads/2024/01/stories-icon.png',
 				'features'    => array(
-					'24-hour auto expiration',
-					'Image and video stories',
-					'Story highlights',
-					'Viewer analytics',
+					'Instagram-style stories functionality',
+					'24-hour automatic expiration',
+					'Image and video story support',
+					'Story highlights and archives',
+					'Viewer analytics and insights',
+					'Mobile-optimized interface'
+				),
+			),
+		);
+	}
+
+	/**
+	 * Get list of premium themes.
+	 *
+	 * @since 4.0.0
+	 * @return array
+	 */
+	private function get_premium_themes() {
+		return array(
+			array(
+				'name'        => 'Reign Theme',
+				'description' => 'Modern BuddyPress community theme with advanced customization options, multiple layouts, and integrated social features.',
+				'price'       => '$99',
+				'url'         => 'https://wbcomdesigns.com/downloads/reign-buddypress-theme/',
+				'demo_url'    => 'https://reign-theme.com/',
+				'features'    => array(
+					'Drag & drop page builder integration',
+					'Multiple header and layout options',
+					'Advanced BuddyPress styling',
+					'WooCommerce compatibility',
+					'Mobile-responsive design',
+					'SEO optimized structure'
+				),
+			),
+			array(
+				'name'        => 'BuddyX Theme',
+				'description' => 'Clean and modern BuddyPress theme perfect for communities, with focus on user experience and performance.',
+				'price'       => '$79',
+				'url'         => 'https://wbcomdesigns.com/downloads/buddyx-theme/',
+				'demo_url'    => 'https://buddyx.com/',
+				'features'    => array(
+					'Gutenberg block editor support',
+					'Multiple community layouts',
+					'Advanced member directory',
+					'Event management integration',
+					'Learning management system support',
+					'Performance optimized'
+				),
+			),
+			array(
+				'name'        => 'SocialPress Theme',
+				'description' => 'Social networking theme with advanced community features, real-time notifications, and modern design.',
+				'price'       => '$89',
+				'url'         => 'https://wbcomdesigns.com/downloads/socialpress-theme/',
+				'demo_url'    => 'https://socialpress-demo.com/',
+				'features'    => array(
+					'Real-time notifications system',
+					'Advanced messaging integration',
+					'Social media style interface',
+					'Custom profile layouts',
+					'Activity stream customization',
+					'Dark mode support'
 				),
 			),
 		);
@@ -894,10 +1057,6 @@ class Wbcom_Designs_Menu {
 			'<h3>' . esc_html__( 'Getting Support', 'bp-activity-filter' ) . '</h3>' .
 			'<p>' . esc_html__( 'Visit our support center for documentation, tutorials, and expert assistance.', 'bp-activity-filter' ) . '</p>';
 	}
-
-	/**
-	 * Remove the enqueue_dashboard_scripts method since we're using inline scripts
-	 */
 
 	/**
 	 * Add custom styles for the dashboard and menu.
@@ -1108,6 +1267,187 @@ class Wbcom_Designs_Menu {
 			padding: 20px;
 		}
 		
+		/* Premium Plugins List - No Images */
+		.premium-plugins-list,
+		.premium-themes-list {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 20px;
+			margin-top: 20px;
+		}
+		
+		.premium-plugin-item,
+		.premium-theme-item {
+			background: #fff;
+			border: 1px solid #c3c4c7;
+			border-radius: 6px;
+			padding: 20px;
+			transition: all 0.2s ease;
+			position: relative;
+		}
+		
+		.premium-plugin-item:hover,
+		.premium-theme-item:hover {
+			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+			transform: translateY(-2px);
+			border-color: #0073aa;
+		}
+		
+		.plugin-header,
+		.theme-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			margin-bottom: 15px;
+			padding-bottom: 15px;
+			border-bottom: 1px solid #f0f0f1;
+		}
+		
+		.plugin-header h3,
+		.theme-header h3 {
+			margin: 0;
+			font-size: 20px;
+			font-weight: 600;
+			color: #0073aa;
+			line-height: 1.3;
+			flex: 1;
+		}
+		
+		.plugin-price,
+		.theme-price {
+			flex-shrink: 0;
+			margin-left: 15px;
+		}
+		
+		.price-amount {
+			font-size: 24px;
+			font-weight: 700;
+			color: #0073aa;
+			background: #e7f3ff;
+			padding: 8px 16px;
+			border-radius: 20px;
+			border: 2px solid #0073aa;
+			display: inline-block;
+			min-width: 80px;
+			text-align: center;
+		}
+		
+		.plugin-content,
+		.theme-content {
+			margin-bottom: 20px;
+		}
+		
+		.plugin-description,
+		.theme-description {
+			font-size: 14px;
+			color: #646970;
+			line-height: 1.6;
+			margin: 0 0 15px 0;
+		}
+		
+		.plugin-features,
+		.theme-features {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 8px;
+		}
+		
+		.plugin-features li,
+		.theme-features li {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 13px;
+			color: #23282d;
+			padding: 4px 0;
+		}
+		
+		.plugin-features .dashicons,
+		.theme-features .dashicons {
+			color: #00a32a;
+			font-size: 16px;
+			flex-shrink: 0;
+		}
+		
+		.more-features {
+			font-style: italic;
+			color: #8c8f94 !important;
+		}
+		
+		.more-features .dashicons {
+			display: none;
+		}
+		
+		.plugin-actions,
+		.theme-actions {
+			display: flex;
+			gap: 10px;
+			flex-wrap: wrap;
+			padding-top: 15px;
+			border-top: 1px solid #f0f0f1;
+		}
+		
+		.plugin-actions .button,
+		.theme-actions .button {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			text-decoration: none;
+			font-weight: 500;
+		}
+		
+		.plugin-actions .button-primary,
+		.theme-actions .button-primary {
+			background: #0073aa;
+			border-color: #0073aa;
+			color: #fff;
+		}
+		
+		.plugin-actions .button-primary:hover,
+		.theme-actions .button-primary:hover {
+			background: #005a87;
+			border-color: #005a87;
+			transform: translateY(-1px);
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		}
+		
+		.plugin-actions .button-secondary,
+		.theme-actions .button-secondary {
+			background: #fff;
+			border-color: #c3c4c7;
+			color: #646970;
+		}
+		
+		.plugin-actions .button-secondary:hover,
+		.theme-actions .button-secondary:hover {
+			background: #f6f7f7;
+			border-color: #8c8f94;
+			color: #23282d;
+		}
+		
+		/* Footer sections */
+		.premium-footer,
+		.themes-footer,
+		.news-footer {
+			margin-top: 30px;
+			padding-top: 20px;
+			border-top: 1px solid #f0f0f1;
+		}
+		
+		.center-text {
+			text-align: center;
+			margin: 0;
+		}
+		
+		.button-large {
+			padding: 12px 24px;
+			font-size: 16px;
+			font-weight: 600;
+		}
+		
 		/* Plugins Grid */
 		.wbcom-plugins-header {
 			display: flex;
@@ -1247,99 +1587,6 @@ class Wbcom_Designs_Menu {
 			font-size: 13px;
 		}
 		
-		/* Premium Plugins */
-		.wbcom-premium-section .premium-plugins-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-			gap: 24px;
-			margin-top: 20px;
-		}
-		
-		.premium-plugin-card {
-			background: #fff;
-			border: 1px solid #c3c4c7;
-			border-radius: 8px;
-			overflow: hidden;
-			transition: all 0.3s ease;
-		}
-		
-		.premium-plugin-card:hover {
-			box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-			transform: translateY(-4px);
-		}
-		
-		.plugin-image {
-			height: 120px;
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-		
-		.plugin-image img {
-			max-width: 64px;
-			max-height: 64px;
-		}
-		
-		.premium-plugin-card h3 {
-			margin: 0 0 8px 0;
-			font-size: 18px;
-			color: #1d2327;
-		}
-		
-		.plugin-price {
-			margin-bottom: 15px;
-		}
-		
-		.price-label {
-			font-size: 12px;
-			color: #646970;
-			display: block;
-		}
-		
-		.price-amount {
-			font-size: 24px;
-			font-weight: bold;
-			color: #0073aa;
-		}
-		
-		.plugin-card-content {
-			padding: 20px;
-		}
-		
-		.plugin-features {
-			list-style: none;
-			padding: 0;
-			margin: 15px 0 0 0;
-		}
-		
-		.plugin-features li {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			padding: 4px 0;
-			font-size: 14px;
-			color: #646970;
-		}
-		
-		.plugin-features .dashicons {
-			color: #00a32a;
-			font-size: 16px;
-		}
-		
-		.plugin-card-footer {
-			padding: 20px;
-			background: #f8f9fa;
-			border-top: 1px solid #f0f0f1;
-		}
-		
-		.button-large {
-			padding: 8px 16px;
-			font-size: 14px;
-			width: 100%;
-			justify-content: center;
-		}
-		
 		/* News Section */
 		.wbcom-news-section {
 			max-width: 800px;
@@ -1391,6 +1638,7 @@ class Wbcom_Designs_Menu {
 			margin: 0 0 8px 0;
 			color: #646970;
 			line-height: 1.5;
+			font-size: 14px;
 		}
 		
 		.news-item small {
@@ -1492,6 +1740,24 @@ class Wbcom_Designs_Menu {
 			.wbcom-dashboard-sidebar {
 				width: 100%;
 			}
+			
+			.plugin-features,
+			.theme-features {
+				grid-template-columns: 1fr;
+			}
+			
+			.plugin-header,
+			.theme-header {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 10px;
+			}
+			
+			.plugin-price,
+			.theme-price {
+				margin-left: 0;
+				align-self: flex-end;
+			}
 		}
 		
 		@media (max-width: 768px) {
@@ -1507,14 +1773,36 @@ class Wbcom_Designs_Menu {
 				grid-template-columns: 1fr;
 			}
 			
-			.premium-plugins-grid {
-				grid-template-columns: 1fr;
-			}
-			
 			.wbcom-plugins-header {
 				flex-direction: column;
 				gap: 15px;
 				align-items: flex-start;
+			}
+			
+			.premium-plugin-item,
+			.premium-theme-item {
+				padding: 15px;
+			}
+			
+			.plugin-header h3,
+			.theme-header h3 {
+				font-size: 18px;
+			}
+			
+			.price-amount {
+				font-size: 20px;
+				padding: 6px 12px;
+			}
+			
+			.plugin-actions,
+			.theme-actions {
+				flex-direction: column;
+			}
+			
+			.plugin-actions .button,
+			.theme-actions .button {
+				width: 100%;
+				justify-content: center;
 			}
 		}
 		
@@ -1569,100 +1857,6 @@ class Wbcom_Designs_Menu {
 			}
 		}
 		
-		/* News Feed Styles */
-		.news-item {
-			display: flex;
-			gap: 15px;
-			padding: 20px 0;
-			border-bottom: 1px solid #f0f0f1;
-		}
-		
-		.news-item:last-child {
-			border-bottom: none;
-		}
-		
-		.news-image {
-			flex-shrink: 0;
-			width: 80px;
-			height: 60px;
-			border-radius: 4px;
-			overflow: hidden;
-		}
-		
-		.news-image img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
-		
-		.news-content {
-			flex: 1;
-		}
-		
-		.news-item h4 {
-			margin: 0 0 8px 0;
-			font-size: 16px;
-			line-height: 1.3;
-		}
-		
-		.news-item h4 a {
-			text-decoration: none;
-			color: #0073aa;
-		}
-		
-		.news-item h4 a:hover {
-			text-decoration: underline;
-		}
-		
-		.news-item p {
-			margin: 0 0 8px 0;
-			color: #646970;
-			line-height: 1.5;
-			font-size: 14px;
-		}
-		
-		.news-meta {
-			display: flex;
-			align-items: center;
-			gap: 15px;
-			font-size: 12px;
-			color: #8c8f94;
-		}
-		
-		.news-meta time {
-			font-weight: 500;
-		}
-		
-		.news-meta .author {
-			color: #646970;
-		}
-		
-		.news-actions {
-			text-align: center;
-			padding: 20px 0;
-			border-top: 1px solid #f0f0f1;
-			margin-top: 20px;
-		}
-		
-		.news-loading,
-		.news-empty,
-		.news-error {
-			text-align: center;
-			padding: 40px 20px;
-			color: #646970;
-		}
-		
-		.news-loading .spinner {
-			float: none;
-			margin: 0 auto 15px;
-		}
-		
-		.news-error .dashicons {
-			font-size: 24px;
-			color: #d63638;
-			margin-bottom: 10px;
-		}
-		
 		/* Accessibility Improvements */
 		.wbcom-dashboard *:focus {
 			outline: 2px solid #0073aa;
@@ -1694,12 +1888,17 @@ class Wbcom_Designs_Menu {
 			.nav-tab-active {
 				border-bottom-width: 3px;
 			}
+			
+			.price-amount {
+				border-width: 3px;
+			}
 		}
 		
 		/* Reduced Motion Support */
 		@media (prefers-reduced-motion: reduce) {
 			.wbcom-plugin-card,
-			.premium-plugin-card {
+			.premium-plugin-item,
+			.premium-theme-item {
 				transition: none;
 			}
 			
@@ -1707,6 +1906,11 @@ class Wbcom_Designs_Menu {
 			.wbcom-spin,
 			.animate-in {
 				animation: none;
+			}
+			
+			.premium-plugin-item:hover,
+			.premium-theme-item:hover {
+				transform: none;
 			}
 		}
 		</style>
@@ -1749,13 +1953,14 @@ class Wbcom_Designs_Menu {
 									newsHtml += '<small>' + date + '</small>';
 									newsHtml += '</div>';
 								});
+								$('#wbcom-news-feed').html(newsHtml);
+								$('.news-footer').show();
 							} else {
-								newsHtml = '<p>No news available.</p>';
+								$('#wbcom-news-feed').html('<div class="news-empty"><h3>No News Available</h3><p>Unable to load recent news at this time.</p></div>');
 							}
-							$('#wbcom-news-feed').html(newsHtml);
 						},
 						error: function() {
-							$('#wbcom-news-feed').html('<p>Unable to load news.</p>');
+							$('#wbcom-news-feed').html('<div class="news-error"><span class="dashicons dashicons-warning"></span><h3>Unable to Load News</h3><p>Please check your internet connection and try again later.</p></div>');
 						}
 					});
 				}
