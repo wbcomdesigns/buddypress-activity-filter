@@ -1,5 +1,5 @@
 /**
- * BuddyPress Activity Filter Admin JavaScript (Consolidated)
+ * BuddyPress Activity Filter Admin JavaScript - Production Ready
  *
  * @package BuddyPress_Activity_Filter
  * @since 4.0.0
@@ -9,17 +9,26 @@
     'use strict';
 
     /**
-     * Activity Filter Admin object
+     * Enhanced Activity Filter Admin object
      */
     const BPActivityFilterAdmin = {
         
+        /**
+         * Settings from localized script
+         */
+        settings: typeof bpActivityFilterAdmin !== 'undefined' ? bpActivityFilterAdmin : {},
+
         /**
          * Initialize admin functionality
          */
         init: function() {
             this.bindEvents();
+            this.initTabs();
             this.initCPTSettings();
+            this.initHiddenActivities();
             this.handleFormValidation();
+            this.initAccessibility();
+            this.showLoadedState();
         },
 
         /**
@@ -29,11 +38,12 @@
             // CPT checkbox changes
             $(document).on('change', '.cpt-enable-checkbox', this.handleCPTToggle);
             
-            // Form submission
+            // Form submission with enhanced feedback
             $(document).on('submit', 'form', this.handleFormSubmit);
             
-            // Tab navigation with keyboard
+            // Tab navigation with keyboard support
             $('.nav-tab').on('keydown', this.handleTabKeydown);
+            $('.nav-tab').on('click', this.handleTabClick);
             
             // Settings validation
             $('#bp_activity_filter_default, #bp_activity_filter_profile_default').on('change', this.validateDefaultFilters);
@@ -41,12 +51,69 @@
             // CPT label input changes for preview
             $(document).on('input', '.cpt-label-input', this.updateActivityPreview);
             
-            // Global CPT settings help
-            $(document).on('click', '.cpt-help-toggle', this.toggleHelp);
+            // Hidden activities bulk actions
+            $('#select-all-hidden').on('click', this.selectAllHidden);
+            $('#deselect-all-hidden').on('click', this.deselectAllHidden);
+            
+            // Hidden activities checkbox changes
+            $(document).on('change', '.bp-activity-checkbox', this.handleHiddenActivityChange);
+            
+            // Prevent form submission on Enter in text inputs (except submit buttons)
+            $('input[type="text"]').on('keypress', function(e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    $(this).blur();
+                }
+            });
+
+            // Auto-save draft functionality (optional)
+            if (this.settings.autosave) {
+                this.initAutosave();
+            }
         },
 
         /**
-         * Handle CPT toggle
+         * Initialize tab functionality
+         */
+        initTabs: function() {
+            // Set ARIA attributes
+            $('.nav-tab').each(function() {
+                const tabId = $(this).data('tab');
+                $(this).attr('aria-controls', 'tab-content-' + tabId);
+            });
+
+            // Handle direct tab links
+            const urlParams = new URLSearchParams(window.location.search);
+            const activeTab = urlParams.get('tab');
+            if (activeTab) {
+                $('.nav-tab[data-tab="' + activeTab + '"]').addClass('nav-tab-active');
+            }
+        },
+
+        /**
+         * Handle tab clicks with smooth transitions
+         */
+        handleTabClick: function(e) {
+            e.preventDefault();
+            
+            const $tab = $(this);
+            const tabId = $tab.data('tab');
+            
+            // Update tab states
+            $('.nav-tab').removeClass('nav-tab-active').attr('aria-selected', 'false');
+            $tab.addClass('nav-tab-active').attr('aria-selected', 'true');
+            
+            // Update URL without page reload
+            const url = new URL(window.location);
+            url.searchParams.set('tab', tabId);
+            window.history.replaceState({}, '', url);
+            
+            // Navigate to the tab
+            window.location.href = $tab.attr('href');
+        },
+
+        /**
+         * Handle CPT toggle with enhanced UX
          */
         handleCPTToggle: function() {
             const $checkbox = $(this);
@@ -56,27 +123,47 @@
             
             if ($checkbox.is(':checked')) {
                 $labelInput.prop('disabled', false);
-                $container.removeClass('disabled');
-                $settings.slideDown(200);
+                $container.removeClass('disabled').addClass('enabled');
                 
-                // Focus on label input for better UX
-                setTimeout(function() {
-                    $labelInput.focus();
-                }, 250);
+                // Smooth slide down animation
+                $settings.slideDown({
+                    duration: 300,
+                    easing: 'easeOutCubic',
+                    complete: function() {
+                        // Focus on label input for better UX
+                        $labelInput.focus();
+                        // Update preview
+                        BPActivityFilterAdmin.updateActivityPreview.call($labelInput[0]);
+                    }
+                });
                 
-                // Update preview when label changes
+                // Bind preview updates
                 $labelInput.on('input', BPActivityFilterAdmin.updateActivityPreview);
-                BPActivityFilterAdmin.updateActivityPreview.call($labelInput[0]);
+                
             } else {
                 $labelInput.prop('disabled', true);
-                $container.addClass('disabled');
-                $settings.slideUp(200);
+                $container.removeClass('enabled').addClass('disabled');
+                
+                // Smooth slide up animation
+                $settings.slideUp({
+                    duration: 300,
+                    easing: 'easeInCubic'
+                });
+                
+                // Unbind preview updates
                 $labelInput.off('input', BPActivityFilterAdmin.updateActivityPreview);
             }
+            
+            // Announce change to screen readers
+            BPActivityFilterAdmin.announceToScreenReader(
+                $checkbox.is(':checked') 
+                    ? BPActivityFilterAdmin.settings.strings.cptEnabled 
+                    : BPActivityFilterAdmin.settings.strings.cptDisabled
+            );
         },
 
         /**
-         * Update activity preview text
+         * Update activity preview text with enhanced formatting
          */
         updateActivityPreview: function() {
             const $input = $(this);
@@ -85,19 +172,512 @@
             const placeholder = $input.attr('placeholder') || 'post';
             const customLabel = $input.val().trim() || placeholder;
             
+            // Create preview with proper escaping
             const previewText = BPActivityFilterAdmin.getPreviewText(customLabel);
-            $preview.html(previewText);
+            
+            // Animate the preview update
+            $preview.fadeOut(150, function() {
+                $preview.html(previewText).fadeIn(150);
+            });
         },
 
         /**
-         * Get activity preview text
+         * Get activity preview text with proper formatting
          */
         getPreviewText: function(label) {
             const authorName = '<strong>John Doe</strong>';
             const postType = '<em>' + BPActivityFilterAdmin.escapeHtml(label) + '</em>';
-            const postTitle = '<a href="#">Sample Post Title</a>';
+            const postTitle = '<a href="#" onclick="return false;">Sample Post Title</a>';
             
             return authorName + ' published a new ' + postType + ': ' + postTitle;
+        },
+
+        /**
+         * Initialize CPT settings with enhanced functionality
+         */
+        initCPTSettings: function() {
+            // Initialize all CPT toggles
+            $('.cpt-enable-checkbox').each(function() {
+                BPActivityFilterAdmin.handleCPTToggle.call(this);
+            });
+            
+            // Add character counter to label inputs
+            $('.cpt-label-input').each(function() {
+                BPActivityFilterAdmin.addCharacterCounter($(this));
+            });
+        },
+
+        /**
+         * Add character counter to input fields
+         */
+        addCharacterCounter: function($input) {
+            const maxLength = 50; // Reasonable limit for activity labels
+            const $counter = $('<div class="character-counter"></div>');
+            
+            $input.after($counter);
+            
+            $input.on('input', function() {
+                const length = $(this).val().length;
+                const remaining = maxLength - length;
+                
+                $counter.text(remaining + ' characters remaining');
+                
+                if (remaining < 10) {
+                    $counter.addClass('warning');
+                } else {
+                    $counter.removeClass('warning');
+                }
+                
+                if (remaining < 0) {
+                    $counter.addClass('error');
+                    $(this).addClass('error');
+                } else {
+                    $counter.removeClass('error');
+                    $(this).removeClass('error');
+                }
+            });
+            
+            // Initialize counter
+            $input.trigger('input');
+        },
+
+        /**
+         * Initialize hidden activities functionality
+         */
+        initHiddenActivities: function() {
+            // Update checkbox label states
+            $('.bp-activity-checkbox').each(function() {
+                BPActivityFilterAdmin.updateCheckboxLabelState($(this));
+            });
+            
+            // Add search functionality
+            BPActivityFilterAdmin.addHiddenActivitiesSearch();
+        },
+
+        /**
+         * Add search functionality to hidden activities
+         */
+        addHiddenActivitiesSearch: function() {
+            const $fieldset = $('#bp-hidden-activities-fieldset');
+            if ($fieldset.length === 0) return;
+            
+            const $searchBox = $(
+                '<div class="hidden-activities-search">' +
+                '<label for="hidden-activities-search-input">' + 
+                (BPActivityFilterAdmin.settings.strings.searchActivities || 'Search activities:') + 
+                '</label>' +
+                '<input type="text" id="hidden-activities-search-input" class="regular-text" placeholder="' + 
+                (BPActivityFilterAdmin.settings.strings.searchPlaceholder || 'Type to search...') + '">' +
+                '</div>'
+            );
+            
+            $fieldset.before($searchBox);
+            
+            const $searchInput = $searchBox.find('input');
+            $searchInput.on('input', function() {
+                const searchTerm = $(this).val().toLowerCase();
+                
+                $('.bp-activity-checkbox-label').each(function() {
+                    const $label = $(this);
+                    const labelText = $label.find('.checkbox-label-text').text().toLowerCase();
+                    const keyText = $label.find('.activity-key').text().toLowerCase();
+                    
+                    if (labelText.includes(searchTerm) || keyText.includes(searchTerm)) {
+                        $label.show();
+                    } else {
+                        $label.hide();
+                    }
+                });
+            });
+        },
+
+        /**
+         * Handle hidden activity checkbox changes
+         */
+        handleHiddenActivityChange: function() {
+            const $checkbox = $(this);
+            BPActivityFilterAdmin.updateCheckboxLabelState($checkbox);
+            BPActivityFilterAdmin.validateDefaultFilters();
+            
+            // Update bulk action button states
+            BPActivityFilterAdmin.updateBulkActionStates();
+        },
+
+        /**
+         * Update checkbox label visual state
+         */
+        updateCheckboxLabelState: function($checkbox) {
+            const $label = $checkbox.closest('.bp-activity-checkbox-label');
+            
+            if ($checkbox.is(':checked')) {
+                $label.addClass('checked');
+            } else {
+                $label.removeClass('checked');
+            }
+        },
+
+        /**
+         * Update bulk action button states
+         */
+        updateBulkActionStates: function() {
+            const $checkboxes = $('.bp-activity-checkbox');
+            const totalVisible = $checkboxes.filter(':visible').length;
+            const checkedVisible = $checkboxes.filter(':visible:checked').length;
+            
+            const $selectAll = $('#select-all-hidden');
+            const $deselectAll = $('#deselect-all-hidden');
+            
+            // Update button states
+            $selectAll.prop('disabled', checkedVisible === totalVisible);
+            $deselectAll.prop('disabled', checkedVisible === 0);
+            
+            // Update button text to show counts
+            $selectAll.html(
+                '<span class="dashicons dashicons-yes"></span> ' +
+                BPActivityFilterAdmin.settings.strings.selectAll + ' (' + (totalVisible - checkedVisible) + ')'
+            );
+            $deselectAll.html(
+                '<span class="dashicons dashicons-no"></span> ' +
+                BPActivityFilterAdmin.settings.strings.deselectAll + ' (' + checkedVisible + ')'
+            );
+        },
+
+        /**
+         * Select all hidden activities
+         */
+        selectAllHidden: function(e) {
+            e.preventDefault();
+            
+            $('.bp-activity-checkbox:visible').prop('checked', true).each(function() {
+                BPActivityFilterAdmin.updateCheckboxLabelState($(this));
+            });
+            
+            BPActivityFilterAdmin.validateDefaultFilters();
+            BPActivityFilterAdmin.updateBulkActionStates();
+            
+            // Announce to screen readers
+            BPActivityFilterAdmin.announceToScreenReader(
+                BPActivityFilterAdmin.settings.strings.allSelected || 'All visible activities selected'
+            );
+        },
+
+        /**
+         * Deselect all hidden activities
+         */
+        deselectAllHidden: function(e) {
+            e.preventDefault();
+            
+            $('.bp-activity-checkbox:visible').prop('checked', false).each(function() {
+                BPActivityFilterAdmin.updateCheckboxLabelState($(this));
+            });
+            
+            BPActivityFilterAdmin.validateDefaultFilters();
+            BPActivityFilterAdmin.updateBulkActionStates();
+            
+            // Announce to screen readers
+            BPActivityFilterAdmin.announceToScreenReader(
+                BPActivityFilterAdmin.settings.strings.allDeselected || 'All visible activities deselected'
+            );
+        },
+
+        /**
+         * Handle form submission with enhanced feedback
+         */
+        handleFormSubmit: function(e) {
+            const $form = $(this);
+            const $submitButton = $form.find('#bp-activity-filter-submit');
+            const $spinner = $form.find('#bp-activity-filter-spinner');
+            const originalText = $submitButton.val();
+            
+            // Validate form before submission
+            if (!BPActivityFilterAdmin.validateForm($form)) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Show loading state
+            $submitButton.val(BPActivityFilterAdmin.settings.strings.saving || 'Saving...');
+            $submitButton.prop('disabled', true);
+            $spinner.addClass('is-active');
+            $form.addClass('loading');
+            
+            // Add visual feedback
+            BPActivityFilterAdmin.showNotice('info', BPActivityFilterAdmin.settings.strings.saving || 'Saving settings...');
+            
+            // Reset after form submission (page will reload)
+            setTimeout(function() {
+                $submitButton.val(originalText);
+                $submitButton.prop('disabled', false);
+                $spinner.removeClass('is-active');
+                $form.removeClass('loading');
+            }, 2000);
+        },
+
+        /**
+         * Validate form before submission
+         */
+        validateForm: function($form) {
+            let isValid = true;
+            const errors = [];
+            
+            // Validate CPT labels don't exceed reasonable length
+            $('.cpt-label-input:enabled').each(function() {
+                const $input = $(this);
+                if ($input.val().length > 50) {
+                    errors.push('Custom post type labels should be 50 characters or less.');
+                    $input.addClass('error');
+                    isValid = false;
+                } else {
+                    $input.removeClass('error');
+                }
+            });
+            
+            // Show validation errors
+            if (!isValid) {
+                errors.forEach(function(error) {
+                    BPActivityFilterAdmin.showNotice('error', error);
+                });
+            }
+            
+            return isValid;
+        },
+
+        /**
+         * Handle tab keyboard navigation
+         */
+        handleTabKeydown: function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                $(this).trigger('click');
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                const $tabs = $('.nav-tab');
+                const currentIndex = $tabs.index(this);
+                let newIndex;
+                
+                if (e.key === 'ArrowLeft') {
+                    newIndex = currentIndex === 0 ? $tabs.length - 1 : currentIndex - 1;
+                } else {
+                    newIndex = currentIndex === $tabs.length - 1 ? 0 : currentIndex + 1;
+                }
+                
+                $tabs.eq(newIndex).focus().trigger('click');
+            }
+        },
+
+        /**
+         * Validate default filters against hidden activities
+         */
+        validateDefaultFilters: function() {
+            const $hiddenCheckboxes = $('.bp-activity-checkbox:checked');
+            const $defaultSelect = $('#bp_activity_filter_default');
+            const $profileDefaultSelect = $('#bp_activity_filter_profile_default');
+            
+            if ($hiddenCheckboxes.length === 0) {
+                BPActivityFilterAdmin.clearValidationWarnings();
+                return;
+            }
+            
+            const hiddenValues = [];
+            $hiddenCheckboxes.each(function() {
+                hiddenValues.push($(this).val());
+            });
+            
+            // Check if selected default filter is hidden
+            const defaultValue = $defaultSelect.val();
+            const profileDefaultValue = $profileDefaultSelect.val();
+            
+            let warnings = [];
+            
+            if (hiddenValues.indexOf(defaultValue) !== -1) {
+                warnings.push('The selected site-wide default filter is currently hidden and will not be effective.');
+                $defaultSelect.addClass('warning');
+            } else {
+                $defaultSelect.removeClass('warning');
+            }
+            
+            if (hiddenValues.indexOf(profileDefaultValue) !== -1) {
+                warnings.push('The selected profile default filter is currently hidden and will not be effective.');
+                $profileDefaultSelect.addClass('warning');
+            } else {
+                $profileDefaultSelect.removeClass('warning');
+            }
+            
+            // Show or clear warnings
+            if (warnings.length > 0) {
+                warnings.forEach(function(warning) {
+                    BPActivityFilterAdmin.showValidationWarning(warning);
+                });
+            } else {
+                BPActivityFilterAdmin.clearValidationWarnings();
+            }
+        },
+
+        /**
+         * Show validation warning
+         */
+        showValidationWarning: function(message) {
+            // Remove existing warnings of this type first
+            $('.bp-activity-filter-validation-warning').remove();
+            
+            const $warning = $(
+                '<div class="notice notice-warning bp-activity-filter-validation-warning inline">' +
+                '<p><strong>Warning:</strong> ' + BPActivityFilterAdmin.escapeHtml(message) + '</p>' +
+                '</div>'
+            );
+            
+            // Insert after the form table
+            $('.form-table').after($warning);
+            
+            // Auto-remove warning after 10 seconds
+            setTimeout(function() {
+                $warning.fadeOut(function() {
+                    $(this).remove();
+                });
+            }, 10000);
+        },
+
+        /**
+         * Clear validation warnings
+         */
+        clearValidationWarnings: function() {
+            $('.bp-activity-filter-validation-warning').fadeOut(function() {
+                $(this).remove();
+            });
+            $('.warning').removeClass('warning');
+        },
+
+        /**
+         * Handle form validation on input changes
+         */
+        handleFormValidation: function() {
+            // Validate on hidden activities change
+            $(document).on('change', '.bp-activity-checkbox', function() {
+                setTimeout(BPActivityFilterAdmin.validateDefaultFilters, 100);
+            });
+            
+            // Validate on default filter changes
+            $('#bp_activity_filter_default, #bp_activity_filter_profile_default').on('change', function() {
+                setTimeout(BPActivityFilterAdmin.validateDefaultFilters, 100);
+            });
+        },
+
+        /**
+         * Initialize accessibility features
+         */
+        initAccessibility: function() {
+            // Add ARIA live region for announcements
+            if ($('#bp-activity-filter-live-region').length === 0) {
+                $('body').append('<div id="bp-activity-filter-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>');
+            }
+            
+            // Add proper ARIA labels and descriptions
+            $('input[type="checkbox"]').each(function() {
+                const $checkbox = $(this);
+                const $label = $checkbox.closest('label');
+                if ($label.length > 0) {
+                    const labelText = $label.find('.checkbox-label-text').text();
+                    $checkbox.attr('aria-label', labelText);
+                }
+            });
+            
+            // Add keyboard navigation help
+            $('.nav-tab-wrapper').attr('role', 'tablist');
+            $('.nav-tab').attr('role', 'tab');
+            
+            // Add focus indicators for better visibility
+            $('input, select, button, .nav-tab').on('focus', function() {
+                $(this).addClass('focus-visible');
+            }).on('blur', function() {
+                $(this).removeClass('focus-visible');
+            });
+        },
+
+        /**
+         * Show loaded state to prevent flash of unstyled content
+         */
+        showLoadedState: function() {
+            $('.bp-activity-filter-admin').addClass('loaded');
+        },
+
+        /**
+         * Initialize auto-save functionality (optional)
+         */
+        initAutosave: function() {
+            let autosaveTimeout;
+            const autosaveDelay = 3000; // 3 seconds
+            
+            $('input, select, textarea').on('change input', function() {
+                clearTimeout(autosaveTimeout);
+                autosaveTimeout = setTimeout(function() {
+                    BPActivityFilterAdmin.performAutosave();
+                }, autosaveDelay);
+            });
+        },
+
+        /**
+         * Perform auto-save
+         */
+        performAutosave: function() {
+            const $form = $('form');
+            const formData = $form.serialize();
+            
+            $.ajax({
+                url: BPActivityFilterAdmin.settings.ajaxUrl,
+                type: 'POST',
+                data: formData + '&action=bp_activity_filter_autosave&nonce=' + BPActivityFilterAdmin.settings.nonce,
+                success: function(response) {
+                    if (response.success) {
+                        BPActivityFilterAdmin.showNotice('success', 'Settings auto-saved', 2000);
+                    }
+                },
+                error: function() {
+                    // Silently fail for auto-save
+                }
+            });
+        },
+
+        /**
+         * Show admin notice
+         */
+        showNotice: function(type, message, duration) {
+            duration = duration || 5000;
+            
+            // Remove existing notices of the same type
+            $('.bp-activity-filter-notice').remove();
+            
+            const noticeClass = 'notice-' + type;
+            const $notice = $(
+                '<div class="notice ' + noticeClass + ' bp-activity-filter-notice is-dismissible">' +
+                '<p>' + BPActivityFilterAdmin.escapeHtml(message) + '</p>' +
+                '<button type="button" class="notice-dismiss">' +
+                '<span class="screen-reader-text">Dismiss this notice.</span>' +
+                '</button>' +
+                '</div>'
+            );
+            
+            $('.bp-activity-filter-admin h1').after($notice);
+            
+            // Auto-dismiss after duration
+            setTimeout(function() {
+                $notice.fadeOut(function() {
+                    $(this).remove();
+                });
+            }, duration);
+            
+            // Handle manual dismiss
+            $notice.on('click', '.notice-dismiss', function() {
+                $notice.fadeOut(function() {
+                    $(this).remove();
+                });
+            });
+        },
+
+        /**
+         * Announce to screen readers
+         */
+        announceToScreenReader: function(message) {
+            $('#bp-activity-filter-live-region').text(message);
         },
 
         /**
@@ -110,239 +690,149 @@
         },
 
         /**
-         * Initialize CPT settings
+         * Utility function to debounce function calls
          */
-        initCPTSettings: function() {
-            $('.cpt-enable-checkbox').each(function() {
-                $(this).trigger('change');
-            });
+        debounce: function(func, wait, immediate) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                const later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                const callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        },
+
+        /**
+         * Check if user prefers reduced motion
+         */
+        prefersReducedMotion: function() {
+            return window.matchMedia && 
+                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        },
+
+        /**
+         * Handle responsive breakpoints
+         */
+        handleResponsiveBreakpoints: function() {
+            const $window = $(window);
+            const breakpoints = {
+                mobile: 768,
+                tablet: 1024
+            };
             
-            // Initialize previews for enabled CPTs
-            $('.cpt-setting-item').each(function() {
-                const $container = $(this);
-                const $checkbox = $container.find('.cpt-enable-checkbox');
-                const $labelInput = $container.find('.cpt-label-input');
+            function updateLayout() {
+                const windowWidth = $window.width();
                 
-                if ($checkbox.is(':checked')) {
-                    BPActivityFilterAdmin.updateActivityPreview.call($labelInput[0]);
+                if (windowWidth <= breakpoints.mobile) {
+                    $('body').addClass('bp-admin-mobile').removeClass('bp-admin-tablet bp-admin-desktop');
+                } else if (windowWidth <= breakpoints.tablet) {
+                    $('body').addClass('bp-admin-tablet').removeClass('bp-admin-mobile bp-admin-desktop');
+                } else {
+                    $('body').addClass('bp-admin-desktop').removeClass('bp-admin-mobile bp-admin-tablet');
                 }
-            });
+            }
+            
+            // Initial layout update
+            updateLayout();
+            
+            // Update on resize (debounced)
+            $window.on('resize', BPActivityFilterAdmin.debounce(updateLayout, 250));
         },
 
         /**
-         * Toggle help text
+         * Enhanced error handling
          */
-        toggleHelp: function(e) {
-            e.preventDefault();
-            const $helpText = $(this).next('.help-text');
-            $helpText.slideToggle(200);
+        handleError: function(error, context) {
+            console.error('[BP Activity Filter] Error in ' + context + ':', error);
             
-            const $icon = $(this).find('.dashicons');
-            $icon.toggleClass('dashicons-arrow-down dashicons-arrow-up');
-        },
-
-        /**
-         * Handle form submission
-         */
-        handleFormSubmit: function(e) {
-            const $form = $(this);
-            const $submitButton = $form.find('input[type="submit"]');
-            const originalText = $submitButton.val();
+            // Show user-friendly error message
+            BPActivityFilterAdmin.showNotice(
+                'error', 
+                'An error occurred. Please refresh the page and try again. If the problem persists, contact support.',
+                10000
+            );
             
-            // Show loading state
-            $submitButton.val('Saving...');
-            $submitButton.prop('disabled', true);
-            $form.addClass('loading');
-            
-            // Reset after a delay (form will submit normally)
-            setTimeout(function() {
-                $submitButton.val(originalText);
-                $submitButton.prop('disabled', false);
-                $form.removeClass('loading');
-            }, 2000);
-        },
-
-        /**
-         * Handle tab keyboard navigation
-         */
-        handleTabKeydown: function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                $(this)[0].click();
+            // Log error details for debugging
+            if (BPActivityFilterAdmin.settings.debug) {
+                console.log('Error details:', {
+                    context: context,
+                    error: error,
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent,
+                    url: window.location.href
+                });
             }
         },
 
         /**
-         * Validate default filters
+         * Performance monitoring
          */
-        validateDefaultFilters: function() {
-            const $hiddenCheckboxes = $('input[name="bp_activity_filter_hidden[]"]:checked');
-            const $defaultSelect = $('#bp_activity_filter_default');
-            const $profileDefaultSelect = $('#bp_activity_filter_profile_default');
-            
-            if ($hiddenCheckboxes.length === 0) {
-                return; // No validation needed if nothing is hidden
+        initPerformanceMonitoring: function() {
+            if (!BPActivityFilterAdmin.settings.debug) {
+                return;
             }
             
-            const hiddenValues = [];
-            $hiddenCheckboxes.each(function() {
-                hiddenValues.push($(this).val());
+            // Monitor script load time
+            const startTime = performance.now();
+            
+            $(document).ready(function() {
+                const endTime = performance.now();
+                console.log('[BP Activity Filter] Admin script loaded in ' + (endTime - startTime) + ' milliseconds');
             });
             
-            // Check if selected default filter is hidden
-            const defaultValue = $defaultSelect.val();
-            const profileDefaultValue = $profileDefaultSelect.val();
-            
-            if (hiddenValues.indexOf(defaultValue) !== -1) {
-                BPActivityFilterAdmin.showWarning('The selected site-wide default filter is currently hidden.');
-            }
-            
-            if (hiddenValues.indexOf(profileDefaultValue) !== -1) {
-                BPActivityFilterAdmin.showWarning('The selected profile default filter is currently hidden.');
-            }
-        },
-
-        /**
-         * Handle form validation
-         */
-        handleFormValidation: function() {
-            // Validate on hidden activities change
-            $(document).on('change', 'input[name="bp_activity_filter_hidden[]"]', function() {
-                setTimeout(BPActivityFilterAdmin.validateDefaultFilters, 100);
+            // Monitor form submission time
+            $('form').on('submit', function() {
+                const submitStartTime = performance.now();
+                
+                $(window).on('beforeunload', function() {
+                    const submitEndTime = performance.now();
+                    console.log('[BP Activity Filter] Form submission took ' + (submitEndTime - submitStartTime) + ' milliseconds');
+                });
             });
-        },
-
-        /**
-         * Show warning message
-         */
-        showWarning: function(message) {
-            // Remove existing warnings
-            $('.bp-activity-filter-warning').remove();
-            
-            // Create warning notice
-            const $warning = $('<div class="notice notice-warning bp-activity-filter-warning"><p>' + message + '</p></div>');
-            
-            // Insert after the form
-            $('form').after($warning);
-            
-            // Remove warning after 5 seconds
-            setTimeout(function() {
-                $warning.fadeOut(function() {
-                    $(this).remove();
-                });
-            }, 5000);
-        },
-
-        /**
-         * Show success message
-         */
-        showSuccess: function(message) {
-            const $success = $('<div class="notice notice-success"><p>' + message + '</p></div>');
-            $('h1').after($success);
-            
-            setTimeout(function() {
-                $success.fadeOut(function() {
-                    $(this).remove();
-                });
-            }, 3000);
-        },
-
-        /**
-         * Show error message
-         */
-        showError: function(message) {
-            const $error = $('<div class="notice notice-error"><p>' + message + '</p></div>');
-            $('h1').after($error);
-            
-            setTimeout(function() {
-                $error.fadeOut(function() {
-                    $(this).remove();
-                });
-            }, 5000);
         }
     };
 
     /**
-     * Wbcom Designs Dashboard object (for dashboard pages)
+     * Enhanced Dashboard functionality (if on dashboard page)
      */
     const WbcomDashboard = {
         
         /**
-         * Settings from localized script
-         */
-        settings: typeof wbcomDashboard !== 'undefined' ? wbcomDashboard : {},
-
-        /**
-         * Initialize dashboard functionality
+         * Initialize dashboard
          */
         init: function() {
-            // Only initialize on dashboard pages
             if (!$('.wbcom-dashboard').length) {
                 return;
             }
-
+            
             this.bindEvents();
             this.initPluginFilters();
             this.loadNewsFeed();
-            this.initAccessibility();
             this.initAnimations();
         },
 
         /**
-         * Bind events
+         * Bind dashboard events
          */
         bindEvents: function() {
             // Plugin filter buttons
             $(document).on('click', '.filter-btn', this.handlePluginFilter);
             
-            // Tab navigation with keyboard support
-            $(document).on('keydown', '.nav-tab', this.handleTabKeyboard);
-            
-            // Plugin action buttons
-            $(document).on('click', '.plugin-action-btn', this.handlePluginAction);
-            
-            // Smooth scrolling for anchor links
-            $(document).on('click', 'a[href^="#"]', this.handleSmoothScroll);
-            
             // News feed refresh
             $(document).on('click', '.refresh-news', this.refreshNewsFeed);
             
-            // Plugin card interactions
-            $(document).on('mouseenter', '.wbcom-plugin-card', this.handleCardHover);
-            $(document).on('mouseleave', '.wbcom-plugin-card', this.handleCardLeave);
-            
-            // Search functionality
-            $(document).on('input', '.plugin-search', this.handlePluginSearch);
-            
-            // Global keyboard shortcuts
-            $(document).on('keydown', this.handleGlobalKeydown);
+            // Smooth scrolling for anchor links
+            $(document).on('click', 'a[href^="#"]', this.handleSmoothScroll);
         },
 
         /**
-         * Initialize plugin filters
-         */
-        initPluginFilters: function() {
-            const $filterBtns = $('.filter-btn');
-            const $pluginCards = $('.wbcom-plugin-card');
-            
-            if ($filterBtns.length === 0 || $pluginCards.length === 0) {
-                return;
-            }
-
-            // Set initial counts
-            this.updateFilterCounts();
-            
-            // Handle URL parameters for initial filter
-            const urlParams = new URLSearchParams(window.location.search);
-            const filterParam = urlParams.get('filter');
-            
-            if (filterParam && $filterBtns.filter('[data-filter="' + filterParam + '"]').length > 0) {
-                this.applyFilter(filterParam);
-            }
-        },
-
-        /**
-         * Handle plugin filter button clicks
+         * Handle plugin filter
          */
         handlePluginFilter: function(e) {
             e.preventDefault();
@@ -356,18 +846,6 @@
             
             // Apply filter
             WbcomDashboard.applyFilter(filter);
-            
-            // Update URL without reload
-            const url = new URL(window.location);
-            if (filter === 'all') {
-                url.searchParams.delete('filter');
-            } else {
-                url.searchParams.set('filter', filter);
-            }
-            window.history.replaceState({}, '', url);
-            
-            // Announce to screen readers
-            WbcomDashboard.announceToScreenReader('Showing ' + (filter === 'all' ? 'all plugins' : filter + ' plugins'));
         },
 
         /**
@@ -390,15 +868,18 @@
                     }
                 });
             }
-            
-            // Update counts
-            setTimeout(() => {
-                this.updateFilterCounts();
-            }, 250);
         },
 
         /**
-         * Update filter button counts
+         * Initialize plugin filters
+         */
+        initPluginFilters: function() {
+            // Set initial filter states
+            this.updateFilterCounts();
+        },
+
+        /**
+         * Update filter counts
          */
         updateFilterCounts: function() {
             const $filterBtns = $('.filter-btn');
@@ -412,73 +893,12 @@
                 if (filter === 'all') {
                     count = $cards.length;
                 } else {
-                    count = $cards.filter('[data-status="' + filter + '"]:visible').length;
+                    count = $cards.filter('[data-status="' + filter + '"]').length;
                 }
                 
-                // Update button text with count
                 const baseText = $btn.text().replace(/ \(\d+\)/, '');
                 $btn.text(baseText + ' (' + count + ')');
             });
-        },
-
-        /**
-         * Handle plugin search
-         */
-        handlePluginSearch: function() {
-            const searchTerm = $(this).val().toLowerCase();
-            const $cards = $('.wbcom-plugin-card');
-            
-            if (searchTerm === '') {
-                $cards.show();
-                return;
-            }
-            
-            $cards.each(function() {
-                const $card = $(this);
-                const pluginName = $card.find('h3').text().toLowerCase();
-                const pluginDesc = $card.find('.plugin-description').text().toLowerCase();
-                
-                if (pluginName.includes(searchTerm) || pluginDesc.includes(searchTerm)) {
-                    $card.show();
-                } else {
-                    $card.hide();
-                }
-            });
-        },
-
-        /**
-         * Handle tab keyboard navigation
-         */
-        handleTabKeyboard: function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                window.location.href = $(this).attr('href');
-            }
-        },
-
-        /**
-         * Handle global keyboard shortcuts
-         */
-        handleGlobalKeydown: function(e) {
-            // Only on dashboard pages
-            if (!$('.wbcom-dashboard').length) {
-                return;
-            }
-
-            // Escape key - reset filters
-            if (e.key === 'Escape') {
-                $('.filter-btn[data-filter="all"]').trigger('click');
-            }
-            
-            // Alt + number keys for quick tab switching
-            if (e.altKey && e.key >= '1' && e.key <= '4') {
-                e.preventDefault();
-                const tabIndex = parseInt(e.key) - 1;
-                const $tabs = $('.nav-tab');
-                if ($tabs.eq(tabIndex).length) {
-                    $tabs.eq(tabIndex)[0].click();
-                }
-            }
         },
 
         /**
@@ -508,7 +928,7 @@
         },
 
         /**
-         * Render news feed content
+         * Render news feed
          */
         renderNewsFeed: function(posts) {
             const $newsFeed = $('#wbcom-news-feed');
@@ -517,47 +937,16 @@
             if (posts && posts.length > 0) {
                 posts.forEach(function(post) {
                     const excerpt = $('<div>').html(post.excerpt.rendered).text().trim();
-                    const date = new Date(post.date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
+                    const date = new Date(post.date).toLocaleDateString();
                     
-                    let featuredImage = '';
-                    if (post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
-                        const imageData = post._embedded['wp:featuredmedia'][0];
-                        const imageUrl = imageData.media_details && imageData.media_details.sizes && imageData.media_details.sizes.thumbnail 
-                            ? imageData.media_details.sizes.thumbnail.source_url 
-                            : imageData.source_url;
-                        featuredImage = '<div class="news-image"><img src="' + imageUrl + '" alt="' + WbcomDashboard.escapeHtml(post.title.rendered) + '" loading="lazy"></div>';
-                    }
-                    
-                    newsHtml += '<article class="news-item">';
-                    newsHtml += featuredImage;
-                    newsHtml += '<div class="news-content">';
-                    newsHtml += '<h4><a href="' + post.link + '" target="_blank" rel="noopener">' + WbcomDashboard.escapeHtml(post.title.rendered) + '</a></h4>';
+                    newsHtml += '<div class="news-item">';
+                    newsHtml += '<h4><a href="' + post.link + '" target="_blank">' + WbcomDashboard.escapeHtml(post.title.rendered) + '</a></h4>';
                     newsHtml += '<p>' + WbcomDashboard.escapeHtml(excerpt) + '</p>';
-                    newsHtml += '<div class="news-meta">';
-                    newsHtml += '<time datetime="' + post.date + '">' + date + '</time>';
-                    if (post._embedded && post._embedded.author && post._embedded.author[0]) {
-                        newsHtml += '<span class="author">by ' + WbcomDashboard.escapeHtml(post._embedded.author[0].name) + '</span>';
-                    }
+                    newsHtml += '<small>' + date + '</small>';
                     newsHtml += '</div>';
-                    newsHtml += '</div>';
-                    newsHtml += '</article>';
                 });
-                
-                // Add refresh button
-                newsHtml += '<div class="news-actions">';
-                newsHtml += '<button type="button" class="button button-secondary refresh-news">';
-                newsHtml += '<span class="dashicons dashicons-update"></span> Refresh News';
-                newsHtml += '</button>';
-                newsHtml += '</div>';
             } else {
-                newsHtml = '<div class="news-empty">';
-                newsHtml += '<p>No news available at the moment.</p>';
-                newsHtml += '<a href="https://wbcomdesigns.com/blog/" target="_blank" class="button button-primary">Visit Our Blog</a>';
-                newsHtml += '</div>';
+                newsHtml = '<p>No news available.</p>';
             }
             
             $newsFeed.html(newsHtml);
@@ -568,13 +957,7 @@
          */
         renderNewsFeedError: function() {
             const $newsFeed = $('#wbcom-news-feed');
-            const errorHtml = '<div class="news-error">' +
-                '<p><span class="dashicons dashicons-warning"></span> Unable to load news feed.</p>' +
-                '<p>Please check your internet connection or <a href="https://wbcomdesigns.com/blog/" target="_blank">visit our blog</a> directly.</p>' +
-                '<button type="button" class="button button-secondary refresh-news">Try Again</button>' +
-                '</div>';
-            
-            $newsFeed.html(errorHtml);
+            $newsFeed.html('<p>Unable to load news feed.</p>');
         },
 
         /**
@@ -584,22 +967,11 @@
             e.preventDefault();
             
             const $btn = $(this);
-            const $feed = $('#wbcom-news-feed');
-            
-            // Show loading state
             $btn.prop('disabled', true);
-            $btn.find('.dashicons').addClass('wbcom-spin');
             
-            $feed.html('<div class="news-loading">' +
-                '<span class="spinner is-active"></span>' +
-                '<p>Loading latest news...</p>' +
-                '</div>');
-            
-            // Reload news feed
-            setTimeout(() => {
+            setTimeout(function() {
                 WbcomDashboard.loadNewsFeed();
                 $btn.prop('disabled', false);
-                $btn.find('.dashicons').removeClass('wbcom-spin');
             }, 1000);
         },
 
@@ -619,41 +991,7 @@
                 e.preventDefault();
                 $('html, body').animate({
                     scrollTop: $target.offset().top - 100
-                }, 500, 'swing');
-            }
-        },
-
-        /**
-         * Handle plugin card hover
-         */
-        handleCardHover: function() {
-            $(this).addClass('hovered');
-        },
-
-        /**
-         * Handle plugin card leave
-         */
-        handleCardLeave: function() {
-            $(this).removeClass('hovered');
-        },
-
-        /**
-         * Initialize accessibility features
-         */
-        initAccessibility: function() {
-            // Add ARIA labels to interactive elements
-            $('.filter-btn').attr('role', 'button').attr('aria-pressed', 'false');
-            $('.wbcom-plugin-card').attr('role', 'article');
-            
-            // Update ARIA states
-            $(document).on('click', '.filter-btn', function() {
-                $('.filter-btn').attr('aria-pressed', 'false');
-                $(this).attr('aria-pressed', 'true');
-            });
-            
-            // Add live region for announcements
-            if ($('#wbcom-live-region').length === 0) {
-                $('body').append('<div id="wbcom-live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>');
+                }, 500);
             }
         },
 
@@ -661,132 +999,23 @@
          * Initialize animations
          */
         initAnimations: function() {
-            // Check for reduced motion preference
-            if (this.prefersReducedMotion()) {
+            if (BPActivityFilterAdmin.prefersReducedMotion()) {
                 return;
             }
             
-            // Fade in cards on page load
+            // Fade in cards on load
             $('.wbcom-plugin-card').each(function(index) {
                 $(this).css('opacity', '0').delay(index * 50).animate({ opacity: 1 }, 300);
             });
-            
-            // Add intersection observer for scroll animations
-            if ('IntersectionObserver' in window) {
-                this.initScrollAnimations();
-            }
         },
 
         /**
-         * Initialize scroll-based animations
-         */
-        initScrollAnimations: function() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        $(entry.target).addClass('animate-in');
-                    }
-                });
-            }, {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            });
-            
-            // Observe elements for animation
-            $('.wbcom-sidebar-widget, .premium-plugin-card').each(function() {
-                observer.observe(this);
-            });
-        },
-
-        /**
-         * Announce to screen readers
-         */
-        announceToScreenReader: function(message) {
-            $('#wbcom-live-region').text(message);
-        },
-
-        /**
-         * Show admin notice
-         */
-        showNotice: function(type, message) {
-            const noticeClass = 'notice-' + type;
-            const $notice = $('<div class="notice ' + noticeClass + ' is-dismissible">' +
-                '<p>' + message + '</p>' +
-                '<button type="button" class="notice-dismiss">' +
-                '<span class="screen-reader-text">Dismiss this notice.</span>' +
-                '</button>' +
-                '</div>');
-            
-            $('.wbcom-dashboard h1').after($notice);
-            
-            // Auto-dismiss after 5 seconds
-            setTimeout(() => {
-                $notice.fadeOut(() => $notice.remove());
-            }, 5000);
-            
-            // Handle manual dismiss
-            $notice.on('click', '.notice-dismiss', function() {
-                $notice.fadeOut(() => $notice.remove());
-            });
-        },
-
-        /**
-         * Escape HTML for safe display
+         * Escape HTML
          */
         escapeHtml: function(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
-        },
-
-        /**
-         * Utility function to debounce function calls
-         */
-        debounce: function(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        },
-
-        /**
-         * Check if user prefers reduced motion
-         */
-        prefersReducedMotion: function() {
-            return window.matchMedia && 
-                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        }
-    };
-
-    /**
-     * Hidden Activities functionality
-     */
-    const HiddenActivities = {
-        init: function() {
-            this.bindEvents();
-        },
-
-        bindEvents: function() {
-            // Select/Deselect all buttons for hidden activities
-            $('#select-all-hidden').on('click', this.selectAllHidden);
-            $('#deselect-all-hidden').on('click', this.deselectAllHidden);
-        },
-
-        selectAllHidden: function(e) {
-            e.preventDefault();
-            $('#bp-hidden-activities-fieldset input[type="checkbox"]').prop('checked', true);
-            BPActivityFilterAdmin.validateDefaultFilters();
-        },
-
-        deselectAllHidden: function(e) {
-            e.preventDefault();
-            $('#bp-hidden-activities-fieldset input[type="checkbox"]').prop('checked', false);
-            BPActivityFilterAdmin.validateDefaultFilters();
         }
     };
 
@@ -794,30 +1023,39 @@
      * Initialize when document is ready
      */
     $(document).ready(function() {
-        // Always initialize main admin functionality
-        BPActivityFilterAdmin.init();
-        
-        // Initialize dashboard functionality if on dashboard page
-        WbcomDashboard.init();
-        
-        // Initialize hidden activities functionality
-        HiddenActivities.init();
-        
-        // Handle AJAX form submissions if needed
-        if (typeof bpActivityFilterAdmin !== 'undefined') {
-            // AJAX functionality can be added here
+        try {
+            // Initialize main admin functionality
+            BPActivityFilterAdmin.init();
+            
+            // Initialize dashboard if present
+            WbcomDashboard.init();
+            
+            // Initialize performance monitoring
+            BPActivityFilterAdmin.initPerformanceMonitoring();
+            
+            // Handle responsive breakpoints
+            BPActivityFilterAdmin.handleResponsiveBreakpoints();
+            
+        } catch (error) {
+            BPActivityFilterAdmin.handleError(error, 'initialization');
         }
-        
-        // Handle window resize events for dashboard
-        $(window).on('resize', WbcomDashboard.debounce(function() {
-            if ($('.wbcom-dashboard').length) {
-                WbcomDashboard.updateFilterCounts();
-            }
-        }, 250));
-        
-        // Expose objects globally for debugging
-        window.BPActivityFilterAdmin = BPActivityFilterAdmin;
-        window.WbcomDashboard = WbcomDashboard;
     });
+
+    /**
+     * Handle window events
+     */
+    $(window).on('resize', BPActivityFilterAdmin.debounce(function() {
+        try {
+            BPActivityFilterAdmin.handleResponsiveBreakpoints();
+        } catch (error) {
+            BPActivityFilterAdmin.handleError(error, 'window resize');
+        }
+    }, 250));
+
+    /**
+     * Expose objects globally for debugging and extensibility
+     */
+    window.BPActivityFilterAdmin = BPActivityFilterAdmin;
+    window.WbcomDashboard = WbcomDashboard;
 
 })(jQuery);
