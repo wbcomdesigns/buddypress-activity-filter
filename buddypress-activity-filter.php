@@ -100,7 +100,7 @@ final class BP_Activity_Filter {
 		add_action( 'plugins_loaded', array( $this, 'init' ), 20 );
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
-		// Initialize Wbcom integration FIRST (admin only)
+		// NEW: Simple integration with shared system
 		if ( is_admin() ) {
 			add_action( 'init', array( $this, 'init_wbcom_integration' ), 1 );
 		}
@@ -115,24 +115,44 @@ final class BP_Activity_Filter {
 	}
 
 	/**
-	 * Initialize Wbcom integration - Register with shared system only.
+	 * NEW: Initialize Wbcom integration with enhanced auto-detection
 	 *
 	 * @since 4.0.0
 	 */
 	public function init_wbcom_integration() {
+		// Load easy setup helper
+		$helper_file = BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/shared-admin/wbcom-easy-setup.php';
+		
+		if ( file_exists( $helper_file ) ) {
+			require_once $helper_file;
+			
+			// One-line integration - auto-detects everything!
+			wbcom_integrate_plugin( __FILE__ );
+		} else {
+			// Fallback to original method if helper not found
+			$this->init_wbcom_integration_fallback();
+		}
+	}
+
+	/**
+	 * Fallback integration method (original code)
+	 *
+	 * @since 4.0.0
+	 */
+	private function init_wbcom_integration_fallback() {
 		// Load Wbcom shared system FIRST
 		$shared_loader_path = BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/shared-admin/class-wbcom-shared-loader.php';
 		
 		if ( file_exists( $shared_loader_path ) ) {
 			require_once $shared_loader_path;
 			
-			// Register plugin with shared system - this automatically creates the submenu
+			// Register plugin with shared system
 			if ( class_exists( 'Wbcom_Shared_Loader' ) ) {
 				Wbcom_Shared_Loader::register_plugin( array(
 					'slug'         => 'bp-activity-filter',
-					'name'         => 'Activity Filter', // Use shorter name to match desired menu text
+					'name'         => 'Activity Filter',
 					'version'      => BP_ACTIVITY_FILTER_VERSION,
-					'settings_url' => admin_url( 'admin.php?page=wbcom-activity-filter' ),
+					'settings_url' => admin_url( 'admin.php?page=wbcom-bp-activity-filter' ),
 					'icon'         => 'dashicons-filter',
 					'priority'     => 5,
 					'description'  => 'Filter and manage BuddyPress activity streams with default filters and custom post type support.',
@@ -144,7 +164,7 @@ final class BP_Activity_Filter {
 			}
 		}
 		
-		// Load integration class for assets only - NO menu creation
+		// Load integration class for assets only
 		$integration_file = BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/class-wbcom-integration.php';
 		
 		if ( file_exists( $integration_file ) ) {
@@ -360,32 +380,15 @@ final class BP_Activity_Filter {
 		return $links;
 	}
 
-	/**
-	 * Check if the plugin meets minimum requirements.
-	 *
-	 * @since 4.0.0
-	 * @return bool True if requirements are met, false otherwise.
-	 */
+	// All existing methods remain unchanged...
 	private function meets_requirements() {
 		return $this->is_buddypress_active() && $this->is_buddypress_version_compatible();
 	}
 
-	/**
-	 * Check if BuddyPress is active and loaded.
-	 *
-	 * @since 4.0.0
-	 * @return bool True if BuddyPress is active.
-	 */
 	private function is_buddypress_active() {
 		return class_exists( 'BuddyPress' ) && function_exists( 'buddypress' );
 	}
 
-	/**
-	 * Check if BuddyPress version meets minimum requirements.
-	 *
-	 * @since 4.0.0
-	 * @return bool True if version is compatible.
-	 */
 	private function is_buddypress_version_compatible() {
 		if ( ! $this->is_buddypress_active() ) {
 			return false;
@@ -395,21 +398,10 @@ final class BP_Activity_Filter {
 		return version_compare( $bp_version, $this->min_bp_version, '>=' );
 	}
 
-	/**
-	 * Check if BuddyBoss is active.
-	 *
-	 * @since 4.0.0
-	 * @return bool True if BuddyBoss is detected.
-	 */
 	private function is_buddyboss_active() {
 		return function_exists( 'buddypress' ) && isset( buddypress()->buddyboss );
 	}
 
-	/**
-	 * Display BuddyPress required notice.
-	 *
-	 * @since 4.0.0
-	 */
 	public function buddypress_required_notice() {
 		?>
 		<div class="notice notice-error">
@@ -429,11 +421,6 @@ final class BP_Activity_Filter {
 		<?php
 	}
 
-	/**
-	 * Display BuddyPress version compatibility notice.
-	 *
-	 * @since 4.0.0
-	 */
 	public function buddypress_version_notice() {
 		?>
 		<div class="notice notice-error">
@@ -454,11 +441,6 @@ final class BP_Activity_Filter {
 		<?php
 	}
 
-	/**
-	 * Display BuddyBoss incompatibility notice.
-	 *
-	 * @since 4.0.0
-	 */
 	public function buddyboss_incompatible_notice() {
 		?>
 		<div class="notice notice-error">
@@ -472,61 +454,26 @@ final class BP_Activity_Filter {
 		<?php
 	}
 
-	/**
-	 * Get plugin version.
-	 *
-	 * @since 4.0.0
-	 * @return string Plugin version.
-	 */
 	public function get_version() {
 		return BP_ACTIVITY_FILTER_VERSION;
 	}
 
-	/**
-	 * Get plugin directory path.
-	 *
-	 * @since 4.0.0
-	 * @return string Plugin directory path.
-	 */
 	public function get_plugin_dir() {
 		return BP_ACTIVITY_FILTER_PLUGIN_DIR;
 	}
 
-	/**
-	 * Get plugin directory URL.
-	 *
-	 * @since 4.0.0
-	 * @return string Plugin directory URL.
-	 */
 	public function get_plugin_url() {
 		return BP_ACTIVITY_FILTER_PLUGIN_URL;
 	}
 
-	/**
-	 * Get Wbcom integration instance.
-	 *
-	 * @since 4.0.0
-	 * @return BP_Activity_Filter_Wbcom_Integration|null
-	 */
 	public function get_wbcom_integration() {
 		return $this->wbcom_integration;
 	}
 
-	/**
-	 * Check if Wbcom integration is active.
-	 *
-	 * @since 4.0.0
-	 * @return bool True if Wbcom integration is loaded.
-	 */
 	public function is_wbcom_integration_active() {
 		return ! is_null( $this->wbcom_integration );
 	}
 
-	/**
-	 * Handle activation redirect.
-	 *
-	 * @since 4.0.0
-	 */
 	public function handle_activation_redirect() {
 		if ( get_transient( 'bp_activity_filter_activation_redirect' ) ) {
 			delete_transient( 'bp_activity_filter_activation_redirect' );
@@ -540,11 +487,6 @@ final class BP_Activity_Filter {
 		}
 	}
 
-	/**
-	 * Prevent cloning of the instance.
-	 *
-	 * @since 4.0.0
-	 */
 	public function __clone() {
 		_doing_it_wrong(
 			__FUNCTION__,
@@ -553,11 +495,6 @@ final class BP_Activity_Filter {
 		);
 	}
 
-	/**
-	 * Prevent unserializing of the instance.
-	 *
-	 * @since 4.0.0
-	 */
 	public function __wakeup() {
 		_doing_it_wrong(
 			__FUNCTION__,

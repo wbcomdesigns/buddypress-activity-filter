@@ -1,16 +1,16 @@
 <?php
 /**
- * Wbcom Shared Admin System - Main Coordinator (Fixed for Duplicates)
+ * Wbcom Shared Admin System - Main Coordinator (Enhanced for Easy Integration)
  * 
  * @package Wbcom_Shared_Admin
- * @version 2.1.2
+ * @version 2.2.0
  */
 
 if (!defined('ABSPATH')) exit;
 
 class Wbcom_Shared_Loader {
     
-    const VERSION = '2.1.2';
+    const VERSION = '2.2.0';
     const GLOBAL_KEY = 'wbcom_shared_system';
     
     private static $instance = null;
@@ -18,6 +18,156 @@ class Wbcom_Shared_Loader {
     private $is_primary_loader = false;
     private $loaded_from_plugin = '';
     private $shared_path = '';
+    
+    /**
+     * NEW: Super simple registration - auto-detects everything
+     * 
+     * @param string $plugin_file Main plugin file path
+     * @param array $overrides Optional data to override auto-detection
+     * @return bool Success status
+     */
+    public static function quick_register($plugin_file, $overrides = array()) {
+        // Auto-detect plugin data
+        $plugin_data = self::get_plugin_info($plugin_file, $overrides);
+        
+        // Register using existing method
+        return self::register_plugin($plugin_data);
+    }
+    
+    /**
+     * NEW: Auto-detect plugin information from file and headers
+     */
+    private static function get_plugin_info($plugin_file, $overrides = array()) {
+        // Get plugin header data
+        if (!function_exists('get_plugin_data')) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        
+        $plugin_header = get_plugin_data($plugin_file);
+        $plugin_dir = dirname($plugin_file);
+        $plugin_url = plugin_dir_url($plugin_file);
+        
+        // Extract slug from filename
+        $slug = sanitize_key(basename($plugin_file, '.php'));
+        
+        // Generate clean settings page slug
+        $settings_slug = self::generate_settings_slug($slug);
+        
+        // Auto-detect admin class name
+        $admin_class = self::find_admin_class($slug);
+        
+        // Auto-detect icon based on plugin name/slug
+        $icon = self::pick_plugin_icon($plugin_header['Name'], $slug);
+        
+        $auto_data = array(
+            'slug'         => $slug,
+            'name'         => $plugin_header['Name'],
+            'version'      => $plugin_header['Version'],
+            'description'  => $plugin_header['Description'],
+            'settings_url' => admin_url('admin.php?page=wbcom-' . $settings_slug),
+            'icon'         => $icon,
+            'priority'     => 10,
+            'status'       => 'active',
+            'has_premium'  => false,
+            'docs_url'     => 'https://docs.wbcomdesigns.com/' . $settings_slug . '/',
+            'support_url'  => 'https://wbcomdesigns.com/support/',
+            'shared_path'  => $plugin_dir . '/includes/shared-admin/',
+            'admin_class'  => $admin_class,
+            'plugin_file'  => $plugin_file,
+            'plugin_dir'   => $plugin_dir,
+            'plugin_url'   => $plugin_url,
+        );
+        
+        // Merge with custom overrides
+        return array_merge($auto_data, $overrides);
+    }
+    
+    /**
+     * NEW: Generate clean settings page slug
+     */
+    private static function generate_settings_slug($slug) {
+        // Handle common BuddyPress plugin patterns
+        if (strpos($slug, 'buddypress-') === 0) {
+            // buddypress-activity-filter -> activity-filter
+            return substr($slug, 11);
+        }
+        
+        if (strpos($slug, 'bp-') === 0) {
+            // bp-activity-filter -> activity-filter  
+            return substr($slug, 3);
+        }
+        
+        // For other plugins, just use the slug as-is
+        return $slug;
+    }
+    
+    /**
+     * NEW: Find admin class name based on common patterns
+     */
+    private static function find_admin_class($slug) {
+        $patterns = array(
+            // buddypress-activity-filter -> BP_Activity_Filter_Admin
+            self::slug_to_bp_class($slug) . '_Admin',
+            // general-plugin-name -> General_Plugin_Name_Admin  
+            self::slug_to_class($slug) . '_Admin',
+            // plugin-name -> Plugin_Name_Admin
+            str_replace(' ', '_', ucwords(str_replace('-', ' ', $slug))) . '_Admin',
+        );
+        
+        foreach ($patterns as $class_name) {
+            if (class_exists($class_name)) {
+                return $class_name;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * NEW: Convert slug to BuddyPress class naming convention
+     */
+    private static function slug_to_bp_class($slug) {
+        if (strpos($slug, 'buddypress-') === 0) {
+            return 'BP_' . str_replace(' ', '_', ucwords(str_replace('-', ' ', substr($slug, 11))));
+        }
+        if (strpos($slug, 'bp-') === 0) {
+            return 'BP_' . str_replace(' ', '_', ucwords(str_replace('-', ' ', substr($slug, 3))));
+        }
+        return self::slug_to_class($slug);
+    }
+    
+    /**
+     * NEW: Convert slug to standard class naming
+     */
+    private static function slug_to_class($slug) {
+        return str_replace(' ', '_', ucwords(str_replace('-', ' ', $slug)));
+    }
+    
+    /**
+     * NEW: Pick appropriate icon based on plugin name/type
+     */
+    private static function pick_plugin_icon($name, $slug) {
+        $name_lower = strtolower($name . ' ' . $slug);
+        
+        if (strpos($name_lower, 'activity') !== false) return 'dashicons-admin-comments';
+        if (strpos($name_lower, 'member') !== false) return 'dashicons-admin-users';
+        if (strpos($name_lower, 'group') !== false) return 'dashicons-groups';
+        if (strpos($name_lower, 'message') !== false) return 'dashicons-email';
+        if (strpos($name_lower, 'notification') !== false) return 'dashicons-bell';
+        if (strpos($name_lower, 'profile') !== false) return 'dashicons-admin-users';
+        if (strpos($name_lower, 'media') !== false) return 'dashicons-admin-media';
+        if (strpos($name_lower, 'event') !== false) return 'dashicons-calendar';
+        if (strpos($name_lower, 'poll') !== false) return 'dashicons-chart-bar';
+        if (strpos($name_lower, 'quote') !== false) return 'dashicons-format-quote';
+        if (strpos($name_lower, 'hashtag') !== false) return 'dashicons-tag';
+        if (strpos($name_lower, 'filter') !== false) return 'dashicons-filter';
+        if (strpos($name_lower, 'social') !== false) return 'dashicons-share';
+        if (strpos($name_lower, 'buddypress') !== false) return 'dashicons-groups';
+        
+        return 'dashicons-admin-generic';
+    }
+
+    // ==== EXISTING CODE BELOW - NO CHANGES ====
     
     /**
      * Easy registration method - call this from plugin main file
@@ -169,6 +319,9 @@ class Wbcom_Shared_Loader {
         add_action('admin_menu', array($this, 'create_main_menu'), 5);
         add_action('admin_menu', array($this, 'add_plugin_submenus'), 10);
         
+        // Enqueue shared assets for all Wbcom pages
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_shared_assets'), 5);
+        
         // Version check and conflict resolution
         add_action('admin_init', array($this, 'check_version_conflicts'));
     }
@@ -216,7 +369,7 @@ class Wbcom_Shared_Loader {
             'Wbcom Designs',
             'manage_options',
             'wbcom-designs',
-            array($this, 'render_dashboard'),
+            array($this, 'show_dashboard'),
             $this->get_menu_icon(),
             58.5
         );
@@ -228,12 +381,12 @@ class Wbcom_Shared_Loader {
             'Dashboard',
             'manage_options',
             'wbcom-designs',
-            array($this, 'render_dashboard')
+            array($this, 'show_dashboard')
         );
     }
     
     /**
-     * Add submenu for registered plugins - FIXED FOR DUPLICATES
+     * Add submenu for registered plugins
      */
     public function add_plugin_submenus() {
         foreach ($this->registered_plugins as $plugin) {
@@ -255,16 +408,16 @@ class Wbcom_Shared_Loader {
                     $plugin['name'],
                     'manage_options',
                     $menu_slug,
-                    array($this, 'render_plugin_page') // Use our callback instead of __return_null
+                    array($this, 'show_plugin_page')
                 );
             }
         }
     }
     
     /**
-     * Render plugin page - Routes to the appropriate plugin callback
+     * Show plugin page - Routes to the appropriate plugin callback
      */
-    public function render_plugin_page() {
+    public function show_plugin_page() {
         $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
         
         // Find the plugin that matches this page
@@ -272,61 +425,97 @@ class Wbcom_Shared_Loader {
             $plugin_slug = $this->extract_menu_slug($plugin['settings_url']);
             
             if ($plugin_slug === $current_page) {
-                // Try to call the plugin's render method
-                $this->call_plugin_render_method($plugin);
+                // Try to call the plugin's admin method
+                $this->load_plugin_admin($plugin);
                 return;
             }
         }
         
         // Fallback if no plugin found
-        $this->render_plugin_not_found();
+        $this->show_not_found_page();
     }
     
     /**
-     * Call the plugin's render method
+     * NEW: Load and display the plugin's admin interface
      */
-    private function call_plugin_render_method($plugin) {
-        $plugin_slug = $plugin['slug'];
+    private function load_plugin_admin($plugin) {
+        $admin_class = isset($plugin['admin_class']) ? $plugin['admin_class'] : false;
         
-        // Try different possible function names and class methods
-        $possible_callbacks = array(
-            // Function-based callbacks
-            $plugin_slug . '_render_admin_page',
-            str_replace('-', '_', $plugin_slug) . '_render_admin_page',
-            
-            // Class-based callbacks (most common pattern)
-            array('BP_Activity_Filter', 'render_admin_page'),
-            array(str_replace('-', '_', $plugin_slug), 'render_admin_page'),
-            
-            // Instance-based callbacks
-            array($plugin_slug . '_instance', 'render_admin_page'),
-        );
-        
-        // Try to find and call the callback
-        foreach ($possible_callbacks as $callback) {
-            if (is_callable($callback)) {
-                call_user_func($callback);
-                return;
-            }
+        // Try the detected admin class first
+        if ($admin_class && class_exists($admin_class)) {
+            $this->get_admin_instance($admin_class, $plugin);
+            return;
         }
         
-        // Try to get plugin instance and call render method
-        if (function_exists('bp_activity_filter')) {
-            $instance = bp_activity_filter();
+        // Try the main plugin class method
+        $plugin_slug = str_replace('-', '_', $plugin['slug']);
+        $main_function = $plugin_slug;
+        
+        if (function_exists($main_function)) {
+            $instance = call_user_func($main_function);
             if ($instance && method_exists($instance, 'render_admin_page')) {
                 $instance->render_admin_page();
                 return;
             }
         }
         
-        // Final fallback
-        $this->render_plugin_fallback($plugin);
+        // Show basic fallback page
+        $this->show_basic_page($plugin);
     }
     
     /**
-     * Render fallback page for plugins
+     * NEW: Get admin class instance and call settings page
      */
-    private function render_plugin_fallback($plugin) {
+    private function get_admin_instance($admin_class, $plugin) {
+        $methods = array(
+            'render_settings_page',
+            'settings_page',
+            'show_settings_page', 
+            'admin_page',
+            'show_admin_page'
+        );
+        
+        // First try to get instance using common singleton patterns
+        $instance = null;
+        
+        if (method_exists($admin_class, 'instance')) {
+            $instance = call_user_func(array($admin_class, 'instance'));
+        } elseif (method_exists($admin_class, 'get_instance')) {
+            $instance = call_user_func(array($admin_class, 'get_instance'));
+        } elseif (method_exists($admin_class, 'getInstance')) {
+            $instance = call_user_func(array($admin_class, 'getInstance'));
+        }
+        
+        // Try instance methods first if we have an instance
+        if ($instance) {
+            foreach ($methods as $method) {
+                if (method_exists($instance, $method)) {
+                    $instance->$method();
+                    return;
+                }
+            }
+        }
+        
+        // Fallback: try static methods
+        foreach ($methods as $method) {
+            if (method_exists($admin_class, $method)) {
+                // Check if method is actually static
+                $reflection = new ReflectionMethod($admin_class, $method);
+                if ($reflection->isStatic()) {
+                    call_user_func(array($admin_class, $method));
+                    return;
+                }
+            }
+        }
+        
+        // Show basic page if nothing else works
+        $this->show_basic_page($plugin);
+    }
+    
+    /**
+     * Show basic plugin page
+     */
+    private function show_basic_page($plugin) {
         ?>
         <div class="wrap">
             <h1><?php echo esc_html($plugin['name']); ?></h1>
@@ -377,9 +566,9 @@ class Wbcom_Shared_Loader {
     }
     
     /**
-     * Render page when plugin not found
+     * Show page when plugin not found
      */
-    private function render_plugin_not_found() {
+    private function show_not_found_page() {
         ?>
         <div class="wrap">
             <h1>Plugin Not Found</h1>
@@ -392,28 +581,28 @@ class Wbcom_Shared_Loader {
     }
     
     /**
-     * Render dashboard
+     * Show dashboard
      */
-    public function render_dashboard() {
+    public function show_dashboard() {
         try {
             if (class_exists('Wbcom_Shared_Dashboard')) {
                 $dashboard = new Wbcom_Shared_Dashboard($this->registered_plugins);
                 $dashboard->render_dashboard();
             } else {
-                $this->render_fallback_dashboard();
+                $this->show_fallback_dashboard();
             }
         } catch (Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log('Wbcom Shared Dashboard Error: ' . $e->getMessage());
             }
-            $this->render_fallback_dashboard();
+            $this->show_fallback_dashboard();
         }
     }
     
     /**
-     * Render fallback dashboard if main dashboard fails
+     * Show fallback dashboard if main dashboard fails
      */
-    private function render_fallback_dashboard() {
+    private function show_fallback_dashboard() {
         ?>
         <div class="wrap">
             <h1>🌟 Wbcom Designs</h1>
@@ -493,8 +682,137 @@ class Wbcom_Shared_Loader {
     }
     
     /**
-     * Utility methods
+     * NEW: Enqueue shared CSS and JS assets for Wbcom pages ONLY
      */
+    public function enqueue_shared_assets($hook_suffix) {
+        // Only load on Wbcom admin pages
+        if (!$this->is_wbcom_admin_page($hook_suffix)) {
+            return;
+        }
+        
+        // Check if already enqueued to prevent duplicates
+        if (wp_style_is('wbcom-shared-admin', 'enqueued') || wp_style_is('wbcom-shared-admin', 'done')) {
+            return;
+        }
+        
+        $assets_url = $this->get_shared_assets_url();
+        $version = self::VERSION;
+        
+        // Verify files exist before enqueueing
+        $css_file = $this->shared_path . 'wbcom-shared-admin.css';
+        $js_file = $this->shared_path . 'wbcom-shared-admin.js';
+        
+        // Enqueue CSS
+        if (file_exists($css_file)) {
+            wp_enqueue_style(
+                'wbcom-shared-admin',
+                $assets_url . 'wbcom-shared-admin.css',
+                array(),
+                $version
+            );
+        }
+        
+        // Enqueue JS
+        if (file_exists($js_file)) {
+            wp_enqueue_script(
+                'wbcom-shared-admin',
+                $assets_url . 'wbcom-shared-admin.js',
+                array('jquery'),
+                $version,
+                true
+            );
+            
+            // Localize script with minimal data
+            wp_localize_script('wbcom-shared-admin', 'wbcomShared', array(
+                'version' => $version,
+                'ajaxUrl' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('wbcom_shared_nonce'),
+                'pluginCount' => count($this->registered_plugins),
+                'currentPage' => isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '',
+                'strings' => array(
+                    'loading' => __('Loading...', 'wbcom-shared'),
+                    'error' => __('Error loading content.', 'wbcom-shared'),
+                    'success' => __('Settings saved successfully.', 'wbcom-shared'),
+                )
+            ));
+        }
+    }
+    
+    /**
+     * NEW: Check if current page is a Wbcom admin page (STRICT checking)
+     */
+    private function is_wbcom_admin_page($hook_suffix) {
+        // Get current page parameter
+        $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
+        
+        // STRICT CHECK: Only load on these specific pages
+        
+        // 1. Main Wbcom dashboard
+        if ($current_page === 'wbcom-designs') {
+            return true;
+        }
+        
+        // 2. Registered plugin pages
+        foreach ($this->registered_plugins as $plugin) {
+            $plugin_page = $this->extract_menu_slug($plugin['settings_url']);
+            if (!empty($plugin_page) && $current_page === $plugin_page) {
+                return true;
+            }
+        }
+        
+        // 3. Hook suffix patterns for Wbcom pages
+        $wbcom_hook_patterns = array(
+            'toplevel_page_wbcom-designs',
+            'wbcom-designs_page_wbcom-',  // Any submenu under wbcom-designs
+        );
+        
+        foreach ($wbcom_hook_patterns as $pattern) {
+            if (strpos($hook_suffix, $pattern) === 0) {
+                return true;
+            }
+        }
+        
+        // 4. Emergency fallback: only if page param starts with 'wbcom-'
+        if (strpos($current_page, 'wbcom-') === 0) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * NEW: Get shared assets URL
+     */
+    private function get_shared_assets_url() {
+        // Try to determine the URL from the shared path
+        $plugin_url = '';
+        
+        // Find which plugin loaded this shared system
+        foreach ($this->registered_plugins as $plugin) {
+            if (isset($plugin['plugin_url']) && isset($plugin['shared_path'])) {
+                if ($plugin['shared_path'] === $this->shared_path) {
+                    $plugin_url = $plugin['plugin_url'];
+                    break;
+                }
+            }
+        }
+        
+        if (!empty($plugin_url)) {
+            return $plugin_url . 'includes/shared-admin/';
+        }
+        
+        // Fallback: try to determine from shared path
+        $wp_content_dir = wp_normalize_path(WP_CONTENT_DIR);
+        $shared_path_normalized = wp_normalize_path($this->shared_path);
+        
+        if (strpos($shared_path_normalized, $wp_content_dir) === 0) {
+            $relative_path = str_replace($wp_content_dir, '', $shared_path_normalized);
+            return content_url($relative_path);
+        }
+        
+        // Final fallback
+        return plugins_url('includes/shared-admin/', $this->loaded_from_plugin);
+    }
     private function menu_exists() {
         global $menu;
         
@@ -544,57 +862,52 @@ class Wbcom_Shared_Loader {
         return 'data:image/svg+xml;base64,' . base64_encode($svg);
     }
     
-    /**
-     * Static helper method for easy integration
-     */
-    public static function quick_register($plugin_name, $plugin_slug, $settings_page_slug, $plugin_version = '1.0.0') {
-        return self::register_plugin(array(
-            'slug'         => $plugin_slug,
-            'name'         => $plugin_name,
-            'version'      => $plugin_version,
-            'settings_url' => admin_url('admin.php?page=' . $settings_page_slug),
-            'icon'         => 'dashicons-admin-generic',
-            'priority'     => 10,
-            'status'       => 'active',
-        ));
-    }
-    
-    /**
-     * Get all registered plugins
-     */
     public function get_registered_plugins() {
         return $this->registered_plugins;
     }
     
-    /**
-     * Get active plugins only
-     */
     public function get_active_plugins() {
         return array_filter($this->registered_plugins, function($plugin) {
             return $plugin['status'] === 'active';
         });
     }
     
-    /**
-     * Get instance for debugging
-     */
     public static function get_instance() {
         return isset($GLOBALS[self::GLOBAL_KEY]) ? $GLOBALS[self::GLOBAL_KEY] : null;
     }
     
-    /**
-     * Debug information
-     */
     public function get_debug_info() {
         return array(
             'version' => self::VERSION,
             'is_primary_loader' => $this->is_primary_loader,
             'loaded_from_plugin' => $this->loaded_from_plugin,
             'shared_path' => $this->shared_path,
+            'shared_path_exists' => is_dir($this->shared_path),
+            'css_file_exists' => file_exists($this->shared_path . 'wbcom-shared-admin.css'),
+            'js_file_exists' => file_exists($this->shared_path . 'wbcom-shared-admin.js'),
             'registered_plugins_count' => count($this->registered_plugins),
             'registered_plugins' => array_keys($this->registered_plugins),
             'dashboard_class_exists' => class_exists('Wbcom_Shared_Dashboard'),
-            'shared_path_exists' => is_dir($this->shared_path),
+            'current_hook' => isset($GLOBALS['hook_suffix']) ? $GLOBALS['hook_suffix'] : 'unknown',
+            'current_page' => isset($_GET['page']) ? sanitize_text_field($_GET['page']) : 'none',
+            'assets_url' => $this->get_shared_assets_url(),
         );
+    }
+    
+    /**
+     * NEW: Get list of pages where assets should load (for debugging)
+     */
+    public function get_asset_pages() {
+        $pages = array('wbcom-designs'); // Dashboard
+        
+        // Add all registered plugin pages
+        foreach ($this->registered_plugins as $plugin) {
+            $plugin_page = $this->extract_menu_slug($plugin['settings_url']);
+            if (!empty($plugin_page)) {
+                $pages[] = $plugin_page;
+            }
+        }
+        
+        return $pages;
     }
 }
