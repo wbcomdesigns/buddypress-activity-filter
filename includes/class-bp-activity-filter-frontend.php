@@ -203,9 +203,9 @@ class BP_Activity_Filter_Frontend {
 		$context = $this->get_filter_context();
 		
 		if ( 'profile' === $context ) {
-			$default_filter = get_option( 'bp_activity_filter_profile_default', '-1' );
+			$default_filter = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_profile_default', '-1' );
 		} else {
-			$default_filter = get_option( 'bp_activity_filter_default', '0' );
+			$default_filter = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_default', '0' );
 		}
 
 		/**
@@ -239,7 +239,7 @@ class BP_Activity_Filter_Frontend {
 	 * @return array List of hidden activity types
 	 */
 	private function get_hidden_activities() {
-		$hidden_activities = get_option( 'bp_activity_filter_hidden', array() );
+		$hidden_activities = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_hidden', array() );
 		
 		// Core activities that should never be hidden
 		$core_protected_activities = array(
