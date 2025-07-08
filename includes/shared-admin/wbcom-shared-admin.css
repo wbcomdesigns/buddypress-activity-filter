@@ -129,6 +129,11 @@
     margin: 0;
 }
 
+.wbcom-action-list .dashicons {
+    vertical-align: middle;
+    font-size: 18px;
+}
+
 .wbcom-action-list li {
     margin-bottom: 10px;
 }
@@ -529,6 +534,11 @@
     margin-top: 30px;
     padding-top: 20px;
     border-top: 1px solid #f0f0f1;
+}
+
+.news-footer .button .dashicons {
+    vertical-align: middle;
+    font-size: 18px;
 }
 
 .center-text {
