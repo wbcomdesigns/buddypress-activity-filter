@@ -302,7 +302,7 @@ class BP_Activity_Filter_Admin {
     }
 
     /**
-     * Render hidden activities tab content - Simple version without buttons.
+     * Render hidden activities tab content with CORRECTED logic.
      *
      * @since 4.0.0
      */
@@ -343,11 +343,11 @@ class BP_Activity_Filter_Admin {
                                     </p>
                                     
                                     <?php foreach ( $core_readonly_activities as $key => $label ) : ?>
-                                        <div style="display: block; margin-bottom: 8px; padding: 10px 12px; background: #f6f7f7; border: 1px solid #dcdcde; border-radius: 4px; opacity: 0.7;">
+                                        <div style="display: block; margin-bottom: 8px; padding: 10px 12px; background: #e8f5e8; border: 1px solid #4caf50; border-radius: 4px;">
                                             <label style="display: flex; align-items: center; cursor: not-allowed; margin: 0;">
-                                                <input type="checkbox" disabled="disabled" style="margin-right: 12px;">
-                                                <span style="flex: 1; font-weight: 500; color: #8c8f94;"><?php echo esc_html( $label ); ?></span>
-                                                <code style="font-size: 11px; background: #e8e8e8; color: #a7aaad; padding: 2px 6px; border-radius: 10px;"><?php echo esc_html( $key ); ?></code>
+                                                <span class="dashicons dashicons-yes-alt" style="color: #4caf50; margin-right: 12px;"></span>
+                                                <span style="flex: 1; font-weight: 500; color: #2e7d32;"><?php echo esc_html( $label ); ?> - Always Visible</span>
+                                                <code style="font-size: 11px; background: #c8e6c9; color: #2e7d32; padding: 2px 6px; border-radius: 10px;"><?php echo esc_html( $key ); ?></code>
                                             </label>
                                         </div>
                                     <?php endforeach; ?>
@@ -359,6 +359,9 @@ class BP_Activity_Filter_Admin {
                                         <span class="dashicons dashicons-admin-settings" style="margin-right: 8px;"></span>
                                         <?php esc_html_e( 'Other Activity Types', 'bp-activity-filter' ); ?>
                                     </h4>
+                                    <p style="margin: 0 0 15px 0; color: #646970; font-size: 13px;">
+                                        <?php esc_html_e( 'Check the boxes below to HIDE these activity types from your site.', 'bp-activity-filter' ); ?>
+                                    </p>
                                     
                                     <?php foreach ( $activity_actions as $key => $label ) : ?>
                                         <?php 
@@ -369,19 +372,38 @@ class BP_Activity_Filter_Admin {
                                         
                                         $is_checked = in_array( $key, $hidden_activities, true );
                                         $checkbox_id = 'bp_hidden_' . sanitize_html_class( $key );
-                                        $bg_color = $is_checked ? '#e7f3ff' : '#fafafa';
-                                        $border_color = $is_checked ? '#0073aa' : '#e1e1e1';
+                                        
+                                        // CORRECTED LOGIC: Checked = Hidden (red), Unchecked = Visible (green)
+                                        if ( $is_checked ) {
+                                            // HIDDEN - Red styling
+                                            $bg_color = '#ffeaea';
+                                            $border_color = '#f44336';
+                                            $icon = 'dashicons-hidden';
+                                            $icon_color = '#f44336';
+                                            $status_text = 'Hidden';
+                                            $text_color = '#c62828';
+                                        } else {
+                                            // VISIBLE - Green styling  
+                                            $bg_color = '#e8f5e8';
+                                            $border_color = '#4caf50';
+                                            $icon = 'dashicons-visibility';
+                                            $icon_color = '#4caf50';
+                                            $status_text = 'Visible';
+                                            $text_color = '#2e7d32';
+                                        }
                                         ?>
-                                        <div style="display: block; margin-bottom: 8px; padding: 10px 12px; background: <?php echo $bg_color; ?>; border: 1px solid <?php echo $border_color; ?>; border-radius: 4px;">
+                                        <div data-activity-state="<?php echo $is_checked ? 'hidden' : 'visible'; ?>" style="display: block; margin-bottom: 8px; padding: 10px 12px; background: <?php echo $bg_color; ?>; border: 1px solid <?php echo $border_color; ?>; border-radius: 4px; transition: all 0.3s ease;">
                                             <label for="<?php echo esc_attr( $checkbox_id ); ?>" style="display: flex; align-items: center; cursor: pointer; margin: 0;">
                                                 <input type="checkbox" 
                                                     id="<?php echo esc_attr( $checkbox_id ); ?>"
                                                     name="bp_activity_filter_hidden[]" 
                                                     value="<?php echo esc_attr( $key ); ?>" 
                                                     <?php checked( $is_checked ); ?>
-                                                    style="margin-right: 12px;">
-                                                <span style="flex: 1; font-weight: 500; color: #23282d;"><?php echo esc_html( $label ); ?></span>
-                                                <code style="font-size: 11px; background: #f1f1f1; color: #8c8f94; padding: 2px 6px; border-radius: 10px;"><?php echo esc_html( $key ); ?></code>
+                                                    style="margin-right: 8px;">
+                                                <span class="dashicons <?php echo $icon; ?>" style="color: <?php echo $icon_color; ?>; margin-right: 8px;"></span>
+                                                <span style="flex: 1; font-weight: 500; color: <?php echo $text_color; ?>;"><?php echo esc_html( $label ); ?></span>
+                                                <span style="font-size: 12px; font-weight: 600; color: <?php echo $icon_color; ?>; margin-right: 10px;"><?php echo $status_text; ?></span>
+                                                <code style="font-size: 11px; background: rgba(0,0,0,0.1); color: #666; padding: 2px 6px; border-radius: 10px;"><?php echo esc_html( $key ); ?></code>
                                             </label>
                                         </div>
                                     <?php endforeach; ?>
@@ -389,9 +411,13 @@ class BP_Activity_Filter_Admin {
 
                                 <div class="notice notice-info inline" style="margin-top: 20px;">
                                     <p>
-                                        <strong><?php esc_html_e( 'Important:', 'bp-activity-filter' ); ?></strong>
-                                        <?php esc_html_e( 'Core activities (status updates, comments) cannot be hidden as they are essential for BuddyPress functionality. Hidden activity types will be completely removed from the activity stream and will not appear in filter dropdown options. This action affects all users on your site.', 'bp-activity-filter' ); ?>
+                                        <strong><?php esc_html_e( 'How it works:', 'bp-activity-filter' ); ?></strong>
                                     </p>
+                                    <ul style="margin: 10px 0 0 20px;">
+                                        <li><span class="dashicons dashicons-visibility" style="color: #4caf50;"></span> <strong style="color: #2e7d32;">Visible</strong> - Activity appears in streams and filter options</li>
+                                        <li><span class="dashicons dashicons-hidden" style="color: #f44336;"></span> <strong style="color: #c62828;">Hidden</strong> - Activity is completely removed from site</li>
+                                        <li><span class="dashicons dashicons-shield-alt" style="color: #0073aa;"></span> <strong style="color: #0073aa;">Core</strong> - Cannot be hidden (essential for BuddyPress)</li>
+                                    </ul>
                                 </div>
                             <?php endif; ?>
                         </td>

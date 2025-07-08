@@ -1,5 +1,5 @@
 /**
- * BuddyPress Activity Filter - Admin JavaScript (Simplified)
+ * BuddyPress Activity Filter - Admin JavaScript (Corrected Logic)
  * 
  * @package BuddyPress_Activity_Filter
  * @version 4.0.0
@@ -47,7 +47,7 @@
         },
 
         /**
-         * Initialize hidden activities specific functionality
+         * Initialize hidden activities specific functionality with CORRECTED logic
          */
         initHiddenActivities: function() {
             // Update visual states when checkboxes change
@@ -62,22 +62,30 @@
             
             // Add hover effects for labels
             $(document).on('mouseenter', 'label[for^="bp_hidden_"]', function() {
-                const $container = $(this).closest('div[style*="display: block"]');
-                const $checkbox = $(this).find('input[type="checkbox"]');
+                const $container = $(this).closest('div[data-activity-state]');
                 
-                if (!$checkbox.is(':checked')) {
-                    $container.css('background', '#f0f6fc');
-                }
+                // Add subtle hover effect regardless of state
+                $container.css('box-shadow', '0 2px 8px rgba(0,0,0,0.15)');
             });
             
             $(document).on('mouseleave', 'label[for^="bp_hidden_"]', function() {
-                const $container = $(this).closest('div[style*="display: block"]');
-                const $checkbox = $(this).find('input[type="checkbox"]');
+                const $container = $(this).closest('div[data-activity-state]');
                 
-                if (!$checkbox.is(':checked')) {
-                    $container.css('background', '#fafafa');
+                // Remove hover effect
+                $container.css('box-shadow', 'none');
+            });
+            
+            // Add keyboard accessibility
+            $(document).on('keydown', 'label[for^="bp_hidden_"]', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const $checkbox = $(this).find('input[type="checkbox"]');
+                    $checkbox.prop('checked', !$checkbox.prop('checked')).trigger('change');
                 }
             });
+            
+            // Make labels focusable
+            $('label[for^="bp_hidden_"]').attr('tabindex', '0');
         },
 
         /**
@@ -108,27 +116,44 @@
         },
 
         /**
-         * Update checkbox visual state (core function for new structure)
+         * Update checkbox visual state with CORRECTED LOGIC
+         * Checked = Hidden (Red), Unchecked = Visible (Green)
          */
         updateCheckboxVisualState: function() {
             const $checkbox = $(this);
             
-            // For new simple HTML structure
+            // For new simple HTML structure with corrected logic
             if ($checkbox.attr('name') === 'bp_activity_filter_hidden[]') {
-                const $container = $checkbox.closest('div[style*="display: block"]');
+                const $container = $checkbox.closest('div[data-activity-state]');
+                const $icon = $container.find('.dashicons');
+                const $statusText = $container.find('span[style*="font-weight: 600"]');
+                const $mainText = $container.find('span[style*="flex: 1"]');
                 
                 if ($checkbox.is(':checked')) {
-                    // Update to checked styles
+                    // CHECKED = HIDDEN (Red styling)
                     $container.css({
-                        'background': '#e7f3ff',
-                        'border': '1px solid #0073aa'
-                    });
+                        'background': '#ffeaea',
+                        'border': '1px solid #f44336'
+                    }).attr('data-activity-state', 'hidden');
+                    
+                    $icon.removeClass('dashicons-visibility').addClass('dashicons-hidden')
+                         .css('color', '#f44336');
+                    
+                    $statusText.text('Hidden').css('color', '#f44336');
+                    $mainText.css('color', '#c62828');
+                    
                 } else {
-                    // Update to unchecked styles  
+                    // UNCHECKED = VISIBLE (Green styling)
                     $container.css({
-                        'background': '#fafafa',
-                        'border': '1px solid #e1e1e1'
-                    });
+                        'background': '#e8f5e8',
+                        'border': '1px solid #4caf50'
+                    }).attr('data-activity-state', 'visible');
+                    
+                    $icon.removeClass('dashicons-hidden').addClass('dashicons-visibility')
+                         .css('color', '#4caf50');
+                    
+                    $statusText.text('Visible').css('color', '#4caf50');
+                    $mainText.css('color', '#2e7d32');
                 }
             } else {
                 // For legacy structure (if still exists)
@@ -210,12 +235,28 @@
                 }
             });
             
+            // Check if too many activities are hidden
+            const totalActivities = $('input[name="bp_activity_filter_hidden[]"]').length;
+            const hiddenActivities = $('input[name="bp_activity_filter_hidden[]"]:checked').length;
+            const visibleActivities = totalActivities - hiddenActivities;
+            const coreActivities = 2; // activity_update and activity_comment
+            
+            if (visibleActivities + coreActivities < 3) {
+                isValid = false;
+                BPActivityFilterAdmin.showNotification(
+                    'Warning: You have hidden most activity types. Consider keeping some activities visible for better user engagement.',
+                    'warning'
+                );
+            }
+            
             if (!isValid) {
                 e.preventDefault();
-                BPActivityFilterAdmin.showNotification(
-                    'Please correct the errors in the form before saving.',
-                    'error'
-                );
+                if (hiddenActivities === totalActivities) {
+                    BPActivityFilterAdmin.showNotification(
+                        'You cannot hide all activity types. At least some activities must remain visible.',
+                        'error'
+                    );
+                }
             }
             
             return isValid;
@@ -300,6 +341,87 @@
             }).on('blur', function() {
                 $(this).removeClass('focus-visible');
             });
+        },
+
+        /**
+         * Announce to screen readers
+         */
+        announceToScreenReader: function(message) {
+            $('#bp-live-region').text(message);
+        },
+
+        /**
+         * Get activity statistics
+         */
+        getActivityStats: function() {
+            const totalActivities = $('input[name="bp_activity_filter_hidden[]"]').length;
+            const hiddenActivities = $('input[name="bp_activity_filter_hidden[]"]:checked').length;
+            const visibleActivities = totalActivities - hiddenActivities;
+            const coreActivities = 2; // Always visible
+            
+            return {
+                total: totalActivities,
+                hidden: hiddenActivities,
+                visible: visibleActivities,
+                core: coreActivities,
+                totalVisible: visibleActivities + coreActivities
+            };
+        },
+
+        /**
+         * Show activity statistics
+         */
+        showActivityStats: function() {
+            const stats = this.getActivityStats();
+            const message = `Activity Status: ${stats.hidden} hidden, ${stats.totalVisible} visible (${stats.core} core + ${stats.visible} other)`;
+            
+            console.log(message);
+            this.announceToScreenReader(message);
+        },
+
+        /**
+         * Add helpful tooltips
+         */
+        addTooltips: function() {
+            // Add tooltips to activity items
+            $('label[for^="bp_hidden_"]').each(function() {
+                const $label = $(this);
+                const $checkbox = $label.find('input[type="checkbox"]');
+                const activityName = $label.find('span[style*="flex: 1"]').text();
+                
+                const tooltipText = $checkbox.is(':checked') ? 
+                    `${activityName} is currently HIDDEN from your site` :
+                    `${activityName} is currently VISIBLE on your site`;
+                
+                $label.attr('title', tooltipText);
+            });
+        },
+
+        /**
+         * Utility functions
+         */
+        debounce: function(func, wait, immediate) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                const later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                const callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        },
+
+        /**
+         * Check if user prefers reduced motion
+         */
+        prefersReducedMotion: function() {
+            return window.matchMedia && 
+                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         }
     };
 
@@ -314,8 +436,34 @@
             // Initialize accessibility features
             BPActivityFilterAdmin.initAccessibility();
             
+            // Add tooltips if hidden activities exist
+            if ($('input[name="bp_activity_filter_hidden[]"]').length > 0) {
+                BPActivityFilterAdmin.addTooltips();
+                
+                // Update tooltips when checkboxes change
+                $(document).on('change', 'input[name="bp_activity_filter_hidden[]"]', function() {
+                    BPActivityFilterAdmin.addTooltips();
+                    BPActivityFilterAdmin.showActivityStats();
+                });
+                
+                // Show initial stats
+                BPActivityFilterAdmin.showActivityStats();
+            }
+            
         } catch (error) {
             BPActivityFilterAdmin.handleError(error, 'initialization');
+        }
+    });
+
+    /**
+     * Handle page navigation and state preservation
+     */
+    $(window).on('beforeunload', function() {
+        // Could implement auto-save functionality here if needed
+        const stats = BPActivityFilterAdmin.getActivityStats();
+        if (stats.hidden > stats.visible) {
+            // Optional: Show warning if hiding too many activities
+            // return 'You have hidden most activity types. Are you sure you want to leave?';
         }
     });
 
