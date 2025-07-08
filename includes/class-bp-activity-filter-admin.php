@@ -101,8 +101,18 @@ class BP_Activity_Filter_Admin {
 
                     <?php $this->render_tab_content( $current_tab ); ?>
 
-                    <div class="submit">
-                        <?php submit_button( esc_html__( 'Save Settings', 'bp-activity-filter' ), 'primary', 'submit', false, array( 'id' => 'bp-activity-filter-submit' ) ); ?>
+                    <!-- Replace the submit section in your admin template -->
+                    <div class="submit" style="margin-top: 25px;margin-left: 25px; padding-top: 20px; text-align: left;">
+                        <?php submit_button( 
+                            esc_html__( 'Save Settings', 'bp-activity-filter' ), 
+                            'primary', 
+                            'submit', 
+                            false, 
+                            array( 
+                                'id' => 'bp-activity-filter-submit',
+                                'style' => 'margin-left: 0;' 
+                            ) 
+                        ); ?>
                     </div>
                 </form>
             </div>
