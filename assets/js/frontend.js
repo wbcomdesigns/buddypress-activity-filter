@@ -1,5 +1,6 @@
 /**
- * BuddyPress Activity Filter Frontend JavaScript
+ * BuddyPress Activity Filter Frontend JavaScript - Minimal Fix
+ * Only fixes frontend display without touching admin functionality
  *
  * @package BuddyPress_Activity_Filter
  * @since 4.0.0
@@ -9,170 +10,79 @@
     'use strict';
 
     /**
-     * Frontend object
+     * Simple frontend functionality - no admin interference
      */
     const BPActivityFilterFrontend = {
         
         /**
-         * Settings from localized script
+         * Settings from backend
          */
         settings: {},
 
         /**
-         * Initialize frontend functionality
+         * Initialize only if not in admin
          */
         init: function() {
-            // Check if we have the required object
-            if (typeof bpActivityFilter === 'undefined') {
+            // Skip entirely if in admin area
+            if (this.isAdmin()) {
                 return;
             }
 
-            this.settings = bpActivityFilter;
-            this.bindEvents();
-            this.setDefaultFilter();
+            // Check if we have settings from backend
+            if (typeof bpActivityFilter !== 'undefined') {
+                this.settings = bpActivityFilter;
+                this.applyDefaultFilter();
+            }
         },
 
         /**
-         * Bind events
+         * Check if we're in admin area
          */
-        bindEvents: function() {
-            // Activity filter dropdown change
-            $(document).on('change', '#activity-filter-by', this.handleFilterChange);
-            
-            // Component navigation clicks
-            $(document).on('click', '.component-navigation li', this.handleNavigationClick);
-            
-            // Page unload - ensure cookie is set
-            $(window).on('beforeunload', this.handlePageUnload);
-            
-            // AJAX activity requests
-            $(document).on('bp_activity_request', this.handleActivityRequest);
-            
-            // Activity loaded event
-            $(document).on('bp_activity_loaded', this.maintainFilterSelection);
+        isAdmin: function() {
+            return $('body').hasClass('wp-admin') || 
+                   window.location.pathname.indexOf('/wp-admin/') !== -1 ||
+                   typeof window.pagenow !== 'undefined';
         },
 
         /**
-         * Set default filter on page load
+         * Apply default filter from backend settings
          */
-        setDefaultFilter: function() {
-            if (!this.settings.defaultFilter) {
+        applyDefaultFilter: function() {
+            const defaultFilter = this.settings.defaultFilter;
+            
+            // Only apply if we have a default filter set and it's not "Everything"
+            if (!defaultFilter || defaultFilter === '0' || defaultFilter === '-1') {
                 return;
             }
 
-            // Set cookie to apply default filter
-            this.setCookie('bp_activity_filter_apply', '1', 30 * 60); // 30 minutes
+            // Set the filter dropdown
+            this.setFilterDropdown(defaultFilter);
             
-            // Set the dropdown selection
-            this.selectFilterOption(this.settings.defaultFilter);
+            // Set BuddyPress cookie
+            this.setBPCookie('bp-activity-filter', defaultFilter);
         },
 
         /**
-         * Handle filter dropdown change
+         * Set filter dropdown value
          */
-        handleFilterChange: function() {
-            // Remove the apply cookie when user manually changes filter
-            BPActivityFilterFrontend.removeCookie('bp_activity_filter_apply');
-        },
-
-        /**
-         * Handle component navigation clicks
-         */
-        handleNavigationClick: function() {
-            const $navItem = $(this);
-            const scope = $navItem.attr('data-bp-scope');
-            
-            if (!scope) {
-                return;
-            }
-
-            if (scope !== 'all') {
-                // For non-"all" scopes, select "Everything" and remove apply cookie
-                BPActivityFilterFrontend.selectFilterOption('0');
-                BPActivityFilterFrontend.removeCookie('bp_activity_filter_apply');
-            } else {
-                // For "all" scope, restore default filter
-                BPActivityFilterFrontend.setDefaultFilter();
-            }
-        },
-
-        /**
-         * Handle page unload
-         */
-        handlePageUnload: function() {
-            if ($('#activity-filter-by').length > 0) {
-                BPActivityFilterFrontend.setCookie('bp_activity_filter_apply', '1', 30 * 60);
-            }
-        },
-
-        /**
-         * Handle AJAX activity requests
-         */
-        handleActivityRequest: function() {
-            // Ensure default filter is maintained during AJAX requests
-            if (BPActivityFilterFrontend.getCookie('bp_activity_filter_apply')) {
-                BPActivityFilterFrontend.selectFilterOption(BPActivityFilterFrontend.settings.defaultFilter);
-            }
-        },
-
-        /**
-         * Maintain filter selection after activity loads
-         */
-        maintainFilterSelection: function() {
-            if (BPActivityFilterFrontend.getCookie('bp_activity_filter_apply')) {
-                const defaultFilter = BPActivityFilterFrontend.settings.defaultFilter;
-                BPActivityFilterFrontend.selectFilterOption(defaultFilter);
-            }
-        },
-
-        /**
-         * Select filter option in dropdown
-         */
-        selectFilterOption: function(value) {
+        setFilterDropdown: function(value) {
             const $dropdown = $('#activity-filter-by');
             if ($dropdown.length > 0) {
-                $dropdown.find('option').prop('selected', false);
+                $dropdown.val(value);
                 $dropdown.find('option[value="' + value + '"]').prop('selected', true);
-                $dropdown.trigger('change.bp-activity-filter');
             }
         },
 
         /**
-         * Set cookie
+         * Set BuddyPress cookie
          */
-        setCookie: function(name, value, seconds) {
+        setBPCookie: function(name, value) {
             const expires = new Date();
-            expires.setTime(expires.getTime() + (seconds * 1000));
+            expires.setTime(expires.getTime() + (30 * 24 * 60 * 60 * 1000)); // 30 days
             
             document.cookie = name + '=' + encodeURIComponent(value) + 
                              '; expires=' + expires.toUTCString() + 
                              '; path=/; SameSite=Lax';
-        },
-
-        /**
-         * Get cookie value
-         */
-        getCookie: function(name) {
-            const nameEQ = name + '=';
-            const cookies = document.cookie.split(';');
-            
-            for (let i = 0; i < cookies.length; i++) {
-                let cookie = cookies[i];
-                while (cookie.charAt(0) === ' ') {
-                    cookie = cookie.substring(1, cookie.length);
-                }
-                if (cookie.indexOf(nameEQ) === 0) {
-                    return decodeURIComponent(cookie.substring(nameEQ.length, cookie.length));
-                }
-            }
-            return null;
-        },
-
-        /**
-         * Remove cookie
-         */
-        removeCookie: function(name) {
-            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax';
         }
     };
 
@@ -184,29 +94,7 @@
     });
 
     /**
-     * Re-initialize on AJAX content updates
-     */
-    $(document).on('bp_nouveau_ajax_request', function() {
-        // Small delay to ensure content is loaded
-        setTimeout(function() {
-            BPActivityFilterFrontend.maintainFilterSelection();
-        }, 100);
-    });
-
-    /**
-     * Handle BuddyPress legacy theme AJAX
-     */
-    if (typeof window.bp !== 'undefined' && window.bp.Activity) {
-        // Hook into BuddyPress legacy AJAX events
-        $(document).on('bp_ajax_request', function() {
-            setTimeout(function() {
-                BPActivityFilterFrontend.maintainFilterSelection();
-            }, 100);
-        });
-    }
-
-    /**
-     * Expose object globally for debugging
+     * Expose for debugging
      */
     window.BPActivityFilterFrontend = BPActivityFilterFrontend;
 
