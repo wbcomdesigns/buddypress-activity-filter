@@ -132,7 +132,8 @@ class BP_Activity_Filter_Helper {
 	}
 
 	/**
-	 * Get all public custom post types with admin UI.
+	 * Get all public custom post types eligible for activity generation.
+	 * CONSERVATIVE APPROACH: Only exclude obvious conflicts, include everything else.
 	 *
 	 * @since 4.0.0
 	 * @return array
@@ -155,11 +156,19 @@ class BP_Activity_Filter_Helper {
 			}
 		}
 
-		return $eligible_types;
+		/**
+		 * Filter eligible post types before returning.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $eligible_types Eligible post types.
+		 */
+		return apply_filters( 'bp_activity_filter_eligible_post_types', $eligible_types );
 	}
 
 	/**
-	 * Check if a post type is eligible for activity generation.
+	 * CONSERVATIVE: Check if a post type is eligible for activity generation.
+	 * Only exclude OBVIOUS conflicts - err on the side of inclusion.
 	 *
 	 * @since 4.0.0
 	 *
@@ -175,18 +184,8 @@ class BP_Activity_Filter_Helper {
 			return false;
 		}
 
-		// Must be public
-		if ( ! $post_type->public ) {
-			return false;
-		}
-
-		// Must have admin UI
-		if ( ! $post_type->show_ui ) {
-			return false;
-		}
-
-		// Should not be excluded from search
-		if ( $post_type->exclude_from_search ) {
+		// Basic requirements
+		if ( ! $post_type->public || ! $post_type->show_ui ) {
 			return false;
 		}
 
@@ -195,12 +194,150 @@ class BP_Activity_Filter_Helper {
 			return false;
 		}
 
-		// Exclude specific post types
-		$excluded_types = array( 'attachment', 'revision', 'nav_menu_item', 'custom_css', 'customize_changeset' );
-		if ( in_array( $post_type->name, $excluded_types, true ) ) {
+		// Exclude WordPress built-in types that are clearly not for content
+		$excluded_builtin_types = array( 
+			'attachment', 
+			'revision', 
+			'nav_menu_item', 
+			'custom_css', 
+			'customize_changeset',
+			'oembed_cache',
+			'user_request',
+			'wp_block',
+			'wp_template',
+			'wp_template_part',
+			'wp_global_styles',
+			'wp_navigation'
+		);
+		
+		if ( in_array( $post_type->name, $excluded_builtin_types, true ) ) {
 			return false;
 		}
 
+		// ONLY exclude if there are CLEAR indicators of conflict
+		// 1. 'create_posts' => 'do_not_allow' capability (strong indicator)
+		if ( isset( $post_type->capabilities['create_posts'] ) && 
+			 'do_not_allow' === $post_type->capabilities['create_posts'] ) {
+			return false;
+		}
+
+		// 2. Known problematic post types with confirmed conflicts
+		if ( self::is_known_conflicting_post_type( $post_type->name ) ) {
+			return false;
+		}
+
+		// INCLUDE everything else - let the runtime checks handle edge cases
 		return true;
+	}
+
+	/**
+	 * CONSERVATIVE: Only check for CONFIRMED conflicts with specific plugins.
+	 * This is much more conservative than before.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $post_type Post type name.
+	 * @return bool
+	 */
+	private static function is_known_conflicting_post_type( $post_type ) {
+		// Only include post types we KNOW have conflicts and we KNOW the plugin is active
+		$confirmed_conflicts = array(
+			// BuddyPress Member Reviews - only if plugin is active
+			'review' => array(
+				'plugin_check' => function() {
+					return class_exists( 'BP_Member_Reviews' ) || 
+						   class_exists( 'BUPR_Admin' ) || 
+						   function_exists( 'bp_member_reviews_init' ) ||
+						   defined( 'BUPR_PLUGIN_VERSION' );
+				}
+			),
+			// bbPress - only if bbPress is active
+			'forum' => array(
+				'plugin_check' => function() {
+					return class_exists( 'bbPress' ) || function_exists( 'bbpress' );
+				}
+			),
+			'topic' => array(
+				'plugin_check' => function() {
+					return class_exists( 'bbPress' ) || function_exists( 'bbpress' );
+				}
+			),
+			'reply' => array(
+				'plugin_check' => function() {
+					return class_exists( 'bbPress' ) || function_exists( 'bbpress' );
+				}
+			),
+		);
+
+		// Only exclude if we have a confirmed conflict AND the plugin is active
+		if ( isset( $confirmed_conflicts[ $post_type ] ) ) {
+			$conflict = $confirmed_conflicts[ $post_type ];
+			if ( isset( $conflict['plugin_check'] ) && is_callable( $conflict['plugin_check'] ) ) {
+				return call_user_func( $conflict['plugin_check'] );
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get conflict reasons for excluded post types.
+	 * SIMPLIFIED: Only show actual exclusions.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array Array of post types and their conflict reasons.
+	 */
+	public static function get_excluded_post_types_with_reasons() {
+		$post_types = get_post_types( array( 'public' => true, '_builtin' => false ), 'objects' );
+		$excluded = array();
+
+		foreach ( $post_types as $post_type => $post_type_obj ) {
+			if ( ! self::is_post_type_eligible_for_activity( $post_type_obj ) ) {
+				$reason = self::get_exclusion_reason( $post_type_obj );
+				$excluded[ $post_type ] = array(
+					'label' => $post_type_obj->label,
+					'reason' => $reason
+				);
+			}
+		}
+
+		return $excluded;
+	}
+
+	/**
+	 * Get the specific reason why a post type is excluded.
+	 * SIMPLIFIED: Only the actual reasons we check for.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param WP_Post_Type $post_type_obj Post type object.
+	 * @return string
+	 */
+	private static function get_exclusion_reason( $post_type_obj ) {
+		$post_type = $post_type_obj->name;
+
+		if ( ! $post_type_obj->public ) {
+			return 'not_public';
+		}
+
+		if ( ! $post_type_obj->show_ui ) {
+			return 'no_admin_ui';
+		}
+
+		if ( ! post_type_supports( $post_type, 'title' ) ) {
+			return 'no_title_support';
+		}
+
+		if ( isset( $post_type_obj->capabilities['create_posts'] ) && 
+			 'do_not_allow' === $post_type_obj->capabilities['create_posts'] ) {
+			return 'capability_restriction';
+		}
+
+		if ( self::is_known_conflicting_post_type( $post_type ) ) {
+			return 'known_plugin_conflict';
+		}
+
+		return 'unknown';
 	}
 }
