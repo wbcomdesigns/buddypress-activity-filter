@@ -414,3 +414,53 @@
         transition: none;
     }
 }
+/* ==========================================================================
+   HIDDEN ACTIVITIES VERTICAL LAYOUT - FORCE OVERRIDE
+   ========================================================================== */
+
+/* Simple vertical layout fix */
+.bp-activity-checkbox-label {
+    display: block;
+    margin-bottom: 10px;
+    padding: 12px 15px;
+    background: #fafafa;
+    border: 1px solid #e1e1e1;
+    border-radius: 6px;
+}
+
+.bp-activity-checkbox-label:hover {
+    background: #f0f6fc;
+    border-color: #c3c4c7;
+}
+
+.bp-activity-checkbox-label.checked {
+    background: #e7f3ff;
+    border-color: #0073aa;
+}
+
+.bp-activity-checkbox-label.readonly {
+    background: #f6f7f7;
+    border-color: #dcdcde;
+    color: #8c8f94;
+    opacity: 0.7;
+}
+
+.core-activities-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #f0f6fc;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    border-left: 4px solid #0073aa;
+}
+
+.section-title {
+    margin: 0 0 15px 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.section-title .dashicons {
+    margin-right: 8px;
+}

@@ -1,8 +1,5 @@
 /**
- * BuddyPress Activity Filter - Admin JavaScript (Plugin-Specific Only)
- * 
- * Contains only functionality specific to the Activity Filter plugin settings.
- * General dashboard functionality is handled by the shared Wbcom integration.
+ * BuddyPress Activity Filter - Admin JavaScript (Simplified)
  * 
  * @package BuddyPress_Activity_Filter
  * @version 4.0.0
@@ -28,6 +25,7 @@
             this.bindEvents();
             this.initCheckboxStates();
             this.initCPTToggles();
+            this.initHiddenActivities();
             this.showLoadedState();
         },
 
@@ -35,14 +33,10 @@
          * Bind admin events
          */
         bindEvents: function() {
-            // Hidden activities select/deselect all
-            $(document).on('click', '#select-all-hidden', this.selectAllHidden);
-            $(document).on('click', '#deselect-all-hidden', this.deselectAllHidden);
-            
             // CPT enable/disable toggles
             $(document).on('change', '.cpt-enable-checkbox', this.toggleCPTSettings);
             
-            // Checkbox state changes
+            // Checkbox state changes (legacy support)
             $(document).on('change', '.bp-activity-checkbox', this.updateCheckboxState);
             
             // Form validation
@@ -53,19 +47,37 @@
         },
 
         /**
-         * Select all hidden activities
+         * Initialize hidden activities specific functionality
          */
-        selectAllHidden: function(e) {
-            e.preventDefault();
-            $('#bp-hidden-activities-fieldset input[type="checkbox"]').prop('checked', true).trigger('change');
-        },
-
-        /**
-         * Deselect all hidden activities
-         */
-        deselectAllHidden: function(e) {
-            e.preventDefault();
-            $('#bp-hidden-activities-fieldset input[type="checkbox"]').prop('checked', false).trigger('change');
+        initHiddenActivities: function() {
+            // Update visual states when checkboxes change
+            $(document).on('change', 'input[name="bp_activity_filter_hidden[]"]', function() {
+                BPActivityFilterAdmin.updateCheckboxVisualState.call(this);
+            });
+            
+            // Initialize visual states on page load
+            $('input[name="bp_activity_filter_hidden[]"]').each(function() {
+                BPActivityFilterAdmin.updateCheckboxVisualState.call(this);
+            });
+            
+            // Add hover effects for labels
+            $(document).on('mouseenter', 'label[for^="bp_hidden_"]', function() {
+                const $container = $(this).closest('div[style*="display: block"]');
+                const $checkbox = $(this).find('input[type="checkbox"]');
+                
+                if (!$checkbox.is(':checked')) {
+                    $container.css('background', '#f0f6fc');
+                }
+            });
+            
+            $(document).on('mouseleave', 'label[for^="bp_hidden_"]', function() {
+                const $container = $(this).closest('div[style*="display: block"]');
+                const $checkbox = $(this).find('input[type="checkbox"]');
+                
+                if (!$checkbox.is(':checked')) {
+                    $container.css('background', '#fafafa');
+                }
+            });
         },
 
         /**
@@ -89,16 +101,44 @@
         },
 
         /**
-         * Update checkbox visual state
+         * Update checkbox visual state (legacy support)
          */
         updateCheckboxState: function() {
+            BPActivityFilterAdmin.updateCheckboxVisualState.call(this);
+        },
+
+        /**
+         * Update checkbox visual state (core function for new structure)
+         */
+        updateCheckboxVisualState: function() {
             const $checkbox = $(this);
-            const $label = $checkbox.closest('.bp-activity-checkbox-label');
             
-            if ($checkbox.is(':checked')) {
-                $label.addClass('checked');
+            // For new simple HTML structure
+            if ($checkbox.attr('name') === 'bp_activity_filter_hidden[]') {
+                const $container = $checkbox.closest('div[style*="display: block"]');
+                
+                if ($checkbox.is(':checked')) {
+                    // Update to checked styles
+                    $container.css({
+                        'background': '#e7f3ff',
+                        'border': '1px solid #0073aa'
+                    });
+                } else {
+                    // Update to unchecked styles  
+                    $container.css({
+                        'background': '#fafafa',
+                        'border': '1px solid #e1e1e1'
+                    });
+                }
             } else {
-                $label.removeClass('checked');
+                // For legacy structure (if still exists)
+                const $label = $checkbox.closest('.bp-activity-checkbox-label');
+                
+                if ($checkbox.is(':checked')) {
+                    $label.addClass('checked');
+                } else {
+                    $label.removeClass('checked');
+                }
             }
         },
 
@@ -107,7 +147,12 @@
          */
         initCheckboxStates: function() {
             $('.bp-activity-checkbox').each(function() {
-                BPActivityFilterAdmin.updateCheckboxState.call(this);
+                BPActivityFilterAdmin.updateCheckboxVisualState.call(this);
+            });
+            
+            // Also initialize new structure checkboxes
+            $('input[name="bp_activity_filter_hidden[]"]').each(function() {
+                BPActivityFilterAdmin.updateCheckboxVisualState.call(this);
             });
         },
 
@@ -238,52 +283,6 @@
         },
 
         /**
-         * Utility: Debounce function calls
-         */
-        debounce: function(func, wait, immediate) {
-            let timeout;
-            return function() {
-                const context = this;
-                const args = arguments;
-                const later = function() {
-                    timeout = null;
-                    if (!immediate) func.apply(context, args);
-                };
-                const callNow = immediate && !timeout;
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-                if (callNow) func.apply(context, args);
-            };
-        },
-
-        /**
-         * Check if user prefers reduced motion
-         */
-        prefersReducedMotion: function() {
-            return window.matchMedia && 
-                   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        },
-
-        /**
-         * Get current tab from URL
-         */
-        getCurrentTab: function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('tab') || 'default';
-        },
-
-        /**
-         * Smooth scroll to element
-         */
-        scrollToElement: function($element, offset = 100) {
-            if ($element.length && !this.prefersReducedMotion()) {
-                $('html, body').animate({
-                    scrollTop: $element.offset().top - offset
-                }, 500);
-            }
-        },
-
-        /**
          * Initialize accessibility features
          */
         initAccessibility: function() {
@@ -301,13 +300,6 @@
             }).on('blur', function() {
                 $(this).removeClass('focus-visible');
             });
-        },
-
-        /**
-         * Announce to screen readers
-         */
-        announceToScreenReader: function(message) {
-            $('#bp-live-region').text(message);
         }
     };
 

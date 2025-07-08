@@ -302,13 +302,20 @@ class BP_Activity_Filter_Admin {
     }
 
     /**
-     * Render hidden activities tab content.
+     * Render hidden activities tab content - Simple version without buttons.
      *
      * @since 4.0.0
      */
     private function render_hidden_activities_tab() {
         $hidden_activities = get_option( 'bp_activity_filter_hidden', array() );
         $activity_actions = BP_Activity_Filter_Helper::get_activity_actions();
+        
+        // Define core activities that should never be hidden
+        $core_readonly_activities = array(
+            'activity_update' => __( 'Posted a status update', 'bp-activity-filter' ),
+            'activity_comment' => __( 'Replied to a status update', 'bp-activity-filter' ),
+        );
+        
         ?>
         <div class="settings-section">
             <h2><?php esc_html_e( 'Hidden Activity Types', 'bp-activity-filter' ); ?></h2>
@@ -324,41 +331,66 @@ class BP_Activity_Filter_Admin {
                                     <p><?php esc_html_e( 'No activity types available. Make sure BuddyPress is properly installed and activated.', 'bp-activity-filter' ); ?></p>
                                 </div>
                             <?php else : ?>
-                                <fieldset id="bp-hidden-activities-fieldset">
-                                    <legend class="screen-reader-text">
-                                        <?php esc_html_e( 'Select activity types to hide from the activity stream', 'bp-activity-filter' ); ?>
-                                    </legend>
+                                
+                                <!-- Core Read-only Activities -->
+                                <div style="margin-bottom: 25px; padding: 15px; background: #f0f6fc; border: 1px solid #c3c4c7; border-radius: 4px; border-left: 4px solid #0073aa;">
+                                    <h4 style="margin: 0 0 10px 0; color: #0073aa; display: flex; align-items: center;">
+                                        <span class="dashicons dashicons-shield-alt" style="margin-right: 8px;"></span>
+                                        <?php esc_html_e( 'Core Activities (Always Available)', 'bp-activity-filter' ); ?>
+                                    </h4>
+                                    <p style="margin: 0 0 15px 0; color: #646970; font-size: 13px;">
+                                        <?php esc_html_e( 'These essential activity types cannot be hidden as they are required for basic BuddyPress functionality.', 'bp-activity-filter' ); ?>
+                                    </p>
+                                    
+                                    <?php foreach ( $core_readonly_activities as $key => $label ) : ?>
+                                        <div style="display: block; margin-bottom: 8px; padding: 10px 12px; background: #f6f7f7; border: 1px solid #dcdcde; border-radius: 4px; opacity: 0.7;">
+                                            <label style="display: flex; align-items: center; cursor: not-allowed; margin: 0;">
+                                                <input type="checkbox" disabled="disabled" style="margin-right: 12px;">
+                                                <span style="flex: 1; font-weight: 500; color: #8c8f94;"><?php echo esc_html( $label ); ?></span>
+                                                <code style="font-size: 11px; background: #e8e8e8; color: #a7aaad; padding: 2px 6px; border-radius: 10px;"><?php echo esc_html( $key ); ?></code>
+                                            </label>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+
+                                <!-- Other Activities -->
+                                <div>
+                                    <h4 style="margin: 0 0 15px 0; color: #23282d; display: flex; align-items: center;">
+                                        <span class="dashicons dashicons-admin-settings" style="margin-right: 8px;"></span>
+                                        <?php esc_html_e( 'Other Activity Types', 'bp-activity-filter' ); ?>
+                                    </h4>
+                                    
                                     <?php foreach ( $activity_actions as $key => $label ) : ?>
-                                        <?php
+                                        <?php 
+                                        // Skip core readonly activities
+                                        if ( isset( $core_readonly_activities[ $key ] ) ) {
+                                            continue;
+                                        }
+                                        
                                         $is_checked = in_array( $key, $hidden_activities, true );
                                         $checkbox_id = 'bp_hidden_' . sanitize_html_class( $key );
+                                        $bg_color = $is_checked ? '#e7f3ff' : '#fafafa';
+                                        $border_color = $is_checked ? '#0073aa' : '#e1e1e1';
                                         ?>
-                                        <label for="<?php echo esc_attr( $checkbox_id ); ?>" style="display: block; margin-bottom: 8px;">
-                                            <input type="checkbox" 
-                                                   id="<?php echo esc_attr( $checkbox_id ); ?>"
-                                                   name="bp_activity_filter_hidden[]" 
-                                                   value="<?php echo esc_attr( $key ); ?>" 
-                                                   <?php checked( $is_checked ); ?>
-                                                   style="margin-right: 8px;">
-                                            <?php echo esc_html( $label ); ?>
-                                            <code style="margin-left: 8px; font-size: 11px; color: #666;"><?php echo esc_html( $key ); ?></code>
-                                        </label>
+                                        <div style="display: block; margin-bottom: 8px; padding: 10px 12px; background: <?php echo $bg_color; ?>; border: 1px solid <?php echo $border_color; ?>; border-radius: 4px;">
+                                            <label for="<?php echo esc_attr( $checkbox_id ); ?>" style="display: flex; align-items: center; cursor: pointer; margin: 0;">
+                                                <input type="checkbox" 
+                                                    id="<?php echo esc_attr( $checkbox_id ); ?>"
+                                                    name="bp_activity_filter_hidden[]" 
+                                                    value="<?php echo esc_attr( $key ); ?>" 
+                                                    <?php checked( $is_checked ); ?>
+                                                    style="margin-right: 12px;">
+                                                <span style="flex: 1; font-weight: 500; color: #23282d;"><?php echo esc_html( $label ); ?></span>
+                                                <code style="font-size: 11px; background: #f1f1f1; color: #8c8f94; padding: 2px 6px; border-radius: 10px;"><?php echo esc_html( $key ); ?></code>
+                                            </label>
+                                        </div>
                                     <?php endforeach; ?>
-                                </fieldset>
-                                
-                                <div style="margin-top: 15px;">
-                                    <button type="button" id="select-all-hidden" class="button button-secondary">
-                                        <?php esc_html_e( 'Select All', 'bp-activity-filter' ); ?>
-                                    </button>
-                                    <button type="button" id="deselect-all-hidden" class="button button-secondary" style="margin-left: 8px;">
-                                        <?php esc_html_e( 'Deselect All', 'bp-activity-filter' ); ?>
-                                    </button>
                                 </div>
 
                                 <div class="notice notice-info inline" style="margin-top: 20px;">
                                     <p>
                                         <strong><?php esc_html_e( 'Important:', 'bp-activity-filter' ); ?></strong>
-                                        <?php esc_html_e( 'Hidden activity types will be completely removed from the activity stream and will not appear in filter dropdown options. This action affects all users on your site.', 'bp-activity-filter' ); ?>
+                                        <?php esc_html_e( 'Core activities (status updates, comments) cannot be hidden as they are essential for BuddyPress functionality. Hidden activity types will be completely removed from the activity stream and will not appear in filter dropdown options. This action affects all users on your site.', 'bp-activity-filter' ); ?>
                                     </p>
                                 </div>
                             <?php endif; ?>
@@ -367,18 +399,6 @@ class BP_Activity_Filter_Admin {
                 </tbody>
             </table>
         </div>
-        
-        <script>
-        jQuery(document).ready(function($) {
-            $('#select-all-hidden').on('click', function() {
-                $('#bp-hidden-activities-fieldset input[type="checkbox"]').prop('checked', true);
-            });
-            
-            $('#deselect-all-hidden').on('click', function() {
-                $('#bp-hidden-activities-fieldset input[type="checkbox"]').prop('checked', false);
-            });
-        });
-        </script>
         <?php
     }
 
@@ -750,11 +770,11 @@ class BP_Activity_Filter_Admin {
     }
 
     /**
-     * Sanitize hidden activities array.
+     * Sanitize hidden activities array with core activity protection.
      *
      * @since 4.0.0
      * @param mixed $input Raw input value.
-     * @return array Sanitized array of activity types.
+     * @return array Sanitized array of activity types (excluding core activities).
      */
     public function sanitize_hidden_activities( $input ) {
         if ( ! is_array( $input ) ) {
@@ -763,10 +783,28 @@ class BP_Activity_Filter_Admin {
 
         $sanitized = array();
         $valid_actions = array_keys( BP_Activity_Filter_Helper::get_activity_actions() );
+        
+        // Define core activities that should NEVER be hidden
+        $core_protected_activities = array(
+            'activity_update',
+            'activity_comment'
+        );
 
         foreach ( $input as $activity_type ) {
             $activity_type = sanitize_text_field( $activity_type );
-            if ( ! empty( $activity_type ) && in_array( $activity_type, $valid_actions, true ) ) {
+            
+            // Skip empty values
+            if ( empty( $activity_type ) ) {
+                continue;
+            }
+            
+            // Skip core protected activities
+            if ( in_array( $activity_type, $core_protected_activities, true ) ) {
+                continue;
+            }
+            
+            // Only include valid activity types
+            if ( in_array( $activity_type, $valid_actions, true ) ) {
                 $sanitized[] = $activity_type;
             }
         }

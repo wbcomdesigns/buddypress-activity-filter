@@ -201,13 +201,32 @@ class BP_Activity_Filter_Frontend {
 	}
 
 	/**
-	 * Get hidden activities list.
+	 * Get hidden activities list with core activity protection.
 	 *
 	 * @since 4.0.0
-	 * @return array List of hidden activity types.
+	 * @return array List of hidden activity types (excluding core activities).
 	 */
 	private function get_hidden_activities() {
-		return BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_hidden', array() );
+		$hidden_activities = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_hidden', array() );
+		
+		// Define core activities that should NEVER be hidden, even if somehow saved in settings
+		$core_protected_activities = array(
+			'activity_update',
+			'activity_comment'
+		);
+		
+		// Remove any core activities from hidden list (safety protection)
+		$hidden_activities = array_diff( $hidden_activities, $core_protected_activities );
+		
+		/**
+		 * Filter hidden activities after core protection.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $hidden_activities Filtered hidden activities.
+		 * @param array $core_protected_activities Core activities that cannot be hidden.
+		 */
+		return apply_filters( 'bp_activity_filter_hidden_activities', $hidden_activities, $core_protected_activities );
 	}
 
 	/**
