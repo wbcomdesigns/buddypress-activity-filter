@@ -47,22 +47,25 @@
 /* Welcome Panel */
 .wbcom-welcome-panel {
     background: #fff;
-    border: 1px solid #c3c4c7;
-    box-shadow: 0 1px 1px rgba(0,0,0,.04);
-    padding: 20px;
+    border: 1px solid #e1e5e9;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    padding: 24px;
     margin-bottom: 20px;
-    border-radius: 4px;
+    border-radius: 12px;
 }
 
 .wbcom-welcome-panel h2 {
-    margin: 0 0 10px 0;
-    color: #0073aa;
+    margin: 0 0 16px 0;
+    color: #153045;
+    font-size: 24px;
+    font-weight: 700;
 }
 
 .about-description {
-    font-size: 16px;
+    font-size: 15px;
     margin-bottom: 20px;
-    color: #646970;
+    color: #515b67;
+    line-height: 1.6;
 }
 
 /* Stats Overview */
@@ -93,7 +96,7 @@
 .stat-number {
     font-size: 32px;
     font-weight: bold;
-    color: #0073aa;
+    color: #1d76da;
     line-height: 1;
     display: block;
     margin-bottom: 8px;
@@ -176,9 +179,9 @@
 /* Tab Navigation */
 .wbcom-dashboard-tabs {
     background: #fff;
-    border: 1px solid #c3c4c7;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #e1e5e9;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.07);
     overflow: hidden;
 }
 
@@ -207,15 +210,15 @@
 
 .nav-tab:hover {
     background: #fff;
-    color: #0073aa;
+    color: #1d76da;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .nav-tab-active {
     background: #fff;
-    color: #0073aa;
-    border-bottom-color: #0073aa;
+    color: #1d76da;
+    border-bottom-color: #1d76da;
     font-weight: 600;
     z-index: 1;
 }
@@ -314,11 +317,12 @@
     color: #664d03;
 }
 
-.plugin-description {
+.plugin-description,
+.theme-description {
     color: #646970;
     font-size: 14px;
-    line-height: 1.5;
-    margin: 0 0 12px 0;
+    line-height: 1.6;
+    margin: 0 0 15px 0;
 }
 
 .plugin-version {
@@ -391,7 +395,7 @@
 .premium-theme-item:hover {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transform: translateY(-2px);
-    border-color: #0073aa;
+    border-color: #1d76da;
 }
 
 .plugin-header,
@@ -407,9 +411,9 @@
 .plugin-header h3,
 .theme-header h3 {
     margin: 0;
-    font-size: 20px;
-    font-weight: 600;
-    color: #0073aa;
+    font-size: 22px;
+    font-weight: 700;
+    color: #153045;
     line-height: 1.3;
     flex: 1;
 }
@@ -422,12 +426,12 @@
 
 .price-amount {
     font-size: 24px;
-    font-weight: 700;
-    color: #0073aa;
-    background: #e7f3ff;
+    font-weight: 800;
+    color: #1d76da;
+    background: linear-gradient(135deg, #faf9ff 0%, #f0f4ff 100%);
     padding: 8px 16px;
-    border-radius: 20px;
-    border: 2px solid #0073aa;
+    border-radius: 8px;
+    border: 2px solid #1d76da;
     display: inline-block;
     min-width: 80px;
     text-align: center;
@@ -460,7 +464,7 @@
 
 .plugin-features .dashicons,
 .theme-features .dashicons {
-    color: #00a32a;
+    color: #1d76da;
     font-size: 16px;
     flex-shrink: 0;
 }
@@ -500,15 +504,15 @@
 
 .plugin-actions .button-primary,
 .theme-actions .button-primary {
-    background: #0073aa;
-    border-color: #0073aa;
+    background: #1d76da;
+    border-color: #1d76da;
     color: #fff;
 }
 
 .plugin-actions .button-primary:hover,
 .theme-actions .button-primary:hover {
-    background: #005a87;
-    border-color: #005a87;
+    background: #1560b8;
+    border-color: #1560b8;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -605,13 +609,13 @@
 
 .news-item h4 a {
     text-decoration: none;
-    color: #0073aa;
+    color: #1d76da;
     font-weight: 600;
 }
 
 .news-item h4 a:hover {
     text-decoration: underline;
-    color: #005a87;
+    color: #1560b8;
 }
 
 .news-item p {
@@ -628,13 +632,20 @@
     border-radius: 6px;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.wbcom-sidebar-widget:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+    border-color: #1d76da;
 }
 
 .wbcom-sidebar-widget h3 {
     margin: 0 0 15px 0;
-    color: #23282d;
-    font-size: 16px;
+    color: #1d76da;
+    font-size: 18px;
     font-weight: 600;
     border-bottom: 2px solid #f0f0f1;
     padding-bottom: 10px;
@@ -660,7 +671,7 @@
 }
 
 .wbcom-stats-list strong {
-    color: #0073aa;
+    color: #1d76da;
     font-size: 18px;
     font-weight: 700;
 }

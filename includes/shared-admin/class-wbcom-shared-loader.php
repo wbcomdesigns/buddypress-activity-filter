@@ -38,14 +38,24 @@ class Wbcom_Shared_Loader {
      * NEW: Auto-detect plugin information from file and headers
      */
     private static function get_plugin_info($plugin_file, $overrides = array()) {
-        // Get plugin header data
-        if (!function_exists('get_plugin_data')) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        }
-        
-        $plugin_header = get_plugin_data($plugin_file);
         $plugin_dir = dirname($plugin_file);
         $plugin_url = plugin_dir_url($plugin_file);
+        
+        // Don't read plugin headers before init hook to avoid translation warnings
+        $plugin_header = array(
+            'Name' => '',
+            'Version' => '',
+            'Description' => ''
+        );
+        
+        // Only get plugin data after init hook
+        if (did_action('init')) {
+            // Get plugin header data
+            if (!function_exists('get_plugin_data')) {
+                require_once ABSPATH . 'wp-admin/includes/plugin.php';
+            }
+            $plugin_header = get_plugin_data($plugin_file);
+        }
         
         // Extract slug from filename
         $slug = sanitize_key(basename($plugin_file, '.php'));
@@ -56,21 +66,24 @@ class Wbcom_Shared_Loader {
         // Auto-detect admin class name
         $admin_class = self::find_admin_class($slug);
         
+        // Use override name if available, otherwise empty string
+        $name_for_icon = isset($overrides['name']) ? $overrides['name'] : (isset($overrides['menu_title']) ? $overrides['menu_title'] : $plugin_header['Name']);
+        
         // Auto-detect icon based on plugin name/slug
-        $icon = self::pick_plugin_icon($plugin_header['Name'], $slug);
+        $icon = self::pick_plugin_icon($name_for_icon, $slug);
         
         $auto_data = array(
-            'slug'         => $slug,
-            'name'         => $plugin_header['Name'],
-            'version'      => $plugin_header['Version'],
-            'description'  => $plugin_header['Description'],
-            'settings_url' => admin_url('admin.php?page=wbcom-' . $settings_slug),
-            'icon'         => $icon,
-            'priority'     => 10,
-            'status'       => 'active',
-            'has_premium'  => false,
-            'docs_url'     => 'https://docs.wbcomdesigns.com/' . $settings_slug . '/',
-            'support_url'  => 'https://wbcomdesigns.com/support/',
+            'slug'         => isset($overrides['slug']) ? $overrides['slug'] : $slug,
+            'name'         => isset($overrides['name']) ? $overrides['name'] : (isset($overrides['menu_title']) ? $overrides['menu_title'] : $plugin_header['Name']),
+            'version'      => isset($overrides['version']) ? $overrides['version'] : $plugin_header['Version'],
+            'description'  => isset($overrides['description']) ? $overrides['description'] : $plugin_header['Description'],
+            'settings_url' => isset($overrides['settings_url']) ? $overrides['settings_url'] : admin_url('admin.php?page=wbcom-' . $settings_slug),
+            'icon'         => isset($overrides['icon']) ? $overrides['icon'] : $icon,
+            'priority'     => isset($overrides['priority']) ? $overrides['priority'] : 10,
+            'status'       => isset($overrides['status']) ? $overrides['status'] : 'active',
+            'has_premium'  => isset($overrides['has_premium']) ? $overrides['has_premium'] : false,
+            'docs_url'     => isset($overrides['docs_url']) ? $overrides['docs_url'] : 'https://docs.wbcomdesigns.com/' . $settings_slug . '/',
+            'support_url'  => isset($overrides['support_url']) ? $overrides['support_url'] : 'https://wbcomdesigns.com/support/',
             'shared_path'  => $plugin_dir . '/includes/shared-admin/',
             'admin_class'  => $admin_class,
             'plugin_file'  => $plugin_file,
@@ -78,8 +91,14 @@ class Wbcom_Shared_Loader {
             'plugin_url'   => $plugin_url,
         );
         
-        // Merge with custom overrides
-        return array_merge($auto_data, $overrides);
+        // Merge any additional overrides that weren't handled above
+        foreach ($overrides as $key => $value) {
+            if (!isset($auto_data[$key])) {
+                $auto_data[$key] = $value;
+            }
+        }
+        
+        return $auto_data;
     }
     
     /**
@@ -237,7 +256,6 @@ class Wbcom_Shared_Loader {
         // Validate required fields
         if (empty($plugin_data['slug']) || empty($plugin_data['name'])) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('Wbcom Shared: Plugin registration failed - missing slug or name');
             }
             return false;
         }
@@ -310,17 +328,34 @@ class Wbcom_Shared_Loader {
      * Initialize the shared admin system
      */
     private function init_shared_system() {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+        }
+        
         if (!$this->is_primary_loader) return;
+        
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+        }
         
         // Load required classes
         $this->load_shared_classes();
         
         // Initialize main menu and dashboard
-        add_action('admin_menu', array($this, 'create_main_menu'), 5);
-        add_action('admin_menu', array($this, 'add_plugin_submenus'), 10);
+        if (did_action('admin_menu')) {
+            // admin_menu hook has already fired, create menu immediately
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+            }
+            $this->create_main_menu();
+            $this->add_plugin_submenus();
+        } else {
+            // admin_menu hook hasn't fired yet, add hooks
+            add_action('admin_menu', array($this, 'create_main_menu'), 5);
+            add_action('admin_menu', array($this, 'add_plugin_submenus'), 10);
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+            }
+        }
         
-        // Enqueue shared assets for all Wbcom pages
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_shared_assets'), 5);
+        // Enqueue shared assets for all Wbcom pages - use priority 1 to load early
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_shared_assets'), 1);
         
         // Version check and conflict resolution
         add_action('admin_init', array($this, 'check_version_conflicts'));
@@ -334,7 +369,6 @@ class Wbcom_Shared_Loader {
         
         if (empty($base_path) || !is_dir($base_path)) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('Wbcom Shared: Could not find shared-admin directory at: ' . $base_path);
             }
             return;
         }
@@ -349,7 +383,6 @@ class Wbcom_Shared_Loader {
                 require_once $file_path;
             } else {
                 if (defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log('Wbcom Shared: Could not load class file: ' . $file_path);
                 }
             }
         }
@@ -359,9 +392,17 @@ class Wbcom_Shared_Loader {
      * Create main Wbcom Designs menu
      */
     public function create_main_menu() {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+        }
+        
         // Check if menu already exists
         if ($this->menu_exists()) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+            }
             return;
+        }
+        
+        if (defined('WP_DEBUG') && WP_DEBUG) {
         }
         
         add_menu_page(
@@ -374,6 +415,9 @@ class Wbcom_Shared_Loader {
             58.5
         );
         
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+        }
+        
         // Add dashboard as first submenu
         add_submenu_page(
             'wbcom-designs',
@@ -383,6 +427,9 @@ class Wbcom_Shared_Loader {
             'wbcom-designs',
             array($this, 'show_dashboard')
         );
+        
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+        }
     }
     
     /**
@@ -402,10 +449,13 @@ class Wbcom_Shared_Loader {
             
             // Only add if submenu doesn't already exist
             if (!$this->submenu_exists($menu_slug)) {
+                // Apply filter to allow customization of menu label
+                $menu_label = apply_filters('wbcom_submenu_label', $plugin['name'], $plugin['slug'], $plugin);
+                
                 add_submenu_page(
                     'wbcom-designs',
-                    $plugin['name'],
-                    $plugin['name'],
+                    $plugin['name'],  // Page title
+                    $menu_label,      // Menu label (filtered)
                     'manage_options',
                     $menu_slug,
                     array($this, 'show_plugin_page')
@@ -439,6 +489,12 @@ class Wbcom_Shared_Loader {
      * NEW: Load and display the plugin's admin interface
      */
     private function load_plugin_admin($plugin) {
+        // Check if plugin has a callback first
+        if (isset($plugin['callback']) && is_callable($plugin['callback'])) {
+            call_user_func($plugin['callback']);
+            return;
+        }
+        
         $admin_class = isset($plugin['admin_class']) ? $plugin['admin_class'] : false;
         
         // Try the detected admin class first
@@ -593,7 +649,6 @@ class Wbcom_Shared_Loader {
             }
         } catch (Exception $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('Wbcom Shared Dashboard Error: ' . $e->getMessage());
             }
             $this->show_fallback_dashboard();
         }
@@ -740,30 +795,22 @@ class Wbcom_Shared_Loader {
     
     /**
      * NEW: Check if current page is a Wbcom admin page (STRICT checking)
+     * Only loads shared assets on the main dashboard, NOT on individual plugin pages
      */
     private function is_wbcom_admin_page($hook_suffix) {
         // Get current page parameter
         $current_page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '';
         
-        // STRICT CHECK: Only load on these specific pages
+        // STRICT CHECK: Only load shared assets on main dashboard pages
         
         // 1. Main Wbcom dashboard
         if ($current_page === 'wbcom-designs') {
             return true;
         }
         
-        // 2. Registered plugin pages
-        foreach ($this->registered_plugins as $plugin) {
-            $plugin_page = $this->extract_menu_slug($plugin['settings_url']);
-            if (!empty($plugin_page) && $current_page === $plugin_page) {
-                return true;
-            }
-        }
-        
-        // 3. Hook suffix patterns for Wbcom pages
+        // 2. Hook suffix patterns for main Wbcom dashboard only
         $wbcom_hook_patterns = array(
             'toplevel_page_wbcom-designs',
-            'wbcom-designs_page_wbcom-',  // Any submenu under wbcom-designs
         );
         
         foreach ($wbcom_hook_patterns as $pattern) {
@@ -772,11 +819,7 @@ class Wbcom_Shared_Loader {
             }
         }
         
-        // 4. Emergency fallback: only if page param starts with 'wbcom-'
-        if (strpos($current_page, 'wbcom-') === 0) {
-            return true;
-        }
-        
+        // DO NOT load shared assets on individual plugin pages - they should load their own CSS/JS
         return false;
     }
     

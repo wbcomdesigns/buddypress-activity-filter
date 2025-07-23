@@ -198,7 +198,7 @@
                              '<h4>Stay Connected</h4>' +
                              '<ul>' +
                              '<li>Visit our <a href="https://wbcomdesigns.com/blog/" target="_blank">blog</a> for the latest updates</li>' +
-                             '<li>Follow us on <a href="https://twitter.com/wbcomdesigns" target="_blank">Twitter</a></li>' +
+                             '<li>Follow us on <a href="https://twitter.com/wbcomdesigns" target="_blank">X</a></li>' +
                              '<li>Join our <a href="https://www.facebook.com/wbcomdesigns/" target="_blank">Facebook</a> community</li>' +
                              '</ul>' +
                              '</div>' +

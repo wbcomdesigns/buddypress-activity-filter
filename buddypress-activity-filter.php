@@ -113,6 +113,7 @@ final class BP_Activity_Filter {
 		// Plugin action links.
 		add_filter( 'plugin_action_links_' . BP_ACTIVITY_FILTER_BASENAME, array( $this, 'plugin_action_links' ) );
 		add_filter( 'network_admin_plugin_action_links_' . BP_ACTIVITY_FILTER_BASENAME, array( $this, 'plugin_action_links' ) );
+		
 	}
 
 	/**
@@ -121,14 +122,31 @@ final class BP_Activity_Filter {
 	 * @since 4.0.0
 	 */
 	public function init_wbcom_integration() {
-		// Load easy setup helper
+		// First check if wbcom_integrate_plugin is already available (from wbcom-essential or another plugin)
+		if ( function_exists( 'wbcom_integrate_plugin' ) ) {
+			// Use the existing integration function
+			wbcom_integrate_plugin( __FILE__, array(
+				'name'         => esc_html__( 'BP Activity Filter', 'bp-activity-filter' ),
+				'menu_title'   => esc_html__( 'BP Activity Filter', 'bp-activity-filter' ),
+				'slug'         => 'activity-filter',
+				'priority'     => 10,
+				'icon'         => 'dashicons-filter',
+				'callback'     => array( $this, 'render_admin_page' ),
+				'settings_url' => admin_url( 'admin.php?page=wbcom-activity-filter' ),
+			) );
+			return;
+		}
+		
+		// Otherwise, load our own integration helper
 		$helper_file = BP_ACTIVITY_FILTER_PLUGIN_DIR . 'includes/shared-admin/wbcom-easy-setup.php';
 		
-		if ( file_exists( $helper_file ) ) {
+		if ( file_exists( $helper_file ) && ! function_exists( 'wbcom_integrate_plugin' ) ) {
 			require_once $helper_file;
 			
 			// One-line integration - auto-detects everything!
-			wbcom_integrate_plugin( __FILE__ );
+			if ( function_exists( 'wbcom_integrate_plugin' ) ) {
+				wbcom_integrate_plugin( __FILE__ );
+			}
 		} else {
 			// Fallback to original method if helper not found
 			$this->init_wbcom_integration_fallback();
@@ -151,7 +169,7 @@ final class BP_Activity_Filter {
 			if ( class_exists( 'Wbcom_Shared_Loader' ) ) {
 				Wbcom_Shared_Loader::register_plugin( array(
 					'slug'         => 'bp-activity-filter',
-					'name'         => 'Activity Filter',
+					'name'         => 'BP Activity Filter',
 					'version'      => BP_ACTIVITY_FILTER_VERSION,
 					'settings_url' => admin_url( 'admin.php?page=wbcom-bp-activity-filter' ),
 					'icon'         => 'dashicons-filter',
@@ -521,4 +539,25 @@ bp_activity_filter();
 // Handle activation redirect after plugin is fully loaded.
 if ( is_admin() ) {
 	add_action( 'admin_init', array( bp_activity_filter(), 'handle_activation_redirect' ) );
+}
+
+// Add filter early to customize submenu label
+add_filter( 'wbcom_submenu_label', 'bp_activity_filter_customize_submenu_label', 10, 3 );
+
+/**
+ * Customize submenu label for BP Activity Filter
+ *
+ * @since 4.0.0
+ * @param string $label Current menu label
+ * @param string $slug Plugin slug
+ * @param array $plugin Plugin data
+ * @return string Modified menu label
+ */
+function bp_activity_filter_customize_submenu_label( $label, $slug, $plugin ) {
+	// Change menu label for this plugin
+	if ( $slug === 'bp-activity-filter' || $slug === 'activity-filter' || $slug === 'buddypress-activity-filter' ) {
+		return esc_html__( 'BP Activity Filter', 'bp-activity-filter' );
+	}
+	
+	return $label;
 }

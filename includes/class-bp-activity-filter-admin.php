@@ -87,11 +87,12 @@ class BP_Activity_Filter_Admin {
 
             <?php settings_errors( 'bp_activity_filter_settings' ); ?>
 
-            <div class="tab-content-wrapper">
-                <nav class="nav-tab-wrapper" role="tablist">
+            <div class="wbcom-tab-wrapper">
+                <nav class="wbcom-nav-tab-wrapper nav-tab-wrapper" role="tablist">
                     <?php $this->render_admin_tabs( $current_tab ); ?>
                 </nav>
 
+                <div class="wbcom-tab-content">
                 <form method="post" action="" novalidate="novalidate">
                     <?php 
                     wp_nonce_field( 'bp_activity_filter_save_settings', 'bp_activity_filter_nonce' );
@@ -102,6 +103,7 @@ class BP_Activity_Filter_Admin {
                     <?php $this->render_tab_content( $current_tab ); ?>
 
                     <!-- Replace the submit section in your admin template -->
+                    <?php if ( $current_tab !== 'faq' ) : ?>
                     <div class="submit" style="padding: 1.5em;">
                         <?php submit_button( 
                             esc_html__( 'Save Settings', 'bp-activity-filter' ), 
@@ -114,58 +116,69 @@ class BP_Activity_Filter_Admin {
                             ) 
                         ); ?>
                     </div>
+                    <?php endif; ?>
                 </form>
-            </div>
+                </div><!-- .wbcom-tab-content -->
+            </div><!-- .wbcom-tab-wrapper -->
         </div>
         
         <style>
-        .bp-activity-filter-admin .nav-tab-wrapper {
-            border-bottom: 1px solid #c3c4c7;
-            margin: 0;
-            background: #f8f9fa;
-        }
-        
-        .bp-activity-filter-admin .nav-tab {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 12px 16px;
-            border: none;
-            border-bottom: 2px solid transparent;
-            background: transparent;
-            color: #646970;
-            text-decoration: none;
-        }
-        
-        .bp-activity-filter-admin .nav-tab:hover {
-            background: #fff;
-            color: #0073aa;
-        }
-        
-        .bp-activity-filter-admin .nav-tab-active {
-            background: #fff;
-            color: #0073aa;
-            border-bottom-color: #0073aa;
-        }
-        
-        .tab-content-wrapper {
-            background: #fff;
-            border: 1px solid #c3c4c7;
-            border-radius: 0 0 4px 4px;
-            margin-top: -1px;
-        }
-        
+        /* Plugin-specific styles only - tab styles handled by shared CSS */
         .settings-section {
             padding: 20px;
         }
         
+        .settings-section h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        .settings-section p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        
+        .form-table {
+            margin-top: 0;
+        }
+        
         .form-table th {
             width: 220px;
-            padding: 20px;
+            padding: 20px 10px 20px 0;
+            vertical-align: top;
         }
         
         .form-table td {
-            padding: 20px;
+            padding: 20px 10px;
+        }
+        
+        /* Checkbox and label alignment */
+        .form-table td label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .form-table td input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        /* CPT table specific styles */
+        .bp-activity-filter-admin .cpt-settings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .bp-activity-filter-admin .cpt-settings-table th,
+        .bp-activity-filter-admin .cpt-settings-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .bp-activity-filter-admin .cpt-settings-table th {
+            background: #f8f9fa;
+            font-weight: 600;
         }
         
         .wbcom-version {
@@ -199,6 +212,10 @@ class BP_Activity_Filter_Admin {
                 'title' => esc_html__( 'Custom Post Types', 'bp-activity-filter' ),
                 'icon'  => 'dashicons-admin-post',
             ),
+            'faq'     => array(
+                'title' => esc_html__( 'FAQ', 'bp-activity-filter' ),
+                'icon'  => 'dashicons-editor-help',
+            ),
         );
 
         $base_url = admin_url( 'admin.php?page=wbcom-activity-filter' );
@@ -208,7 +225,7 @@ class BP_Activity_Filter_Admin {
             $active_class = $current_tab === $tab_key ? 'nav-tab-active' : '';
             
             printf(
-                '<a href="%s" class="nav-tab %s" role="tab" aria-selected="%s" data-tab="%s">
+                '<a href="%s" class="wbcom-nav-tab nav-tab %s" role="tab" aria-selected="%s" data-tab="%s">
                     <span class="dashicons %s"></span>
                     %s
                 </a>',
@@ -235,6 +252,9 @@ class BP_Activity_Filter_Admin {
                 break;
             case 'cpt':
                 $this->render_cpt_tab();
+                break;
+            case 'faq':
+                $this->render_faq_tab();
                 break;
             default:
                 $this->render_default_filters_tab();
@@ -331,11 +351,8 @@ class BP_Activity_Filter_Admin {
             <h2><?php esc_html_e( 'Hidden Activity Types', 'bp-activity-filter' ); ?></h2>
             <p><?php esc_html_e( 'Select activity types to completely hide from all activity streams. Hidden activities will not appear in the activity feed or filter dropdown options.', 'bp-activity-filter' ); ?></p>
 
-            <table class="form-table" role="presentation">
-                <tbody>
-                    <tr>
-                        <th scope="row"><?php esc_html_e( 'Activity Types to Hide', 'bp-activity-filter' ); ?></th>
-                        <td>
+            <h3 style="margin-top: 20px; margin-bottom: 15px;"><?php esc_html_e( 'Activity Types to Hide', 'bp-activity-filter' ); ?></h3>
+            <div class="activity-selection-area">
                             <?php if ( empty( $activity_actions ) ) : ?>
                                 <div class="notice notice-warning inline">
                                     <p><?php esc_html_e( 'No activity types available. Make sure BuddyPress is properly installed and activated.', 'bp-activity-filter' ); ?></p>
@@ -430,10 +447,7 @@ class BP_Activity_Filter_Admin {
                                     </ul>
                                 </div>
                             <?php endif; ?>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            </div>
         </div>
         <?php
     }
@@ -453,11 +467,8 @@ class BP_Activity_Filter_Admin {
                 <?php esc_html_e( 'Enable automatic activity generation for custom post types when they are published. Only public custom post types with admin interface are available for selection.', 'bp-activity-filter' ); ?>
             </p>
 
-            <table class="form-table" role="presentation">
-                <tbody>
-                    <tr>
-                        <th scope="row"><?php esc_html_e( 'Enable Post Types', 'bp-activity-filter' ); ?></th>
-                        <td>
+            <h3 style="margin-top: 20px; margin-bottom: 15px;"><?php esc_html_e( 'Enable Post Types', 'bp-activity-filter' ); ?></h3>
+            <div class="cpt-selection-area">
                             <?php if ( empty( $post_types ) ) : ?>
                                 <div class="notice notice-info inline">
                                     <p>
@@ -480,10 +491,7 @@ class BP_Activity_Filter_Admin {
                                     </p>
                                 </div>
                             <?php endif; ?>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            </div>
         </div>
         <?php
     }
@@ -590,7 +598,7 @@ class BP_Activity_Filter_Admin {
     private function get_current_tab() {
         $tab = isset( $_GET['tab'] ) ? sanitize_text_field( wp_unslash( $_GET['tab'] ) ) : 'default';
         
-        $valid_tabs = array( 'default', 'hidden', 'cpt' );
+        $valid_tabs = array( 'default', 'hidden', 'cpt', 'faq' );
         if ( ! in_array( $tab, $valid_tabs, true ) ) {
             $tab = 'default';
         }
@@ -899,6 +907,26 @@ class BP_Activity_Filter_Admin {
             return;
         }
 
+        // Enqueue modern shared tab styles - Use centralized version from WBCom Essential if available
+        if ( defined( 'WBCOM_ESSENTIAL_URL' ) && file_exists( WP_PLUGIN_DIR . '/wbcom-essential/includes/shared-admin/wbcom-shared-tabs.css' ) ) {
+            wp_enqueue_style(
+                'wbcom-shared-tabs',
+                WBCOM_ESSENTIAL_URL . 'includes/shared-admin/wbcom-shared-tabs.css',
+                array(),
+                defined( 'WBCOM_ESSENTIAL_VERSION' ) ? WBCOM_ESSENTIAL_VERSION : BP_ACTIVITY_FILTER_VERSION,
+                'all'
+            );
+        } else {
+            // Fallback to local copy
+            wp_enqueue_style(
+                'wbcom-shared-tabs',
+                BP_ACTIVITY_FILTER_PLUGIN_URL . 'includes/shared-admin/wbcom-shared-tabs.css',
+                array(),
+                BP_ACTIVITY_FILTER_VERSION,
+                'all'
+            );
+        }
+
         wp_localize_script(
             'jquery',
             'bpActivityFilterAdmin',
@@ -908,5 +936,114 @@ class BP_Activity_Filter_Admin {
                 'currentTab'   => $this->get_current_tab(),
             )
         );
+    }
+
+    /**
+     * Render FAQ tab content.
+     *
+     * @since 4.0.0
+     */
+    private function render_faq_tab() {
+        ?>
+        <div class="bp-activity-filter-faq">
+            <h2><?php esc_html_e( 'Frequently Asked Questions', 'bp-activity-filter' ); ?></h2>
+            
+            <div class="faq-item">
+                <h3><?php esc_html_e( 'What is BuddyPress Activity Filter?', 'bp-activity-filter' ); ?></h3>
+                <p><?php esc_html_e( 'BuddyPress Activity Filter enhances the default BuddyPress activity stream by providing advanced filtering options. It allows users to filter activities by type, set default filters, and manage which activity types are visible.', 'bp-activity-filter' ); ?></p>
+            </div>
+
+            <div class="faq-item">
+                <h3><?php esc_html_e( 'How do I set a default filter for all activity streams?', 'bp-activity-filter' ); ?></h3>
+                <p><?php esc_html_e( 'Navigate to the Default Filters tab and select your preferred default filter from the dropdown. This filter will be applied automatically when users visit the activity stream.', 'bp-activity-filter' ); ?></p>
+            </div>
+
+            <div class="faq-item">
+                <h3><?php esc_html_e( 'Can I set different default filters for profile pages?', 'bp-activity-filter' ); ?></h3>
+                <p><?php esc_html_e( 'Yes! In the Default Filters tab, you can set a separate default filter specifically for user profile activity streams. This allows for more contextual filtering based on where activities are viewed.', 'bp-activity-filter' ); ?></p>
+            </div>
+
+            <div class="faq-item">
+                <h3><?php esc_html_e( 'How do I hide specific activity types from users?', 'bp-activity-filter' ); ?></h3>
+                <p><?php esc_html_e( 'Use the Hidden Activities tab to select which activity types should be hidden from the filter dropdown. Hidden activities will not appear as filter options for users, though the activities themselves may still be visible in the stream.', 'bp-activity-filter' ); ?></p>
+            </div>
+
+            <div class="faq-item">
+                <h3><?php esc_html_e( 'What are Custom Post Type activities?', 'bp-activity-filter' ); ?></h3>
+                <p><?php esc_html_e( 'When Custom Post Types are published on your site, BuddyPress can create activities for them. The Custom Post Types tab lets you control which CPT activities appear in the filter dropdown and how they are labeled.', 'bp-activity-filter' ); ?></p>
+            </div>
+
+            <div class="faq-item">
+                <h3><?php esc_html_e( 'Can I rename activity type labels in the filter dropdown?', 'bp-activity-filter' ); ?></h3>
+                <p><?php esc_html_e( 'Yes! In the Custom Post Types tab, you can customize the display labels for each post type activity. This helps make filter options more user-friendly and relevant to your community.', 'bp-activity-filter' ); ?></p>
+            </div>
+
+            <div class="faq-item">
+                <h3><?php esc_html_e( 'Why are some activities not showing up in the filter?', 'bp-activity-filter' ); ?></h3>
+                <p><?php esc_html_e( 'Check the Hidden Activities tab to ensure the activity type is not hidden. Also, some activity types may not have a filter option if they are system activities or if they have been disabled by other plugins.', 'bp-activity-filter' ); ?></p>
+            </div>
+
+            <div class="faq-item">
+                <h3><?php esc_html_e( 'Is this plugin compatible with BuddyBoss Platform?', 'bp-activity-filter' ); ?></h3>
+                <p><?php esc_html_e( 'BuddyPress Activity Filter is designed specifically for BuddyPress. BuddyBoss Platform includes its own built-in activity filtering features, so this plugin is not needed and may not be fully compatible with BuddyBoss.', 'bp-activity-filter' ); ?></p>
+            </div>
+
+            <div class="faq-item">
+                <h3><?php esc_html_e( 'How do filters affect activity stream performance?', 'bp-activity-filter' ); ?></h3>
+                <p><?php esc_html_e( 'The plugin is optimized for performance and uses BuddyPress core filtering mechanisms. Filters are applied at the database query level, ensuring efficient loading even with large activity streams.', 'bp-activity-filter' ); ?></p>
+            </div>
+
+            <div class="faq-item">
+                <h3><?php esc_html_e( 'Where can I get support or report issues?', 'bp-activity-filter' ); ?></h3>
+                <p>
+                    <?php 
+                    printf(
+                        esc_html__( 'For support, please visit our %1$ssupport forum%2$s or check the %3$splugin documentation%4$s. You can also report issues on the plugin\'s WordPress.org support page.', 'bp-activity-filter' ),
+                        '<a href="https://wbcomdesigns.com/support/" target="_blank">',
+                        '</a>',
+                        '<a href="https://docs.wbcomdesigns.com/bp-activity-filter/" target="_blank">',
+                        '</a>'
+                    );
+                    ?>
+                </p>
+            </div>
+        </div>
+
+        <style>
+        .bp-activity-filter-faq {
+            max-width: 800px;
+        }
+        
+        .bp-activity-filter-faq .faq-item {
+            background: #f8f9fa;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .bp-activity-filter-faq .faq-item h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #1e293b;
+            font-size: 16px;
+        }
+        
+        .bp-activity-filter-faq .faq-item p {
+            margin: 0;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+        
+        .bp-activity-filter-faq .faq-item a {
+            color: #2271b1;
+            text-decoration: none;
+        }
+        
+        .bp-activity-filter-faq .faq-item a:hover {
+            text-decoration: underline;
+        }
+        </style>
+        <?php
     }
 }
