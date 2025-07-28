@@ -60,7 +60,7 @@ final class BP_Activity_Filter {
 	 * @since 4.0.0
 	 * @var string
 	 */
-	private $min_bp_version = '5.0.0';
+	private $min_bp_version = '12.0.0';
 
 	/**
 	 * Wbcom integration instance.
