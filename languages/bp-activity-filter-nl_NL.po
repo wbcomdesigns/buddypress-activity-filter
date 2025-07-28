@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Wbcom Designs - BuddyPress Activity Filter\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-28 19:34:53+00:00\n"
-"PO-Revision-Date: 2023-12-19 12:42+0530\n"
+"Project-Id-Version: BuddyPress Activity Filter\n"
+"POT-Creation-Date: 2025-07-29 01:18+0530\n"
+"PO-Revision-Date: 2025-07-29 01:19+0530\n"
 "Last-Translator: Varun Dubey <vapvarun@gmail.com>\n"
-"Language-Team: Varun Dubey <varun@wbcomdesigns.com>\n"
+"Language-Team: Varun Dubey <vapvarun@gmail.com>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: buddypress-activity-filter.php\n"
@@ -20,27 +20,28 @@ msgstr ""
 "_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
-"X-Poedit-SearchPathExcluded-1: node_modules\n"
-"X-Poedit-SearchPathExcluded-2: vendor\n"
 
 #: buddypress-activity-filter.php:129 buddypress-activity-filter.php:130
 #: buddypress-activity-filter.php:559
 msgid "BP Activity Filter"
-msgstr ""
+msgstr "BP activiteitsfilter"
 
 #. translators: %s: file path
 #: buddypress-activity-filter.php:288
+#, php-format
 msgid "BuddyPress Activity Filter: Required file missing: %s"
-msgstr ""
+msgstr "BuddyPress Activiteitenfilter: Vereist bestand ontbreekt: %s"
 
 #: buddypress-activity-filter.php:333
 msgid ""
 "BuddyPress Activity Filter requires BuddyPress to be installed and active."
 msgstr ""
+"BuddyPress Activity Filter vereist dat BuddyPress is geïnstalleerd en actief "
+"is."
 
 #: buddypress-activity-filter.php:334
 msgid "Plugin Activation Error"
-msgstr ""
+msgstr "Plugin activatie fout"
 
 #: buddypress-activity-filter.php:387
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:297
@@ -50,39 +51,47 @@ msgstr "Instellingen"
 #: buddypress-activity-filter.php:395
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:51
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:52
-#, fuzzy
 msgid "Dashboard"
-msgstr "Dashboard voor LearnDash"
+msgstr "Dashboard"
 
 #. Plugin Name of the plugin/theme
+#: buddypress-activity-filter.php:428 buddypress-activity-filter.php:447
+#: buddypress-activity-filter.php:467
+#: includes/class-bp-activity-filter-admin.php:84
 msgid "BuddyPress Activity Filter"
-msgstr ""
+msgstr "BuddyPress Activiteiten Filter"
 
 #. translators: %s: BuddyPress plugin link
 #: buddypress-activity-filter.php:434
+#, php-format
 msgid "This plugin requires %s to be installed and active."
-msgstr ""
+msgstr "Deze plugin vereist dat %s geïnstalleerd en actief is."
 
 #. translators: 1: required version, 2: current version
 #: buddypress-activity-filter.php:453
+#, php-format
 msgid ""
 "This plugin requires BuddyPress version %1$s or higher. You are running "
 "version %2$s."
 msgstr ""
+"Deze plugin vereist BuddyPress versie %1$s of hoger. Je gebruikt versie %2$s."
 
 #: buddypress-activity-filter.php:470
 msgid ""
 "This plugin is not compatible with BuddyBoss due to similar built-in "
 "features. Please use BuddyBoss's native activity filtering instead."
 msgstr ""
+"Deze plugin is niet compatibel met BuddyBoss vanwege vergelijkbare "
+"ingebouwde functies. Gebruik in plaats daarvan de ingebouwde "
+"activiteitenfilter van BuddyBoss."
 
 #: buddypress-activity-filter.php:512
 msgid "Cloning instances of this class is forbidden."
-msgstr ""
+msgstr "Het klonen van instanties van deze klasse is verboden."
 
 #: buddypress-activity-filter.php:520
 msgid "Unserializing instances of this class is forbidden."
-msgstr ""
+msgstr "Het is niet toegestaan exemplaren van deze klasse te incasseren."
 
 #: includes/class-bp-activity-filter-admin.php:109
 msgid "Save Settings"
@@ -90,24 +99,23 @@ msgstr "Instellingen Opslaan"
 
 #: includes/class-bp-activity-filter-admin.php:204
 msgid "Default Filters"
-msgstr ""
+msgstr "Standaardfilters"
 
 #: includes/class-bp-activity-filter-admin.php:208
 msgid "Hidden Activities"
-msgstr ""
+msgstr "Verborgen activiteiten"
 
 #: includes/class-bp-activity-filter-admin.php:212
-#, fuzzy
 msgid "Custom Post Types"
-msgstr "Berichttype"
+msgstr "Aangepaste Bericht Types"
 
 #: includes/class-bp-activity-filter-admin.php:216
 msgid "FAQ"
-msgstr ""
+msgstr "FAQ"
 
 #: includes/class-bp-activity-filter-admin.php:277
 msgid "Default Activity Filters"
-msgstr ""
+msgstr "Standaard activiteitenfilters"
 
 #: includes/class-bp-activity-filter-admin.php:278
 msgid ""
@@ -115,10 +123,13 @@ msgid ""
 "determine what type of activities are shown by default when users visit "
 "activity streams."
 msgstr ""
+"Configureer het standaard activiteitenfilter voor verschillende contexten. "
+"Deze instellingen bepalen welk type activiteiten standaard wordt getoond "
+"wanneer gebruikers activiteitenstromen bezoeken."
 
 #: includes/class-bp-activity-filter-admin.php:285
 msgid "Site-wide Activity Default"
-msgstr ""
+msgstr "Site-brede activiteit Standaard"
 
 #: includes/class-bp-activity-filter-admin.php:291
 #: includes/class-bp-activity-filter-admin.php:313
@@ -130,10 +141,13 @@ msgid ""
 "Default filter applied to the main site-wide activity stream. Users can "
 "still change this using the activity filter dropdown."
 msgstr ""
+"Standaard filter dat wordt toegepast op de hoofdstroom van activiteiten op "
+"de hele site. Gebruikers kunnen dit nog steeds wijzigen met de "
+"vervolgkeuzelijst Activiteitenfilter."
 
 #: includes/class-bp-activity-filter-admin.php:307
 msgid "Profile Activity Default"
-msgstr ""
+msgstr "Profiel Activiteit Standaard"
 
 #: includes/class-bp-activity-filter-admin.php:324
 msgid ""
@@ -141,61 +155,73 @@ msgid ""
 "activity types like \"New Member\" are excluded as they don't typically "
 "appear on user profiles."
 msgstr ""
+"Standaard filter toegepast op individuele gebruikersprofiel "
+"activiteitenstromen. Sommige activiteitstypes zoals \"Nieuw lid\" zijn "
+"uitgesloten omdat ze normaal niet verschijnen op gebruikersprofielen."
 
 #: includes/class-bp-activity-filter-admin.php:345
 msgid "Posted a status update"
-msgstr ""
+msgstr "Statusupdate geplaatst"
 
 #: includes/class-bp-activity-filter-admin.php:346
 msgid "Replied to a status update"
-msgstr ""
+msgstr "Gereageerd op een statusupdate"
 
 #: includes/class-bp-activity-filter-admin.php:351
 msgid "Hidden Activity Types"
-msgstr ""
+msgstr "Verborgen activiteitstypen"
 
 #: includes/class-bp-activity-filter-admin.php:352
 msgid ""
 "Select activity types to completely hide from all activity streams. Hidden "
 "activities will not appear in the activity feed or filter dropdown options."
 msgstr ""
+"Selecteer activiteitstypes die je volledig wilt verbergen voor alle "
+"activiteitenstromen. Verborgen activiteiten worden niet weergegeven in de "
+"activiteitenfeed of in de vervolgkeuzelijsten voor filters."
 
 #: includes/class-bp-activity-filter-admin.php:354
 msgid "Activity Types to Hide"
-msgstr ""
+msgstr "Te verbergen activiteitstypen"
 
 #: includes/class-bp-activity-filter-admin.php:358
 msgid ""
 "No activity types available. Make sure BuddyPress is properly installed and "
 "activated."
 msgstr ""
+"Geen activiteitstypes beschikbaar. Controleer of BuddyPress goed is "
+"geïnstalleerd en geactiveerd."
 
 #: includes/class-bp-activity-filter-admin.php:366
 msgid "Core Activities (Always Available)"
-msgstr ""
+msgstr "Kernactiviteiten (altijd beschikbaar)"
 
 #: includes/class-bp-activity-filter-admin.php:369
 msgid ""
 "These essential activity types cannot be hidden as they are required for "
 "basic BuddyPress functionality."
 msgstr ""
+"Deze essentiële activiteitstypen kunnen niet worden verborgen omdat ze nodig "
+"zijn voor de basisfunctionaliteit van BuddyPress."
 
 #: includes/class-bp-activity-filter-admin.php:387
 msgid "Other Activity Types"
-msgstr ""
+msgstr "Andere activiteitstypen"
 
 #: includes/class-bp-activity-filter-admin.php:390
 msgid "Check the boxes below to HIDE these activity types from your site."
 msgstr ""
+"Vink de vakjes hieronder aan om deze activiteitstypen te VERBORGEN van je "
+"site."
 
 #: includes/class-bp-activity-filter-admin.php:441
 #: includes/class-bp-activity-filter-admin.php:489
 msgid "How it works:"
-msgstr ""
+msgstr "Hoe het werkt:"
 
 #: includes/class-bp-activity-filter-admin.php:465
 msgid "Custom Post Type Activities"
-msgstr ""
+msgstr "Aangepaste Post Type Activiteiten"
 
 #: includes/class-bp-activity-filter-admin.php:467
 msgid ""
@@ -203,15 +229,17 @@ msgid ""
 "published. Only public custom post types with admin interface are available "
 "for selection."
 msgstr ""
+"Automatische activiteitgeneratie inschakelen voor aangepaste posttypes "
+"wanneer ze worden gepubliceerd. Alleen openbare aangepaste posttypes met "
+"beheerinterface zijn beschikbaar voor selectie."
 
 #: includes/class-bp-activity-filter-admin.php:470
-#, fuzzy
 msgid "Enable Post Types"
-msgstr "Berichttype"
+msgstr "Berichttypes inschakelen"
 
 #: includes/class-bp-activity-filter-admin.php:475
 msgid "No eligible custom post types found."
-msgstr ""
+msgstr "Geen in aanmerking komende aangepaste posttypes gevonden."
 
 #: includes/class-bp-activity-filter-admin.php:477
 msgid ""
@@ -219,6 +247,10 @@ msgid ""
 "to appear here. Built-in WordPress post types (posts, pages) are not shown "
 "as they have their own activity systems."
 msgstr ""
+"Aangepaste posttypes moeten openbaar zijn, admin UI ingeschakeld hebben en "
+"posts ondersteunen om hier weergegeven te worden. Ingebouwde WordPress "
+"berichttypes (berichten, pagina's) worden niet getoond omdat ze hun eigen "
+"activiteitssystemen hebben."
 
 #: includes/class-bp-activity-filter-admin.php:490
 msgid ""
@@ -227,31 +259,40 @@ msgid ""
 "with a link. Existing posts will not generate activities - only new posts "
 "published after enabling this feature."
 msgstr ""
+"Wanneer een bericht van het geselecteerde aangepaste berichttype wordt "
+"gepubliceerd, wordt automatisch een activiteit aangemaakt met de auteur, het "
+"berichttype en de berichttitel met een link. Bestaande berichten genereren "
+"geen activiteiten - alleen nieuwe berichten die worden gepubliceerd na het "
+"inschakelen van deze functie."
 
 #: includes/class-bp-activity-filter-admin.php:525
+#, php-format
 msgid "%d post"
 msgid_plural "%d posts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d bericht"
+msgstr[1] "%d berichten"
 
 #: includes/class-bp-activity-filter-admin.php:539
 msgid "Custom Activity Label (optional):"
-msgstr ""
+msgstr "Aangepast activiteitslabel (optioneel):"
 
 #: includes/class-bp-activity-filter-admin.php:548
 msgid ""
 "Leave empty to use the default post type name. This text will appear in "
 "activity entries like \"John published a new [label]: Post Title\""
 msgstr ""
+"Leeg laten om de standaard posttypenaam te gebruiken. Deze tekst zal "
+"verschijnen in activiteitsitems zoals \"John publiceerde een nieuwe [label]: "
+"Titel bericht\""
 
 #: includes/class-bp-activity-filter-admin.php:564
-#, fuzzy
 msgid "Global Settings"
-msgstr "Instellingen Opslaan"
+msgstr "Algemene Instellingen"
 
 #: includes/class-bp-activity-filter-admin.php:572
 msgid "Hide custom post type activities from site-wide activity stream"
 msgstr ""
+"Verberg aangepaste posttype activiteiten uit de site-brede activiteitenstroom"
 
 #: includes/class-bp-activity-filter-admin.php:574
 msgid ""
@@ -260,37 +301,42 @@ msgid ""
 "reduce clutter in the main activity stream while still giving authors credit "
 "on their profiles."
 msgstr ""
+"Wanneer deze optie is ingeschakeld, verschijnen aangepaste posttype-"
+"activiteiten alleen in de activiteitenstroom van het profiel van de auteur "
+"en niet in de hoofdfeed van de site. Dit helpt om rommel in de "
+"hoofdactiviteitstroom te verminderen terwijl auteurs nog steeds erkenning "
+"krijgen op hun profiel."
 
 #: includes/class-bp-activity-filter-admin.php:654
 msgid "Security check failed. Please try again."
-msgstr ""
+msgstr "Beveiligingscontrole is mislukt. Probeer het opnieuw."
 
 #: includes/class-bp-activity-filter-admin.php:664
 msgid "You do not have sufficient permissions to access this page."
-msgstr ""
+msgstr "Je hebt niet voldoende rechten om deze pagina te bekijken."
 
 #: includes/class-bp-activity-filter-admin.php:693
 #: includes/class-wbcom-integration.php:271
 #: includes/shared-admin/class-wbcom-shared-loader.php:790
-#, fuzzy
 msgid "Settings saved successfully."
-msgstr "Instellingen opgeslagen."
+msgstr "Instellingen succesvol opgeslagen."
 
 #: includes/class-bp-activity-filter-admin.php:700
 msgid "No changes were made to the settings."
-msgstr ""
+msgstr "Er zijn geen wijzigingen aangebracht in de instellingen."
 
 #: includes/class-bp-activity-filter-admin.php:710
+#, php-format
 msgid "Error saving settings: %s"
-msgstr ""
+msgstr "Fout bij het opslaan van instellingen: %s"
 
 #: includes/class-bp-activity-filter-admin.php:949
 msgid "Frequently Asked Questions"
-msgstr ""
+msgstr "Veelgestelde vragen"
 
 #: includes/class-bp-activity-filter-admin.php:952
 msgid "What is BuddyPress Activity Filter?"
-msgstr ""
+msgstr "Wat is BuddyPress Activiteitenfilter?"
 
 #: includes/class-bp-activity-filter-admin.php:953
 msgid ""
@@ -299,10 +345,14 @@ msgid ""
 "activities by type, set default filters, and manage which activity types are "
 "visible."
 msgstr ""
+"BuddyPress Activity Filter verbetert de standaard BuddyPress "
+"activiteitenstroom door geavanceerde filteropties te bieden. Gebruikers "
+"kunnen activiteiten filteren op type, standaardfilters instellen en beheren "
+"welke activiteitstypen zichtbaar zijn."
 
 #: includes/class-bp-activity-filter-admin.php:957
 msgid "How do I set a default filter for all activity streams?"
-msgstr ""
+msgstr "Hoe stel ik een standaardfilter in voor alle activiteitenstromen?"
 
 #: includes/class-bp-activity-filter-admin.php:958
 msgid ""
@@ -310,10 +360,13 @@ msgid ""
 "from the dropdown. This filter will be applied automatically when users "
 "visit the activity stream."
 msgstr ""
+"Navigeer naar het tabblad Standaardfilters en selecteer de gewenste "
+"standaardfilter in de vervolgkeuzelijst. Dit filter wordt automatisch "
+"toegepast wanneer gebruikers de activiteitenstroom bezoeken."
 
 #: includes/class-bp-activity-filter-admin.php:962
 msgid "Can I set different default filters for profile pages?"
-msgstr ""
+msgstr "Kan ik verschillende standaardfilters instellen voor profielpagina's?"
 
 #: includes/class-bp-activity-filter-admin.php:963
 msgid ""
@@ -321,10 +374,14 @@ msgid ""
 "specifically for user profile activity streams. This allows for more "
 "contextual filtering based on where activities are viewed."
 msgstr ""
+"Ja! Op het tabblad Standaardfilters kun je een aparte standaardfilter "
+"instellen, specifiek voor activiteitenstromen van gebruikersprofielen. Dit "
+"zorgt voor meer contextuele filtering op basis van waar activiteiten worden "
+"bekeken."
 
 #: includes/class-bp-activity-filter-admin.php:967
 msgid "How do I hide specific activity types from users?"
-msgstr ""
+msgstr "Hoe verberg ik specifieke activiteitstypes voor gebruikers?"
 
 #: includes/class-bp-activity-filter-admin.php:968
 msgid ""
@@ -333,10 +390,14 @@ msgid ""
 "options for users, though the activities themselves may still be visible in "
 "the stream."
 msgstr ""
+"Gebruik het tabblad Verborgen activiteiten om te selecteren welke "
+"activiteitstypes verborgen moeten worden in de filterkeuzelijst. Verborgen "
+"activiteiten worden niet weergegeven als filteropties voor gebruikers, "
+"hoewel de activiteiten zelf nog steeds zichtbaar kunnen zijn in de stream."
 
 #: includes/class-bp-activity-filter-admin.php:972
 msgid "What are Custom Post Type activities?"
-msgstr ""
+msgstr "Wat zijn Custom Post Type-activiteiten?"
 
 #: includes/class-bp-activity-filter-admin.php:973
 msgid ""
@@ -344,10 +405,16 @@ msgid ""
 "activities for them. The Custom Post Types tab lets you control which CPT "
 "activities appear in the filter dropdown and how they are labeled."
 msgstr ""
+"Wanneer Custom Post Types op je site worden gepubliceerd, kan BuddyPress er "
+"activiteiten voor aanmaken. Op het tabblad Custom Post Types kun je bepalen "
+"welke CPT-activiteiten in het filterkeuzemenu verschijnen en hoe ze worden "
+"gelabeld."
 
 #: includes/class-bp-activity-filter-admin.php:977
 msgid "Can I rename activity type labels in the filter dropdown?"
 msgstr ""
+"Kan ik labels van activiteitstypes in de filterdropdown een andere naam "
+"geven?"
 
 #: includes/class-bp-activity-filter-admin.php:978
 msgid ""
@@ -355,10 +422,13 @@ msgid ""
 "each post type activity. This helps make filter options more user-friendly "
 "and relevant to your community."
 msgstr ""
+"Ja! Op het tabblad Aangepaste berichttypes kun je de weergavelabels voor "
+"elke activiteit van het berichttype aanpassen. Dit maakt de filteropties "
+"gebruiksvriendelijker en relevanter voor je community."
 
 #: includes/class-bp-activity-filter-admin.php:982
 msgid "Why are some activities not showing up in the filter?"
-msgstr ""
+msgstr "Waarom worden sommige activiteiten niet weergegeven in het filter?"
 
 #: includes/class-bp-activity-filter-admin.php:983
 msgid ""
@@ -366,10 +436,14 @@ msgid ""
 "Also, some activity types may not have a filter option if they are system "
 "activities or if they have been disabled by other plugins."
 msgstr ""
+"Controleer het tabblad Verborgen activiteiten om er zeker van te zijn dat "
+"het activiteitstype niet verborgen is. Het is ook mogelijk dat sommige "
+"activiteittypes geen filteroptie hebben als het systeemactiviteiten zijn of "
+"als ze zijn uitgeschakeld door andere plugins."
 
 #: includes/class-bp-activity-filter-admin.php:987
 msgid "Is this plugin compatible with BuddyBoss Platform?"
-msgstr ""
+msgstr "Is deze plugin compatibel met het BuddyBoss Platform?"
 
 #: includes/class-bp-activity-filter-admin.php:988
 msgid ""
@@ -377,10 +451,14 @@ msgid ""
 "BuddyBoss Platform includes its own built-in activity filtering features, so "
 "this plugin is not needed and may not be fully compatible with BuddyBoss."
 msgstr ""
+"BuddyPress Activity Filter is speciaal ontworpen voor BuddyPress. BuddyBoss "
+"Platform heeft zijn eigen ingebouwde functies voor het filteren van "
+"activiteiten, dus deze plugin is niet nodig en is mogelijk niet volledig "
+"compatibel met BuddyBoss."
 
 #: includes/class-bp-activity-filter-admin.php:992
 msgid "How do filters affect activity stream performance?"
-msgstr ""
+msgstr "Hoe beïnvloeden filters de prestaties van de activiteitenstroom?"
 
 #: includes/class-bp-activity-filter-admin.php:993
 msgid ""
@@ -388,101 +466,118 @@ msgid ""
 "mechanisms. Filters are applied at the database query level, ensuring "
 "efficient loading even with large activity streams."
 msgstr ""
+"De plugin is geoptimaliseerd voor prestaties en gebruikt BuddyPress kern "
+"filtermechanismen. Filters worden toegepast op het niveau van de "
+"databasequery, waardoor het laden efficiënt verloopt, zelfs bij grote "
+"activiteitenstromen."
 
 #: includes/class-bp-activity-filter-admin.php:997
 msgid "Where can I get support or report issues?"
-msgstr ""
+msgstr "Waar kan ik ondersteuning krijgen of problemen melden?"
 
 #: includes/class-bp-activity-filter-admin.php:1001
+#, php-format
 msgid ""
 "For support, please visit our %1$ssupport forum%2$s or check the %3$splugin "
 "documentation%4$s. You can also report issues on the plugin's WordPress.org "
 "support page."
 msgstr ""
+"Voor ondersteuning kun je terecht op ons %1$sondersteuningsforum%2$s of in "
+"de %3$splugin documentatie%4$s. Je kunt ook problemen melden op de WordPress."
+"org ondersteuningspagina van de plugin."
 
 #: includes/class-bp-activity-filter-cpt.php:348
 msgid ""
 "Has create_posts capability set to \"do_not_allow\" (managed by another "
 "plugin)"
 msgstr ""
+"Heeft create_posts mogelijkheid ingesteld op \"do_not_allow\" (beheerd door "
+"een andere plugin)"
 
 #: includes/class-bp-activity-filter-cpt.php:349
 msgid "Managed by a known plugin (e.g., BP Member Reviews, bbPress)"
-msgstr ""
+msgstr "Beheerd door een bekende plugin (bijv. BP Member Reviews, bbPress)"
 
 #: includes/class-bp-activity-filter-cpt.php:350
 msgid "Not a public post type"
-msgstr ""
+msgstr "Geen openbaar berichttype"
 
 #: includes/class-bp-activity-filter-cpt.php:351
 msgid "No admin interface"
-msgstr ""
+msgstr "Geen beheerinterface"
 
 #: includes/class-bp-activity-filter-cpt.php:352
 msgid "Does not support titles"
-msgstr ""
+msgstr "Ondersteunt geen titels"
 
 #: includes/class-bp-activity-filter-cpt.php:357
 msgid "Custom Post Type Exclusions"
-msgstr ""
+msgstr "Aangepaste berichttype uitsluitingen"
 
 #: includes/class-bp-activity-filter-cpt.php:358
 msgid ""
 "The following post types are excluded from activity generation to prevent "
 "conflicts:"
 msgstr ""
+"De volgende berichttypes worden uitgesloten van het genereren van "
+"activiteiten om conflicten te voorkomen:"
 
 #: includes/class-bp-activity-filter-cpt.php:371
 msgid ""
 "This is normal behavior and helps prevent duplicate activities. All other "
 "eligible custom post types are available in the settings below."
 msgstr ""
+"Dit is normaal gedrag en helpt dubbele activiteiten te voorkomen. Alle "
+"andere in aanmerking komende aangepaste posttypes zijn beschikbaar in de "
+"onderstaande instellingen."
 
 #. translators: 1: Author link, 2: Post type label, 3: Post link
 #: includes/class-bp-activity-filter-cpt.php:422
+#, php-format
 msgid "%1$s published a new %2$s: %3$s"
-msgstr ""
+msgstr "%1$s heeft een nieuwe %2$s gepubliceerd: %3$s"
 
 #: includes/class-wbcom-integration.php:269
 #: includes/shared-admin/class-wbcom-shared-loader.php:788
 msgid "Loading..."
-msgstr ""
+msgstr "Laden…"
 
 #: includes/class-wbcom-integration.php:270
 #: includes/shared-admin/class-wbcom-shared-loader.php:789
 msgid "Error loading content."
-msgstr ""
+msgstr "Fout bij het laden van inhoud."
 
 #. Author of the plugin/theme
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:39
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:40
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:92
 msgid "Wbcom Designs"
-msgstr ""
+msgstr "Wbcom Ontwerpen"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:116
 msgid "Overview"
-msgstr ""
+msgstr "Overzicht"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:120
 msgid "Installed Plugins"
-msgstr ""
+msgstr "Geïnstalleerde Plugins"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:124
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:224
-#, fuzzy
 msgid "Premium Plugins"
 msgstr "Onze plugins"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:128
-#, fuzzy
 msgid "Premium Themes"
-msgstr "Onze thema’s"
+msgstr "Premium thema’s"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:132
 msgid "News & Updates"
-msgstr ""
+msgstr "Nieuws & updates"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:180
 msgid "Welcome to Wbcom Designs Dashboard"
-msgstr ""
+msgstr "Welkom bij Wbcom Designs Dashboard"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:182
 msgid ""
@@ -492,10 +587,16 @@ msgid ""
 "ensures your site stays optimized and secure with priority support, regular "
 "updates, and expert maintenance."
 msgstr ""
+"Je centrale hub voor het beheren van premium WordPress en BuddyPress "
+"oplossingen. Bij Wbcom Designs zijn we gespecialiseerd in het maken van "
+"krachtige community plugins, aangepaste ontwikkelingsdiensten en uitgebreide "
+"ondersteuningsoplossingen. Ons Care Plan zorgt ervoor dat uw site "
+"geoptimaliseerd en veilig blijft met prioriteitsondersteuning, regelmatige "
+"updates en deskundig onderhoud."
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:195
 msgid "Don't Risk Your Website's Success"
-msgstr ""
+msgstr "Zet het succes van uw website niet op het spel"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:198
 msgid ""
@@ -505,36 +606,40 @@ msgid ""
 "site stays optimized. Stop worrying about crashes and focus on growing your "
 "business."
 msgstr ""
+"WordPress-updates kunnen je site kapot maken, beveiligingslekken stellen je "
+"gegevens bloot en prestatieproblemen jagen bezoekers weg. Ons Care Plan "
+"zorgt ervoor dat alle updates worden getest voordat ze worden geïnstalleerd, "
+"dat de beveiliging 24/7 wordt bewaakt en dat je site geoptimaliseerd blijft. "
+"Maak je geen zorgen meer over crashes en concentreer je op de groei van je "
+"bedrijf."
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:207
 msgid "Schedule Free Consultation"
-msgstr ""
+msgstr "Plan gratis consultatie"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:221
-#, fuzzy
 msgid "Our Services"
-msgstr "Onze thema’s"
+msgstr "Onze Diensten"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:223
 msgid "Get Care Plan"
-msgstr ""
+msgstr "Zorgplan aanvragen"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:225
 msgid "Custom Development"
-msgstr ""
+msgstr "Ontwikkeling op maat"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:226
 msgid "Get Support"
 msgstr "Krijg ondersteuning"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:231
-#, fuzzy
 msgid "System Status"
-msgstr "Status"
+msgstr "Systeemstatus"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:235
 msgid "WordPress Version"
-msgstr ""
+msgstr "WordPress-versie"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:240
 msgid "BuddyPress"
@@ -542,47 +647,43 @@ msgstr "Buddypress"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:241
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:246
-#, fuzzy
 msgid "Active"
-msgstr "Activeren"
+msgstr "Actief"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:241
-#, fuzzy
 msgid "Inactive"
-msgstr "Deactiveren"
+msgstr "Inactief"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:245
-#, fuzzy
 msgid "Production Mode"
-msgstr "Product"
+msgstr "Productie Modus"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:246
 msgid "Debug On"
-msgstr ""
+msgstr "Debug Aan"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:261
 msgid "Installed Wbcom Plugins"
-msgstr ""
+msgstr "Geïnstalleerde Wbcom-plugins"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:270
 msgid "No Wbcom Plugins Found"
-msgstr ""
+msgstr "Geen Wbcom-plugins gevonden"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:271
 msgid "Looks like you haven't installed any Wbcom Designs plugins yet."
 msgstr ""
+"Het lijkt erop dat je nog geen plugins voor Wbcom Designs hebt geïnstalleerd."
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:273
 msgid "Browse Premium Plugins"
-msgstr ""
+msgstr "Bladeren door eersteklas plugins"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:288
-#, fuzzy
 msgid "Version:"
-msgstr "Versie"
+msgstr "Versie:"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:318
-#, fuzzy
 msgid "Premium BuddyPress Plugins"
 msgstr "BuddyPress Polls"
 
@@ -591,66 +692,75 @@ msgid ""
 "Enhance your community with these powerful premium plugins designed "
 "specifically for BuddyPress."
 msgstr ""
+"Verbeter je community met deze krachtige premium plugins die speciaal zijn "
+"ontworpen voor BuddyPress."
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:391
 msgid "Browse All Premium Plugins"
-msgstr ""
+msgstr "Blader door alle plugins"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:409
 msgid "Premium Community Themes"
-msgstr ""
+msgstr "Premium Gemeenschapsthema's"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:410
 msgid ""
 "Transform your vision with these powerful multi-purpose themes designed to "
 "create any type of community platform."
 msgstr ""
+"Verander je visie met deze krachtige multifunctionele thema's die zijn "
+"ontworpen om elk type communityplatform te maken."
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:474
 msgid "Browse All Premium Themes"
-msgstr ""
+msgstr "Blader door alle premium thema's"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:490
 msgid "Latest News from Wbcom Designs"
-msgstr ""
+msgstr "Laatste nieuws van Wbcom Designs"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:491
 msgid ""
 "Stay updated with the latest plugin releases, updates, and WordPress "
 "community news."
 msgstr ""
+"Blijf op de hoogte van de nieuwste plugin releases, updates en nieuws uit de "
+"WordPress community."
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:497
 msgid "Loading latest news..."
-msgstr ""
+msgstr "Laatste nieuws laden..."
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:507
 msgid "Visit Our Blog"
-msgstr ""
+msgstr "Bezoek onze blog"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:790
-#, fuzzy
 msgid "Not Active"
-msgstr "Activeren"
+msgstr "Niet actief"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:824
 msgid "Welcome to Wbcom Designs!"
-msgstr ""
+msgstr "Welkom bij Wbcom Designs!"
 
 #: includes/shared-admin/class-wbcom-shared-dashboard.php:825
 msgid ""
 "No Wbcom plugins are currently active. Activate plugins to see them here."
 msgstr ""
+"Er zijn momenteel geen Wbcom-plugins actief. Activeer plugins om ze hier te "
+"zien."
 
 #. Plugin URI of the plugin/theme
 msgid "https://wordpress.org/plugins/bp-activity-filter/"
-msgstr ""
+msgstr "https://wordpress.org/plugins/bp-activity-filter/"
 
 #. Description of the plugin/theme
 msgid ""
 "Filter and manage BuddyPress activity streams with default filters and "
 "custom post type support."
 msgstr ""
+"Filter en beheer BuddyPress-activiteitenstromen met standaardfilters en "
+"ondersteuning voor aangepaste posttypes."
 
 #. Author URI of the plugin/theme
 msgid "https://wbcomdesigns.com/"
