@@ -3,7 +3,7 @@
  * Plugin Name: BuddyPress Activity Filter
  * Plugin URI: https://wordpress.org/plugins/bp-activity-filter/
  * Description: Filter and manage BuddyPress activity streams with default filters and custom post type support.
- * Version: 4.0.0
+ * Version: 3.1.0
  * Author: Wbcom Designs
  * Author URI: https://wbcomdesigns.com/
  * License: GPL v2 or later
@@ -11,8 +11,8 @@
  * Text Domain: bp-activity-filter
  * Domain Path: /languages
  * Requires at least: 5.0
- * Tested up to: 6.6
- * Requires PHP: 7.4
+ * Tested up to: 6.8.2
+ * Requires PHP: 8.0
  * Requires Plugins: buddypress
  * Network: true
  */
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define plugin constants.
 if ( ! defined( 'BP_ACTIVITY_FILTER_VERSION' ) ) {
-	define( 'BP_ACTIVITY_FILTER_VERSION', '4.0.0' );
+	define( 'BP_ACTIVITY_FILTER_VERSION', '3.1.0' );
 }
 
 if ( ! defined( 'BP_ACTIVITY_FILTER_PLUGIN_DIR' ) ) {
