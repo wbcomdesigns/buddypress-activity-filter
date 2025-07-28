@@ -3,9 +3,9 @@ Contributors: wbcomdesigns, vapvarun
 Tags: buddypress, activity-filter, filter, buddypress-activity, hide-activity, default-activity, custom-post-type-activity
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 5.0
-Tested up to: 6.6
-Requires PHP: 7.4
-Stable tag: 4.0.0
+Tested up to: 6.8.2
+Requires PHP: 8.0
+Stable tag: 3.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -178,55 +178,21 @@ The plugin is optimized for performance with smart caching, minimal database que
 
 == Changelog ==
 
-= 4.0.0 =
-**Release Date**: December 2024
-
-**Major Update - Complete Rewrite**
-
-**New Features:**
-* **Modern Architecture**: Complete plugin rewrite with OOP design and singleton patterns
-* **Enhanced Admin Interface**: Professional tabbed interface with improved UX
-* **Advanced CPT Support**: Better custom post type integration with preview functionality
-* **Smart Migration System**: Automatic migration from older versions with status tracking
-* **Performance Optimization**: Intelligent caching and reduced database queries
-* **Security Hardening**: Comprehensive security improvements with nonce verification
-* **Theme Compatibility**: Enhanced support for BuddyPress Nouveau and Legacy themes
-* **Developer Tools**: Extensive hooks and filters for customization
-* **Professional Labels**: User-friendly activity type descriptions
-* **Bulk Actions**: Select/deselect all options for hidden activities
-
-**Improvements:**
-* **Code Quality**: WordPress coding standards compliance with comprehensive documentation
-* **Performance**: Optimized database queries and smart caching mechanisms
-* **Security**: Enhanced input sanitization and CSRF protection
-* **Accessibility**: Improved keyboard navigation and screen reader support
-* **Internationalization**: Better translation support with proper text domains
-* **Error Handling**: Comprehensive error handling and user feedback
-* **Admin UX**: Contextual help, better form validation, and status messages
-* **Frontend UX**: Smoother AJAX interactions and better cookie handling
-
-**Bug Fixes:**
-* Fixed PHP 8.x compatibility issues
-* Resolved activity filtering edge cases
-* Corrected pagination issues with filtered activities
-* Fixed cookie domain and path handling
-* Resolved theme compatibility conflicts
-* Fixed CPT activity generation timing issues
-* Corrected nonce verification in admin forms
-* Fixed translation loading issues
-
-**Developer Changes:**
-* **New Hooks**: Added 15+ new action and filter hooks
-* **API Changes**: Improved helper functions and utility methods
-* **Class Structure**: Modular design with better separation of concerns
-* **Backward Compatibility**: Maintained compatibility with existing customizations
-* **Documentation**: Comprehensive PHPDoc comments throughout codebase
-
-**Migration Notes:**
-* Settings are automatically migrated from older versions
-* Legacy option names are supported during transition
-* Migration status is tracked and reported to administrators
-* Fallback mechanisms ensure no data loss during upgrades
+= 3.1.0 =
+* New: Introduced a redesigned backend UI for better usability.
+* New: Added vertical layout support for hidden activities with core protection.
+* New: Implemented custom wrapper structure for improved layout and organization.
+* New: Added condition checks for BuddyPress compatibility.
+* Enhancement: Cleaned up and optimized shared folders and unused code.
+* Enhancement: Updated asset loading for improved performance.
+* Enhancement: Improved frontend filter styling and selection UI.
+* Enhancement: Updated frontend wrapper code and applied CSS improvements.
+* Enhancement: Refined frontend JS to prevent conflicts with admin default filter settings.
+* Enhancement: Filter enhancements to prevent duplicate or previously registered activities.
+* Developer: Introduced `BP_Activity_Filter_Migration` for smoother transitions.
+* Developer: Improved structure through modular wrapper additions and CSS.
+* Fix: Resolved UI inconsistencies with the new wrapper layout.
+* Fix: Removed debug logs and cleaned up dev artifacts.
 
 = 3.0.1 =
 * **Fixed**: Warning related to page parameter in activity query
