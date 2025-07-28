@@ -36,8 +36,8 @@ class Wbcom_Shared_Dashboard {
         if ($this->menu_created) return;
         
         add_menu_page(
-            esc_html__('Wbcom Designs', 'wbcom-shared'),
-            esc_html__('Wbcom Designs', 'wbcom-shared'),
+            esc_html__('Wbcom Designs', 'bp-activity-filter'),
+            esc_html__('Wbcom Designs', 'bp-activity-filter'),
             'manage_options',
             'wbcom-designs',
             array($this, 'render_dashboard'),
@@ -48,8 +48,8 @@ class Wbcom_Shared_Dashboard {
         // Add dashboard as first submenu
         add_submenu_page(
             'wbcom-designs',
-            esc_html__('Dashboard', 'wbcom-shared'),
-            esc_html__('Dashboard', 'wbcom-shared'),
+            esc_html__('Dashboard', 'bp-activity-filter'),
+            esc_html__('Dashboard', 'bp-activity-filter'),
             'manage_options',
             'wbcom-designs',
             array($this, 'render_dashboard')
@@ -89,7 +89,7 @@ class Wbcom_Shared_Dashboard {
         <div class="wrap wbcom-shared-dashboard">
             <h1>
                 🌟
-                <?php esc_html_e('Wbcom Designs', 'wbcom-shared'); ?>
+                <?php esc_html_e('Wbcom Designs', 'bp-activity-filter'); ?>
                 <span class="wbcom-version">v<?php echo esc_html(Wbcom_Shared_Loader::VERSION); ?></span>
             </h1>
             
@@ -113,23 +113,23 @@ class Wbcom_Shared_Dashboard {
     private function render_dashboard_tabs($active_tab) {
         $tabs = array(
             'overview' => array(
-                'title' => esc_html__('Overview', 'wbcom-shared'),
+                'title' => esc_html__('Overview', 'bp-activity-filter'),
                 'icon'  => 'dashicons-dashboard',
             ),
             'plugins' => array(
-                'title' => esc_html__('Installed Plugins', 'wbcom-shared'),
+                'title' => esc_html__('Installed Plugins', 'bp-activity-filter'),
                 'icon'  => 'dashicons-admin-plugins',
             ),
             'premium' => array(
-                'title' => esc_html__('Premium Plugins', 'wbcom-shared'),
+                'title' => esc_html__('Premium Plugins', 'bp-activity-filter'),
                 'icon'  => 'dashicons-star-filled',
             ),
             'themes' => array(
-                'title' => esc_html__('Premium Themes', 'wbcom-shared'),
+                'title' => esc_html__('Premium Themes', 'bp-activity-filter'),
                 'icon'  => 'dashicons-admin-appearance',
             ),
             'news' => array(
-                'title' => esc_html__('News & Updates', 'wbcom-shared'),
+                'title' => esc_html__('News & Updates', 'bp-activity-filter'),
                 'icon'  => 'dashicons-rss',
             ),
         );
@@ -177,9 +177,9 @@ class Wbcom_Shared_Dashboard {
     private function render_overview_tab() {
         ?>
         <div class="wbcom-welcome-panel" style="background: #fff; border: 1px solid #e1e5e9; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.07);">
-            <h2 style="color: #153045; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;"><?php esc_html_e('Welcome to Wbcom Designs Dashboard', 'wbcom-shared'); ?></h2>
+            <h2 style="color: #153045; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;"><?php esc_html_e('Welcome to Wbcom Designs Dashboard', 'bp-activity-filter'); ?></h2>
             <p class="about-description" style="color: #515b67; font-size: 15px; line-height: 1.6; margin-bottom: 20px;">
-                <?php esc_html_e('Your central hub for managing premium WordPress and BuddyPress solutions. At Wbcom Designs, we specialize in creating powerful community plugins, custom development services, and comprehensive support solutions. Our Care Plan ensures your site stays optimized and secure with priority support, regular updates, and expert maintenance.', 'wbcom-shared'); ?>
+                <?php esc_html_e('Your central hub for managing premium WordPress and BuddyPress solutions. At Wbcom Designs, we specialize in creating powerful community plugins, custom development services, and comprehensive support solutions. Our Care Plan ensures your site stays optimized and secure with priority support, regular updates, and expert maintenance.', 'bp-activity-filter'); ?>
             </p>
             <div class="wbcom-care-plan-notice" style="background: linear-gradient(135deg, #dc3545 0%, #e85d6b 100%); color: white; padding: 30px; border-radius: 12px; margin: 25px 0; box-shadow: 0 8px 25px rgba(220, 53, 69, 0.25); border: 1px solid rgba(255,255,255,0.1); position: relative; overflow: hidden;">
                 <!-- Security Shield Background Pattern -->
@@ -192,10 +192,10 @@ class Wbcom_Shared_Dashboard {
                     
                     <div style="flex: 1;">
                         <h3 style="margin: 0 0 12px 0; font-size: 22px; font-weight: 700; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                            <?php esc_html_e('Don\'t Risk Your Website\'s Success', 'wbcom-shared'); ?>
+                            <?php esc_html_e('Don\'t Risk Your Website\'s Success', 'bp-activity-filter'); ?>
                         </h3>
                         <p style="margin: 0 0 20px 0; font-size: 16px; line-height: 1.6; color: rgba(255,255,255,0.95);">
-                            <?php esc_html_e('WordPress updates can break your site, security vulnerabilities expose your data, and performance issues drive visitors away. Our Care Plan ensures all updates are tested before deployment, security is monitored 24/7, and your site stays optimized. Stop worrying about crashes and focus on growing your business.', 'wbcom-shared'); ?>
+                            <?php esc_html_e('WordPress updates can break your site, security vulnerabilities expose your data, and performance issues drive visitors away. Our Care Plan ensures all updates are tested before deployment, security is monitored 24/7, and your site stays optimized. Stop worrying about crashes and focus on growing your business.', 'bp-activity-filter'); ?>
                         </p>
                         
                         <div style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
@@ -204,7 +204,7 @@ class Wbcom_Shared_Dashboard {
                                onmouseover="this.style.background='#f8f9fa'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)'"
                                onmouseout="this.style.background='#fff'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)'">
                                 <span style="background: linear-gradient(135deg, #dc3545, #e85d6b); color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px;">📞</span>
-                                <?php esc_html_e('Schedule Free Consultation', 'wbcom-shared'); ?>
+                                <?php esc_html_e('Schedule Free Consultation', 'bp-activity-filter'); ?>
                             </a>
                             
                             <div style="background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.2);">
@@ -218,32 +218,32 @@ class Wbcom_Shared_Dashboard {
 
             <div class="wbcom-welcome-panel-columns" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 24px;">
                 <div class="wbcom-welcome-panel-column">
-                    <h3 style="color: #153045; font-size: 18px; font-weight: 600; margin: 0 0 20px 0; padding-bottom: 12px; border-bottom: 2px solid #f0f0f1;"><?php esc_html_e('Our Services', 'wbcom-shared'); ?></h3>
+                    <h3 style="color: #153045; font-size: 18px; font-weight: 600; margin: 0 0 20px 0; padding-bottom: 12px; border-bottom: 2px solid #f0f0f1;"><?php esc_html_e('Our Services', 'bp-activity-filter'); ?></h3>
                     <div class="wbcom-action-list" style="display: flex; flex-direction: column; gap: 12px;">
-                        <a href="https://wbcomdesigns.com/care-plan/" target="_blank" style="display: block; background: linear-gradient(135deg, #1d76da 0%, #3c8ce6 100%); color: #ffffff; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; text-align: center; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(29, 118, 218, 0.2);" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(29, 118, 218, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(29, 118, 218, 0.2)';"><?php esc_html_e('Get Care Plan', 'wbcom-shared'); ?></a>
-                        <a href="https://wbcomdesigns.com/downloads/" target="_blank" style="display: block; background: #fff; border: 1px solid #1d76da; color: #1d76da; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; text-align: center; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f4ff'; this.style.borderColor='#0e62c3'; this.style.color='#0e62c3';" onmouseout="this.style.background='#fff'; this.style.borderColor='#1d76da'; this.style.color='#1d76da';"><?php esc_html_e('Premium Plugins', 'wbcom-shared'); ?></a>
-                        <a href="https://wbcomdesigns.com/custom-development/" target="_blank" style="display: block; background: #fff; border: 1px solid #1d76da; color: #1d76da; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; text-align: center; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f4ff'; this.style.borderColor='#0e62c3'; this.style.color='#0e62c3';" onmouseout="this.style.background='#fff'; this.style.borderColor='#1d76da'; this.style.color='#1d76da';"><?php esc_html_e('Custom Development', 'wbcom-shared'); ?></a>
-                        <a href="https://wbcomdesigns.com/support/" target="_blank" style="display: block; background: #fff; border: 1px solid #1d76da; color: #1d76da; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; text-align: center; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f4ff'; this.style.borderColor='#0e62c3'; this.style.color='#0e62c3';" onmouseout="this.style.background='#fff'; this.style.borderColor='#1d76da'; this.style.color='#1d76da';"><?php esc_html_e('Get Support', 'wbcom-shared'); ?></a>
+                        <a href="https://wbcomdesigns.com/care-plan/" target="_blank" style="display: block; background: linear-gradient(135deg, #1d76da 0%, #3c8ce6 100%); color: #ffffff; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; text-align: center; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(29, 118, 218, 0.2);" onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(29, 118, 218, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(29, 118, 218, 0.2)';"><?php esc_html_e('Get Care Plan', 'bp-activity-filter'); ?></a>
+                        <a href="https://wbcomdesigns.com/downloads/" target="_blank" style="display: block; background: #fff; border: 1px solid #1d76da; color: #1d76da; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; text-align: center; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f4ff'; this.style.borderColor='#0e62c3'; this.style.color='#0e62c3';" onmouseout="this.style.background='#fff'; this.style.borderColor='#1d76da'; this.style.color='#1d76da';"><?php esc_html_e('Premium Plugins', 'bp-activity-filter'); ?></a>
+                        <a href="https://wbcomdesigns.com/custom-development/" target="_blank" style="display: block; background: #fff; border: 1px solid #1d76da; color: #1d76da; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; text-align: center; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f4ff'; this.style.borderColor='#0e62c3'; this.style.color='#0e62c3';" onmouseout="this.style.background='#fff'; this.style.borderColor='#1d76da'; this.style.color='#1d76da';"><?php esc_html_e('Custom Development', 'bp-activity-filter'); ?></a>
+                        <a href="https://wbcomdesigns.com/support/" target="_blank" style="display: block; background: #fff; border: 1px solid #1d76da; color: #1d76da; padding: 12px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; text-align: center; transition: all 0.3s ease;" onmouseover="this.style.background='#f0f4ff'; this.style.borderColor='#0e62c3'; this.style.color='#0e62c3';" onmouseout="this.style.background='#fff'; this.style.borderColor='#1d76da'; this.style.color='#1d76da';"><?php esc_html_e('Get Support', 'bp-activity-filter'); ?></a>
                     </div>
                 </div>
                 
                 <div class="wbcom-welcome-panel-column">
-                    <h3 style="color: #153045; font-size: 18px; font-weight: 600; margin: 0 0 20px 0; padding-bottom: 12px; border-bottom: 2px solid #f0f0f1;"><?php esc_html_e('System Status', 'wbcom-shared'); ?></h3>
+                    <h3 style="color: #153045; font-size: 18px; font-weight: 600; margin: 0 0 20px 0; padding-bottom: 12px; border-bottom: 2px solid #f0f0f1;"><?php esc_html_e('System Status', 'bp-activity-filter'); ?></h3>
                     <div class="wbcom-system-status" style="display: flex; flex-direction: column; gap: 12px;">
                         <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8f9fa; border-radius: 8px;">
                             <span class="status-indicator" style="width: 12px; height: 12px; border-radius: 50%; background-color: <?php echo version_compare(get_bloginfo('version'), '5.0', '>=') ? '#1d76da' : '#e74c3c'; ?>; flex-shrink: 0;"></span>
-                            <span style="font-size: 14px; color: #153045; font-weight: 500;"><?php esc_html_e('WordPress Version', 'wbcom-shared'); ?></span>
+                            <span style="font-size: 14px; color: #153045; font-weight: 500;"><?php esc_html_e('WordPress Version', 'bp-activity-filter'); ?></span>
                             <span style="font-size: 13px; color: #515b67; margin-left: auto;"><?php echo get_bloginfo('version'); ?></span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8f9fa; border-radius: 8px;">
                             <span class="status-indicator" style="width: 12px; height: 12px; border-radius: 50%; background-color: <?php echo function_exists('buddypress') ? '#1d76da' : '#e74c3c'; ?>; flex-shrink: 0;"></span>
-                            <span style="font-size: 14px; color: #153045; font-weight: 500;"><?php esc_html_e('BuddyPress', 'wbcom-shared'); ?></span>
-                            <span style="font-size: 13px; color: #515b67; margin-left: auto;"><?php echo function_exists('buddypress') ? __('Active', 'wbcom-shared') : __('Inactive', 'wbcom-shared'); ?></span>
+                            <span style="font-size: 14px; color: #153045; font-weight: 500;"><?php esc_html_e('BuddyPress', 'bp-activity-filter'); ?></span>
+                            <span style="font-size: 13px; color: #515b67; margin-left: auto;"><?php echo function_exists('buddypress') ? __('Active', 'bp-activity-filter') : __('Inactive', 'bp-activity-filter'); ?></span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8f9fa; border-radius: 8px;">
                             <span class="status-indicator" style="width: 12px; height: 12px; border-radius: 50%; background-color: <?php echo defined('WP_DEBUG') && WP_DEBUG ? '#e74c3c' : '#1d76da'; ?>; flex-shrink: 0;"></span>
-                            <span style="font-size: 14px; color: #153045; font-weight: 500;"><?php esc_html_e('Production Mode', 'wbcom-shared'); ?></span>
-                            <span style="font-size: 13px; color: #515b67; margin-left: auto;"><?php echo defined('WP_DEBUG') && WP_DEBUG ? __('Debug On', 'wbcom-shared') : __('Active', 'wbcom-shared'); ?></span>
+                            <span style="font-size: 14px; color: #153045; font-weight: 500;"><?php esc_html_e('Production Mode', 'bp-activity-filter'); ?></span>
+                            <span style="font-size: 13px; color: #515b67; margin-left: auto;"><?php echo defined('WP_DEBUG') && WP_DEBUG ? __('Debug On', 'bp-activity-filter') : __('Active', 'bp-activity-filter'); ?></span>
                         </div>
                     </div>
                 </div>
@@ -258,7 +258,7 @@ class Wbcom_Shared_Dashboard {
     private function render_plugins_tab() {
         ?>
         <div class="wbcom-plugins-header" style="background: #fff; border: 1px solid #e1e5e9; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.07);">
-            <h2 style="color: #153045; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;"><?php esc_html_e('Installed Wbcom Plugins', 'wbcom-shared'); ?></h2>
+            <h2 style="color: #153045; font-size: 24px; font-weight: 700; margin: 0 0 16px 0;"><?php esc_html_e('Installed Wbcom Plugins', 'bp-activity-filter'); ?></h2>
         </div>
 
         <div class="wbcom-plugins-grid">
@@ -267,10 +267,10 @@ class Wbcom_Shared_Dashboard {
                     <div class="no-plugins-icon">
                         <span class="dashicons dashicons-admin-plugins" style="font-size: 64px; color: #1d76da; margin-bottom: 20px;"></span>
                     </div>
-                    <h3 style="color: #153045; font-size: 20px; font-weight: 600; margin: 0 0 12px 0;"><?php esc_html_e('No Wbcom Plugins Found', 'wbcom-shared'); ?></h3>
-                    <p style="color: #515b67; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;"><?php esc_html_e('Looks like you haven\'t installed any Wbcom Designs plugins yet.', 'wbcom-shared'); ?></p>
+                    <h3 style="color: #153045; font-size: 20px; font-weight: 600; margin: 0 0 12px 0;"><?php esc_html_e('No Wbcom Plugins Found', 'bp-activity-filter'); ?></h3>
+                    <p style="color: #515b67; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;"><?php esc_html_e('Looks like you haven\'t installed any Wbcom Designs plugins yet.', 'bp-activity-filter'); ?></p>
                     <a href="<?php echo esc_url(admin_url('admin.php?page=wbcom-designs&tab=premium')); ?>" style="display: inline-block; background: linear-gradient(135deg, #1d76da 0%, #3c8ce6 100%); color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(29, 118, 218, 0.3);" onmouseover="this.style.background='linear-gradient(135deg, #0e62c3 0%, #1d76da 100%)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(29, 118, 218, 0.4)';" onmouseout="this.style.background='linear-gradient(135deg, #1d76da 0%, #3c8ce6 100%)'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(29, 118, 218, 0.3)';">
-                        <?php esc_html_e('Browse Premium Plugins', 'wbcom-shared'); ?>
+                        <?php esc_html_e('Browse Premium Plugins', 'bp-activity-filter'); ?>
                     </a>
                 </div>
             <?php else : ?>
@@ -285,7 +285,7 @@ class Wbcom_Shared_Dashboard {
                             </div>
                             <p class="plugin-description"><?php echo esc_html($plugin['description']); ?></p>
                             <div class="plugin-version">
-                                <span class="version-label"><?php esc_html_e('Version:', 'wbcom-shared'); ?></span>
+                                <span class="version-label"><?php esc_html_e('Version:', 'bp-activity-filter'); ?></span>
                                 <span class="version-number"><?php echo esc_html($plugin['version']); ?></span>
                             </div>
                         </div>
@@ -294,7 +294,7 @@ class Wbcom_Shared_Dashboard {
                                 <?php if ($plugin['status'] === 'active' && !empty($plugin['settings_url'])) : ?>
                                     <a href="<?php echo esc_url($plugin['settings_url']); ?>" class="button button-primary">
                                         <span class="dashicons dashicons-admin-generic"></span>
-                                        <?php esc_html_e('Settings', 'wbcom-shared'); ?>
+                                        <?php esc_html_e('Settings', 'bp-activity-filter'); ?>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -315,8 +315,8 @@ class Wbcom_Shared_Dashboard {
         ?>
         <div class="wbcom-premium-section">
             <div class="wbcom-premium-header">
-                <h2><?php esc_html_e('Premium BuddyPress Plugins', 'wbcom-shared'); ?></h2>
-                <p><?php esc_html_e('Enhance your community with these powerful premium plugins designed specifically for BuddyPress.', 'wbcom-shared'); ?></p>
+                <h2><?php esc_html_e('Premium BuddyPress Plugins', 'bp-activity-filter'); ?></h2>
+                <p><?php esc_html_e('Enhance your community with these powerful premium plugins designed specifically for BuddyPress.', 'bp-activity-filter'); ?></p>
             </div>
             
             <div class="premium-plugins-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 30px; margin-top: 30px;">
@@ -388,7 +388,7 @@ class Wbcom_Shared_Dashboard {
                        style="display: inline-block; background: linear-gradient(135deg, rgb(29, 118, 218) 0%, rgb(60, 140, 230) 100%); color: rgb(255, 255, 255); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; transition: all 0.3s ease; box-shadow: rgba(29, 118, 218, 0.3) 0px 4px 12px; transform: translateY(0px);"
                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(29, 118, 218, 0.4)'"
                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(29, 118, 218, 0.3)'">
-                        <?php esc_html_e('Browse All Premium Plugins', 'wbcom-shared'); ?>
+                        <?php esc_html_e('Browse All Premium Plugins', 'bp-activity-filter'); ?>
                         <span class="dashicons dashicons-external" style="vertical-align: middle; margin-left: 5px;"></span>
                     </a>
                 </p>
@@ -406,8 +406,8 @@ class Wbcom_Shared_Dashboard {
         ?>
         <div class="wbcom-themes-section">
             <div class="wbcom-themes-header">
-                <h2><?php esc_html_e('Premium Community Themes', 'wbcom-shared'); ?></h2>
-                <p><?php esc_html_e('Transform your vision with these powerful multi-purpose themes designed to create any type of community platform.', 'wbcom-shared'); ?></p>
+                <h2><?php esc_html_e('Premium Community Themes', 'bp-activity-filter'); ?></h2>
+                <p><?php esc_html_e('Transform your vision with these powerful multi-purpose themes designed to create any type of community platform.', 'bp-activity-filter'); ?></p>
             </div>
             
             <div class="premium-themes-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin-top: 30px;">
@@ -471,7 +471,7 @@ class Wbcom_Shared_Dashboard {
                        style="display: inline-block; background: linear-gradient(135deg, rgb(29, 118, 218) 0%, rgb(60, 140, 230) 100%); color: rgb(255, 255, 255); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; transition: all 0.3s ease; box-shadow: rgba(29, 118, 218, 0.3) 0px 4px 12px; transform: translateY(0px);"
                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(29, 118, 218, 0.4)'"
                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(29, 118, 218, 0.3)'">
-                        <?php esc_html_e('Browse All Premium Themes', 'wbcom-shared'); ?>
+                        <?php esc_html_e('Browse All Premium Themes', 'bp-activity-filter'); ?>
                         <span class="dashicons dashicons-external" style="vertical-align: middle; margin-left: 5px;"></span>
                     </a>
                 </p>
@@ -487,14 +487,14 @@ class Wbcom_Shared_Dashboard {
         ?>
         <div class="wbcom-news-section" style="background: #fff; border: 1px solid #e1e5e9; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.07);">
             <div class="wbcom-news-header" style="margin-bottom: 24px;">
-                <h2 style="color: #153045; font-size: 24px; font-weight: 700; margin: 0 0 12px 0;"><?php esc_html_e('Latest News from Wbcom Designs', 'wbcom-shared'); ?></h2>
-                <p style="color: #515b67; font-size: 15px; line-height: 1.6; margin: 0;"><?php esc_html_e('Stay updated with the latest plugin releases, updates, and WordPress community news.', 'wbcom-shared'); ?></p>
+                <h2 style="color: #153045; font-size: 24px; font-weight: 700; margin: 0 0 12px 0;"><?php esc_html_e('Latest News from Wbcom Designs', 'bp-activity-filter'); ?></h2>
+                <p style="color: #515b67; font-size: 15px; line-height: 1.6; margin: 0;"><?php esc_html_e('Stay updated with the latest plugin releases, updates, and WordPress community news.', 'bp-activity-filter'); ?></p>
             </div>
             
             <div id="wbcom-news-feed" class="wbcom-news-feed" style="border: 1px solid #f0f0f1; border-radius: 8px; padding: 20px; background: #faf9ff;">
                 <div class="news-loading" style="text-align: center; padding: 40px; color: #515b67;">
                     <span class="spinner is-active" style="margin-bottom: 15px;"></span>
-                    <p style="margin: 0; font-size: 14px;"><?php esc_html_e('Loading latest news...', 'wbcom-shared'); ?></p>
+                    <p style="margin: 0; font-size: 14px;"><?php esc_html_e('Loading latest news...', 'bp-activity-filter'); ?></p>
                 </div>
             </div>
 
@@ -504,7 +504,7 @@ class Wbcom_Shared_Dashboard {
                        style="display: inline-block; background: linear-gradient(135deg, rgb(29, 118, 218) 0%, rgb(60, 140, 230) 100%); color: rgb(255, 255, 255); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; transition: all 0.3s ease; box-shadow: rgba(29, 118, 218, 0.3) 0px 4px 12px; transform: translateY(0px);"
                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(29, 118, 218, 0.4)'"
                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(29, 118, 218, 0.3)'">
-                        <?php esc_html_e('Visit Our Blog', 'wbcom-shared'); ?>
+                        <?php esc_html_e('Visit Our Blog', 'bp-activity-filter'); ?>
                         <span class="dashicons dashicons-external" style="vertical-align: middle; margin-left: 5px;"></span>
                     </a>
                 </p>
@@ -787,7 +787,7 @@ class Wbcom_Shared_Dashboard {
             'total_plugins'  => count($this->registered_plugins),
             'active_plugins' => count($this->get_active_plugins()),
             'wp_version'     => get_bloginfo('version'),
-            'bp_version'     => function_exists('buddypress') ? buddypress()->version : __('Not Active', 'wbcom-shared'),
+            'bp_version'     => function_exists('buddypress') ? buddypress()->version : __('Not Active', 'bp-activity-filter'),
         );
     }
     
@@ -821,8 +821,8 @@ class Wbcom_Shared_Dashboard {
             ?>
             <div class="notice notice-warning">
                 <p>
-                    <strong><?php esc_html_e('Welcome to Wbcom Designs!', 'wbcom-shared'); ?></strong>
-                    <?php esc_html_e('No Wbcom plugins are currently active. Activate plugins to see them here.', 'wbcom-shared'); ?>
+                    <strong><?php esc_html_e('Welcome to Wbcom Designs!', 'bp-activity-filter'); ?></strong>
+                    <?php esc_html_e('No Wbcom plugins are currently active. Activate plugins to see them here.', 'bp-activity-filter'); ?>
                 </p>
             </div>
             <?php

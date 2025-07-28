@@ -785,9 +785,9 @@ class Wbcom_Shared_Loader {
                 'pluginCount' => count($this->registered_plugins),
                 'currentPage' => isset($_GET['page']) ? sanitize_text_field($_GET['page']) : '',
                 'strings' => array(
-                    'loading' => __('Loading...', 'wbcom-shared'),
-                    'error' => __('Error loading content.', 'wbcom-shared'),
-                    'success' => __('Settings saved successfully.', 'wbcom-shared'),
+                    'loading' => __('Loading...', 'bp-activity-filter'),
+                    'error' => __('Error loading content.', 'bp-activity-filter'),
+                    'success' => __('Settings saved successfully.', 'bp-activity-filter'),
                 )
             ));
         }

@@ -1,7 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Wbcom Designs - BuddyPress Activity Filter\n"
-"POT-Creation-Date: 2023-12-19 12:44+0530\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-28 19:34:53+00:00\n"
 "PO-Revision-Date: 2023-12-19 12:44+0530\n"
 "Last-Translator: Varun Dubey <vapvarun@gmail.com>\n"
 "Language-Team: Varun Dubey <vapvarun@gmail.com>\n"
@@ -22,991 +23,1245 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-1: node_modules\n"
 "X-Poedit-SearchPathExcluded-2: vendor\n"
 
-#: admin/bp-welcome-page.php:16
-msgid ""
-"BuddyPress Activity Filter allows to set your default option for activities. "
-"You can change the default from everything to Post Updates. The site "
-"administrator can remove some specific activity types from their BuddyPress "
-"Activity. It will also allow setting your default option for activities."
-msgstr ""
-
-#: admin/bp-welcome-page.php:22
-msgid "Help &amp; Support Resources"
-msgstr "Hilfe &amp; Support-Ressourcen"
-
-#: admin/bp-welcome-page.php:23
-msgid ""
-"Here are all the resources you may need to get help from us. Documentation "
-"is usually the best place to start. Should you require help anytime, our "
-"customer care team is available to assist you at the support center."
-msgstr ""
-"Hier finden Sie alle Ressourcen, die Sie benötigen, um Hilfe von uns zu "
-"erhalten. Die Dokumentation ist in der Regel der beste Startpunkt. Sollten "
-"Sie jederzeit Hilfe benötigen, steht Ihnen unser Kundenbetreuungsteam im "
-"Support-Center zur Verfügung."
-
-#: admin/bp-welcome-page.php:28
-msgid "Documentation"
-msgstr "Dokumentation"
-
-#: admin/bp-welcome-page.php:29
-msgid ""
-"We have prepared an extensive guide on BuddyPress Activity Filter to learn "
-"all aspects of the plugin. You will find most of your answers here."
-msgstr ""
-
-#: admin/bp-welcome-page.php:30
-msgid "Read Documentation"
-msgstr "Dokumentation lesen"
-
-#: admin/bp-welcome-page.php:36
-msgid "Support Center"
-msgstr "Support Center"
-
-#: admin/bp-welcome-page.php:37
-msgid ""
-"We strive to offer the best customer care via our support center. Once your "
-"theme is activated, you can ask us for help anytime."
-msgstr ""
-"Wir bemühen uns, über unser Support-Center die beste Kundenbetreuung zu "
-"bieten. Sobald Ihr Theme aktiviert ist, können Sie uns jederzeit um Hilfe "
-"bitten."
-
-#: admin/bp-welcome-page.php:38
-msgid "Get Support"
-msgstr "Support erhalten"
-
-#: admin/bp-welcome-page.php:43
-msgid "Got Feedback?"
-msgstr "Haben Sie Feedback?"
-
-#: admin/bp-welcome-page.php:44
-msgid ""
-"We want to hear about your experience with the plugin. We would also love to "
-"hear any suggestions you may for future updates."
-msgstr ""
-"Wir möchten von Ihren Erfahrungen mit dem Plugin hören. Wir würden auch "
-"gerne Ihre Vorschläge für zukünftige Updates hören."
-
-#: admin/bp-welcome-page.php:45
-msgid "Send Feedback"
-msgstr "Feedback senden"
-
-#: admin/class-bp-activity-filter-admin-setting.php:53
-msgid "WB Plugins"
-msgstr "WB-Plugins"
-
-#: admin/class-bp-activity-filter-admin-setting.php:54
-msgid "General"
-msgstr "Allgemein"
-
-#: admin/class-bp-activity-filter-admin-setting.php:56
+#: buddypress-activity-filter.php:129 buddypress-activity-filter.php:130
+#: buddypress-activity-filter.php:559
 msgid "BP Activity Filter"
 msgstr "BP-Aktivitätsfilter"
 
-#: admin/class-bp-activity-filter-admin-setting.php:81
-#: admin/class-bp-activity-filter-feedback.php:271
-#: admin/class-bp-activity-filter-feedback.php:311
-#: admin/wbcom/templates/wbcom-license-page.php:12
-#: buddypress-activity-filter.php:66
-msgid "BuddyPress Activity Filter"
+#. translators: %s: file path
+#: buddypress-activity-filter.php:288
+#, fuzzy
+msgid "BuddyPress Activity Filter: Required file missing: %s"
 msgstr "BuddyPress-Aktivitätsfilter"
 
-#. translators: %s:
-#: admin/class-bp-activity-filter-admin-setting.php:84
-#: admin/wbcom/templates/wbcom-license-page.php:16
-#, php-format
-msgid "Version %s"
-msgstr "Version %s"
-
-#: admin/class-bp-activity-filter-admin-setting.php:91
-msgid "Settings saved."
-msgstr "Einstellungen gespeichert."
-
-#: admin/class-bp-activity-filter-admin-setting.php:93
-msgid "Dismiss this notice."
-msgstr "Diesen Hinweis ausblenden."
-
-#: admin/class-bp-activity-filter-admin-setting.php:187
-msgid "Welcome"
-msgstr "Willkommen"
-
-#: admin/class-bp-activity-filter-admin-setting.php:188
-msgid "Default Filter"
-msgstr "Standard-Filter"
-
-#: admin/class-bp-activity-filter-admin-setting.php:189
-msgid "Remove Activity"
-msgstr ""
-
-#: admin/class-bp-activity-filter-admin-setting.php:190
-msgid "CPT Activites"
-msgstr "CPT-Aktivitäten"
-
-#: admin/class-bp-activity-filter-admin-setting.php:284
-msgid "Default Filter Settings"
-msgstr "Einstellungen speichern"
-
-#: admin/class-bp-activity-filter-admin-setting.php:287
+#: buddypress-activity-filter.php:333
 msgid ""
-"Configure default activity filters for site-wide and profile-specific "
-"activities."
+"BuddyPress Activity Filter requires BuddyPress to be installed and active."
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:294
-msgid "Site-Wide Activity Filter"
+#: buddypress-activity-filter.php:334
+msgid "Plugin Activation Error"
 msgstr ""
 
-#: admin/class-bp-activity-filter-admin-setting.php:297
-msgid "Select the default filter for site-wide activity display."
-msgstr ""
-
-#: admin/class-bp-activity-filter-admin-setting.php:299
-#: admin/class-bp-activity-filter-admin-setting.php:341
-msgid "Everything"
-msgstr "Alles"
-
-#: admin/class-bp-activity-filter-admin-setting.php:336
-msgid "Profile Activity Filter"
-msgstr ""
-
-#: admin/class-bp-activity-filter-admin-setting.php:339
-msgid "Choose the default filter for profile-specific activity display."
-msgstr ""
-
-#: admin/class-bp-activity-filter-admin-setting.php:365
-#: admin/class-bp-activity-filter-admin-setting.php:466
-#: admin/class-bp-activity-filter-admin-setting.php:577
-msgid "Save Settings"
-msgstr "Einstellungen speichern"
-
-#: admin/class-bp-activity-filter-admin-setting.php:443
-msgid "Control Auto-Generated Activities"
-msgstr ""
-
-#: admin/class-bp-activity-filter-admin-setting.php:446
-msgid ""
-"Manage and customize the automatic generation of activities on your "
-"BuddyPress site. Easily enable or disable specific activities to tailor your "
-"community's experience. Checked options will be skipped in the activity "
-"newsfeed"
-msgstr ""
-
-#: admin/class-bp-activity-filter-admin-setting.php:491
-msgid "BuddyPress Activity Integration"
-msgstr "Integration von BuddyPress Aktivitäten"
-
-#: admin/class-bp-activity-filter-admin-setting.php:495
-msgid "Enable BuddyPress Activity Posting for selected Post Type"
-msgstr ""
-
-#: admin/class-bp-activity-filter-admin-setting.php:502
-msgid "Post Type"
-msgstr "Beitragstyp"
-
-#: admin/class-bp-activity-filter-admin-setting.php:503
-msgid "Enable/Disable"
-msgstr "Aktivieren/Deaktivieren"
-
-#: admin/class-bp-activity-filter-admin-setting.php:504
-msgid "Name for activities"
-msgstr ""
-
-#: admin/class-bp-activity-filter-admin-setting.php:567
-msgid ""
-"Sorry, it seems you do not have any custom post type available to allow in "
-"the activity stream."
-msgstr ""
-
-#. translators: Number of years
-#: admin/class-bp-activity-filter-feedback.php:88
-#, php-format
-msgid "%s years"
-msgstr "%s Jahre"
-
-#: admin/class-bp-activity-filter-feedback.php:90
-msgid "a year"
-msgstr "einem Jahr"
-
-#. translators: Number of weeks
-#: admin/class-bp-activity-filter-feedback.php:97
-#, php-format
-msgid "%s weeks"
-msgstr "%s Wochen"
-
-#: admin/class-bp-activity-filter-feedback.php:99
-msgid "a week"
-msgstr "einer Woche"
-
-#. translators: Number of days
-#: admin/class-bp-activity-filter-feedback.php:106
-#, php-format
-msgid "%s days"
-msgstr "%s Tage"
-
-#: admin/class-bp-activity-filter-feedback.php:108
-msgid "a day"
-msgstr "einem Tag"
-
-#. translators: Number of hours
-#: admin/class-bp-activity-filter-feedback.php:115
-#, php-format
-msgid "%s hours"
-msgstr "%s Stunden"
-
-#: admin/class-bp-activity-filter-feedback.php:117
-msgid "an hour"
-msgstr "einer Stunde"
-
-#. translators: Number of minutes
-#: admin/class-bp-activity-filter-feedback.php:124
-#, php-format
-msgid "%s minutes"
-msgstr "%s Minuten"
-
-#: admin/class-bp-activity-filter-feedback.php:126
-msgid "a minute"
-msgstr "eine Minute"
-
-#. translators: Number of seconds
-#: admin/class-bp-activity-filter-feedback.php:133
-#, php-format
-msgid "%s seconds"
-msgstr "%s Sekunden"
-
-#: admin/class-bp-activity-filter-feedback.php:135
-msgid "a second"
-msgstr "einer Sekunde"
-
-#: admin/class-bp-activity-filter-feedback.php:274
-msgid "Are you enjoying BuddyPress Activity Filter?"
-msgstr "Gefällt Ihnen der BuddyPress Aktivitätsfilter?"
-
-#. translators: 1. Name, 2. Time
-#: admin/class-bp-activity-filter-feedback.php:277
-#, php-format
-msgid ""
-"We hope you're enjoying %1$s! Could you please do us a BIG favor and give it "
-"a 5-star rating on WordPress to help us spread the word and boost our "
-"motivation?"
-msgstr ""
-"Wir hoffen, dass Sie %1$s genießen! Könnten Sie uns bitte einen großen "
-"Gefallen tun und ihm eine 5-Sterne-Bewertung auf WordPress geben, um uns zu "
-"helfen, das Wort zu verbreiten und unsere Motivation zu steigern?"
-
-#: admin/class-bp-activity-filter-feedback.php:281
-msgid "Leave a Review"
-msgstr "Hinterlasse eine Bewertung"
-
-#: admin/class-bp-activity-filter-feedback.php:282
-msgid "No thanks / I already have"
-msgstr "Nein, danke / Ich habe bereits"
-
-#: admin/wbcom/templates/wbcom-license-page.php:23
-msgid "Plugin License"
-msgstr "Pro Plugin Lizenz prod_or_test"
-
-#: admin/wbcom/templates/wbcom-license-page.php:29
-#: admin/wbcom/templates/wbcom-license-page.php:41
-msgid "Product"
-msgstr "Produkt"
-
-#: admin/wbcom/templates/wbcom-license-page.php:30
-#: admin/wbcom/templates/wbcom-license-page.php:42
-msgid "Version"
-msgstr "Version"
-
-#: admin/wbcom/templates/wbcom-license-page.php:31
-#: admin/wbcom/templates/wbcom-license-page.php:43
-msgid "Key"
-msgstr "Schlüssel"
-
-#: admin/wbcom/templates/wbcom-license-page.php:32
-#: admin/wbcom/templates/wbcom-license-page.php:44
-msgid "Status"
-msgstr "Status"
-
-#: admin/wbcom/templates/wbcom-license-page.php:33
-#: admin/wbcom/templates/wbcom-license-page.php:45
-msgid "Action"
-msgstr "Aktion"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:12
-msgid "Themes & Extension"
-msgstr "Themen & Erweiterung"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:20
-#: admin/wbcom/templates/wbcom-plugins-page.php:28
-msgid "Paid Extension"
-msgstr "Bezahlte Verlängerung"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:21
-msgid "Free Extension"
-msgstr "Kostenlose Erweiterung"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:22
-msgid "LearnDash Extension"
-msgstr "LearnDash Erweiterung"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:23
-#: admin/wbcom/templates/wbcom-plugins-page.php:362
-#: admin/wbcom/wbcom-admin-settings.php:272
-#: admin/wbcom/wbcom-admin-settings.php:273
-msgid "Our Themes"
-msgstr "Unsere Themes"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:29
-#: admin/wbcom/templates/wbcom-plugins-page.php:300
-#: admin/wbcom/templates/wbcom-plugins-page.php:425
-msgid "View More Extension"
-msgstr "Mehr anzeigen Erweiterung"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:37
-msgid "BuddyPress Moderation Pro"
-msgstr "BuddyPress Moderation Pro"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:38
-msgid ""
-"BuddyPress Moderation solution with advanced features to give you complete "
-"control over your community and keep it secure with automatic moderation and "
-"limitations, and more."
-msgstr ""
-"BuddyPress Moderation Lösung mit erweiterten Funktionen, um Ihnen die "
-"vollständige Kontrolle über Ihre Community und halten Sie es sicher mit "
-"automatischer Moderation und Einschränkungen, und vieles mehr."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:40
-#: admin/wbcom/templates/wbcom-plugins-page.php:53
-#: admin/wbcom/templates/wbcom-plugins-page.php:66
-#: admin/wbcom/templates/wbcom-plugins-page.php:79
-#: admin/wbcom/templates/wbcom-plugins-page.php:92
-#: admin/wbcom/templates/wbcom-plugins-page.php:105
-#: admin/wbcom/templates/wbcom-plugins-page.php:118
-#: admin/wbcom/templates/wbcom-plugins-page.php:131
-#: admin/wbcom/templates/wbcom-plugins-page.php:144
-#: admin/wbcom/templates/wbcom-plugins-page.php:157
-#: admin/wbcom/templates/wbcom-plugins-page.php:170
-#: admin/wbcom/templates/wbcom-plugins-page.php:183
-#: admin/wbcom/templates/wbcom-plugins-page.php:196
-#: admin/wbcom/templates/wbcom-plugins-page.php:209
-#: admin/wbcom/templates/wbcom-plugins-page.php:222
-#: admin/wbcom/templates/wbcom-plugins-page.php:235
-#: admin/wbcom/templates/wbcom-plugins-page.php:248
-#: admin/wbcom/templates/wbcom-plugins-page.php:261
-#: admin/wbcom/templates/wbcom-plugins-page.php:274
-#: admin/wbcom/templates/wbcom-plugins-page.php:287
-#: admin/wbcom/templates/wbcom-plugins-page.php:311
-#: admin/wbcom/templates/wbcom-plugins-page.php:324
-#: admin/wbcom/templates/wbcom-plugins-page.php:337
-#: admin/wbcom/templates/wbcom-plugins-page.php:350
-#: admin/wbcom/templates/wbcom-plugins-page.php:374
-#: admin/wbcom/templates/wbcom-plugins-page.php:387
-#: admin/wbcom/templates/wbcom-plugins-page.php:400
-#: admin/wbcom/templates/wbcom-plugins-page.php:413
-#: admin/wbcom/templates/wbcom-plugins-page.php:433
-#: admin/wbcom/templates/wbcom-plugins-page.php:443
-#: admin/wbcom/templates/wbcom-plugins-page.php:453
-#: admin/wbcom/templates/wbcom-plugins-page.php:463
-#: admin/wbcom/templates/wbcom-plugins-page.php:473
-#: admin/wbcom/templates/wbcom-plugins-page.php:483
-msgid "View Details"
-msgstr "Details anzeigen"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:41
-#: admin/wbcom/templates/wbcom-plugins-page.php:54
-#: admin/wbcom/templates/wbcom-plugins-page.php:67
-#: admin/wbcom/templates/wbcom-plugins-page.php:80
-#: admin/wbcom/templates/wbcom-plugins-page.php:93
-#: admin/wbcom/templates/wbcom-plugins-page.php:106
-#: admin/wbcom/templates/wbcom-plugins-page.php:119
-#: admin/wbcom/templates/wbcom-plugins-page.php:132
-#: admin/wbcom/templates/wbcom-plugins-page.php:145
-#: admin/wbcom/templates/wbcom-plugins-page.php:158
-#: admin/wbcom/templates/wbcom-plugins-page.php:171
-#: admin/wbcom/templates/wbcom-plugins-page.php:184
-#: admin/wbcom/templates/wbcom-plugins-page.php:197
-#: admin/wbcom/templates/wbcom-plugins-page.php:210
-#: admin/wbcom/templates/wbcom-plugins-page.php:223
-#: admin/wbcom/templates/wbcom-plugins-page.php:236
-#: admin/wbcom/templates/wbcom-plugins-page.php:249
-#: admin/wbcom/templates/wbcom-plugins-page.php:262
-#: admin/wbcom/templates/wbcom-plugins-page.php:275
-#: admin/wbcom/templates/wbcom-plugins-page.php:288
-#: admin/wbcom/templates/wbcom-plugins-page.php:312
-#: admin/wbcom/templates/wbcom-plugins-page.php:325
-#: admin/wbcom/templates/wbcom-plugins-page.php:338
-#: admin/wbcom/templates/wbcom-plugins-page.php:351
-#: admin/wbcom/templates/wbcom-plugins-page.php:388
-#: admin/wbcom/templates/wbcom-plugins-page.php:444
-#: admin/wbcom/templates/wbcom-plugins-page.php:454
-#: admin/wbcom/templates/wbcom-plugins-page.php:464
-#: admin/wbcom/templates/wbcom-plugins-page.php:474
-#: admin/wbcom/templates/wbcom-plugins-page.php:484
-msgid "Get It Now"
-msgstr "Jetzt erhalten"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:50
-msgid "BuddyPress Resume Manager"
-msgstr "BuddyPress Resume Manager"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:51
-msgid ""
-"BuddyPress Resume Manager adds display resume functionality on a user’s "
-"BuddyPress/BuddyBoss Platform Profile."
-msgstr ""
-"BuddyPress Resume Manager fügt Anzeige Lebenslauf Funktionalität auf einem "
-"Benutzer BuddyPress / BuddyBoss Plattform Profil."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:63
-msgid "BuddyPress Polls"
-msgstr "BuddyPress Polls"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:64
-msgid ""
-"BuddyPress Polls allows your community members to create polls as an "
-"activity, letting your members respond."
-msgstr ""
-"BuddyPress Polls ermöglicht es Ihren Community-Mitgliedern, Umfragen als "
-"Aktivität zu erstellen und Ihre Mitglieder antworten zu lassen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:76
-msgid "BuddyPress Private Community Pro"
-msgstr "BuddyPress Private Community Pro"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:77
-msgid ""
-"BuddyPress Private Community Pro offers Privacy control for profiles. It "
-"provides a feature to lockdown BuddyPress Component and asks users to log in "
-"to go further to check the profile or any other protected details."
-msgstr ""
-"BuddyPress Private Community Pro bietet Privatsphäre Kontrolle für Profile. "
-"Es bietet eine Funktion zum Sperren der BuddyPress-Komponente und fordert "
-"die Benutzer auf, sich einzuloggen, um das Profil oder andere geschützte "
-"Details zu überprüfen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:89
-msgid "BuddyPress Profile Pro"
-msgstr "BuddyPress Profil Pro"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:90
-msgid ""
-"BuddyPress Profile Pro gives you the power to extend BuddyPress Profiles "
-"with repeater fields and groups. You can easily add multiple field groups "
-"and display them at a member’s profile."
-msgstr ""
-"BuddyPress Profile Pro gibt Ihnen die Möglichkeit, BuddyPress-Profile mit "
-"Wiederholfeldern und Gruppen zu erweitern. Sie können leicht mehrere "
-"Feldgruppen hinzufügen und sie im Profil eines Mitglieds anzeigen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:102
-msgid "BuddyPress Check-ins Pro"
-msgstr "BuddyPress Check-ins Pro"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:103
-msgid ""
-"BuddyPress Check-ins Pro Plugin allows your members to post check-ins like "
-"other social media platforms, on your website activity stream. Members have "
-"a mashup of their check-ins on their profile."
-msgstr ""
-"Das BuddyPress Check-ins Pro Plugin ermöglicht es Ihren Mitgliedern, Check-"
-"ins wie auf anderen Social-Media-Plattformen im Aktivitätsstrom Ihrer "
-"Website zu posten. Mitglieder haben ein Mashup ihrer Check-ins auf ihrem "
-"Profil."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:115
-#: admin/wbcom/templates/wbcom-plugins-page.php:430
-msgid "BuddyPress Member Blog"
-msgstr "BuddyPress Mitglieder-Blog"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:116
-msgid ""
-"BuddyPress Member Blog Pro plugin provides each of your site members their "
-"own writing environment with a fantastic user experience."
-msgstr ""
-"Das Plugin BuddyPress Member Blog Pro bietet jedem Ihrer Website-Mitglieder "
-"eine eigene Schreibumgebung mit einer fantastischen Benutzererfahrung."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:128
-msgid "BuddyPress BuddyVendor"
-msgstr "BuddyPress BuddyVendor"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:129
-msgid ""
-"BuddyVendor or BuddyPress Multivendor Marketplace Quickly turn your "
-"BuddyPress community into a social marketplace."
-msgstr ""
-"BuddyVendor oder BuddyPress Multivendor-Marktplatz Verwandeln Sie Ihre "
-"BuddyPress-Community schnell in einen sozialen Marktplatz."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:141
-msgid "BuddyPress Statistics"
-msgstr "BuddyPress-Statistiken"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:142
-msgid ""
-"BuddyPress Stats plugin creates an activity log of everything that happens "
-"on your BuddyPress powered community site and keeps all counts on the user "
-"profile that displays a range of statistics of your community members."
-msgstr ""
-"BuddyPress Stats Plugin erstellt ein Aktivitätsprotokoll von allem, was auf "
-"Ihrer BuddyPress-Community-Website passiert und hält alle Zählungen auf dem "
-"Benutzerprofil, das eine Reihe von Statistiken Ihrer Community-Mitglieder "
-"zeigt."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:154
-msgid "Who viewed my profile"
-msgstr "Wer hat mein Profil angesehen"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:155
-msgid ""
-"The Who Viewed My Profile Plugin helps you to know about your profile "
-"visitors. It displays the count of the profile views on the member profile "
-"header."
-msgstr ""
-"Das Who Viewed My Profile Plugin hilft Ihnen, über Ihre Profilbesucher "
-"Bescheid zu wissen. Es zeigt die Anzahl der Profilansichten in der Kopfzeile "
-"des Mitgliederprofils an."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:167
-msgid "BuddyPress Friend & Follow Suggestion"
-msgstr "BuddyPress Friend & Follow Vorschlag"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:168
-msgid ""
-"BuddyPress Friends and Follow suggestions plugin assists you with improving "
-"your BuddyPress or BuddyBoss Platform-based community."
-msgstr ""
-"BuddyPress Friends and Follow suggestions plugin hilft Ihnen bei der "
-"Verbesserung Ihrer BuddyPress oder BuddyBoss Platform-basierten Community."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:180
-msgid "BuddyPress Giphy"
-msgstr "BuddyPress Giphy"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:181
-msgid ""
-"Make your activity stream even more tempting and interesting to attract "
-"members by adding GIFs."
-msgstr ""
-"Machen Sie Ihren Aktivitätsstrom noch verlockender und interessanter, um "
-"Mitglieder anzuziehen, indem Sie GIFs hinzufügen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:193
-msgid "Shortcodes for BuddyPress Pro"
-msgstr "Shortcodes für BuddyPress Pro"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:194
-msgid ""
-"Add and Customize the BuddyPress components on any of the WordPress pages/"
-"posts using elementor widgets"
-msgstr ""
-"Hinzufügen und Anpassen der BuddyPress-Komponenten auf beliebigen WordPress-"
-"Seiten/Beiträgen mit Elementor-Widgets"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:206
-msgid "BuddyPress Sticky Post"
-msgstr "BuddyPress Sticky Post"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:207
-msgid ""
-"Make your posts sticky on BuddyPress by pinning site-wide and group "
-"activities on the top of the community wall."
-msgstr ""
-"Machen Sie Ihre Beiträge auf BuddyPress dauerhaft, indem Sie standortweite "
-"und Gruppenaktivitäten oben auf der Community-Wand anpinnen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:219
-msgid "BuddyPress Quotes"
-msgstr "BuddyPress Zitate"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:220
-msgid ""
-"Allow BuddyPress users to post content with attractive background colors and "
-"beautiful images."
-msgstr ""
-"Ermöglichen Sie BuddyPress-Nutzern, Inhalte mit attraktiven "
-"Hintergrundfarben und schönen Bildern zu posten."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:232
-msgid "BuddyPress Auto Friends"
-msgstr "BuddyPress Auto Freunde"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:233
-msgid ""
-"The new BuddyPress Automatic Friends plugins makes your new users feel a "
-"little more at home upon signing up to your community."
-msgstr ""
-"Das neue BuddyPress-Plugin Automatic Friends sorgt dafür, dass sich Ihre "
-"neuen Nutzer bei der Anmeldung in Ihrer Community ein wenig mehr zu Hause "
-"fühlen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:245
-msgid "BuddyPress Newsfeed"
-msgstr "BuddyPress Newsfeed"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:246
-msgid ""
-"Create A Customized Newsfeed Experience Just Like Facebook. By default, "
-"BuddyPress offers separate type of activities for your BuddyPress Activity "
-"Stream."
-msgstr ""
-"Erstellen Sie eine angepasste Newsfeed-Erfahrung wie Facebook. Standardmäßig "
-"bietet BuddyPress verschiedene Arten von Aktivitäten für Ihren BuddyPress "
-"Activity Stream."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:258
-msgid "BuddyPress Status"
-msgstr "BuddyPress-Status"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:259
-msgid ""
-"Allow members to add status on their profile and give their reactions to all "
-"the activity updates."
-msgstr ""
-"Erlauben Sie den Mitgliedern, einen Status zu ihrem Profil hinzuzufügen und "
-"ihre Reaktionen auf alle Aktivitätsaktualisierungen zu geben."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:271
-msgid "BuddyPress Hashtags"
-msgstr "BuddyPress Hashtags"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:272
-msgid ""
-"BuddyPress Hashtags for BuddyPress and bbPress. It allows adding hashtag "
-"links to BuddyPress activity and bbPress topics. "
-msgstr ""
-"BuddyPress Hashtags für BuddyPress und bbPress. Es ermöglicht das Hinzufügen "
-"von Hashtag-Links zu BuddyPress-Aktivitäten und bbPress-Themen. "
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:284
-msgid "BuddyPress Profanity"
-msgstr "BuddyPress Profanität"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:285
-msgid ""
-"Specify a list of bad words to control the content in your BuddyPress "
-"community."
-msgstr ""
-"Geben Sie eine Liste von Schimpfwörtern an, um den Inhalt Ihrer BuddyPress-"
-"Community zu kontrollieren."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:299
-msgid "Extension for LearnDash"
-msgstr "Erweiterung für LearnDash"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:308
-msgid "LMS Notes"
-msgstr "LMS-Anmerkungen"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:309
-msgid ""
-"Learndash Notes will extend the LearnDash functionality to create Notes for "
-"courses, lessons and topics."
-msgstr ""
-"Learndash Notes erweitert die LearnDash-Funktionalität zur Erstellung von "
-"Notizen für Kurse, Lektionen und Themen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:321
-msgid "Learndash wpForo"
-msgstr "Lerntash wpForo"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:322
-msgid ""
-"Learndash wpForo integration allows you to add a discussion channel for your "
-"learners. Allow you to link your course with multiple forums."
-msgstr ""
-"Die Learndash wpForo-Integration ermöglicht es Ihnen, einen Diskussionskanal "
-"für Ihre Lernenden hinzuzufügen. So können Sie Ihren Kurs mit mehreren Foren "
-"verknüpfen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:334
-msgid "LearnDash Dashboard"
-msgstr "LearnDash Dashboard"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:335
-msgid ""
-"LearnDash Dashboard gives the admin, instructors, and students a dashboard "
-"of their own, where they can easily manage anything related to their "
-"courses, lessons, and contact others."
-msgstr ""
-"LearnDash Dashboard bietet Administratoren, Lehrkräften und Schülern ein "
-"eigenes Dashboard, in dem sie alles, was mit ihren Kursen und Lektionen zu "
-"tun hat, einfach verwalten und andere kontaktieren können."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:347
-msgid "PeepSo LearnDash Integration"
-msgstr "PeepSo LearnDash Integration"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:348
-msgid ""
-"Integrate LearnDash with PeepSo to display options for courses inside a "
-"member profile."
-msgstr ""
-"Integrieren Sie LearnDash mit PeepSo, um Optionen für Kurse innerhalb eines "
-"Mitgliederprofils anzuzeigen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:363
-msgid "View More Themes"
-msgstr "Weitere Themes anzeigen"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:371
-msgid "Reign BuddyPress Theme"
-msgstr "Reign BuddyPress Theme"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:372
-msgid ""
-"Create your social network website for the company, school, sports team, or "
-"any niche community using a highly customizable WordPress BuddyPress theme."
-msgstr ""
-"Erstellen Sie Ihre soziale Netzwerk-Website für das Unternehmen, die Schule, "
-"das Sportteam oder eine beliebige Nischengemeinschaft mit einem hochgradig "
-"anpassbaren WordPress BuddyPress-Theme."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:375
-msgid "Get Sandbox"
-msgstr "Sandkasten holen"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:384
-msgid "BuddyX Pro Theme"
-msgstr "BuddyX Pro Thema"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:385
-msgid ""
-"To build an online community website for all niches with full flexibility, "
-"control, and freedom. No coding is required! Offers unique layouts with "
-"clean code and easy-to-customize options giving you a whole new way to "
-"visualize BuddyPress."
-msgstr ""
-"Um eine Online-Community-Website für alle Nischen mit voller Flexibilität, "
-"Kontrolle und Freiheit zu erstellen. Es ist keine Programmierung "
-"erforderlich! Bietet einzigartige Layouts mit sauberem Code und einfach "
-"anpassbaren Optionen, die Ihnen eine ganz neue Art der Visualisierung von "
-"BuddyPress ermöglichen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:397
-msgid "BuddyX Free Theme"
-msgstr "BuddyX Kostenloses Theme"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:398
-#: admin/wbcom/templates/wbcom-plugins-page.php:451
-msgid ""
-"Allow users to create and manage their to-dos with the relevant category "
-"right from their profile."
-msgstr ""
-"Ermöglichen Sie es den Nutzern, ihre Aufgaben mit der entsprechenden "
-"Kategorie direkt in ihrem Profil zu erstellen und zu verwalten."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:401
-#: admin/wbcom/templates/wbcom-plugins-page.php:434
-msgid "Get Pro"
-msgstr "Hol dir Pro"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:410
-msgid "KnowX Theme"
-msgstr "KnowX Thema"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:411
-msgid ""
-"A Free WordPress Knowledge base Theme. KnowX helps you set up a Knowledge "
-"Base in WordPress in less time than it takes to brew a coffee."
-msgstr ""
-"Ein kostenloses WordPress-Theme für Wissensdatenbanken. KnowX hilft Ihnen, "
-"eine Wissensdatenbank in WordPress in weniger Zeit einzurichten, als es "
-"dauert, einen Kaffee zu kochen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:414
-msgid "Get Demo"
-msgstr "Demo anfordern"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:424
-msgid "Our Free Extension"
-msgstr "Unsere kostenlose Erweiterung"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:431
-msgid ""
-"BuddyPress Member Blog is a free plugin that allows users to create/manage "
-"their blog/posts from the profile."
-msgstr ""
-"BuddyPress Member Blog ist ein kostenloses Plugin, das es den Nutzern "
-"ermöglicht, ihren Blog/Posts vom Profil aus zu erstellen/verwalten."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:440
-msgid "BuddyPress Ads"
-msgstr "BuddyPress-Anzeigen"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:441
-msgid ""
-"Integrate your BuddyPress community to provide a smooth customer experience "
-"and increase site engagement."
-msgstr ""
-"Integrieren Sie Ihre BuddyPress-Community, um ein reibungsloses "
-"Kundenerlebnis zu gewährleisten und die Beteiligung an der Website zu "
-"erhöhen."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:450
-msgid "BuddyPress User Todo List"
-msgstr "BuddyPress Benutzer Todo-Liste"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:460
-msgid "BuddyPress Job Manager"
-msgstr "BuddyPress Job Manager"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:461
-msgid ""
-"Create specific tabs in employer’s and candidate’s profiles on BuddyPress."
-msgstr ""
-"Erstellen Sie spezifische Tabs in Arbeitgeber- und Bewerberprofilen auf "
-"BuddyPress."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:470
-msgid "BuddyPress Check-ins"
-msgstr "BuddyPress Check-ins"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:471
-msgid ""
-"Allow members to provide their ratings and reviews to other members’ "
-"profiles based on multiple criteria."
-msgstr ""
-"Ermöglichen Sie es Mitgliedern, ihre Bewertungen und Rezensionen zu den "
-"Profilen anderer Mitglieder auf der Grundlage mehrerer Kriterien abzugeben."
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:480
-msgid "BuddyPress Birthday Widget"
-msgstr "BuddyPress Geburtstag Widget"
-
-#: admin/wbcom/templates/wbcom-plugins-page.php:481
-msgid "Display the upcoming birthdays of your BuddyPress community members."
-msgstr ""
-"Zeigen Sie die bevorstehenden Geburtstage Ihrer BuddyPress-Community-"
-"Mitglieder an."
-
-#: admin/wbcom/templates/wbcom-support-page.php:12
-#: admin/wbcom/wbcom-admin-settings.php:280
-#: admin/wbcom/wbcom-admin-settings.php:281
-#: admin/wbcom/wbcom-admin-settings.php:366
-msgid "Support"
-msgstr "Support"
-
-#: admin/wbcom/templates/wbcom-support-page.php:17
-msgid "How can we help you?"
-msgstr "Wie können wir Ihnen helfen?"
-
-#: admin/wbcom/templates/wbcom-support-page.php:18
-msgid ""
-"Our team is here to help you out at anytime. If you have any idea about how "
-"we could improve. You can share access to your site on our helpdesk if it "
-"can help getting faster."
-msgstr ""
-"Unser Team ist jederzeit bereit, Ihnen zu helfen. Wenn Sie eine Idee haben, "
-"wie wir uns verbessern können. Sie können den Zugang zu Ihrer Website auf "
-"unserem Helpdesk freigeben, wenn Sie dadurch schneller werden können."
-
-#: admin/wbcom/templates/wbcom-support-page.php:27
-msgid "Tickets Support"
-msgstr "Support Tickets"
-
-#: admin/wbcom/templates/wbcom-support-page.php:28
-msgid ""
-"Open a ticket on our helpdesk, we don't guarantee a fast response but within "
-"a week. Except if you've purchased one of our product we'll reply within 24 "
-"hours."
-msgstr ""
-"Öffnen Sie ein Ticket an unseren Helpdesk, können wir nicht garantieren eine "
-"schnelle Antwort, aber innerhalb einer Woche. Außer wenn Sie eines unserer "
-"Produkte erworben haben werden wir innerhalb von 24 Stunden antworten."
-
-#: admin/wbcom/templates/wbcom-support-page.php:31
-msgid "Open a ticket"
-msgstr "Ein Ticket öffnen"
-
-#: admin/wbcom/templates/wbcom-support-page.php:44
-#: admin/wbcom/templates/wbcom-support-page.php:48
-msgid "Contact Us"
-msgstr "Kontaktieren Sie uns"
-
-#: admin/wbcom/templates/wbcom-support-page.php:45
-msgid ""
-"Create a new thread on our plugin page, participation is open to anyone from "
-"all around the world. We'll be there to help as well but can't guarantee any "
-"delay."
-msgstr ""
-"Erstellen Sie einen neuen Thread auf unserer Plugin-Seite, die Teilnahme ist "
-"offen für jeden aus der ganzen Welt. Wir werden auch da sein, um zu helfen, "
-"können aber keine Verzögerung garantieren."
-
-#: admin/wbcom/wbcom-admin-settings.php:240
-msgid "Activate"
-msgstr "Aktivieren"
-
-#: admin/wbcom/wbcom-admin-settings.php:241
-msgid "Deactivate"
-msgstr "Deaktivieren"
-
-#: admin/wbcom/wbcom-admin-settings.php:264
-#: admin/wbcom/wbcom-admin-settings.php:265
-#: admin/wbcom/wbcom-admin-settings.php:359
-msgid "Our Plugins"
-msgstr "Unsere Plugins"
-
-#: admin/wbcom/wbcom-admin-settings.php:353 buddypress-activity-filter.php:170
+#: buddypress-activity-filter.php:387
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:297
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: buddypress-activity-filter.php:67
+#: buddypress-activity-filter.php:395
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:51
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:52
+#, fuzzy
+msgid "Dashboard"
+msgstr "LearnDash Dashboard"
+
+#. Plugin Name of the plugin/theme
+msgid "BuddyPress Activity Filter"
+msgstr "BuddyPress-Aktivitätsfilter"
+
+#. translators: %s: BuddyPress plugin link
+#: buddypress-activity-filter.php:434
+msgid "This plugin requires %s to be installed and active."
+msgstr ""
+
+#. translators: 1: required version, 2: current version
+#: buddypress-activity-filter.php:453
+msgid ""
+"This plugin requires BuddyPress version %1$s or higher. You are running "
+"version %2$s."
+msgstr ""
+
+#: buddypress-activity-filter.php:470
+msgid ""
+"This plugin is not compatible with BuddyBoss due to similar built-in "
+"features. Please use BuddyBoss's native activity filtering instead."
+msgstr ""
+
+#: buddypress-activity-filter.php:512
+msgid "Cloning instances of this class is forbidden."
+msgstr ""
+
+#: buddypress-activity-filter.php:520
+msgid "Unserializing instances of this class is forbidden."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:109
+msgid "Save Settings"
+msgstr "Einstellungen speichern"
+
+#: includes/class-bp-activity-filter-admin.php:204
+#, fuzzy
+msgid "Default Filters"
+msgstr "Standard-Filter"
+
+#: includes/class-bp-activity-filter-admin.php:208
+#, fuzzy
+msgid "Hidden Activities"
+msgstr "CPT-Aktivitäten"
+
+#: includes/class-bp-activity-filter-admin.php:212
+#, fuzzy
+msgid "Custom Post Types"
+msgstr "Beitragstyp"
+
+#: includes/class-bp-activity-filter-admin.php:216
+msgid "FAQ"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:277
+#, fuzzy
+msgid "Default Activity Filters"
+msgstr "BP-Aktivitätsfilter"
+
+#: includes/class-bp-activity-filter-admin.php:278
+msgid ""
+"Configure the default activity filter for different contexts. These settings "
+"determine what type of activities are shown by default when users visit "
+"activity streams."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:285
+msgid "Site-wide Activity Default"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:291
+#: includes/class-bp-activity-filter-admin.php:313
+msgid "Everything"
+msgstr "Alles"
+
+#: includes/class-bp-activity-filter-admin.php:300
+msgid ""
+"Default filter applied to the main site-wide activity stream. Users can "
+"still change this using the activity filter dropdown."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:307
+#, fuzzy
+msgid "Profile Activity Default"
+msgstr "BP-Aktivitätsfilter"
+
+#: includes/class-bp-activity-filter-admin.php:324
+msgid ""
+"Default filter applied to individual user profile activity streams. Some "
+"activity types like \"New Member\" are excluded as they don't typically "
+"appear on user profiles."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:345
+msgid "Posted a status update"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:346
+msgid "Replied to a status update"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:351
+msgid "Hidden Activity Types"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:352
+msgid ""
+"Select activity types to completely hide from all activity streams. Hidden "
+"activities will not appear in the activity feed or filter dropdown options."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:354
+msgid "Activity Types to Hide"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:358
+msgid ""
+"No activity types available. Make sure BuddyPress is properly installed and "
+"activated."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:366
+msgid "Core Activities (Always Available)"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:369
+msgid ""
+"These essential activity types cannot be hidden as they are required for "
+"basic BuddyPress functionality."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:387
+#, fuzzy
+msgid "Other Activity Types"
+msgstr "CPT-Aktivitäten"
+
+#: includes/class-bp-activity-filter-admin.php:390
+msgid "Check the boxes below to HIDE these activity types from your site."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:441
+#: includes/class-bp-activity-filter-admin.php:489
+msgid "How it works:"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:465
+#, fuzzy
+msgid "Custom Post Type Activities"
+msgstr "CPT-Aktivitäten"
+
+#: includes/class-bp-activity-filter-admin.php:467
+msgid ""
+"Enable automatic activity generation for custom post types when they are "
+"published. Only public custom post types with admin interface are available "
+"for selection."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:470
+#, fuzzy
+msgid "Enable Post Types"
+msgstr "Beitragstyp"
+
+#: includes/class-bp-activity-filter-admin.php:475
+msgid "No eligible custom post types found."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:477
+msgid ""
+"Custom post types must be public, have admin UI enabled, and support posts "
+"to appear here. Built-in WordPress post types (posts, pages) are not shown "
+"as they have their own activity systems."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:490
+msgid ""
+"When a post of the selected custom post type is published, an activity entry "
+"will be automatically created showing the author, post type, and post title "
+"with a link. Existing posts will not generate activities - only new posts "
+"published after enabling this feature."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:525
+msgid "%d post"
+msgid_plural "%d posts"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-bp-activity-filter-admin.php:539
+msgid "Custom Activity Label (optional):"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:548
+msgid ""
+"Leave empty to use the default post type name. This text will appear in "
+"activity entries like \"John published a new [label]: Post Title\""
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:564
+#, fuzzy
+msgid "Global Settings"
+msgstr "Einstellungen speichern"
+
+#: includes/class-bp-activity-filter-admin.php:572
+msgid "Hide custom post type activities from site-wide activity stream"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:574
+msgid ""
+"When enabled, custom post type activities will only appear in the author's "
+"profile activity stream, not in the main site-wide activity feed. This helps "
+"reduce clutter in the main activity stream while still giving authors credit "
+"on their profiles."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:654
+msgid "Security check failed. Please try again."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:664
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:693
+#: includes/class-wbcom-integration.php:271
+#: includes/shared-admin/class-wbcom-shared-loader.php:790
+#, fuzzy
+msgid "Settings saved successfully."
+msgstr "Einstellungen gespeichert."
+
+#: includes/class-bp-activity-filter-admin.php:700
+msgid "No changes were made to the settings."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:710
+msgid "Error saving settings: %s"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:949
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:952
+#, fuzzy
+msgid "What is BuddyPress Activity Filter?"
+msgstr "BuddyPress-Aktivitätsfilter"
+
+#: includes/class-bp-activity-filter-admin.php:953
+msgid ""
+"BuddyPress Activity Filter enhances the default BuddyPress activity stream "
+"by providing advanced filtering options. It allows users to filter "
+"activities by type, set default filters, and manage which activity types are "
+"visible."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:957
+msgid "How do I set a default filter for all activity streams?"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:958
+msgid ""
+"Navigate to the Default Filters tab and select your preferred default filter "
+"from the dropdown. This filter will be applied automatically when users "
+"visit the activity stream."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:962
+msgid "Can I set different default filters for profile pages?"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:963
+msgid ""
+"Yes! In the Default Filters tab, you can set a separate default filter "
+"specifically for user profile activity streams. This allows for more "
+"contextual filtering based on where activities are viewed."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:967
+msgid "How do I hide specific activity types from users?"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:968
+msgid ""
+"Use the Hidden Activities tab to select which activity types should be "
+"hidden from the filter dropdown. Hidden activities will not appear as filter "
+"options for users, though the activities themselves may still be visible in "
+"the stream."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:972
+msgid "What are Custom Post Type activities?"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:973
+msgid ""
+"When Custom Post Types are published on your site, BuddyPress can create "
+"activities for them. The Custom Post Types tab lets you control which CPT "
+"activities appear in the filter dropdown and how they are labeled."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:977
+msgid "Can I rename activity type labels in the filter dropdown?"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:978
+msgid ""
+"Yes! In the Custom Post Types tab, you can customize the display labels for "
+"each post type activity. This helps make filter options more user-friendly "
+"and relevant to your community."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:982
+msgid "Why are some activities not showing up in the filter?"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:983
+msgid ""
+"Check the Hidden Activities tab to ensure the activity type is not hidden. "
+"Also, some activity types may not have a filter option if they are system "
+"activities or if they have been disabled by other plugins."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:987
+msgid "Is this plugin compatible with BuddyBoss Platform?"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:988
+msgid ""
+"BuddyPress Activity Filter is designed specifically for BuddyPress. "
+"BuddyBoss Platform includes its own built-in activity filtering features, so "
+"this plugin is not needed and may not be fully compatible with BuddyBoss."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:992
+msgid "How do filters affect activity stream performance?"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:993
+msgid ""
+"The plugin is optimized for performance and uses BuddyPress core filtering "
+"mechanisms. Filters are applied at the database query level, ensuring "
+"efficient loading even with large activity streams."
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:997
+msgid "Where can I get support or report issues?"
+msgstr ""
+
+#: includes/class-bp-activity-filter-admin.php:1001
+msgid ""
+"For support, please visit our %1$ssupport forum%2$s or check the %3$splugin "
+"documentation%4$s. You can also report issues on the plugin's WordPress.org "
+"support page."
+msgstr ""
+
+#: includes/class-bp-activity-filter-cpt.php:348
+msgid ""
+"Has create_posts capability set to \"do_not_allow\" (managed by another "
+"plugin)"
+msgstr ""
+
+#: includes/class-bp-activity-filter-cpt.php:349
+msgid "Managed by a known plugin (e.g., BP Member Reviews, bbPress)"
+msgstr ""
+
+#: includes/class-bp-activity-filter-cpt.php:350
+msgid "Not a public post type"
+msgstr ""
+
+#: includes/class-bp-activity-filter-cpt.php:351
+msgid "No admin interface"
+msgstr ""
+
+#: includes/class-bp-activity-filter-cpt.php:352
+msgid "Does not support titles"
+msgstr ""
+
+#: includes/class-bp-activity-filter-cpt.php:357
+msgid "Custom Post Type Exclusions"
+msgstr ""
+
+#: includes/class-bp-activity-filter-cpt.php:358
+msgid ""
+"The following post types are excluded from activity generation to prevent "
+"conflicts:"
+msgstr ""
+
+#: includes/class-bp-activity-filter-cpt.php:371
+msgid ""
+"This is normal behavior and helps prevent duplicate activities. All other "
+"eligible custom post types are available in the settings below."
+msgstr ""
+
+#. translators: 1: Author link, 2: Post type label, 3: Post link
+#: includes/class-bp-activity-filter-cpt.php:422
+msgid "%1$s published a new %2$s: %3$s"
+msgstr ""
+
+#: includes/class-wbcom-integration.php:269
+#: includes/shared-admin/class-wbcom-shared-loader.php:788
+msgid "Loading..."
+msgstr ""
+
+#: includes/class-wbcom-integration.php:270
+#: includes/shared-admin/class-wbcom-shared-loader.php:789
+msgid "Error loading content."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Wbcom Designs"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:116
+#, fuzzy
+msgid "Overview"
+msgstr "Vorschau"
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:120
+msgid "Installed Plugins"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:124
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:224
+#, fuzzy
+msgid "Premium Plugins"
+msgstr "Unsere Plugins"
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:128
+#, fuzzy
+msgid "Premium Themes"
+msgstr "Unsere Themes"
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:132
+msgid "News & Updates"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:180
+msgid "Welcome to Wbcom Designs Dashboard"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:182
+msgid ""
+"Your central hub for managing premium WordPress and BuddyPress solutions. At "
+"Wbcom Designs, we specialize in creating powerful community plugins, custom "
+"development services, and comprehensive support solutions. Our Care Plan "
+"ensures your site stays optimized and secure with priority support, regular "
+"updates, and expert maintenance."
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:195
+msgid "Don't Risk Your Website's Success"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:198
+msgid ""
+"WordPress updates can break your site, security vulnerabilities expose your "
+"data, and performance issues drive visitors away. Our Care Plan ensures all "
+"updates are tested before deployment, security is monitored 24/7, and your "
+"site stays optimized. Stop worrying about crashes and focus on growing your "
+"business."
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:207
+msgid "Schedule Free Consultation"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:221
+#, fuzzy
+msgid "Our Services"
+msgstr "Unsere Themes"
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:223
+msgid "Get Care Plan"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:225
+msgid "Custom Development"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:226
+msgid "Get Support"
+msgstr "Support erhalten"
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:231
+#, fuzzy
+msgid "System Status"
+msgstr "Status"
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:235
+#, fuzzy
+msgid "WordPress Version"
+msgstr "WordPress System Log"
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:240
 msgid "BuddyPress"
 msgstr "BuddyPress"
 
-#. translators: %1$s: BuddyPress Activity Filter ;  %2$s: BuddyPress
-#: buddypress-activity-filter.php:70
-#, php-format
-msgid ""
-"%1$s is ineffective now as it requires %2$s to be installed and active. It "
-"is not compatible with BuddyBoss due to similar features."
-msgstr ""
-"%1$s ist nun unwirksam, da es erfordert %2$s installiert und aktiviert zu "
-"werden."
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:241
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:246
+#, fuzzy
+msgid "Active"
+msgstr "Aktivieren"
 
-#: buddypress-activity-filter.php:224 buddypress-activity-filter.php:257
-msgid ""
-"BuddyPress Activity Filter requires to be activated on the blog where "
-"BuddyPress is activated."
-msgstr ""
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:241
+#, fuzzy
+msgid "Inactive"
+msgstr "Deaktivieren"
 
-#: buddypress-activity-filter.php:229 buddypress-activity-filter.php:266
-msgid ""
-"BuddyPress Activity Filter and BuddyPress need to share the same network "
-"configuration."
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:245
+#, fuzzy
+msgid "Production Mode"
+msgstr "Produkt"
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:246
+msgid "Debug On"
 msgstr ""
 
-#: templates/class-bp-activity-filter-dropdown.php:96
-msgid "Topics"
-msgstr "Themen"
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:261
+msgid "Installed Wbcom Plugins"
+msgstr ""
 
-#: templates/class-bp-activity-filter-dropdown.php:101
-msgid "Replies"
-msgstr "Antworten"
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:270
+msgid "No Wbcom Plugins Found"
+msgstr ""
 
-#. Plugin Name of the plugin/theme
-msgid "Wbcom Designs - BuddyPress Activity Filter"
-msgstr "BuddyPress Activity Social Share"
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:271
+msgid "Looks like you haven't installed any Wbcom Designs plugins yet."
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:273
+msgid "Browse Premium Plugins"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:288
+#, fuzzy
+msgid "Version:"
+msgstr "Version"
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:318
+#, fuzzy
+msgid "Premium BuddyPress Plugins"
+msgstr "BuddyPress Polls"
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:319
+msgid ""
+"Enhance your community with these powerful premium plugins designed "
+"specifically for BuddyPress."
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:391
+msgid "Browse All Premium Plugins"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:409
+msgid "Premium Community Themes"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:410
+msgid ""
+"Transform your vision with these powerful multi-purpose themes designed to "
+"create any type of community platform."
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:474
+msgid "Browse All Premium Themes"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:490
+msgid "Latest News from Wbcom Designs"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:491
+msgid ""
+"Stay updated with the latest plugin releases, updates, and WordPress "
+"community news."
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:497
+msgid "Loading latest news..."
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:507
+msgid "Visit Our Blog"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:790
+#, fuzzy
+msgid "Not Active"
+msgstr "Aktivieren"
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:824
+msgid "Welcome to Wbcom Designs!"
+msgstr ""
+
+#: includes/shared-admin/class-wbcom-shared-dashboard.php:825
+msgid ""
+"No Wbcom plugins are currently active. Activate plugins to see them here."
+msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "https://wbcomdesigns.com/downloads/buddypress-activity-filter/"
+msgid "https://wordpress.org/plugins/bp-activity-filter/"
 msgstr ""
 
 #. Description of the plugin/theme
 msgid ""
-"It will help set the default filter option with BuddyPress Activity, & also "
-"allow disabling selected activity types."
+"Filter and manage BuddyPress activity streams with default filters and "
+"custom post type support."
 msgstr ""
-
-#. Author of the plugin/theme
-msgid "Wbcom Designs<admin@wbcomdesigns.com>"
-msgstr "Wbcom Designs<admin@wbcomdesigns.com>"
 
 #. Author URI of the plugin/theme
 msgid "https://wbcomdesigns.com/"
 msgstr "https://wbcomdesigns.com/plugins"
+
+#~ msgid "Help &amp; Support Resources"
+#~ msgstr "Hilfe &amp; Support-Ressourcen"
+
+#~ msgid ""
+#~ "Here are all the resources you may need to get help from us. "
+#~ "Documentation is usually the best place to start. Should you require help "
+#~ "anytime, our customer care team is available to assist you at the support "
+#~ "center."
+#~ msgstr ""
+#~ "Hier finden Sie alle Ressourcen, die Sie benötigen, um Hilfe von uns zu "
+#~ "erhalten. Die Dokumentation ist in der Regel der beste Startpunkt. "
+#~ "Sollten Sie jederzeit Hilfe benötigen, steht Ihnen unser "
+#~ "Kundenbetreuungsteam im Support-Center zur Verfügung."
+
+#~ msgid "Documentation"
+#~ msgstr "Dokumentation"
+
+#~ msgid "Read Documentation"
+#~ msgstr "Dokumentation lesen"
+
+#~ msgid "Support Center"
+#~ msgstr "Support Center"
+
+#~ msgid ""
+#~ "We strive to offer the best customer care via our support center. Once "
+#~ "your theme is activated, you can ask us for help anytime."
+#~ msgstr ""
+#~ "Wir bemühen uns, über unser Support-Center die beste Kundenbetreuung zu "
+#~ "bieten. Sobald Ihr Theme aktiviert ist, können Sie uns jederzeit um Hilfe "
+#~ "bitten."
+
+#~ msgid "Got Feedback?"
+#~ msgstr "Haben Sie Feedback?"
+
+#~ msgid ""
+#~ "We want to hear about your experience with the plugin. We would also love "
+#~ "to hear any suggestions you may for future updates."
+#~ msgstr ""
+#~ "Wir möchten von Ihren Erfahrungen mit dem Plugin hören. Wir würden auch "
+#~ "gerne Ihre Vorschläge für zukünftige Updates hören."
+
+#~ msgid "Send Feedback"
+#~ msgstr "Feedback senden"
+
+#~ msgid "WB Plugins"
+#~ msgstr "WB-Plugins"
+
+#~ msgid "General"
+#~ msgstr "Allgemein"
+
+#, php-format
+#~ msgid "Version %s"
+#~ msgstr "Version %s"
+
+#~ msgid "Dismiss this notice."
+#~ msgstr "Diesen Hinweis ausblenden."
+
+#~ msgid "Welcome"
+#~ msgstr "Willkommen"
+
+#~ msgid "Default Filter Settings"
+#~ msgstr "Einstellungen speichern"
+
+#~ msgid "BuddyPress Activity Integration"
+#~ msgstr "Integration von BuddyPress Aktivitäten"
+
+#~ msgid "Enable/Disable"
+#~ msgstr "Aktivieren/Deaktivieren"
+
+#, php-format
+#~ msgid "%s years"
+#~ msgstr "%s Jahre"
+
+#~ msgid "a year"
+#~ msgstr "einem Jahr"
+
+#, php-format
+#~ msgid "%s weeks"
+#~ msgstr "%s Wochen"
+
+#~ msgid "a week"
+#~ msgstr "einer Woche"
+
+#, php-format
+#~ msgid "%s days"
+#~ msgstr "%s Tage"
+
+#~ msgid "a day"
+#~ msgstr "einem Tag"
+
+#, php-format
+#~ msgid "%s hours"
+#~ msgstr "%s Stunden"
+
+#~ msgid "an hour"
+#~ msgstr "einer Stunde"
+
+#, php-format
+#~ msgid "%s minutes"
+#~ msgstr "%s Minuten"
+
+#~ msgid "a minute"
+#~ msgstr "eine Minute"
+
+#, php-format
+#~ msgid "%s seconds"
+#~ msgstr "%s Sekunden"
+
+#~ msgid "a second"
+#~ msgstr "einer Sekunde"
+
+#~ msgid "Are you enjoying BuddyPress Activity Filter?"
+#~ msgstr "Gefällt Ihnen der BuddyPress Aktivitätsfilter?"
+
+#, php-format
+#~ msgid ""
+#~ "We hope you're enjoying %1$s! Could you please do us a BIG favor and give "
+#~ "it a 5-star rating on WordPress to help us spread the word and boost our "
+#~ "motivation?"
+#~ msgstr ""
+#~ "Wir hoffen, dass Sie %1$s genießen! Könnten Sie uns bitte einen großen "
+#~ "Gefallen tun und ihm eine 5-Sterne-Bewertung auf WordPress geben, um uns "
+#~ "zu helfen, das Wort zu verbreiten und unsere Motivation zu steigern?"
+
+#~ msgid "Leave a Review"
+#~ msgstr "Hinterlasse eine Bewertung"
+
+#~ msgid "No thanks / I already have"
+#~ msgstr "Nein, danke / Ich habe bereits"
+
+#~ msgid "Plugin License"
+#~ msgstr "Pro Plugin Lizenz prod_or_test"
+
+#~ msgid "Key"
+#~ msgstr "Schlüssel"
+
+#~ msgid "Action"
+#~ msgstr "Aktion"
+
+#~ msgid "Themes & Extension"
+#~ msgstr "Themen & Erweiterung"
+
+#~ msgid "Paid Extension"
+#~ msgstr "Bezahlte Verlängerung"
+
+#~ msgid "Free Extension"
+#~ msgstr "Kostenlose Erweiterung"
+
+#~ msgid "LearnDash Extension"
+#~ msgstr "LearnDash Erweiterung"
+
+#~ msgid "View More Extension"
+#~ msgstr "Mehr anzeigen Erweiterung"
+
+#~ msgid "BuddyPress Moderation Pro"
+#~ msgstr "BuddyPress Moderation Pro"
+
+#~ msgid ""
+#~ "BuddyPress Moderation solution with advanced features to give you "
+#~ "complete control over your community and keep it secure with automatic "
+#~ "moderation and limitations, and more."
+#~ msgstr ""
+#~ "BuddyPress Moderation Lösung mit erweiterten Funktionen, um Ihnen die "
+#~ "vollständige Kontrolle über Ihre Community und halten Sie es sicher mit "
+#~ "automatischer Moderation und Einschränkungen, und vieles mehr."
+
+#~ msgid "View Details"
+#~ msgstr "Details anzeigen"
+
+#~ msgid "Get It Now"
+#~ msgstr "Jetzt erhalten"
+
+#~ msgid "BuddyPress Resume Manager"
+#~ msgstr "BuddyPress Resume Manager"
+
+#~ msgid ""
+#~ "BuddyPress Resume Manager adds display resume functionality on a user’s "
+#~ "BuddyPress/BuddyBoss Platform Profile."
+#~ msgstr ""
+#~ "BuddyPress Resume Manager fügt Anzeige Lebenslauf Funktionalität auf "
+#~ "einem Benutzer BuddyPress / BuddyBoss Plattform Profil."
+
+#~ msgid ""
+#~ "BuddyPress Polls allows your community members to create polls as an "
+#~ "activity, letting your members respond."
+#~ msgstr ""
+#~ "BuddyPress Polls ermöglicht es Ihren Community-Mitgliedern, Umfragen als "
+#~ "Aktivität zu erstellen und Ihre Mitglieder antworten zu lassen."
+
+#~ msgid "BuddyPress Private Community Pro"
+#~ msgstr "BuddyPress Private Community Pro"
+
+#~ msgid ""
+#~ "BuddyPress Private Community Pro offers Privacy control for profiles. It "
+#~ "provides a feature to lockdown BuddyPress Component and asks users to log "
+#~ "in to go further to check the profile or any other protected details."
+#~ msgstr ""
+#~ "BuddyPress Private Community Pro bietet Privatsphäre Kontrolle für "
+#~ "Profile. Es bietet eine Funktion zum Sperren der BuddyPress-Komponente "
+#~ "und fordert die Benutzer auf, sich einzuloggen, um das Profil oder andere "
+#~ "geschützte Details zu überprüfen."
+
+#~ msgid "BuddyPress Profile Pro"
+#~ msgstr "BuddyPress Profil Pro"
+
+#~ msgid ""
+#~ "BuddyPress Profile Pro gives you the power to extend BuddyPress Profiles "
+#~ "with repeater fields and groups. You can easily add multiple field groups "
+#~ "and display them at a member’s profile."
+#~ msgstr ""
+#~ "BuddyPress Profile Pro gibt Ihnen die Möglichkeit, BuddyPress-Profile mit "
+#~ "Wiederholfeldern und Gruppen zu erweitern. Sie können leicht mehrere "
+#~ "Feldgruppen hinzufügen und sie im Profil eines Mitglieds anzeigen."
+
+#~ msgid "BuddyPress Check-ins Pro"
+#~ msgstr "BuddyPress Check-ins Pro"
+
+#~ msgid ""
+#~ "BuddyPress Check-ins Pro Plugin allows your members to post check-ins "
+#~ "like other social media platforms, on your website activity stream. "
+#~ "Members have a mashup of their check-ins on their profile."
+#~ msgstr ""
+#~ "Das BuddyPress Check-ins Pro Plugin ermöglicht es Ihren Mitgliedern, "
+#~ "Check-ins wie auf anderen Social-Media-Plattformen im Aktivitätsstrom "
+#~ "Ihrer Website zu posten. Mitglieder haben ein Mashup ihrer Check-ins auf "
+#~ "ihrem Profil."
+
+#~ msgid "BuddyPress Member Blog"
+#~ msgstr "BuddyPress Mitglieder-Blog"
+
+#~ msgid ""
+#~ "BuddyPress Member Blog Pro plugin provides each of your site members "
+#~ "their own writing environment with a fantastic user experience."
+#~ msgstr ""
+#~ "Das Plugin BuddyPress Member Blog Pro bietet jedem Ihrer Website-"
+#~ "Mitglieder eine eigene Schreibumgebung mit einer fantastischen "
+#~ "Benutzererfahrung."
+
+#~ msgid "BuddyPress BuddyVendor"
+#~ msgstr "BuddyPress BuddyVendor"
+
+#~ msgid ""
+#~ "BuddyVendor or BuddyPress Multivendor Marketplace Quickly turn your "
+#~ "BuddyPress community into a social marketplace."
+#~ msgstr ""
+#~ "BuddyVendor oder BuddyPress Multivendor-Marktplatz Verwandeln Sie Ihre "
+#~ "BuddyPress-Community schnell in einen sozialen Marktplatz."
+
+#~ msgid "BuddyPress Statistics"
+#~ msgstr "BuddyPress-Statistiken"
+
+#~ msgid ""
+#~ "BuddyPress Stats plugin creates an activity log of everything that "
+#~ "happens on your BuddyPress powered community site and keeps all counts on "
+#~ "the user profile that displays a range of statistics of your community "
+#~ "members."
+#~ msgstr ""
+#~ "BuddyPress Stats Plugin erstellt ein Aktivitätsprotokoll von allem, was "
+#~ "auf Ihrer BuddyPress-Community-Website passiert und hält alle Zählungen "
+#~ "auf dem Benutzerprofil, das eine Reihe von Statistiken Ihrer Community-"
+#~ "Mitglieder zeigt."
+
+#~ msgid "Who viewed my profile"
+#~ msgstr "Wer hat mein Profil angesehen"
+
+#~ msgid ""
+#~ "The Who Viewed My Profile Plugin helps you to know about your profile "
+#~ "visitors. It displays the count of the profile views on the member "
+#~ "profile header."
+#~ msgstr ""
+#~ "Das Who Viewed My Profile Plugin hilft Ihnen, über Ihre Profilbesucher "
+#~ "Bescheid zu wissen. Es zeigt die Anzahl der Profilansichten in der "
+#~ "Kopfzeile des Mitgliederprofils an."
+
+#~ msgid "BuddyPress Friend & Follow Suggestion"
+#~ msgstr "BuddyPress Friend & Follow Vorschlag"
+
+#~ msgid ""
+#~ "BuddyPress Friends and Follow suggestions plugin assists you with "
+#~ "improving your BuddyPress or BuddyBoss Platform-based community."
+#~ msgstr ""
+#~ "BuddyPress Friends and Follow suggestions plugin hilft Ihnen bei der "
+#~ "Verbesserung Ihrer BuddyPress oder BuddyBoss Platform-basierten Community."
+
+#~ msgid "BuddyPress Giphy"
+#~ msgstr "BuddyPress Giphy"
+
+#~ msgid ""
+#~ "Make your activity stream even more tempting and interesting to attract "
+#~ "members by adding GIFs."
+#~ msgstr ""
+#~ "Machen Sie Ihren Aktivitätsstrom noch verlockender und interessanter, um "
+#~ "Mitglieder anzuziehen, indem Sie GIFs hinzufügen."
+
+#~ msgid "Shortcodes for BuddyPress Pro"
+#~ msgstr "Shortcodes für BuddyPress Pro"
+
+#~ msgid ""
+#~ "Add and Customize the BuddyPress components on any of the WordPress pages/"
+#~ "posts using elementor widgets"
+#~ msgstr ""
+#~ "Hinzufügen und Anpassen der BuddyPress-Komponenten auf beliebigen "
+#~ "WordPress-Seiten/Beiträgen mit Elementor-Widgets"
+
+#~ msgid "BuddyPress Sticky Post"
+#~ msgstr "BuddyPress Sticky Post"
+
+#~ msgid ""
+#~ "Make your posts sticky on BuddyPress by pinning site-wide and group "
+#~ "activities on the top of the community wall."
+#~ msgstr ""
+#~ "Machen Sie Ihre Beiträge auf BuddyPress dauerhaft, indem Sie "
+#~ "standortweite und Gruppenaktivitäten oben auf der Community-Wand anpinnen."
+
+#~ msgid "BuddyPress Quotes"
+#~ msgstr "BuddyPress Zitate"
+
+#~ msgid ""
+#~ "Allow BuddyPress users to post content with attractive background colors "
+#~ "and beautiful images."
+#~ msgstr ""
+#~ "Ermöglichen Sie BuddyPress-Nutzern, Inhalte mit attraktiven "
+#~ "Hintergrundfarben und schönen Bildern zu posten."
+
+#~ msgid "BuddyPress Auto Friends"
+#~ msgstr "BuddyPress Auto Freunde"
+
+#~ msgid ""
+#~ "The new BuddyPress Automatic Friends plugins makes your new users feel a "
+#~ "little more at home upon signing up to your community."
+#~ msgstr ""
+#~ "Das neue BuddyPress-Plugin Automatic Friends sorgt dafür, dass sich Ihre "
+#~ "neuen Nutzer bei der Anmeldung in Ihrer Community ein wenig mehr zu Hause "
+#~ "fühlen."
+
+#~ msgid "BuddyPress Newsfeed"
+#~ msgstr "BuddyPress Newsfeed"
+
+#~ msgid ""
+#~ "Create A Customized Newsfeed Experience Just Like Facebook. By default, "
+#~ "BuddyPress offers separate type of activities for your BuddyPress "
+#~ "Activity Stream."
+#~ msgstr ""
+#~ "Erstellen Sie eine angepasste Newsfeed-Erfahrung wie Facebook. "
+#~ "Standardmäßig bietet BuddyPress verschiedene Arten von Aktivitäten für "
+#~ "Ihren BuddyPress Activity Stream."
+
+#~ msgid "BuddyPress Status"
+#~ msgstr "BuddyPress-Status"
+
+#~ msgid ""
+#~ "Allow members to add status on their profile and give their reactions to "
+#~ "all the activity updates."
+#~ msgstr ""
+#~ "Erlauben Sie den Mitgliedern, einen Status zu ihrem Profil hinzuzufügen "
+#~ "und ihre Reaktionen auf alle Aktivitätsaktualisierungen zu geben."
+
+#~ msgid "BuddyPress Hashtags"
+#~ msgstr "BuddyPress Hashtags"
+
+#~ msgid ""
+#~ "BuddyPress Hashtags for BuddyPress and bbPress. It allows adding hashtag "
+#~ "links to BuddyPress activity and bbPress topics. "
+#~ msgstr ""
+#~ "BuddyPress Hashtags für BuddyPress und bbPress. Es ermöglicht das "
+#~ "Hinzufügen von Hashtag-Links zu BuddyPress-Aktivitäten und bbPress-"
+#~ "Themen. "
+
+#~ msgid "BuddyPress Profanity"
+#~ msgstr "BuddyPress Profanität"
+
+#~ msgid ""
+#~ "Specify a list of bad words to control the content in your BuddyPress "
+#~ "community."
+#~ msgstr ""
+#~ "Geben Sie eine Liste von Schimpfwörtern an, um den Inhalt Ihrer "
+#~ "BuddyPress-Community zu kontrollieren."
+
+#~ msgid "Extension for LearnDash"
+#~ msgstr "Erweiterung für LearnDash"
+
+#~ msgid "LMS Notes"
+#~ msgstr "LMS-Anmerkungen"
+
+#~ msgid ""
+#~ "Learndash Notes will extend the LearnDash functionality to create Notes "
+#~ "for courses, lessons and topics."
+#~ msgstr ""
+#~ "Learndash Notes erweitert die LearnDash-Funktionalität zur Erstellung von "
+#~ "Notizen für Kurse, Lektionen und Themen."
+
+#~ msgid "Learndash wpForo"
+#~ msgstr "Lerntash wpForo"
+
+#~ msgid ""
+#~ "Learndash wpForo integration allows you to add a discussion channel for "
+#~ "your learners. Allow you to link your course with multiple forums."
+#~ msgstr ""
+#~ "Die Learndash wpForo-Integration ermöglicht es Ihnen, einen "
+#~ "Diskussionskanal für Ihre Lernenden hinzuzufügen. So können Sie Ihren "
+#~ "Kurs mit mehreren Foren verknüpfen."
+
+#~ msgid ""
+#~ "LearnDash Dashboard gives the admin, instructors, and students a "
+#~ "dashboard of their own, where they can easily manage anything related to "
+#~ "their courses, lessons, and contact others."
+#~ msgstr ""
+#~ "LearnDash Dashboard bietet Administratoren, Lehrkräften und Schülern ein "
+#~ "eigenes Dashboard, in dem sie alles, was mit ihren Kursen und Lektionen "
+#~ "zu tun hat, einfach verwalten und andere kontaktieren können."
+
+#~ msgid "PeepSo LearnDash Integration"
+#~ msgstr "PeepSo LearnDash Integration"
+
+#~ msgid ""
+#~ "Integrate LearnDash with PeepSo to display options for courses inside a "
+#~ "member profile."
+#~ msgstr ""
+#~ "Integrieren Sie LearnDash mit PeepSo, um Optionen für Kurse innerhalb "
+#~ "eines Mitgliederprofils anzuzeigen."
+
+#~ msgid "View More Themes"
+#~ msgstr "Weitere Themes anzeigen"
+
+#~ msgid "Reign BuddyPress Theme"
+#~ msgstr "Reign BuddyPress Theme"
+
+#~ msgid ""
+#~ "Create your social network website for the company, school, sports team, "
+#~ "or any niche community using a highly customizable WordPress BuddyPress "
+#~ "theme."
+#~ msgstr ""
+#~ "Erstellen Sie Ihre soziale Netzwerk-Website für das Unternehmen, die "
+#~ "Schule, das Sportteam oder eine beliebige Nischengemeinschaft mit einem "
+#~ "hochgradig anpassbaren WordPress BuddyPress-Theme."
+
+#~ msgid "Get Sandbox"
+#~ msgstr "Sandkasten holen"
+
+#~ msgid "BuddyX Pro Theme"
+#~ msgstr "BuddyX Pro Thema"
+
+#~ msgid ""
+#~ "To build an online community website for all niches with full "
+#~ "flexibility, control, and freedom. No coding is required! Offers unique "
+#~ "layouts with clean code and easy-to-customize options giving you a whole "
+#~ "new way to visualize BuddyPress."
+#~ msgstr ""
+#~ "Um eine Online-Community-Website für alle Nischen mit voller "
+#~ "Flexibilität, Kontrolle und Freiheit zu erstellen. Es ist keine "
+#~ "Programmierung erforderlich! Bietet einzigartige Layouts mit sauberem "
+#~ "Code und einfach anpassbaren Optionen, die Ihnen eine ganz neue Art der "
+#~ "Visualisierung von BuddyPress ermöglichen."
+
+#~ msgid "BuddyX Free Theme"
+#~ msgstr "BuddyX Kostenloses Theme"
+
+#~ msgid ""
+#~ "Allow users to create and manage their to-dos with the relevant category "
+#~ "right from their profile."
+#~ msgstr ""
+#~ "Ermöglichen Sie es den Nutzern, ihre Aufgaben mit der entsprechenden "
+#~ "Kategorie direkt in ihrem Profil zu erstellen und zu verwalten."
+
+#~ msgid "Get Pro"
+#~ msgstr "Hol dir Pro"
+
+#~ msgid "KnowX Theme"
+#~ msgstr "KnowX Thema"
+
+#~ msgid ""
+#~ "A Free WordPress Knowledge base Theme. KnowX helps you set up a Knowledge "
+#~ "Base in WordPress in less time than it takes to brew a coffee."
+#~ msgstr ""
+#~ "Ein kostenloses WordPress-Theme für Wissensdatenbanken. KnowX hilft "
+#~ "Ihnen, eine Wissensdatenbank in WordPress in weniger Zeit einzurichten, "
+#~ "als es dauert, einen Kaffee zu kochen."
+
+#~ msgid "Get Demo"
+#~ msgstr "Demo anfordern"
+
+#~ msgid "Our Free Extension"
+#~ msgstr "Unsere kostenlose Erweiterung"
+
+#~ msgid ""
+#~ "BuddyPress Member Blog is a free plugin that allows users to create/"
+#~ "manage their blog/posts from the profile."
+#~ msgstr ""
+#~ "BuddyPress Member Blog ist ein kostenloses Plugin, das es den Nutzern "
+#~ "ermöglicht, ihren Blog/Posts vom Profil aus zu erstellen/verwalten."
+
+#~ msgid "BuddyPress Ads"
+#~ msgstr "BuddyPress-Anzeigen"
+
+#~ msgid ""
+#~ "Integrate your BuddyPress community to provide a smooth customer "
+#~ "experience and increase site engagement."
+#~ msgstr ""
+#~ "Integrieren Sie Ihre BuddyPress-Community, um ein reibungsloses "
+#~ "Kundenerlebnis zu gewährleisten und die Beteiligung an der Website zu "
+#~ "erhöhen."
+
+#~ msgid "BuddyPress User Todo List"
+#~ msgstr "BuddyPress Benutzer Todo-Liste"
+
+#~ msgid "BuddyPress Job Manager"
+#~ msgstr "BuddyPress Job Manager"
+
+#~ msgid ""
+#~ "Create specific tabs in employer’s and candidate’s profiles on BuddyPress."
+#~ msgstr ""
+#~ "Erstellen Sie spezifische Tabs in Arbeitgeber- und Bewerberprofilen auf "
+#~ "BuddyPress."
+
+#~ msgid "BuddyPress Check-ins"
+#~ msgstr "BuddyPress Check-ins"
+
+#~ msgid ""
+#~ "Allow members to provide their ratings and reviews to other members’ "
+#~ "profiles based on multiple criteria."
+#~ msgstr ""
+#~ "Ermöglichen Sie es Mitgliedern, ihre Bewertungen und Rezensionen zu den "
+#~ "Profilen anderer Mitglieder auf der Grundlage mehrerer Kriterien "
+#~ "abzugeben."
+
+#~ msgid "BuddyPress Birthday Widget"
+#~ msgstr "BuddyPress Geburtstag Widget"
+
+#~ msgid "Display the upcoming birthdays of your BuddyPress community members."
+#~ msgstr ""
+#~ "Zeigen Sie die bevorstehenden Geburtstage Ihrer BuddyPress-Community-"
+#~ "Mitglieder an."
+
+#~ msgid "Support"
+#~ msgstr "Support"
+
+#~ msgid "How can we help you?"
+#~ msgstr "Wie können wir Ihnen helfen?"
+
+#~ msgid ""
+#~ "Our team is here to help you out at anytime. If you have any idea about "
+#~ "how we could improve. You can share access to your site on our helpdesk "
+#~ "if it can help getting faster."
+#~ msgstr ""
+#~ "Unser Team ist jederzeit bereit, Ihnen zu helfen. Wenn Sie eine Idee "
+#~ "haben, wie wir uns verbessern können. Sie können den Zugang zu Ihrer "
+#~ "Website auf unserem Helpdesk freigeben, wenn Sie dadurch schneller werden "
+#~ "können."
+
+#~ msgid "Tickets Support"
+#~ msgstr "Support Tickets"
+
+#~ msgid ""
+#~ "Open a ticket on our helpdesk, we don't guarantee a fast response but "
+#~ "within a week. Except if you've purchased one of our product we'll reply "
+#~ "within 24 hours."
+#~ msgstr ""
+#~ "Öffnen Sie ein Ticket an unseren Helpdesk, können wir nicht garantieren "
+#~ "eine schnelle Antwort, aber innerhalb einer Woche. Außer wenn Sie eines "
+#~ "unserer Produkte erworben haben werden wir innerhalb von 24 Stunden "
+#~ "antworten."
+
+#~ msgid "Open a ticket"
+#~ msgstr "Ein Ticket öffnen"
+
+#~ msgid "Contact Us"
+#~ msgstr "Kontaktieren Sie uns"
+
+#~ msgid ""
+#~ "Create a new thread on our plugin page, participation is open to anyone "
+#~ "from all around the world. We'll be there to help as well but can't "
+#~ "guarantee any delay."
+#~ msgstr ""
+#~ "Erstellen Sie einen neuen Thread auf unserer Plugin-Seite, die Teilnahme "
+#~ "ist offen für jeden aus der ganzen Welt. Wir werden auch da sein, um zu "
+#~ "helfen, können aber keine Verzögerung garantieren."
+
+#, php-format
+#~ msgid ""
+#~ "%1$s is ineffective now as it requires %2$s to be installed and active. "
+#~ "It is not compatible with BuddyBoss due to similar features."
+#~ msgstr ""
+#~ "%1$s ist nun unwirksam, da es erfordert %2$s installiert und aktiviert zu "
+#~ "werden."
+
+#~ msgid "Topics"
+#~ msgstr "Themen"
+
+#~ msgid "Replies"
+#~ msgstr "Antworten"
+
+#~ msgid "Wbcom Designs - BuddyPress Activity Filter"
+#~ msgstr "BuddyPress Activity Social Share"
+
+#~ msgid "Wbcom Designs<admin@wbcomdesigns.com>"
+#~ msgstr "Wbcom Designs<admin@wbcomdesigns.com>"
 
 #~ msgid "Install"
 #~ msgstr "Installieren"
@@ -1020,14 +1275,8 @@ msgstr "https://wbcomdesigns.com/plugins"
 #~ msgid "Purchase"
 #~ msgstr "Kaufen"
 
-#~ msgid "Preview"
-#~ msgstr "Vorschau"
-
 #~ msgid "Woo Open Graph"
 #~ msgstr "Woo Open Graph"
-
-#~ msgid "WordPress System Log"
-#~ msgstr "WordPress System Log"
 
 #~ msgid "BP Post From Anywhere"
 #~ msgstr "BP Post From Anywhere"
