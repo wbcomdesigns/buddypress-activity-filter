@@ -500,7 +500,7 @@ class Wbcom_Shared_Dashboard {
 
             <div class="news-footer">
                 <p class="center-text">
-                    <a href="https://wbcomdesigns.com/blog/" target="_blank" rel="noopener" 
+                    <a href="https://wbcomdesigns.com/blog-updates/" target="_blank" rel="noopener" 
                        style="display: inline-block; background: linear-gradient(135deg, rgb(29, 118, 218) 0%, rgb(60, 140, 230) 100%); color: rgb(255, 255, 255); padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; transition: all 0.3s ease; box-shadow: rgba(29, 118, 218, 0.3) 0px 4px 12px; transform: translateY(0px);"
                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(29, 118, 218, 0.4)'"
                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(29, 118, 218, 0.3)'">

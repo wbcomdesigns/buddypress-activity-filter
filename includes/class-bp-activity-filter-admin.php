@@ -1001,7 +1001,7 @@ class BP_Activity_Filter_Admin {
                         esc_html__( 'For support, please visit our %1$ssupport forum%2$s or check the %3$splugin documentation%4$s. You can also report issues on the plugin\'s WordPress.org support page.', 'bp-activity-filter' ),
                         '<a href="https://wbcomdesigns.com/support/" target="_blank">',
                         '</a>',
-                        '<a href="https://docs.wbcomdesigns.com/bp-activity-filter/" target="_blank">',
+                        '<a href="https://docs.wbcomdesigns.com/doc_category/bp-activity-filter/" target="_blank">',
                         '</a>'
                     );
                     ?>
