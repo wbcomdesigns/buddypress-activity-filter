@@ -51,19 +51,30 @@ class BP_Activity_Filter_Frontend {
 	}
 
 	/**
-	 * Setup frontend hooks - MINIMAL APPROACH
+	 * Setup frontend hooks - Server-side approach
 	 *
 	 * @since 4.0.0
 	 */
 	private function setup_hooks() {
-		// ONLY set default filter on initial page load - don't interfere with AJAX
-		add_action( 'wp_head', array( $this, 'set_initial_default_filter' ), 5 );
+		// Server-side default filter - runs BEFORE activities are queried
+		add_filter( 'bp_after_has_activities_parse_args', array( $this, 'apply_default_filter_server_side' ), 10, 1 );
+		
+		// Also filter AJAX requests
+		add_filter( 'bp_ajax_querystring', array( $this, 'apply_default_filter_ajax' ), 10, 2 );
+		
+		// Set initial cookie and dropdown state (minimal JS just for UI sync)
+		add_action( 'wp_footer', array( $this, 'sync_dropdown_with_default' ), 999 );
 		
 		// Remove hidden activities from dropdown (but don't interfere with filtering)
 		add_filter( 'bp_get_activity_show_filters', array( $this, 'remove_hidden_from_dropdown' ), 10, 3 );
 		
 		// Prevent hidden activities from being created (at source)
-		add_action( 'bp_activity_before_save', array( $this, 'maybe_prevent_activity_save' ), 5 );
+		// Use very early priority to catch before other plugins
+		add_action( 'bp_activity_before_save', array( $this, 'maybe_prevent_activity_save' ), 1 );
+		
+		// Prevent friendship activities specifically by removing the action hooks
+		// Use bp_init which runs after BuddyPress has loaded all its components
+		add_action( 'bp_init', array( $this, 'remove_hidden_activity_hooks' ), 999 );
 	}
 
 	/**
@@ -71,8 +82,9 @@ class BP_Activity_Filter_Frontend {
 	 * This is the key fix - let BuddyPress handle everything else
 	 *
 	 * @since 4.0.0
+	 * @deprecated 4.1.0 Replaced with server-side filtering
 	 */
-	public function set_initial_default_filter() {
+	public function set_initial_default_filter_legacy() {
 		// Only on activity pages
 		if ( ! $this->is_activity_page() ) {
 			return;
@@ -145,6 +157,147 @@ class BP_Activity_Filter_Frontend {
 	}
 
 	/**
+	 * Apply default filter server-side
+	 *
+	 * @since 4.0.0
+	 * @param array $args Activity query arguments
+	 * @return array Modified arguments
+	 */
+	public function apply_default_filter_server_side( $args ) {
+		// Skip if already filtered or if specific type is requested
+		if ( ! empty( $args['filter_query'] ) || ! empty( $args['action'] ) || ! empty( $args['type'] ) ) {
+			return $args;
+		}
+
+		// Skip if this is an AJAX request with existing filter
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! empty( $_POST['filter'] ) ) {
+			return $args;
+		}
+
+		// Check user preference first (from cookie)
+		if ( isset( $_COOKIE['bp-activity-filter'] ) && $_COOKIE['bp-activity-filter'] !== '0' && $_COOKIE['bp-activity-filter'] !== '-1' ) {
+			$user_filter = sanitize_text_field( $_COOKIE['bp-activity-filter'] );
+			// BuddyPress uses 'type' for filtering, not 'action'
+			$args['type'] = $user_filter;
+			// Also handle comma-separated values
+			if ( strpos( $user_filter, ',' ) !== false ) {
+				$args['type'] = explode( ',', $user_filter );
+			}
+			return $args;
+		}
+
+		// No user preference, apply admin default
+		$default_filter = $this->get_default_filter();
+		if ( $default_filter && $default_filter !== '0' && $default_filter !== '-1' ) {
+			// BuddyPress uses 'type' for filtering, not 'action'
+			$args['type'] = $default_filter;
+			// Also handle comma-separated values
+			if ( strpos( $default_filter, ',' ) !== false ) {
+				$args['type'] = explode( ',', $default_filter );
+			}
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Apply filter to AJAX requests
+	 *
+	 * @since 4.0.0
+	 * @param string $query_string The query string
+	 * @param string $object The object type
+	 * @return string Modified query string
+	 */
+	public function apply_default_filter_ajax( $query_string, $object ) {
+		if ( 'activity' !== $object ) {
+			return $query_string;
+		}
+
+		// Parse existing query string
+		wp_parse_str( $query_string, $args );
+
+		// If action/type already set, don't override
+		if ( ! empty( $args['action'] ) || ! empty( $args['type'] ) ) {
+			return $query_string;
+		}
+
+		// Check user preference from cookie
+		if ( isset( $_COOKIE['bp-activity-filter'] ) && $_COOKIE['bp-activity-filter'] !== '0' && $_COOKIE['bp-activity-filter'] !== '-1' ) {
+			$args['type'] = sanitize_text_field( $_COOKIE['bp-activity-filter'] );
+			return http_build_query( $args );
+		}
+
+		// No user preference, use admin default
+		$default_filter = $this->get_default_filter();
+		if ( $default_filter && $default_filter !== '0' && $default_filter !== '-1' ) {
+			$args['type'] = $default_filter;
+			return http_build_query( $args );
+		}
+
+		return $query_string;
+	}
+
+	/**
+	 * Sync dropdown with server-side default (minimal JS just for UI)
+	 *
+	 * @since 4.0.0
+	 */
+	public function sync_dropdown_with_default() {
+		// Only on activity pages
+		if ( ! function_exists( 'bp_is_activity_directory' ) || ! bp_is_activity_directory() ) {
+			if ( ! function_exists( 'bp_is_user_activity' ) || ! bp_is_user_activity() ) {
+				return;
+			}
+		}
+
+		// Determine which filter to use
+		$filter_to_apply = '';
+		
+		// Check if user has existing preference
+		if ( isset( $_COOKIE['bp-activity-filter'] ) && $_COOKIE['bp-activity-filter'] !== '' ) {
+			$filter_to_apply = sanitize_text_field( $_COOKIE['bp-activity-filter'] );
+		} else {
+			// No preference, use admin default
+			$filter_to_apply = $this->get_default_filter();
+		}
+		
+		// Only proceed if we have a filter to apply
+		if ( ! $filter_to_apply || '0' === $filter_to_apply || '-1' === $filter_to_apply ) {
+			return;
+		}
+
+		?>
+		<script type="text/javascript">
+		document.addEventListener('DOMContentLoaded', function() {
+			// Wait a moment for BuddyPress to initialize
+			setTimeout(function() {
+				// Sync the dropdown to match the current filter (from cookie or default)
+				var dropdown = document.getElementById('activity-filter-by');
+				if (dropdown) {
+					var filterValue = '<?php echo esc_js( $filter_to_apply ); ?>';
+					
+					// Set dropdown to match
+					dropdown.value = filterValue;
+					
+					// Ensure cookie is set (in case it wasn't)
+					if (!document.cookie.match(/bp-activity-filter=/)) {
+						document.cookie = 'bp-activity-filter=' + filterValue + '; path=/; max-age=' + (30*24*60*60);
+					}
+					
+					// If dropdown value doesn't stick, force it again
+					if (dropdown.value !== filterValue) {
+						setTimeout(function() {
+							dropdown.value = filterValue;
+						}, 100);
+					}
+				}
+			}, 50);
+		});
+		</script>
+		<?php
+	}
+
+	/**
 	 * Remove hidden activities from dropdown options (but don't interfere with filtering logic)
 	 *
 	 * @since 4.0.0
@@ -189,7 +342,23 @@ class BP_Activity_Filter_Frontend {
 
 		// If this activity type is hidden, prevent it from being saved
 		if ( ! empty( $hidden_activities ) && in_array( $activity->type, $hidden_activities, true ) ) {
-			$activity->type = false; // This prevents the activity from being saved
+			// Store original type for error message
+			$original_type = $activity->type;
+			
+			// Multiple strategies to prevent save:
+			// 1. Set type to empty string (BuddyPress checks for empty type)
+			$activity->type = '';
+			
+			// 2. Also clear component to ensure save fails
+			$activity->component = '';
+			
+			// 3. Add an error if the activity object supports it
+			if ( isset( $activity->errors ) && is_wp_error( $activity->errors ) ) {
+				$activity->errors->add( 
+					'bp_activity_type_disabled', 
+					sprintf( __( 'Activity type "%s" has been disabled by administrator.', 'bp-activity-filter' ), $original_type )
+				);
+			}
 		}
 	}
 
@@ -239,7 +408,16 @@ class BP_Activity_Filter_Frontend {
 	 * @return array List of hidden activity types
 	 */
 	private function get_hidden_activities() {
-		$hidden_activities = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_hidden', array() );
+		// Get the option directly and handle serialization
+		$hidden_activities = get_option( 'bp_activity_filter_hidden', array() );
+		
+		// Ensure we have an array (handle serialized data)
+		if ( ! is_array( $hidden_activities ) ) {
+			$hidden_activities = maybe_unserialize( $hidden_activities );
+			if ( ! is_array( $hidden_activities ) ) {
+				$hidden_activities = array();
+			}
+		}
 		
 		// Core activities that should never be hidden
 		$core_protected_activities = array(
@@ -265,6 +443,55 @@ class BP_Activity_Filter_Frontend {
 		}
 
 		return bp_is_activity_component() || bp_is_user_activity();
+	}
+
+	/**
+	 * Remove hooks for hidden activity types to prevent them from being created
+	 *
+	 * @since 4.0.0
+	 */
+	public function remove_hidden_activity_hooks() {
+		$hidden_activities = $this->get_hidden_activities();
+		
+		if ( empty( $hidden_activities ) ) {
+			return;
+		}
+		
+		// Map activity types to their creation hooks
+		$activity_hooks = array(
+			'friendship_created' => array(
+				'hook' => 'friends_friendship_requested',
+				'function' => 'bp_friends_friendship_requested_activity',
+				'priority' => 10
+			),
+			'friendship_accepted' => array(
+				'hook' => 'friends_friendship_accepted', 
+				'function' => 'bp_friends_friendship_accepted_activity',
+				'priority' => 10
+			),
+			'new_member' => array(
+				'hook' => 'bp_core_activated_user',
+				'function' => 'bp_activity_new_member_activity',
+				'priority' => 10
+			),
+			'updated_profile' => array(
+				'hook' => 'xprofile_updated_profile',
+				'function' => 'bp_xprofile_updated_profile_activity',
+				'priority' => 10
+			)
+		);
+		
+		// Remove hooks for hidden activity types
+		foreach ( $hidden_activities as $activity_type ) {
+			if ( isset( $activity_hooks[ $activity_type ] ) ) {
+				$hook_info = $activity_hooks[ $activity_type ];
+				remove_action( 
+					$hook_info['hook'], 
+					$hook_info['function'], 
+					$hook_info['priority'] 
+				);
+			}
+		}
 	}
 
 	/**

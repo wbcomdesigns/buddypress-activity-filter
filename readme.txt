@@ -5,7 +5,7 @@ Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 5.0
 Tested up to: 6.8.2
 Requires PHP: 8.0
-Stable tag: 3.1.0
+Stable tag: 3.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -178,6 +178,15 @@ The plugin is optimized for performance with smart caching, minimal database que
 
 == Changelog ==
 
+= 3.2.0 =
+* **Major Fix**: Hidden activity types are now properly prevented from being created
+* **Improved Performance**: Default filters now work server-side for faster page loads
+* **Better UI**: Fixed dropdown filter resetting issue on page reload
+* **Cleaner Options**: Removed duplicate friendship options and non-existent activity types
+* **CPT Enhancement**: Elementor templates are now properly excluded from activity generation
+* **Bug Fixes**: Resolved database serialization issues and duplicate text in activity messages
+* **Developer**: Added debug mode and improved activity prevention mechanisms
+
 = 3.1.0 =
 * New: Introduced a redesigned backend UI for better usability.
 * New: Added vertical layout support for hidden activities with core protection.
@@ -215,6 +224,9 @@ The plugin is optimized for performance with smart caching, minimal database que
 * **Optimization**: Improved data sanitization and validation
 
 == Upgrade Notice ==
+
+= 3.2.0 =
+Important bug fixes and performance improvements. This version fixes critical issues with activity filtering and prevention. Server-side filtering improves performance and reliability. Backup recommended before upgrading.
 
 = 4.0.0 =
 **Major Update - Please Backup Before Upgrading**

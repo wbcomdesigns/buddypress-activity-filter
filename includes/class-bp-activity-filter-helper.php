@@ -34,9 +34,21 @@ class BP_Activity_Filter_Helper {
 
 		foreach ( $actions as $component => $component_actions ) {
 			foreach ( $component_actions as $key => $action ) {
-				// Merge friendship actions into one.
-				if ( in_array( $key, array( 'friendship_accepted', 'friendship_created' ), true ) ) {
-					$key = 'friendship_accepted,friendship_created';
+				// Skip friendship_accepted as it doesn't create an actual activity
+				// BuddyPress uses friendship_accepted hook but creates friendship_created activity type
+				if ( $key === 'friendship_accepted' ) {
+					continue; // Skip this as it's not a real activity type
+				}
+				
+				// Skip friends_register_activity_action - it's just a registration helper, not a real activity type
+				// Only friendship_created activities are actually created in the database
+				if ( $key === 'friends_register_activity_action' ) {
+					continue; // Skip this registration artifact
+				}
+
+				// Update label for friendship_created to be clearer
+				if ( $key === 'friendship_created' ) {
+					$action['value'] = __( 'New friendships', 'bp-activity-filter' );
 				}
 
 				if ( ! isset( $labels[ $key ] ) ) {
@@ -85,6 +97,11 @@ class BP_Activity_Filter_Helper {
 
 		// Allow comma-separated values for multiple actions.
 		$filter = sanitize_text_field( $filter );
+		
+		// Handle legacy merged friendship key
+		if ( strpos( $filter, 'friendship_accepted,friendship_created' ) !== false ) {
+			$filter = str_replace( 'friendship_accepted,friendship_created', 'friendship_created', $filter );
+		}
 		
 		// Validate against known actions.
 		$known_actions = array_keys( self::get_activity_actions() );
@@ -213,6 +230,20 @@ class BP_Activity_Filter_Helper {
 		if ( in_array( $post_type->name, $excluded_builtin_types, true ) ) {
 			return false;
 		}
+		
+		// Exclude known UI/template post types that shouldn't generate activities
+		$excluded_ui_types = array(
+			'elementor_library',    // Elementor templates
+			'e-floating-buttons',   // Elementor floating UI elements
+			'elementor_font',       // Elementor fonts
+			'elementor_icons',      // Elementor icons
+			'elementor_snippet',    // Elementor code snippets
+			'e-landing-page'        // Elementor landing pages
+		);
+		
+		if ( in_array( $post_type->name, $excluded_ui_types, true ) ) {
+			return false;
+		}
 
 		// ONLY exclude if there are CLEAR indicators of conflict
 		// 1. 'create_posts' => 'do_not_allow' capability (strong indicator)
@@ -327,6 +358,20 @@ class BP_Activity_Filter_Helper {
 
 		if ( ! post_type_supports( $post_type, 'title' ) ) {
 			return 'no_title_support';
+		}
+		
+		// Check if it's a UI/template type
+		$excluded_ui_types = array(
+			'elementor_library',
+			'e-floating-buttons',
+			'elementor_font',
+			'elementor_icons',
+			'elementor_snippet',
+			'e-landing-page'
+		);
+		
+		if ( in_array( $post_type, $excluded_ui_types, true ) ) {
+			return 'ui_template_type';
 		}
 
 		if ( isset( $post_type_obj->capabilities['create_posts'] ) && 
