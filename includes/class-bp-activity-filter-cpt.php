@@ -72,10 +72,10 @@ class BP_Activity_Filter_CPT {
 	 * @since 4.0.0
 	 */
 	private function setup_hooks() {
-		// Use high priority to run after other plugins
+		// Use high priority to run after other plugins.
 		add_action( 'transition_post_status', array( $this, 'handle_post_transition' ), 999, 3 );
-		
-		// Admin notices for conflicts
+
+		// Admin notices for conflicts.
 		add_action( 'admin_notices', array( $this, 'show_conflict_notices' ) );
 	}
 
@@ -86,7 +86,7 @@ class BP_Activity_Filter_CPT {
 	 */
 	private function cache_excluded_post_types() {
 		$this->excluded_post_types = BP_Activity_Filter_Helper::get_excluded_post_types_with_reasons();
-		
+
 		if ( $this->debug_mode && ! empty( $this->excluded_post_types ) ) {
 			error_log( 'BP Activity Filter: Excluded CPTs: ' . wp_json_encode( $this->excluded_post_types ) );
 		}
@@ -103,57 +103,61 @@ class BP_Activity_Filter_CPT {
 	 * @param WP_Post $post       Post object.
 	 */
 	public function handle_post_transition( $new_status, $old_status, $post ) {
-		// Only handle publishing of new posts
+		// Only handle publishing of new posts.
 		if ( 'publish' !== $new_status || 'publish' === $old_status ) {
 			return;
 		}
 
-		// Ensure BuddyPress is available
+		// Ensure BuddyPress is available.
 		if ( ! function_exists( 'bp_activity_add' ) ) {
 			return;
 		}
 
 		$post_type = get_post_type( $post );
 
-		// Skip built-in WordPress post types
+		// Skip built-in WordPress post types.
 		if ( in_array( $post_type, array( 'post', 'page' ), true ) ) {
 			return;
 		}
 
-		// CONSERVATIVE: Only skip if in our CONFIRMED exclusion cache
+		// CONSERVATIVE: Only skip if in our CONFIRMED exclusion cache.
 		if ( isset( $this->excluded_post_types[ $post_type ] ) ) {
 			if ( $this->debug_mode ) {
-				error_log( sprintf( 
-					'BP Activity Filter: Skipping %s (ID: %d) - Reason: %s', 
-					$post_type, 
-					$post->ID, 
-					$this->excluded_post_types[ $post_type ]['reason'] 
-				) );
+				error_log(
+					sprintf(
+						'BP Activity Filter: Skipping %s (ID: %d) - Reason: %s',
+						$post_type,
+						$post->ID,
+						$this->excluded_post_types[ $post_type ]['reason']
+					)
+				);
 			}
 			return;
 		}
 
-		// Check plugin settings - if not enabled, skip
+		// Check plugin settings - if not enabled, skip.
 		$cpt_settings = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_cpt_settings', array() );
 
 		if ( ! $this->is_post_type_enabled( $post_type, $cpt_settings ) ) {
-			// Not enabled in settings - this is normal, just return
+			// Not enabled in settings - this is normal, just return.
 			return;
 		}
 
-		// MINIMAL runtime conflict check - only check for immediate duplicates
+		// MINIMAL runtime conflict check - only check for immediate duplicates.
 		if ( $this->activity_already_exists( $post ) ) {
 			if ( $this->debug_mode ) {
-				error_log( sprintf( 
-					'BP Activity Filter: Activity already exists for %s (ID: %d)', 
-					$post_type, 
-					$post->ID 
-				) );
+				error_log(
+					sprintf(
+						'BP Activity Filter: Activity already exists for %s (ID: %d)',
+						$post_type,
+						$post->ID
+					)
+				);
 			}
 			return;
 		}
 
-		// Create activity - let it proceed unless there's a clear problem
+		// Create activity - let it proceed unless there's a clear problem.
 		$this->create_activity_for_post( $post, $cpt_settings[ $post_type ] );
 	}
 
@@ -184,45 +188,49 @@ class BP_Activity_Filter_CPT {
 			return false;
 		}
 
-		// Check for our own plugin's activities first
-		$our_activities = bp_activity_get( array(
-			'meta_query' => array(
-				array(
-					'key' => 'bp_activity_filter_post_id',
-					'value' => $post->ID,
-					'compare' => '='
-				)
-			),
-			'per_page' => 1,
-		) );
+		// Check for our own plugin's activities first.
+		$our_activities = bp_activity_get(
+			array(
+				'meta_query' => array(
+					array(
+						'key'     => 'bp_activity_filter_post_id',
+						'value'   => $post->ID,
+						'compare' => '=',
+					),
+				),
+				'per_page'   => 1,
+			)
+		);
 
 		if ( ! empty( $our_activities['activities'] ) ) {
 			return true;
 		}
 
-		// Check if post already has our activity meta
+		// Check if post already has our activity meta.
 		$our_activity_id = get_post_meta( $post->ID, '_bp_activity_filter_activity_id', true );
 		if ( ! empty( $our_activity_id ) ) {
 			return true;
 		}
 
-		// Simple check for any recent activity with this post ID
-		$recent_activities = bp_activity_get( array(
-			'filter' => array(
-				'item_id' => $post->ID,
-			),
-			'per_page' => 1,
-		) );
+		// Simple check for any recent activity with this post ID.
+		$recent_activities = bp_activity_get(
+			array(
+				'filter'   => array(
+					'item_id' => $post->ID,
+				),
+				'per_page' => 1,
+			)
+		);
 
 		if ( ! empty( $recent_activities['activities'] ) ) {
-			// Found activity with this post ID - might be from another plugin
-			// Check if it's very recent (last 60 seconds) - likely from same post publish
+			// Found activity with this post ID - might be from another plugin.
+			// Check if it's very recent (last 60 seconds) - likely from same post publish.
 			foreach ( $recent_activities['activities'] as $activity ) {
 				$activity_time = strtotime( $activity->date_recorded );
-				$current_time = time();
-				
+				$current_time  = time();
+
 				if ( ( $current_time - $activity_time ) < 60 ) {
-					// Very recent activity found - likely duplicate
+					// Very recent activity found - likely duplicate.
 					return true;
 				}
 			}
@@ -245,18 +253,18 @@ class BP_Activity_Filter_CPT {
 			return;
 		}
 
-		// One final duplicate check before creation
+		// One final duplicate check before creation.
 		if ( $this->activity_already_exists( $post ) ) {
 			return;
 		}
 
-		$label = $this->get_activity_label( $settings, $post_type_obj );
-		$action = $this->build_activity_action( $post, $label );
+		$label   = $this->get_activity_label( $settings, $post_type_obj );
+		$action  = $this->build_activity_action( $post, $label );
 		$content = $this->get_activity_content( $post );
 
-		// Check global settings for sitewide visibility
+		// Check global settings for sitewide visibility.
 		$global_settings = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_cpt_settings', array() );
-		$hide_sitewide = isset( $global_settings['_global']['hide_sitewide'] ) ? $global_settings['_global']['hide_sitewide'] : false;
+		$hide_sitewide   = isset( $global_settings['_global']['hide_sitewide'] ) ? $global_settings['_global']['hide_sitewide'] : false;
 
 		$activity_args = array(
 			'action'            => $action,
@@ -283,27 +291,29 @@ class BP_Activity_Filter_CPT {
 		 */
 		$activity_args = apply_filters( 'bp_activity_filter_cpt_activity_args', $activity_args, $post, $settings );
 
-		// Create the activity
+		// Create the activity.
 		$activity_id = bp_activity_add( $activity_args );
 
 		if ( $activity_id ) {
-			// Add comprehensive meta for tracking
+			// Add comprehensive meta for tracking.
 			bp_activity_update_meta( $activity_id, 'bp_activity_filter_cpt', $post->post_type );
 			bp_activity_update_meta( $activity_id, 'bp_activity_filter_post_id', $post->ID );
 			bp_activity_update_meta( $activity_id, 'bp_activity_filter_created_time', time() );
 			bp_activity_update_meta( $activity_id, 'bp_activity_filter_version', BP_Activity_Filter_Helper::get_plugin_version() );
 
-			// Also add post meta for reverse lookup and duplicate prevention
+			// Also add post meta for reverse lookup and duplicate prevention.
 			update_post_meta( $post->ID, '_bp_activity_filter_activity_id', $activity_id );
 			update_post_meta( $post->ID, '_bp_activity_filter_recorded', time() );
 
 			if ( $this->debug_mode ) {
-				error_log( sprintf( 
-					'BP Activity Filter: Created activity %d for %s (ID: %d)', 
-					$activity_id, 
-					$post->post_type, 
-					$post->ID 
-				) );
+				error_log(
+					sprintf(
+						'BP Activity Filter: Created activity %d for %s (ID: %d)',
+						$activity_id,
+						$post->post_type,
+						$post->ID
+					)
+				);
 			}
 		}
 
@@ -326,13 +336,13 @@ class BP_Activity_Filter_CPT {
 	 */
 	public function show_conflict_notices() {
 		$screen = get_current_screen();
-		
-		// Only show on our settings page
+
+		// Only show on our settings page.
 		if ( ! $screen || strpos( $screen->id, 'wbcom-activity-filter' ) === false ) {
 			return;
 		}
 
-		// Only show notice if there are actual exclusions
+		// Only show notice if there are actual exclusions.
 		if ( ! empty( $this->excluded_post_types ) ) {
 			$this->render_simplified_notice();
 		}
@@ -346,16 +356,16 @@ class BP_Activity_Filter_CPT {
 	private function render_simplified_notice() {
 		$reason_messages = array(
 			'capability_restriction' => __( 'Has create_posts capability set to "do_not_allow" (managed by another plugin)', 'bp-activity-filter' ),
-			'known_plugin_conflict' => __( 'Managed by a known plugin (e.g., BP Member Reviews, bbPress)', 'bp-activity-filter' ),
-			'not_public' => __( 'Not a public post type', 'bp-activity-filter' ),
-			'no_admin_ui' => __( 'No admin interface', 'bp-activity-filter' ),
-			'no_title_support' => __( 'Does not support titles', 'bp-activity-filter' ),
+			'known_plugin_conflict'  => __( 'Managed by a known plugin (e.g., BP Member Reviews, bbPress)', 'bp-activity-filter' ),
+			'not_public'             => __( 'Not a public post type', 'bp-activity-filter' ),
+			'no_admin_ui'            => __( 'No admin interface', 'bp-activity-filter' ),
+			'no_title_support'       => __( 'Does not support titles', 'bp-activity-filter' ),
 		);
 
 		?>
 		<div class="notice notice-info">
-			<p><strong><?php _e( 'Custom Post Type Exclusions', 'bp-activity-filter' ); ?></strong></p>
-			<p><?php _e( 'The following post types are excluded from activity generation to prevent conflicts:', 'bp-activity-filter' ); ?></p>
+			<p><strong><?php esc_html_e( 'Custom Post Type Exclusions', 'bp-activity-filter' ); ?></strong></p>
+			<p><?php esc_html_e( 'The following post types are excluded from activity generation to prevent conflicts:', 'bp-activity-filter' ); ?></p>
 			
 			<ul style="margin-left: 20px;">
 				<?php foreach ( $this->excluded_post_types as $post_type => $data ) : ?>
@@ -368,7 +378,7 @@ class BP_Activity_Filter_CPT {
 			</ul>
 			
 			<p style="margin-top: 15px;">
-				<em><?php _e( 'This is normal behavior and helps prevent duplicate activities. All other eligible custom post types are available in the settings below.', 'bp-activity-filter' ); ?></em>
+				<em><?php esc_html_e( 'This is normal behavior and helps prevent duplicate activities. All other eligible custom post types are available in the settings below.', 'bp-activity-filter' ); ?></em>
 			</p>
 		</div>
 		<?php
@@ -379,8 +389,8 @@ class BP_Activity_Filter_CPT {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param array           $settings      Post type settings.
-	 * @param WP_Post_Type    $post_type_obj Post type object.
+	 * @param array        $settings      Post type settings.
+	 * @param WP_Post_Type $post_type_obj Post type object.
 	 * @return string
 	 */
 	private function get_activity_label( $settings, $post_type_obj ) {

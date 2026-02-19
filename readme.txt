@@ -3,9 +3,9 @@ Contributors: wbcomdesigns, vapvarun
 Tags: buddypress, activity-filter, filter, buddypress-activity, hide-activity, default-activity, custom-post-type-activity
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 5.0
-Tested up to: 6.8.2
+Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 3.2.0
+Stable tag: 3.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -177,6 +177,12 @@ The plugin is optimized for performance with smart caching, minimal database que
 6. **Admin Dashboard** - Professional admin interface with tabbed navigation and contextual help
 
 == Changelog ==
+
+= 3.2.1 =
+* Fixed: WordPress Coding Standards compliance across all PHP files
+* Fixed: Added direct file access protection and proper escaping
+* Fixed: Plugin Check compatibility improvements
+* Updated: Tested up to WordPress 6.9
 
 = 3.2.0 =
 * **Major Fix**: Hidden activity types are now properly prevented from being created

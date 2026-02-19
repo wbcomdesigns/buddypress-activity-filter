@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function bp_activity_filter_uninstall_cleanup() {
 	// Check if we should preserve data during uninstall.
 	$preserve_data = apply_filters( 'bp_activity_filter_preserve_data_on_uninstall', false );
-	
+
 	if ( $preserve_data ) {
 		return;
 	}
@@ -119,13 +119,13 @@ function bp_activity_filter_remove_activity_meta() {
 	}
 
 	$activity_meta_table = $wpdb->prefix . 'bp_activity_meta';
-	
+
 	// Check if table exists.
-	$table_exists = $wpdb->get_var( 
-		$wpdb->prepare( 
-			"SHOW TABLES LIKE %s", 
-			$activity_meta_table 
-		) 
+	$table_exists = $wpdb->get_var(
+		$wpdb->prepare(
+			'SHOW TABLES LIKE %s',
+			$activity_meta_table
+		)
 	);
 
 	if ( $table_exists !== $activity_meta_table ) {

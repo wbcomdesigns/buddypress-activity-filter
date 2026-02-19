@@ -34,20 +34,20 @@ class BP_Activity_Filter_Helper {
 
 		foreach ( $actions as $component => $component_actions ) {
 			foreach ( $component_actions as $key => $action ) {
-				// Skip friendship_accepted as it doesn't create an actual activity
-				// BuddyPress uses friendship_accepted hook but creates friendship_created activity type
-				if ( $key === 'friendship_accepted' ) {
-					continue; // Skip this as it's not a real activity type
-				}
-				
-				// Skip friends_register_activity_action - it's just a registration helper, not a real activity type
-				// Only friendship_created activities are actually created in the database
-				if ( $key === 'friends_register_activity_action' ) {
-					continue; // Skip this registration artifact
+				// Skip friendship_accepted as it doesn't create an actual activity.
+				// BuddyPress uses friendship_accepted hook but creates friendship_created activity type.
+				if ( 'friendship_accepted' === $key ) {
+					continue; // Skip this as it's not a real activity type.
 				}
 
-				// Update label for friendship_created to be clearer
-				if ( $key === 'friendship_created' ) {
+				// Skip friends_register_activity_action - it's just a registration helper, not a real activity type.
+				// Only friendship_created activities are actually created in the database.
+				if ( 'friends_register_activity_action' === $key ) {
+					continue; // Skip this registration artifact.
+				}
+
+				// Update label for friendship_created to be clearer.
+				if ( 'friendship_created' === $key ) {
 					$action['value'] = __( 'New friendships', 'bp-activity-filter' );
 				}
 
@@ -97,12 +97,12 @@ class BP_Activity_Filter_Helper {
 
 		// Allow comma-separated values for multiple actions.
 		$filter = sanitize_text_field( $filter );
-		
-		// Handle legacy merged friendship key
+
+		// Handle legacy merged friendship key.
 		if ( strpos( $filter, 'friendship_accepted,friendship_created' ) !== false ) {
 			$filter = str_replace( 'friendship_accepted,friendship_created', 'friendship_created', $filter );
 		}
-		
+
 		// Validate against known actions.
 		$known_actions = array_keys( self::get_activity_actions() );
 		$filter_parts  = explode( ',', $filter );
@@ -201,22 +201,22 @@ class BP_Activity_Filter_Helper {
 			return false;
 		}
 
-		// Basic requirements
+		// Basic requirements.
 		if ( ! $post_type->public || ! $post_type->show_ui ) {
 			return false;
 		}
 
-		// Must support title
+		// Must support title.
 		if ( ! post_type_supports( $post_type->name, 'title' ) ) {
 			return false;
 		}
 
-		// Exclude WordPress built-in types that are clearly not for content
-		$excluded_builtin_types = array( 
-			'attachment', 
-			'revision', 
-			'nav_menu_item', 
-			'custom_css', 
+		// Exclude WordPress built-in types that are clearly not for content.
+		$excluded_builtin_types = array(
+			'attachment',
+			'revision',
+			'nav_menu_item',
+			'custom_css',
 			'customize_changeset',
 			'oembed_cache',
 			'user_request',
@@ -224,31 +224,31 @@ class BP_Activity_Filter_Helper {
 			'wp_template',
 			'wp_template_part',
 			'wp_global_styles',
-			'wp_navigation'
+			'wp_navigation',
 		);
-		
+
 		if ( in_array( $post_type->name, $excluded_builtin_types, true ) ) {
 			return false;
 		}
-		
-		// Exclude known UI/template post types that shouldn't generate activities
+
+		// Exclude known UI/template post types that shouldn't generate activities.
 		$excluded_ui_types = array(
-			'elementor_library',    // Elementor templates
-			'e-floating-buttons',   // Elementor floating UI elements
-			'elementor_font',       // Elementor fonts
-			'elementor_icons',      // Elementor icons
-			'elementor_snippet',    // Elementor code snippets
-			'e-landing-page'        // Elementor landing pages
+			'elementor_library',    // Elementor templates.
+			'e-floating-buttons',   // Elementor floating UI elements.
+			'elementor_font',       // Elementor fonts.
+			'elementor_icons',      // Elementor icons.
+			'elementor_snippet',    // Elementor code snippets.
+			'e-landing-page',        // Elementor landing pages.
 		);
-		
+
 		if ( in_array( $post_type->name, $excluded_ui_types, true ) ) {
 			return false;
 		}
 
-		// ONLY exclude if there are CLEAR indicators of conflict
-		// 1. 'create_posts' => 'do_not_allow' capability (strong indicator)
-		if ( isset( $post_type->capabilities['create_posts'] ) && 
-			 'do_not_allow' === $post_type->capabilities['create_posts'] ) {
+		// ONLY exclude if there are CLEAR indicators of conflict.
+		// 1. 'create_posts' => 'do_not_allow' capability (strong indicator).
+		if ( isset( $post_type->capabilities['create_posts'] ) &&
+			'do_not_allow' === $post_type->capabilities['create_posts'] ) {
 			return false;
 		}
 
@@ -257,7 +257,7 @@ class BP_Activity_Filter_Helper {
 			return false;
 		}
 
-		// INCLUDE everything else - let the runtime checks handle edge cases
+		// INCLUDE everything else - let the runtime checks handle edge cases.
 		return true;
 	}
 
@@ -271,36 +271,36 @@ class BP_Activity_Filter_Helper {
 	 * @return bool
 	 */
 	private static function is_known_conflicting_post_type( $post_type ) {
-		// Only include post types we KNOW have conflicts and we KNOW the plugin is active
+		// Only include post types we KNOW have conflicts and we KNOW the plugin is active.
 		$confirmed_conflicts = array(
-			// BuddyPress Member Reviews - only if plugin is active
+			// BuddyPress Member Reviews - only if plugin is active.
 			'review' => array(
-				'plugin_check' => function() {
-					return class_exists( 'BP_Member_Reviews' ) || 
-						   class_exists( 'BUPR_Admin' ) || 
-						   function_exists( 'bp_member_reviews_init' ) ||
-						   defined( 'BUPR_PLUGIN_VERSION' );
-				}
+				'plugin_check' => function () {
+					return class_exists( 'BP_Member_Reviews' ) ||
+							class_exists( 'BUPR_Admin' ) ||
+							function_exists( 'bp_member_reviews_init' ) ||
+							defined( 'BUPR_PLUGIN_VERSION' );
+				},
 			),
-			// bbPress - only if bbPress is active
-			'forum' => array(
-				'plugin_check' => function() {
+			// bbPress - only if bbPress is active.
+			'forum'  => array(
+				'plugin_check' => function () {
 					return class_exists( 'bbPress' ) || function_exists( 'bbpress' );
-				}
+				},
 			),
-			'topic' => array(
-				'plugin_check' => function() {
+			'topic'  => array(
+				'plugin_check' => function () {
 					return class_exists( 'bbPress' ) || function_exists( 'bbpress' );
-				}
+				},
 			),
-			'reply' => array(
-				'plugin_check' => function() {
+			'reply'  => array(
+				'plugin_check' => function () {
 					return class_exists( 'bbPress' ) || function_exists( 'bbpress' );
-				}
+				},
 			),
 		);
 
-		// Only exclude if we have a confirmed conflict AND the plugin is active
+		// Only exclude if we have a confirmed conflict AND the plugin is active.
 		if ( isset( $confirmed_conflicts[ $post_type ] ) ) {
 			$conflict = $confirmed_conflicts[ $post_type ];
 			if ( isset( $conflict['plugin_check'] ) && is_callable( $conflict['plugin_check'] ) ) {
@@ -320,15 +320,21 @@ class BP_Activity_Filter_Helper {
 	 * @return array Array of post types and their conflict reasons.
 	 */
 	public static function get_excluded_post_types_with_reasons() {
-		$post_types = get_post_types( array( 'public' => true, '_builtin' => false ), 'objects' );
-		$excluded = array();
+		$post_types = get_post_types(
+			array(
+				'public'   => true,
+				'_builtin' => false,
+			),
+			'objects'
+		);
+		$excluded   = array();
 
 		foreach ( $post_types as $post_type => $post_type_obj ) {
 			if ( ! self::is_post_type_eligible_for_activity( $post_type_obj ) ) {
-				$reason = self::get_exclusion_reason( $post_type_obj );
+				$reason                 = self::get_exclusion_reason( $post_type_obj );
 				$excluded[ $post_type ] = array(
-					'label' => $post_type_obj->label,
-					'reason' => $reason
+					'label'  => $post_type_obj->label,
+					'reason' => $reason,
 				);
 			}
 		}
@@ -359,23 +365,23 @@ class BP_Activity_Filter_Helper {
 		if ( ! post_type_supports( $post_type, 'title' ) ) {
 			return 'no_title_support';
 		}
-		
-		// Check if it's a UI/template type
+
+		// Check if it's a UI/template type.
 		$excluded_ui_types = array(
 			'elementor_library',
 			'e-floating-buttons',
 			'elementor_font',
 			'elementor_icons',
 			'elementor_snippet',
-			'e-landing-page'
+			'e-landing-page',
 		);
-		
+
 		if ( in_array( $post_type, $excluded_ui_types, true ) ) {
 			return 'ui_template_type';
 		}
 
-		if ( isset( $post_type_obj->capabilities['create_posts'] ) && 
-			 'do_not_allow' === $post_type_obj->capabilities['create_posts'] ) {
+		if ( isset( $post_type_obj->capabilities['create_posts'] ) &&
+			'do_not_allow' === $post_type_obj->capabilities['create_posts'] ) {
 			return 'capability_restriction';
 		}
 
