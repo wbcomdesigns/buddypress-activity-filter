@@ -4,3 +4,10 @@ error_log
 
 *.json
 .DS_Store
+
+# AutoVAP onboarding artifacts — keep tracked despite broad ignores above
+!CLAUDE.md
+!audit/
+!audit/**
+!audit/manifest.json
+!audit/manifest.summary.json

@@ -1,0 +1,27 @@
+{
+  "name": "BuddyPress Activity Filter",
+  "slug": "bp-activity-filter",
+  "version": "3.2.1",
+  "branch": "3.2.1",
+  "counts": {
+    "rest": 0,
+    "ajax": 0,
+    "admin_pages": 2,
+    "settings": 5,
+    "hooks_fired": 11,
+    "tables": 0,
+    "blocks": 0,
+    "shortcodes": 0,
+    "cron": 0,
+    "wp_cli": 0,
+    "post_types": 0
+  },
+  "wrapper": "INTERMEDIATE",
+  "detail_files": {
+    "full": "manifest.json",
+    "feature_audit": "FEATURE_AUDIT.md",
+    "code_flows": "CODE_FLOWS.md",
+    "role_matrix": "ROLE_MATRIX.md"
+  },
+  "generated_at": "2026-06-05"
+}

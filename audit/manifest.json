@@ -1,0 +1,197 @@
+{
+  "$schema": "https://wpmediaverse.com/schemas/wp-plugin-manifest-v2.json",
+  "plugin": {
+    "slug": "bp-activity-filter",
+    "dir_slug": "buddypress-activity-filter",
+    "name": "BuddyPress Activity Filter",
+    "version": "3.2.1",
+    "namespace": "(global classes, BP_Activity_Filter_* prefix; no PHP namespace)",
+    "main_file": "buddypress-activity-filter.php",
+    "text_domain": "bp-activity-filter",
+    "requires_plugins": ["buddypress"],
+    "requires_php": "8.0",
+    "requires_bp": "12.0.0",
+    "network": true,
+    "extends": null,
+    "extension_hook_consumed": null,
+    "extension_hook_fired": null
+  },
+  "rest": { "namespace": null, "endpoints": [] },
+  "ajax": [],
+  "admin_pages": [
+    {
+      "title": "BuddyPress Activity Filter",
+      "menu_label": "BP Activity Filter",
+      "slug": "wbcom-activity-filter",
+      "parent": "wbcom-designs",
+      "capability": "manage_options",
+      "registered_by": "includes/shared-admin/class-wbcom-shared-loader.php::add_plugin_submenus() (add_submenu_page on admin_menu @10)",
+      "menu_slug_source": "extracted from settings_url admin.php?page=wbcom-activity-filter",
+      "render_callback": "Wbcom_Shared_Loader::show_plugin_page() -> BP_Activity_Filter::render_admin_page() -> BP_Activity_Filter_Admin::render_settings_page()",
+      "label_filter": "wbcom_submenu_label (bp_activity_filter_customize_submenu_label) overrides label to 'BP Activity Filter'",
+      "source": "includes/class-wbcom-integration.php, includes/class-bp-activity-filter-admin.php",
+      "tabs": ["default", "hidden", "cpt", "faq"],
+      "note": "Plugin does NOT call add_menu_page/add_submenu_page in its own classes for the settings page. The Wbcom_Shared_Integration only ENSURES the top-level wbcom-designs menu exists (add_menu_page on admin_menu @5); the submenu is registered by the shared loader."
+    },
+    {
+      "title": "Wbcom Designs",
+      "menu_label": "Wbcom Designs",
+      "slug": "wbcom-designs",
+      "parent": null,
+      "capability": "manage_options",
+      "registered_by": "BOTH includes/class-wbcom-integration.php::ensure_main_menu() (@5) AND includes/shared-admin/class-wbcom-shared-loader.php::create_main_menu() (@5) with menu_exists() guard",
+      "render_callback": "render_dashboard() -> Wbcom_Shared_Dashboard::render_dashboard() (INTERMEDIATE shared wrapper)",
+      "source": "includes/class-wbcom-integration.php, includes/shared-admin/class-wbcom-shared-loader.php",
+      "note": "Top-level shared dashboard page. Guarded by menu_exists() / wbcom_menu_exists() so only the first Wbcom plugin loaded creates it."
+    }
+  ],
+  "settings": [
+    { "key": "bp_activity_filter_default", "group": "bp_activity_filter_settings", "type": "string", "default": "0", "controls": "Site-wide activity stream default filter (0 = Everything, or a BP activity action key)", "sanitize_callback": "BP_Activity_Filter_Admin::sanitize_default_filter", "read_at": ["includes/class-bp-activity-filter-admin.php", "includes/class-bp-activity-filter-frontend.php (via Migration::get_option_with_fallback)", "includes/class-bp-activity-filter-helper.php"], "written_at": ["includes/class-bp-activity-filter-admin.php::save_default_filters", "buddypress-activity-filter.php::activate (default)", "includes/class-bp-activity-filter-migration.php"] },
+    { "key": "bp_activity_filter_profile_default", "group": "bp_activity_filter_settings", "type": "string", "default": "-1", "controls": "Per-profile activity stream default filter (-1 = Everything)", "sanitize_callback": "BP_Activity_Filter_Admin::sanitize_default_filter", "read_at": ["includes/class-bp-activity-filter-admin.php", "includes/class-bp-activity-filter-frontend.php", "includes/class-bp-activity-filter-helper.php"], "written_at": ["includes/class-bp-activity-filter-admin.php::save_default_filters", "buddypress-activity-filter.php::activate"] },
+    { "key": "bp_activity_filter_hidden", "group": "bp_activity_filter_settings", "type": "array", "default": "[]", "controls": "Activity types to hide entirely (dropdown + save-prevention + hook removal). Core types activity_update/activity_comment force-protected.", "sanitize_callback": "BP_Activity_Filter_Admin::sanitize_hidden_activities", "read_at": ["includes/class-bp-activity-filter-admin.php", "includes/class-bp-activity-filter-frontend.php::get_hidden_activities"], "written_at": ["includes/class-bp-activity-filter-admin.php::save_hidden_activities", "buddypress-activity-filter.php::activate"] },
+    { "key": "bp_activity_filter_cpt_settings", "group": "bp_activity_filter_settings", "type": "array", "default": "[]", "controls": "Per-CPT activity generation toggle + custom label + _global.hide_sitewide flag", "sanitize_callback": "BP_Activity_Filter_Admin::sanitize_cpt_settings", "read_at": ["includes/class-bp-activity-filter-admin.php", "includes/class-bp-activity-filter-cpt.php (via Migration::get_option_with_fallback)"], "written_at": ["includes/class-bp-activity-filter-admin.php::save_cpt_settings", "buddypress-activity-filter.php::activate"] },
+    { "key": "bp_activity_filter_db_version", "group": "(not registered; internal)", "type": "string", "default": "0", "controls": "Migration bookkeeping; tracks last migrated version", "read_at": ["includes/class-bp-activity-filter-migration.php"], "written_at": ["includes/class-bp-activity-filter-migration.php::maybe_migrate/run_migration"] }
+  ],
+  "legacy_settings_migrated": [
+    "bp-default-filter-name -> bp_activity_filter_default",
+    "bp-default-profile-filter-name -> bp_activity_filter_profile_default",
+    "bp-hidden-filters-name -> bp_activity_filter_hidden",
+    "bp-cpt-filters-settings -> bp_activity_filter_cpt_settings"
+  ],
+  "shortcodes": [],
+  "blocks": [],
+  "post_types": [],
+  "taxonomies": [],
+  "tables": [],
+  "meta_keys": [
+    { "scope": "activity_meta", "key": "bp_activity_filter_cpt", "purpose": "Source post type of CPT-generated activity", "written_at": "includes/class-bp-activity-filter-cpt.php" },
+    { "scope": "activity_meta", "key": "bp_activity_filter_post_id", "purpose": "Source post ID; duplicate-prevention lookup", "written_at": "includes/class-bp-activity-filter-cpt.php" },
+    { "scope": "activity_meta", "key": "bp_activity_filter_created_time", "purpose": "Creation timestamp", "written_at": "includes/class-bp-activity-filter-cpt.php" },
+    { "scope": "activity_meta", "key": "bp_activity_filter_version", "purpose": "Plugin version stamp", "written_at": "includes/class-bp-activity-filter-cpt.php" },
+    { "scope": "post_meta", "key": "_bp_activity_filter_activity_id", "purpose": "Reverse lookup post->activity; duplicate prevention", "written_at": "includes/class-bp-activity-filter-cpt.php" },
+    { "scope": "post_meta", "key": "_bp_activity_filter_recorded", "purpose": "Timestamp post had activity recorded", "written_at": "includes/class-bp-activity-filter-cpt.php" },
+    { "scope": "user_meta", "key": "bp_activity_filter_preference", "purpose": "Cleaned up on uninstall (no writer in current code)", "written_at": "(none found; uninstall-only)" }
+  ],
+  "capabilities": [
+    { "cap": "manage_options", "default_roles": ["administrator"], "registered_at": "(WP core cap)", "enforced_at": ["includes/class-bp-activity-filter-admin.php:666 (save_settings)", "includes/class-wbcom-integration.php (menu capability)", "includes/shared-admin/class-wbcom-shared-loader.php (submenu capability)"], "enforcement_count": 1, "meta": false, "requires_context": "none" }
+  ],
+  "services": [],
+  "hooks_fired": [
+    { "name": "bp_activity_filter_init", "type": "action", "args_count": 0, "args_signature": [], "where": "buddypress-activity-filter.php:258", "consumed_by": [] },
+    { "name": "bp_activity_filter_cpt_activity_created", "type": "action", "args_count": 3, "args_signature": ["int $activity_id", "WP_Post $post", "array $settings"], "where": "includes/class-bp-activity-filter-cpt.php:329", "consumed_by": [] },
+    { "name": "bp_activity_filter_activity_actions", "type": "filter", "args_count": 1, "args_signature": ["array $labels"], "where": "includes/class-bp-activity-filter-helper.php:67", "consumed_by": [] },
+    { "name": "bp_activity_filter_default", "type": "filter", "args_count": 2, "args_signature": ["string $default_filter", "string $context"], "where": "includes/class-bp-activity-filter-frontend.php:395", "consumed_by": [] },
+    { "name": "bp_activity_filter_eligible_post_types", "type": "filter", "args_count": 1, "args_signature": ["array $eligible_types"], "where": "includes/class-bp-activity-filter-helper.php:183", "consumed_by": [] },
+    { "name": "bp_activity_filter_cpt_activity_args", "type": "filter", "args_count": 3, "args_signature": ["array $activity_args", "WP_Post $post", "array $settings"], "where": "includes/class-bp-activity-filter-cpt.php:292", "consumed_by": [] },
+    { "name": "bp_activity_filter_cpt_activity_label", "type": "filter", "args_count": 3, "args_signature": ["string $label", "array $settings", "WP_Post_Type $post_type_obj"], "where": "includes/class-bp-activity-filter-cpt.php:414", "consumed_by": [] },
+    { "name": "bp_activity_filter_cpt_activity_action", "type": "filter", "args_count": 3, "args_signature": ["string $action", "WP_Post $post", "string $label"], "where": "includes/class-bp-activity-filter-cpt.php:447", "consumed_by": [] },
+    { "name": "bp_activity_filter_cpt_activity_content", "type": "filter", "args_count": 2, "args_signature": ["string $content", "WP_Post $post"], "where": "includes/class-bp-activity-filter-cpt.php:477", "consumed_by": [] },
+    { "name": "bp_activity_filter_preserve_data_on_uninstall", "type": "filter", "args_count": 1, "args_signature": ["bool $preserve_data"], "where": "uninstall.php:26", "consumed_by": [] },
+    { "name": "wbcom_submenu_label", "type": "filter", "args_count": 3, "args_signature": ["string $label", "string $slug", "array $plugin"], "where": "includes/shared-admin/class-wbcom-shared-loader.php:537 (fired by shared wrapper)", "consumed_by": ["buddypress-activity-filter.php:644 bp_activity_filter_customize_submenu_label"] }
+  ],
+  "hooks_consumed_core_bp": [
+    { "hook": "plugins_loaded", "priority": 20, "callback": "BP_Activity_Filter::init", "where": "buddypress-activity-filter.php:105" },
+    { "hook": "init", "priority": 1, "callback": "BP_Activity_Filter::init_wbcom_integration (admin only)", "where": "buddypress-activity-filter.php:110" },
+    { "hook": "admin_init", "priority": 10, "callback": "BP_Activity_Filter_Admin::register_settings", "where": "includes/class-bp-activity-filter-admin.php:63" },
+    { "hook": "admin_enqueue_scripts", "priority": 10, "callback": "BP_Activity_Filter_Admin::enqueue_admin_scripts", "where": "includes/class-bp-activity-filter-admin.php:64" },
+    { "hook": "admin_init", "priority": 10, "callback": "BP_Activity_Filter_Migration::maybe_migrate", "where": "includes/class-bp-activity-filter-migration.php:67" },
+    { "hook": "bp_after_has_activities_parse_args", "priority": 10, "callback": "Frontend::apply_default_filter_server_side", "where": "includes/class-bp-activity-filter-frontend.php:60" },
+    { "hook": "bp_ajax_querystring", "priority": 10, "callback": "Frontend::apply_default_filter_ajax", "where": "includes/class-bp-activity-filter-frontend.php:63" },
+    { "hook": "wp_footer", "priority": 999, "callback": "Frontend::sync_dropdown_with_default", "where": "includes/class-bp-activity-filter-frontend.php:66" },
+    { "hook": "bp_get_activity_show_filters", "priority": 10, "callback": "Frontend::remove_hidden_from_dropdown", "where": "includes/class-bp-activity-filter-frontend.php:69" },
+    { "hook": "bp_activity_before_save", "priority": 1, "callback": "Frontend::maybe_prevent_activity_save", "where": "includes/class-bp-activity-filter-frontend.php:73" },
+    { "hook": "bp_init", "priority": 999, "callback": "Frontend::remove_hidden_activity_hooks", "where": "includes/class-bp-activity-filter-frontend.php:77" },
+    { "hook": "transition_post_status", "priority": 999, "callback": "CPT::handle_post_transition", "where": "includes/class-bp-activity-filter-cpt.php:76" },
+    { "hook": "admin_notices", "priority": 10, "callback": "CPT::show_conflict_notices", "where": "includes/class-bp-activity-filter-cpt.php:79" },
+    { "hook": "admin_init", "priority": 10, "callback": "BP_Activity_Filter::handle_activation_redirect", "where": "buddypress-activity-filter.php:629" }
+  ],
+  "interactivity": [],
+  "ui_activation": [],
+  "static_analysis": {
+    "dead_listeners": [],
+    "cap_context_mismatches": [],
+    "extensibility_gaps": [],
+    "js_only_activation": [],
+    "rest_hang_risks": [],
+    "visual_required_no_enforcement": [],
+    "grid_track_overflow_risks": [],
+    "hook_signature_drift": [],
+    "dead_localized_data": [
+      { "handle": "jquery", "object": "bpActivityFilterAdmin", "keys": ["nonce", "ajaxUrl", "currentTab"], "where": "includes/class-bp-activity-filter-admin.php:944", "note": "Localized nonce + ajaxUrl created but no wp_ajax_* handler and no admin.js consumer exists. Settings save is form-POST, not AJAX. Dead wiring (false-positive risk for nonce-no-cap scanners on nopriv endpoints does not apply here — there are NO AJAX endpoints at all)." }
+    ]
+  },
+  "buddypress_integration": {
+    "enabled_when": "class_exists('BuddyPress') && function_exists('buddypress') && BP >= 12.0.0 && !BuddyBoss",
+    "manager": "BP_Activity_Filter::init() gates all component init",
+    "sub_classes": ["BP_Activity_Filter_Frontend", "BP_Activity_Filter_CPT", "BP_Activity_Filter_Helper"],
+    "incompatible_with": "BuddyBoss Platform (admin notice + bail)"
+  },
+  "frontend_assets": {
+    "js": [
+      { "handle": "(inline in wp_footer)", "where": "includes/class-bp-activity-filter-frontend.php::sync_dropdown_with_default", "purpose": "Sync #activity-filter-by dropdown value with cookie/default" }
+    ],
+    "css": []
+  },
+  "admin_assets": {
+    "js": [
+      { "handle": "(none registered by plugin admin)", "file": "assets/js/admin.js", "note": "File exists (checkbox state + form validation, no AJAX) but is NOT enqueued in current code — only wbcom-shared-admin.js (from class-wbcom-integration.php) and inline localize on jquery are wired." }
+    ],
+    "css": [
+      { "handle": "wbcom-shared-tabs", "file": "includes/shared-admin/wbcom-shared-tabs.css (or WBCOM_ESSENTIAL copy)", "where": "includes/class-bp-activity-filter-admin.php::enqueue_admin_scripts" },
+      { "handle": "wbcom-shared-admin", "file": "includes/shared-admin/wbcom-shared-admin.css", "where": "includes/class-wbcom-integration.php::enqueue_shared_assets" },
+      { "handle": "(inline <style>)", "where": "render_settings_page + render_faq_tab", "note": "Inline style blocks + heavy inline style= attributes in admin tabs" },
+      { "handle": "assets/css/admin.css", "file": "assets/css/admin.css", "note": "Exists but NOT enqueued in current code" }
+    ]
+  },
+  "cron": [],
+  "wp_cli": [],
+  "storage_drivers": [],
+  "security": {
+    "uploads_gate": "n/a (no uploads)",
+    "settings_save_nonce": "bp_activity_filter_save_settings (verified in save_settings) + manage_options cap check",
+    "ajax_endpoints": "none",
+    "signing_entry_points": [],
+    "always_sign_filter": null,
+    "rate_limit_middleware": "n/a"
+  },
+  "ci_guards": { "script": null, "url_emission_regex": null, "storage_internal_marker": null, "phpstan_level": null },
+  "coding_rules": [
+    "Global classes prefixed BP_Activity_Filter_* (no PHP namespace)",
+    "Options prefixed bp_activity_filter_*",
+    "Hooks prefixed bp_activity_filter_*",
+    "Singleton pattern for all component classes",
+    "Admin wrapper is the INTERMEDIATE Wbcom shared-dashboard system (includes/shared-admin/) — NOT the modern wp-plugin-development Part 6 card pattern"
+  ],
+  "build_commands": { "release": "gruntfile.js (grunt)", "ci_local": null },
+  "wrapper_classification": {
+    "verdict": "INTERMEDIATE",
+    "evidence": [
+      "includes/shared-admin/class-wbcom-shared-dashboard.php (44KB) — the Wbcom shared dashboard wrapper",
+      "includes/shared-admin/class-wbcom-shared-loader.php (31KB) — registers wbcom-designs menu + per-plugin submenus",
+      "includes/shared-admin/wbcom-easy-setup.php — wbcom_integrate_plugin() one-liner",
+      "includes/shared-admin/wbcom-shared-admin.css / wbcom-shared-admin.js / wbcom-shared-tabs.css",
+      "includes/class-wbcom-integration.php — plugin-side glue registering with Wbcom_Shared_Loader"
+    ],
+    "target": "NOT the correct target. Per /wp-plugin-development Part 6 (Admin UI) the modern target is the card-based page-shell pattern with design tokens. This shared-dashboard/tab wrapper is the INTERMEDIATE generation and should eventually be migrated.",
+    "admin_ui_style": "Legacy WP nav-tab-wrapper + form-table + heavy inline styles + dashicons; not token-driven, not the modern card pattern."
+  },
+  "category_sources": {
+    "rest": ["includes/**/*.php"],
+    "ajax": ["includes/**/*.php"],
+    "admin_pages": ["includes/class-bp-activity-filter-admin.php", "includes/class-wbcom-integration.php", "includes/shared-admin/*.php"],
+    "settings": ["includes/class-bp-activity-filter-admin.php", "buddypress-activity-filter.php", "includes/class-bp-activity-filter-migration.php", "uninstall.php"],
+    "hooks_fired": ["includes/**/*.php", "buddypress-activity-filter.php", "uninstall.php"],
+    "capabilities": ["includes/**/*.php"],
+    "meta_keys": ["includes/class-bp-activity-filter-cpt.php", "uninstall.php"]
+  },
+  "generated": {
+    "at": "2026-06-05T00:00:00+05:30",
+    "from": "wp-plugin-onboard skill (onboard-only run; CI/journey/cleanup scaffold phases intentionally skipped per task scope)",
+    "branch": "3.2.1",
+    "scan_scope": "fallback_defaults",
+    "scan_path": ".",
+    "php_file_count": 13,
+    "size_class": "Small",
+    "schema_version": "v2.2"
+  }
+}

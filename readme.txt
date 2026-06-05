@@ -179,6 +179,8 @@ The plugin is optimized for performance with smart caching, minimal database que
 == Changelog ==
 
 = 3.2.1 =
+* Improved: Rebuilt the settings screen on the modern WB Plugins card panel (sidebar navigation, token-based styling, mobile friendly) and moved it under the shared WB Plugins menu.
+* Removed: Retired the legacy Wbcom shared-dashboard admin wrapper and its separate Wbcom Designs menu.
 * Fixed: WordPress Coding Standards compliance across all PHP files
 * Fixed: Added direct file access protection and proper escaping
 * Fixed: Plugin Check compatibility improvements
