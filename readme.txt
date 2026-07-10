@@ -170,12 +170,9 @@ The plugin is optimized for performance with smart caching, minimal database que
 
 == Screenshots ==
 
-1. **Default Filters Settings** - Configure default activity filters for site-wide and profile streams with professional interface
-2. **Hidden Activities Management** - Select which activity types to hide from the feed with bulk selection tools
-3. **Custom Post Type Integration** - Enable activity generation for custom post types with preview functionality
-4. **Frontend Activity Filter** - Clean activity filter dropdown on the frontend with theme compatibility
-5. **Migration Notice** - Automatic migration system for seamless upgrades from older versions
-6. **Admin Dashboard** - Professional admin interface with tabbed navigation and contextual help
+1. Front-end activity filter dropdown above the stream, listing every activity type members can filter by.
+2. Default Filters settings: choose what the site-wide and profile activity streams show by default.
+3. Discover tab linking to other free Wbcom Designs community plugins.
 
 == Changelog ==
 
