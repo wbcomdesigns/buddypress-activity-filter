@@ -64,4 +64,5 @@ Legacy options auto-migrated on `admin_init`: `bp-default-filter-name`, `bp-defa
 ## Recent changes
 | Date | Type | Description | Files |
 |---|---|---|---|
+| 2026-07-10 | feature | Added a "Discover" tab (9 free Wbcom products with brand logos + CTAs) to the card-panel admin, in the existing `resources` group alongside FAQ. New `includes/admin/views/discover.php` + `assets/images/ecosystem/*` (copied from the Todo plugin) + `.bpaf-discover-*` / `.bpaf-btn-secondary` CSS in admin.css; registered in `get_tabs()` + `view_map`. readme.txt + main header `Tested up to: 7.0`; readme `Requires Plugins: buddypress` added; 3.2.1 changelog reformatted to action-prefix house style. Verified in-browser: desktop 3-col grid + 390px single-col, logos load. | includes/admin/class-bp-activity-filter-admin-panel.php, includes/admin/views/discover.php, assets/css/admin.css, assets/images/ecosystem/*, readme.txt, buddypress-activity-filter.php |
 | 2026-06-05 | onboard | Generated audit manifest + feature/flow/role reports, graph, wppqa baseline, READ-FIRST CLAUDE.md. No code changes. | audit/*, CLAUDE.md |

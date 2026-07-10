@@ -918,6 +918,99 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
+   Discover tab: ecosystem cross-promotion cards
+   ═══════════════════════════════════════════════════════════ */
+
+.bpaf-discover-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+	gap: var(--bpaf-admin-gap-md);
+}
+
+.bpaf-discover-card {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+	padding: var(--bpaf-admin-gap-lg);
+	background: var(--bpaf-admin-white);
+	border: 1px solid var(--bpaf-admin-border);
+	border-radius: var(--bpaf-admin-radius);
+	box-shadow: var(--bpaf-admin-shadow);
+	transition: box-shadow 0.12s, border-color 0.12s, transform 0.12s;
+}
+
+.bpaf-discover-card:hover {
+	border-color: var(--bpaf-admin-border-strong);
+	box-shadow: var(--bpaf-admin-shadow-hover);
+	transform: translateY(-1px);
+}
+
+.bpaf-discover-card__logo {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+}
+
+.bpaf-discover-card__logo img {
+	width: 52px;
+	height: 52px;
+	display: block;
+	border-radius: var(--bpaf-admin-radius-sm);
+}
+
+.bpaf-discover-card__logo .dashicons {
+	width: 32px;
+	height: 32px;
+	font-size: 32px;
+	color: var(--bpaf-admin-accent);
+}
+
+.bpaf-discover-card__title {
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--bpaf-admin-text);
+	line-height: 1.2;
+	margin: 0;
+}
+
+.bpaf-discover-card__desc {
+	font-size: 13px;
+	color: var(--bpaf-admin-text-3);
+	line-height: 1.5;
+	margin: 0;
+	flex: 1 1 auto;
+}
+
+.bpaf-btn-secondary,
+.bpaf-admin .button.bpaf-btn-secondary {
+	background: var(--bpaf-admin-white);
+	color: var(--bpaf-admin-text-2);
+	border-color: var(--bpaf-admin-border-strong);
+}
+
+.bpaf-btn-secondary:hover,
+.bpaf-btn-secondary:focus,
+.bpaf-admin .button.bpaf-btn-secondary:hover,
+.bpaf-admin .button.bpaf-btn-secondary:focus {
+	background: var(--bpaf-admin-surface-1);
+	color: var(--bpaf-admin-text);
+	border-color: var(--bpaf-admin-accent);
+}
+
+.bpaf-discover-card__cta {
+	margin-top: 4px;
+}
+
+.bpaf-discover-card__cta .dashicons {
+	width: 14px;
+	height: 14px;
+	font-size: 14px;
+}
+
+/* ═══════════════════════════════════════════════════════════
    Responsive — exactly two media blocks per skill Part 7.5
    ═══════════════════════════════════════════════════════════ */
 
@@ -987,5 +1080,9 @@
 
 	.bpaf-activity-row__key {
 		order: 5;
+	}
+
+	.bpaf-discover-grid {
+		grid-template-columns: 1fr;
 	}
 }

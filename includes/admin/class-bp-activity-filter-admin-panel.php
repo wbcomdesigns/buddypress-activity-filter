@@ -93,6 +93,11 @@ class BP_Activity_Filter_Admin_Panel {
 				'icon'  => 'dashicons-editor-help',
 				'group' => 'resources',
 			),
+			'discover' => array(
+				'label' => __( 'Discover', 'bp-activity-filter' ),
+				'icon'  => 'dashicons-lightbulb',
+				'group' => 'resources',
+			),
 		);
 		return apply_filters( 'bp_activity_filter_admin_tabs', $tabs );
 	}
@@ -454,6 +459,7 @@ class BP_Activity_Filter_Admin_Panel {
 			'hidden'  => 'settings-hidden',
 			'cpt'     => 'settings-cpt',
 			'faq'     => 'faq',
+			'discover' => 'discover',
 		);
 		$view                = isset( $view_map[ $active ] ) ? $view_map[ $active ] : 'settings-default';
 		$in_settings_group   = isset( $bpaf_tabs[ $active ]['group'] ) && 'settings' === $bpaf_tabs[ $active ]['group'];
