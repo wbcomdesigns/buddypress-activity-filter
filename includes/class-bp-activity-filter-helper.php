@@ -68,57 +68,6 @@ class BP_Activity_Filter_Helper {
 	}
 
 	/**
-	 * Get default filter for current context.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $context Context (sitewide, profile).
-	 * @return string
-	 */
-	public static function get_default_filter( $context = 'sitewide' ) {
-		$option_key = 'profile' === $context ? 'bp_activity_filter_profile_default' : 'bp_activity_filter_default';
-		$default    = 'profile' === $context ? '-1' : '0';
-
-		return BP_Activity_Filter_Migration::get_option_with_fallback( $option_key, $default );
-	}
-
-	/**
-	 * Sanitize activity filter value.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $filter Filter value.
-	 * @return string
-	 */
-	public static function sanitize_filter_value( $filter ) {
-		if ( empty( $filter ) ) {
-			return '0';
-		}
-
-		// Allow comma-separated values for multiple actions.
-		$filter = sanitize_text_field( $filter );
-
-		// Handle legacy merged friendship key.
-		if ( strpos( $filter, 'friendship_accepted,friendship_created' ) !== false ) {
-			$filter = str_replace( 'friendship_accepted,friendship_created', 'friendship_created', $filter );
-		}
-
-		// Validate against known actions.
-		$known_actions = array_keys( self::get_activity_actions() );
-		$filter_parts  = explode( ',', $filter );
-		$valid_parts   = array();
-
-		foreach ( $filter_parts as $part ) {
-			$part = trim( $part );
-			if ( in_array( $part, $known_actions, true ) || in_array( $part, array( '0', '-1' ), true ) ) {
-				$valid_parts[] = $part;
-			}
-		}
-
-		return ! empty( $valid_parts ) ? implode( ',', $valid_parts ) : '0';
-	}
-
-	/**
 	 * Get plugin version.
 	 *
 	 * @since 4.0.0
@@ -126,26 +75,6 @@ class BP_Activity_Filter_Helper {
 	 */
 	public static function get_plugin_version() {
 		return defined( 'BP_ACTIVITY_FILTER_VERSION' ) ? BP_ACTIVITY_FILTER_VERSION : '4.0.0';
-	}
-
-	/**
-	 * Get plugin directory path.
-	 *
-	 * @since 4.0.0
-	 * @return string
-	 */
-	public static function get_plugin_dir() {
-		return defined( 'BP_ACTIVITY_FILTER_PLUGIN_DIR' ) ? BP_ACTIVITY_FILTER_PLUGIN_DIR : plugin_dir_path( __DIR__ );
-	}
-
-	/**
-	 * Get plugin directory URL.
-	 *
-	 * @since 4.0.0
-	 * @return string
-	 */
-	public static function get_plugin_url() {
-		return defined( 'BP_ACTIVITY_FILTER_PLUGIN_URL' ) ? BP_ACTIVITY_FILTER_PLUGIN_URL : plugin_dir_url( __DIR__ );
 	}
 
 	/**

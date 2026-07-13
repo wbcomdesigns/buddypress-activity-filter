@@ -87,85 +87,6 @@ class BP_Activity_Filter_Frontend {
 	}
 
 	/**
-	 * Set initial default filter ONCE on page load via JavaScript
-	 * This is the key fix - let BuddyPress handle everything else
-	 *
-	 * @since 4.0.0
-	 * @deprecated 4.1.0 Replaced with server-side filtering
-	 */
-	public function set_initial_default_filter_legacy() {
-		// Only on activity pages.
-		if ( ! $this->is_activity_page() ) {
-			return;
-		}
-
-		// Don't set if user already has a preference.
-		if ( isset( $_COOKIE['bp-activity-filter'] ) ) {
-			return;
-		}
-
-		// Get default filter based on context.
-		$default_filter = $this->get_default_filter();
-
-		// Only set if we have a meaningful default.
-		if ( ! $default_filter || '0' === $default_filter || '-1' === $default_filter ) {
-			return;
-		}
-
-		?>
-		<script type="text/javascript">
-		(function() {
-			// Wait for DOM to be ready
-			document.addEventListener('DOMContentLoaded', function() {
-				// ONLY set the dropdown value and cookie - let BuddyPress handle the rest
-				var dropdown = document.getElementById('activity-filter-by');
-				if (dropdown && !getCookie('bp-activity-filter')) {
-					// Set dropdown value
-					dropdown.value = '<?php echo esc_js( $default_filter ); ?>';
-					
-					// Set cookie so BuddyPress knows the preference
-					setCookie('bp-activity-filter', '<?php echo esc_js( $default_filter ); ?>', 30);
-					
-					// Trigger change event to let BuddyPress handle the filtering
-					if (dropdown.dispatchEvent) {
-						var event = new Event('change', { bubbles: true });
-						dropdown.dispatchEvent(event);
-					} else {
-						// IE fallback
-						var event = document.createEvent('Event');
-						event.initEvent('change', true, true);
-						dropdown.dispatchEvent(event);
-					}
-				}
-			});
-			
-			// Helper functions
-			function getCookie(name) {
-				var nameEQ = name + "=";
-				var ca = document.cookie.split(';');
-				for(var i = 0; i < ca.length; i++) {
-					var c = ca[i];
-					while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-					if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-				}
-				return null;
-			}
-			
-			function setCookie(name, value, days) {
-				var expires = "";
-				if (days) {
-					var date = new Date();
-					date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-					expires = "; expires=" + date.toUTCString();
-				}
-				document.cookie = name + "=" + value + expires + "; path=/; SameSite=Lax";
-			}
-		})();
-		</script>
-		<?php
-	}
-
-	/**
 	 * Apply default filter server-side.
 	 *
 	 * @since 4.0.0
@@ -186,25 +107,15 @@ class BP_Activity_Filter_Frontend {
 
 		// Check user preference first (from cookie).
 		if ( isset( $_COOKIE['bp-activity-filter'] ) && '0' !== $_COOKIE['bp-activity-filter'] && '-1' !== $_COOKIE['bp-activity-filter'] ) {
-			$user_filter = sanitize_text_field( wp_unslash( $_COOKIE['bp-activity-filter'] ) );
-			// BuddyPress uses 'type' for filtering, not 'action'.
-			$args['type'] = $user_filter;
-			// Also handle comma-separated values.
-			if ( false !== strpos( $user_filter, ',' ) ) {
-				$args['type'] = explode( ',', $user_filter );
-			}
+			$args['action'] = sanitize_text_field( wp_unslash( $_COOKIE['bp-activity-filter'] ) );
+
 			return $args;
 		}
 
 		// No user preference, apply admin default.
 		$default_filter = $this->get_default_filter();
 		if ( $default_filter && '0' !== $default_filter && '-1' !== $default_filter ) {
-			// BuddyPress uses 'type' for filtering, not 'action'.
-			$args['type'] = $default_filter;
-			// Also handle comma-separated values.
-			if ( false !== strpos( $default_filter, ',' ) ) {
-				$args['type'] = explode( ',', $default_filter );
-			}
+			$args['action'] = $default_filter;
 		}
 
 		return $args;
@@ -271,14 +182,14 @@ class BP_Activity_Filter_Frontend {
 
 		// Check user preference from cookie.
 		if ( isset( $_COOKIE['bp-activity-filter'] ) && '0' !== $_COOKIE['bp-activity-filter'] && '-1' !== $_COOKIE['bp-activity-filter'] ) {
-			$args['type'] = sanitize_text_field( wp_unslash( $_COOKIE['bp-activity-filter'] ) );
+			$args['action'] = sanitize_text_field( wp_unslash( $_COOKIE['bp-activity-filter'] ) );
 			return http_build_query( $args );
 		}
 
 		// No user preference, use admin default.
 		$default_filter = $this->get_default_filter();
 		if ( $default_filter && '0' !== $default_filter && '-1' !== $default_filter ) {
-			$args['type'] = $default_filter;
+			$args['action'] = $default_filter;
 			return http_build_query( $args );
 		}
 
@@ -317,27 +228,32 @@ class BP_Activity_Filter_Frontend {
 		?>
 		<script type="text/javascript">
 		document.addEventListener('DOMContentLoaded', function() {
-			// Wait a moment for BuddyPress to initialize
+			// Wait a moment for BuddyPress to initialize.
 			setTimeout(function() {
-				// Sync the dropdown to match the current filter (from cookie or default)
 				var dropdown = document.getElementById('activity-filter-by');
-				if (dropdown) {
-					var filterValue = '<?php echo esc_js( $filter_to_apply ); ?>';
-					
-					// Set dropdown to match
-					dropdown.value = filterValue;
-					
-					// Ensure cookie is set (in case it wasn't)
-					if (!document.cookie.match(/bp-activity-filter=/)) {
-						document.cookie = 'bp-activity-filter=' + filterValue + '; path=/; max-age=' + (30*24*60*60);
-					}
-					
-					// If dropdown value doesn't stick, force it again
-					if (dropdown.value !== filterValue) {
-						setTimeout(function() {
-							dropdown.value = filterValue;
-						}, 100);
-					}
+				if (!dropdown) {
+					return;
+				}
+
+				var filterValue = '<?php echo esc_js( $filter_to_apply ); ?>';
+
+				// BuddyPress renders some options under a combined key, e.g. friendships
+				// are listed as "friendship_accepted,friendship_created". Assigning the
+				// single type to dropdown.value would not match any option and would
+				// leave the dropdown blank, so match on the combined parts as well.
+				var selected = Array.prototype.filter.call(dropdown.options, function(option) {
+					return option.value === filterValue || option.value.split(',').indexOf(filterValue) !== -1;
+				})[0];
+
+				if (!selected) {
+					return;
+				}
+
+				dropdown.value = selected.value;
+
+				// Ensure the cookie is set (in case it wasn't).
+				if (!document.cookie.match(/bp-activity-filter=/)) {
+					document.cookie = 'bp-activity-filter=' + selected.value + '; path=/; max-age=' + (30*24*60*60);
 				}
 			}, 50);
 		});
@@ -486,20 +402,6 @@ class BP_Activity_Filter_Frontend {
 		$hidden_activities = array_diff( $hidden_activities, $core_protected_activities );
 
 		return $hidden_activities;
-	}
-
-	/**
-	 * Check if current page is an activity page
-	 *
-	 * @since 4.0.0
-	 * @return bool True if on activity page
-	 */
-	private function is_activity_page() {
-		if ( ! function_exists( 'bp_is_activity_component' ) ) {
-			return false;
-		}
-
-		return bp_is_activity_component() || bp_is_user_activity();
 	}
 
 	/**
