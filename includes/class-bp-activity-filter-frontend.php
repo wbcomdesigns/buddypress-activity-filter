@@ -237,6 +237,22 @@ class BP_Activity_Filter_Frontend {
 
 				var filterValue = '<?php echo esc_js( $filter_to_apply ); ?>';
 
+				/*
+				 * The member's own filter choice wins over the admin default.
+				 *
+				 * BuddyPress Nouveau remembers it in sessionStorage under "bp-activity"
+				 * and re-applies it to the stream over AJAX. If we overwrote the dropdown
+				 * with the admin default here, the control would claim one filter while
+				 * the stream below it showed another. Mirror what BuddyPress actually
+				 * applied instead.
+				 */
+				try {
+					var bpState = JSON.parse(window.sessionStorage.getItem('bp-activity') || 'null');
+					if (bpState && bpState.filter) {
+						filterValue = bpState.filter;
+					}
+				} catch (e) {}
+
 				// BuddyPress renders some options under a combined key, e.g. friendships
 				// are listed as "friendship_accepted,friendship_created". Assigning the
 				// single type to dropdown.value would not match any option and would
@@ -249,12 +265,16 @@ class BP_Activity_Filter_Frontend {
 					return;
 				}
 
+				// Only reflect the value in the dropdown. Do NOT write the
+				// bp-activity-filter cookie here.
+				//
+				// That cookie is the *member's own* choice, and it outranks the admin
+				// default. Writing the default into it turned the admin's setting into a
+				// permanent per-visitor preference: once a visitor had loaded the page,
+				// their cookie pinned the old value and the site owner could never change
+				// the default for them again. BuddyPress sets this cookie itself when the
+				// member actually picks a filter, which is the only time it should be set.
 				dropdown.value = selected.value;
-
-				// Ensure the cookie is set (in case it wasn't).
-				if (!document.cookie.match(/bp-activity-filter=/)) {
-					document.cookie = 'bp-activity-filter=' + selected.value + '; path=/; max-age=' + (30*24*60*60);
-				}
 			}, 50);
 		});
 		</script>

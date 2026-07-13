@@ -182,6 +182,7 @@ The plugin is optimized for performance with smart caching, minimal database que
 * Improve  - Rebuilt the settings screen on the modern WB Plugins card panel with sidebar navigation, token-based styling, and a mobile-friendly layout, moved under the shared WB Plugins menu.
 * Improve  - Retired the legacy Wbcom shared-dashboard admin wrapper and its separate Wbcom Designs menu.
 * Fix      - The Default Filter setting now actually filters the activity stream. It was passing an argument BuddyPress does not read, so the stream stayed unfiltered.
+* Fix      - Changing the default activity filter now takes effect for existing visitors. The old default was being written into each visitor's saved preference, which then overrode any later change by the site owner.
 * Fix      - Setting the default filter to "New friendships" no longer leaves the filter dropdown blank. BuddyPress lists friendships under a combined key, which the dropdown sync did not match.
 * Dev      - Removed dead code: an unused legacy JavaScript filter method, four unused helper methods, and the redundant admin class whose sanitizers now live in the settings panel.
 * Fix      - Hidden activity types are now excluded from the activity stream itself, not only from the filter dropdown. Activities recorded before a type was hidden are no longer listed, across the directory, member, group, friends, mentions and favorites streams. They remain visible in the WordPress admin Activity screen so they can still be moderated.
