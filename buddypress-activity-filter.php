@@ -165,7 +165,6 @@ final class BP_Activity_Filter {
 		$include_files = array(
 			'includes/class-bp-activity-filter-helper.php',
 			'includes/class-bp-activity-filter-migration.php',
-			'includes/class-bp-activity-filter-admin.php',
 			'includes/admin/class-bp-activity-filter-admin-panel.php',
 			'includes/class-bp-activity-filter-frontend.php',
 			'includes/class-bp-activity-filter-cpt.php',

@@ -174,15 +174,12 @@ class BP_Activity_Filter_Admin_Panel {
 	 * Register the four settings options under the preserved option group.
 	 *
 	 * Each option keeps its existing key, type, default, and sanitize
-	 * callback (delegated to the retained legacy admin class). Settings
-	 * persist via the WordPress Settings API (options.php) as the
-	 * card-panel form posts to options.php.
+	 * callback. Settings persist via the WordPress Settings API
+	 * (options.php) as the card-panel form posts to options.php.
 	 *
 	 * @since 3.2.1
 	 */
 	public function register_settings() {
-		$legacy = $this->legacy_admin();
-
 		register_setting(
 			self::OPTION_GROUP,
 			'bp_activity_filter_default',
@@ -224,16 +221,91 @@ class BP_Activity_Filter_Admin_Panel {
 	}
 
 	/**
-	 * Get the retained legacy admin class instance for sanitizer reuse.
+	 * Sanitize a single filter value against the known activity types.
 	 *
 	 * @since 3.2.1
-	 * @return BP_Activity_Filter_Admin|null
+	 * @param mixed  $input    Raw value.
+	 * @param string $fallback Value to return when the input is not a known type.
+	 * @return string Sanitized filter value.
 	 */
-	private function legacy_admin() {
-		if ( class_exists( 'BP_Activity_Filter_Admin' ) ) {
-			return BP_Activity_Filter_Admin::instance();
+	private function sanitize_filter_value( $input, $fallback = '0' ) {
+		if ( ! is_string( $input ) || '' === $input ) {
+			return $fallback;
 		}
-		return null;
+
+		$input           = sanitize_text_field( $input );
+		$valid_actions   = array_keys( BP_Activity_Filter_Helper::get_activity_actions() );
+		$valid_actions[] = '0';
+		$valid_actions[] = '-1';
+
+		return in_array( $input, $valid_actions, true ) ? $input : $fallback;
+	}
+
+	/**
+	 * Sanitize the hidden activities list, protecting the core types.
+	 *
+	 * @since 3.2.1
+	 * @param mixed $input Raw value.
+	 * @return array Sanitized activity types, never containing a core type.
+	 */
+	private function sanitize_hidden_list( $input ) {
+		if ( ! is_array( $input ) ) {
+			return array();
+		}
+
+		$valid_actions = array_keys( BP_Activity_Filter_Helper::get_activity_actions() );
+
+		// Core activities that must never be hidden.
+		$core_protected = array( 'activity_update', 'activity_comment' );
+
+		$sanitized = array();
+
+		foreach ( $input as $activity_type ) {
+			$activity_type = sanitize_text_field( $activity_type );
+
+			if ( empty( $activity_type ) || in_array( $activity_type, $core_protected, true ) ) {
+				continue;
+			}
+
+			if ( in_array( $activity_type, $valid_actions, true ) ) {
+				$sanitized[] = $activity_type;
+			}
+		}
+
+		return array_values( array_unique( $sanitized ) );
+	}
+
+	/**
+	 * Sanitize the per-CPT settings map.
+	 *
+	 * @since 3.2.1
+	 * @param mixed $input Raw value.
+	 * @return array Sanitized settings keyed by post type.
+	 */
+	private function sanitize_cpt_map( $input ) {
+		if ( ! is_array( $input ) ) {
+			return array();
+		}
+
+		$sanitized        = array();
+		$valid_post_types = get_post_types( array( 'public' => true ), 'names' );
+
+		foreach ( $input as $post_type => $settings ) {
+			$post_type = sanitize_text_field( $post_type );
+
+			if ( '_global' === $post_type ) {
+				$sanitized[ $post_type ] = array(
+					'hide_sitewide' => ! empty( $settings['hide_sitewide'] ),
+				);
+			} elseif ( in_array( $post_type, $valid_post_types, true ) ) {
+				$sanitized[ $post_type ] = array(
+					'enabled' => ! empty( $settings['enabled'] ),
+					'label'   => isset( $settings['label'] ) ? sanitize_text_field( $settings['label'] ) : '',
+				);
+			}
+		}
+
+		return $sanitized;
 	}
 
 	/*
@@ -290,11 +362,8 @@ class BP_Activity_Filter_Admin_Panel {
 		if ( ! $this->tab_rendered_option( 'bp_activity_filter_default' ) ) {
 			return get_option( 'bp_activity_filter_default', '0' );
 		}
-		$legacy = $this->legacy_admin();
-		if ( $legacy ) {
-			return $legacy->sanitize_default_filter( is_string( $input ) ? $input : '0' );
-		}
-		return is_string( $input ) ? sanitize_text_field( $input ) : '0';
+
+		return $this->sanitize_filter_value( $input, '0' );
 	}
 
 	/**
@@ -308,11 +377,8 @@ class BP_Activity_Filter_Admin_Panel {
 		if ( ! $this->tab_rendered_option( 'bp_activity_filter_profile_default' ) ) {
 			return get_option( 'bp_activity_filter_profile_default', '-1' );
 		}
-		$legacy = $this->legacy_admin();
-		if ( $legacy ) {
-			return $legacy->sanitize_default_filter( is_string( $input ) ? $input : '-1' );
-		}
-		return is_string( $input ) ? sanitize_text_field( $input ) : '-1';
+
+		return $this->sanitize_filter_value( $input, '-1' );
 	}
 
 	/**
@@ -327,11 +393,8 @@ class BP_Activity_Filter_Admin_Panel {
 			$stored = get_option( 'bp_activity_filter_hidden', array() );
 			return is_array( $stored ) ? $stored : array();
 		}
-		$legacy = $this->legacy_admin();
-		if ( $legacy ) {
-			return $legacy->sanitize_hidden_activities( is_array( $input ) ? $input : array() );
-		}
-		return is_array( $input ) ? array_map( 'sanitize_text_field', $input ) : array();
+
+		return $this->sanitize_hidden_list( $input );
 	}
 
 	/**
@@ -346,11 +409,8 @@ class BP_Activity_Filter_Admin_Panel {
 			$stored = get_option( 'bp_activity_filter_cpt_settings', array() );
 			return is_array( $stored ) ? $stored : array();
 		}
-		$legacy = $this->legacy_admin();
-		if ( $legacy ) {
-			return $legacy->sanitize_cpt_settings( is_array( $input ) ? $input : array() );
-		}
-		return is_array( $input ) ? $input : array();
+
+		return $this->sanitize_cpt_map( $input );
 	}
 
 	/**
