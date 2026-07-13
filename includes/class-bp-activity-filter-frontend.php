@@ -59,6 +59,13 @@ class BP_Activity_Filter_Frontend {
 		// Server-side default filter - runs BEFORE activities are queried.
 		add_filter( 'bp_after_has_activities_parse_args', array( $this, 'apply_default_filter_server_side' ), 10, 1 );
 
+		// Exclude hidden types from the stream itself. Blocking creation only stops new
+		// items, so activities recorded before a type was hidden would still be listed.
+		// This must be a WHERE condition, not a filter_query arg: BP_Activity_Activity::get()
+		// only honours filter_query when no scope is set, so scoped streams (just-me,
+		// friends, groups, mentions, favorites) would ignore it.
+		add_filter( 'bp_activity_get_where_conditions', array( $this, 'exclude_hidden_from_query' ), 10, 2 );
+
 		// Also filter AJAX requests.
 		add_filter( 'bp_ajax_querystring', array( $this, 'apply_default_filter_ajax' ), 10, 2 );
 
@@ -201,6 +208,44 @@ class BP_Activity_Filter_Frontend {
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Exclude hidden activity types from activity stream queries.
+	 *
+	 * Preventing hidden types from being saved only stops new items. Activities
+	 * recorded before an admin hid that type are already in the database and would
+	 * still show in the stream, so they have to be excluded at query time too.
+	 *
+	 * BuddyPress ANDs every condition returned here and applies them after the
+	 * scope/filter_query branch, so this covers the directory, scoped streams
+	 * (just-me, friends, groups, mentions, favorites), AJAX refreshes, and the
+	 * pagination count, which is built from the same WHERE clause.
+	 *
+	 * The site admin's own Activity screen is left alone so hidden items remain
+	 * moderatable in the backend.
+	 *
+	 * @since 4.0.0
+	 * @param array $where_conditions Current WHERE conditions.
+	 * @param array $args             Parsed activity query arguments.
+	 * @return array WHERE conditions with hidden types excluded.
+	 */
+	public function exclude_hidden_from_query( $where_conditions, $args = array() ) {
+		if ( is_admin() && ! wp_doing_ajax() ) {
+			return $where_conditions;
+		}
+
+		$hidden_activities = $this->get_hidden_activities();
+
+		if ( empty( $hidden_activities ) ) {
+			return $where_conditions;
+		}
+
+		$not_in = "'" . implode( "', '", array_map( 'esc_sql', $hidden_activities ) ) . "'";
+
+		$where_conditions['bp_activity_filter_hidden'] = "a.type NOT IN ({$not_in})";
+
+		return $where_conditions;
 	}
 
 	/**

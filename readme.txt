@@ -181,6 +181,7 @@ The plugin is optimized for performance with smart caching, minimal database que
 * New      - Discover tab in the settings panel linking to nine free Wbcom Designs community tools.
 * Improve  - Rebuilt the settings screen on the modern WB Plugins card panel with sidebar navigation, token-based styling, and a mobile-friendly layout, moved under the shared WB Plugins menu.
 * Improve  - Retired the legacy Wbcom shared-dashboard admin wrapper and its separate Wbcom Designs menu.
+* Fix      - Hidden activity types are now excluded from the activity stream itself, not only from the filter dropdown. Activities recorded before a type was hidden are no longer listed, across the directory, member, group, friends, mentions and favorites streams. They remain visible in the WordPress admin Activity screen so they can still be moderated.
 * Fix      - Hidden activity types are now removed from the activity filter dropdown on Nouveau based themes such as BuddyX and Reign, not only on Legacy.
 * Fix      - Hiding "New friendships" now removes the friendships option from the filter dropdown, which BuddyPress renders under a combined key.
 * Fix      - Corrected WordPress Coding Standards compliance across all PHP files.
