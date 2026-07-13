@@ -66,15 +66,17 @@ class BP_Activity_Filter_Frontend {
 		add_action( 'wp_footer', array( $this, 'sync_dropdown_with_default' ), 999 );
 
 		// Remove hidden activities from dropdown (but don't interfere with filtering).
-		add_filter( 'bp_get_activity_show_filters', array( $this, 'remove_hidden_from_dropdown' ), 10, 3 );
+		// Filter the options array, not the built HTML: Nouveau hooks
+		// bp_get_activity_show_filters at the same priority and returns the original
+		// $filters array, which would discard any edit made to the HTML output.
+		add_filter( 'bp_get_activity_show_filters_options', array( $this, 'remove_hidden_from_dropdown' ), 10, 2 );
 
 		// Prevent hidden activities from being created (at source).
 		// Use very early priority to catch before other plugins.
+		// This is the single enforcement point: BP_Activity_Activity::save() aborts on
+		// an empty component/type, so it covers every hidden type regardless of which
+		// component records it.
 		add_action( 'bp_activity_before_save', array( $this, 'maybe_prevent_activity_save' ), 1 );
-
-		// Prevent friendship activities specifically by removing the action hooks.
-		// Use bp_init which runs after BuddyPress has loaded all its components.
-		add_action( 'bp_init', array( $this, 'remove_hidden_activity_hooks' ), 999 );
 	}
 
 	/**
@@ -299,38 +301,41 @@ class BP_Activity_Filter_Frontend {
 	}
 
 	/**
-	 * Remove hidden activities from dropdown options (but don't interfere with filtering logic).
+	 * Remove hidden activity types from the filter dropdown options.
+	 *
+	 * Runs on the options array before the dropdown HTML is built, so both the
+	 * Legacy template pack (which renders the HTML) and Nouveau (which re-reads
+	 * the raw array) see the same reduced set.
 	 *
 	 * @since 4.0.0
-	 * @param string|array $output  The filter output (HTML string or array).
-	 * @param array        $filters The activity filters.
-	 * @param string       $context The current context.
-	 * @return string|array Modified output.
+	 * @param array  $filters Activity filter options, keyed by option value.
+	 * @param string $context The current context.
+	 * @return array Filter options without the hidden activity types.
 	 */
-	public function remove_hidden_from_dropdown( $output, $filters, $context ) {
+	public function remove_hidden_from_dropdown( $filters, $context = '' ) {
 		$hidden_activities = $this->get_hidden_activities();
 
-		if ( empty( $hidden_activities ) ) {
-			return $output;
+		if ( empty( $hidden_activities ) || ! is_array( $filters ) ) {
+			return $filters;
 		}
 
-		// Handle Nouveau theme (array format).
-		if ( is_array( $output ) && isset( $output['filters'] ) ) {
-			foreach ( $hidden_activities as $hidden_key ) {
-				unset( $output['filters'][ $hidden_key ] );
+		// BuddyPress records one "friendship_created" activity for both friendship
+		// hooks and collapses the pair into a single "friendship_accepted,friendship_created"
+		// option, so hiding one side must account for the other.
+		if ( in_array( 'friendship_created', $hidden_activities, true ) ) {
+			$hidden_activities[] = 'friendship_accepted';
+		}
+
+		foreach ( array_keys( $filters ) as $option_value ) {
+			$types = array_map( 'trim', explode( ',', (string) $option_value ) );
+
+			// Drop the option only when every type it would show is hidden.
+			if ( ! array_diff( $types, $hidden_activities ) ) {
+				unset( $filters[ $option_value ] );
 			}
-			return $output;
 		}
 
-		// Handle legacy theme (HTML string format).
-		if ( is_string( $output ) && ! empty( $output ) ) {
-			foreach ( $hidden_activities as $hidden_key ) {
-				$pattern = '/<option[^>]*value=["\']' . preg_quote( $hidden_key, '/' ) . '["\'][^>]*>.*?<\/option>/i';
-				$output  = preg_replace( $pattern, '', $output );
-			}
-		}
-
-		return $output;
+		return $filters;
 	}
 
 	/**
@@ -450,55 +455,6 @@ class BP_Activity_Filter_Frontend {
 		}
 
 		return bp_is_activity_component() || bp_is_user_activity();
-	}
-
-	/**
-	 * Remove hooks for hidden activity types to prevent them from being created
-	 *
-	 * @since 4.0.0
-	 */
-	public function remove_hidden_activity_hooks() {
-		$hidden_activities = $this->get_hidden_activities();
-
-		if ( empty( $hidden_activities ) ) {
-			return;
-		}
-
-		// Map activity types to their creation hooks.
-		$activity_hooks = array(
-			'friendship_created'  => array(
-				'hook'     => 'friends_friendship_requested',
-				'function' => 'bp_friends_friendship_requested_activity',
-				'priority' => 10,
-			),
-			'friendship_accepted' => array(
-				'hook'     => 'friends_friendship_accepted',
-				'function' => 'bp_friends_friendship_accepted_activity',
-				'priority' => 10,
-			),
-			'new_member'          => array(
-				'hook'     => 'bp_core_activated_user',
-				'function' => 'bp_activity_new_member_activity',
-				'priority' => 10,
-			),
-			'updated_profile'     => array(
-				'hook'     => 'xprofile_updated_profile',
-				'function' => 'bp_xprofile_updated_profile_activity',
-				'priority' => 10,
-			),
-		);
-
-		// Remove hooks for hidden activity types.
-		foreach ( $hidden_activities as $activity_type ) {
-			if ( isset( $activity_hooks[ $activity_type ] ) ) {
-				$hook_info = $activity_hooks[ $activity_type ];
-				remove_action(
-					$hook_info['hook'],
-					$hook_info['function'],
-					$hook_info['priority']
-				);
-			}
-		}
 	}
 
 	/**
