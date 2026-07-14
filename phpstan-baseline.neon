@@ -1,0 +1,103 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property BuddyPress\:\:\$version\.$#'
+			identifier: property.notFound
+			count: 2
+			path: buddypress-activity-filter.php
+
+		-
+			message: '#^Constant BP_ACTIVITY_FILTER_PLUGIN_DIR not found\.$#'
+			identifier: constant.notFound
+			count: 3
+			path: includes/admin/class-bp-activity-filter-admin-panel.php
+
+		-
+			message: '#^Constant BP_ACTIVITY_FILTER_PLUGIN_URL not found\.$#'
+			identifier: constant.notFound
+			count: 2
+			path: includes/admin/class-bp-activity-filter-admin-panel.php
+
+		-
+			message: '#^Constant BP_ACTIVITY_FILTER_PLUGIN_DIR not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: includes/admin/views/discover.php
+
+		-
+			message: '#^Constant BP_ACTIVITY_FILTER_PLUGIN_URL not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: includes/admin/views/discover.php
+
+		-
+			message: '#^Offset ''icon'' on array\{name\: string, logo\: ''buddynext\.svg'', icon\: ''groups'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''buddyx\.png'', icon\: ''admin\-appearance'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''eventonomy\.svg'', icon\: ''calendar\-alt'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''jetonomy\.svg'', icon\: ''format\-chat'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''learnomy\.svg'', icon\: ''welcome\-learn\-more'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''listora\.svg'', icon\: ''list\-view'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''mediaverse\.svg'', icon\: ''format\-gallery'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''wb\-gamification\.svg'', icon\: ''awards'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''wp\-career\-board\.svg'', icon\: ''businessman'', desc\: string, url\: ''https\:/…''\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: includes/admin/views/discover.php
+
+		-
+			message: '#^Call to function is_null\(\) with BP_Activity_Filter_CPT will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: includes/class-bp-activity-filter-cpt.php
+
+		-
+			message: '#^Parameter \#1 \$author_id of method BP_Activity_Filter_CPT\:\:get_author_link\(\) expects int, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/class-bp-activity-filter-cpt.php
+
+		-
+			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: includes/class-bp-activity-filter-frontend.php
+
+		-
+			message: '#^Found usage of constant DOING_AJAX\. Use wp_doing_ajax\(\) instead\.$#'
+			identifier: phpstanWP.wpConstant.fetch
+			count: 1
+			path: includes/class-bp-activity-filter-frontend.php
+
+		-
+			message: '#^Property BP_Activity_Activity\:\:\$errors \(WP_Error\) in isset\(\) is not nullable\.$#'
+			identifier: isset.property
+			count: 1
+			path: includes/class-bp-activity-filter-frontend.php
+
+		-
+			message: '#^Property BP_Activity_Activity\:\:\$type \(string\) in isset\(\) is not nullable\.$#'
+			identifier: isset.property
+			count: 1
+			path: includes/class-bp-activity-filter-frontend.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: includes/class-bp-activity-filter-frontend.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between ''0'' and non\-falsy\-string will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: includes/class-bp-activity-filter-frontend.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''0'' and non\-falsy\-string will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 2
+			path: includes/class-bp-activity-filter-frontend.php
+
+		-
+			message: '#^Offset ''plugin_check'' on array\{plugin_check\: Closure\(\)\: bool\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: includes/class-bp-activity-filter-helper.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: includes/class-bp-activity-filter-helper.php

@@ -217,7 +217,6 @@ class BP_Activity_Filter_Admin_Panel {
 			)
 		);
 
-		unset( $legacy );
 	}
 
 	/**
