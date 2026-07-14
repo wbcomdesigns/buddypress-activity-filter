@@ -116,22 +116,25 @@ class BP_Activity_Filter_Frontend {
 			return $args;
 		}
 
-		// Skip if this is an AJAX request with existing filter.
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! empty( $_POST['filter'] ) ) {
+		// The member picked a filter on this screen: honour it and never override it.
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && $this->member_chose_filter_this_request() ) {
 			return $args;
 		}
 
 		// The member's own filter wins, unless the owner has changed the default since
 		// the member last saw it - then their remembered choice is stale.
 		$preference = $this->get_member_preference();
-		if ( '' !== $preference ) {
-			$args['action'] = $preference;
+		if ( null !== $preference ) {
+			// '' means they picked Everything: apply no filter at all, and do NOT fall
+			// through to the admin default.
+			if ( '' !== $preference ) {
+				$args['action'] = $preference;
+			}
 
 			return $args;
 		}
 
-		// No live preference, apply admin default.
+		// No preference at all, apply admin default.
 		$default_filter = $this->get_default_filter();
 		if ( $default_filter && '0' !== $default_filter && '-1' !== $default_filter ) {
 			$args['action'] = $default_filter;
@@ -141,30 +144,69 @@ class BP_Activity_Filter_Frontend {
 	}
 
 	/**
-	 * The member's own remembered filter, or '' when there isn't a live one.
+	 * True when this request carries a filter the member actually picked.
 	 *
-	 * Returns '' when the owner has changed the default since this browser last saw it.
-	 * A default a member's stored choice can outrank forever is not a default: BuddyPress
-	 * remembers a picked filter (cookie on Legacy, sessionStorage on Nouveau) and replays
-	 * it on every load, so before this check the owner's new default was never shown to
-	 * anyone who had ever touched the dropdown.
+	 * BuddyPress sends the `filter` key on EVERY activity request, so its presence proves
+	 * nothing. What distinguishes the two cases is the value, verified against BP's own
+	 * AJAX payload:
+	 *
+	 *   filter=                 member has never touched the dropdown - apply the default
+	 *   filter=0  / filter=-1   member picked "- Everything -"        - apply NO filter
+	 *   filter=activity_update  member picked a type                  - apply that type
+	 *
+	 * So the test is "non-empty", not isset() and not ! empty(): empty( '0' ) is true in
+	 * PHP, which is exactly how an explicit "show me everything" got mistaken for silence
+	 * and had the admin default forced back over it.
 	 *
 	 * @since 3.2.1
-	 * @return string Activity type, or '' to fall through to the admin default.
+	 * @return bool
+	 */
+	private function member_chose_filter_this_request() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only UI filter set by BuddyPress; BP verifies its own nonce.
+		if ( ! isset( $_POST['filter'] ) ) {
+			return false;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only UI filter set by BuddyPress; BP verifies its own nonce.
+		return '' !== trim( sanitize_text_field( wp_unslash( $_POST['filter'] ) ) );
+	}
+
+	/**
+	 * What the member has chosen for themselves, if anything.
+	 *
+	 * Three distinct answers, and they must stay distinct:
+	 *
+	 *   null - no choice. Fall through to the admin default.
+	 *   ''   - they chose "- Everything -". Apply NO filter, and do NOT fall through to
+	 *          the admin default.
+	 *   type - they chose that activity type. Apply it.
+	 *
+	 * Collapsing the first two is what made an explicit "Everything" impossible to honour:
+	 * BuddyPress uses "0"/"-1" as the literal option value for "- Everything -", so a
+	 * member who picked it looked identical to a member who had never touched the
+	 * dropdown, and the admin default was quietly forced back on. The control said
+	 * Everything while the stream stayed filtered.
+	 *
+	 * A stale choice (the owner changed the default since this browser last applied one)
+	 * counts as no choice, so the new default wins.
+	 *
+	 * @since 3.2.1
+	 * @return string|null Activity type, '' for Everything, or null for no choice.
 	 */
 	private function get_member_preference() {
 		if ( $this->default_changed_since_last_seen() ) {
-			return '';
+			return null;
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI preference set by BuddyPress.
 		if ( ! isset( $_COOKIE['bp-activity-filter'] ) ) {
-			return '';
+			return null;
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI preference set by BuddyPress.
 		$preference = sanitize_text_field( wp_unslash( $_COOKIE['bp-activity-filter'] ) );
 
+		// BuddyPress's own value for "- Everything -". A deliberate choice, not silence.
 		if ( '' === $preference || '0' === $preference || '-1' === $preference ) {
 			return '';
 		}
@@ -273,14 +315,23 @@ class BP_Activity_Filter_Frontend {
 			return $query_string;
 		}
 
+		// The member picked a filter on this screen: honour it and never override it.
+		if ( $this->member_chose_filter_this_request() ) {
+			return $query_string;
+		}
+
 		// The member's own filter wins, unless the owner has changed the default since.
 		$preference = $this->get_member_preference();
-		if ( '' !== $preference ) {
-			$args['action'] = $preference;
+		if ( null !== $preference ) {
+			// '' means Everything: no filter, and no falling back to the admin default.
+			if ( '' !== $preference ) {
+				$args['action'] = $preference;
+			}
+
 			return http_build_query( $args );
 		}
 
-		// No user preference, use admin default.
+		// No preference at all, use admin default.
 		$default_filter = $this->get_default_filter();
 		if ( $default_filter && '0' !== $default_filter && '-1' !== $default_filter ) {
 			$args['action'] = $default_filter;
@@ -377,12 +428,15 @@ class BP_Activity_Filter_Frontend {
 			return;
 		}
 
-		// Show whatever the server actually applied: the member's live choice, or the
-		// admin default when they have none (or when theirs went stale on a change).
+		// Show whatever the server actually applied: the member's own choice, or the admin
+		// default when they have none (or when theirs went stale on a change). A member who
+		// chose Everything ('') gets no forced selection - BuddyPress already shows
+		// Everything, and overriding it here is what made the control disagree with the
+		// stream.
 		$preference      = $this->get_member_preference();
-		$filter_to_apply = '' !== $preference ? $preference : $this->get_default_filter();
+		$filter_to_apply = null !== $preference ? $preference : $this->get_default_filter();
 
-		// Only proceed if we have a filter to apply.
+		// Nothing to select: leave BuddyPress's own "- Everything -" alone.
 		if ( ! $filter_to_apply || '0' === $filter_to_apply || '-1' === $filter_to_apply ) {
 			return;
 		}
