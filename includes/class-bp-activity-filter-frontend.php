@@ -294,26 +294,95 @@ class BP_Activity_Filter_Frontend {
 	 * @return array Filter options without the hidden activity types.
 	 */
 	public function remove_hidden_from_dropdown( $filters, $context = '' ) {
-		$hidden_activities = $this->get_hidden_activities();
-
-		if ( empty( $hidden_activities ) || ! is_array( $filters ) ) {
+		if ( ! is_array( $filters ) ) {
 			return $filters;
 		}
 
-		// BuddyPress records one "friendship_created" activity for both friendship
-		// hooks and collapses the pair into a single "friendship_accepted,friendship_created"
-		// option, so hiding one side must account for the other.
-		if ( in_array( 'friendship_created', $hidden_activities, true ) ) {
-			$hidden_activities[] = 'friendship_accepted';
+		$hidden_activities = $this->get_hidden_activities();
+
+		if ( ! empty( $hidden_activities ) ) {
+			// BuddyPress records one "friendship_created" activity for both friendship
+			// hooks and collapses the pair into a single "friendship_accepted,friendship_created"
+			// option, so hiding one side must account for the other.
+			if ( in_array( 'friendship_created', $hidden_activities, true ) ) {
+				$hidden_activities[] = 'friendship_accepted';
+			}
+
+			foreach ( array_keys( $filters ) as $option_value ) {
+				$types = array_map( 'trim', explode( ',', (string) $option_value ) );
+
+				// Drop the option only when every type it would show is hidden.
+				if ( ! array_diff( $types, $hidden_activities ) ) {
+					unset( $filters[ $option_value ] );
+				}
+			}
 		}
 
+		return $this->ensure_default_is_selectable( $filters, $hidden_activities );
+	}
+
+	/**
+	 * Make sure the configured default is an option the dropdown can actually show.
+	 *
+	 * BuddyPress builds a different option list per context. The member list, for
+	 * example, has no "Profile Updates" entry - that type only appears site-wide. But
+	 * the settings screen happily lets an admin pick it as the profile default, so the
+	 * stream was correctly filtered to profile updates while the dropdown had no such
+	 * option to select and fell back to "Everything": the control contradicted the
+	 * stream it sat above.
+	 *
+	 * Rather than take the choice away from the admin, add the missing option so the
+	 * control can represent the state the server actually applied.
+	 *
+	 * @since 4.0.0
+	 * @param array $filters           Dropdown options, keyed by option value.
+	 * @param array $hidden_activities Types the admin has hidden.
+	 * @return array Options, including the active default.
+	 */
+	private function ensure_default_is_selectable( $filters, $hidden_activities ) {
+		$default = $this->get_default_filter();
+
+		if ( ! $default || '0' === $default || '-1' === $default ) {
+			return $filters;
+		}
+
+		// A hidden type must never be offered, even if it is the configured default.
+		if ( in_array( $default, $hidden_activities, true ) ) {
+			return $filters;
+		}
+
+		// Already present, either on its own or inside a combined key such as
+		// "friendship_accepted,friendship_created".
 		foreach ( array_keys( $filters ) as $option_value ) {
 			$types = array_map( 'trim', explode( ',', (string) $option_value ) );
-
-			// Drop the option only when every type it would show is hidden.
-			if ( ! array_diff( $types, $hidden_activities ) ) {
-				unset( $filters[ $option_value ] );
+			if ( in_array( $default, $types, true ) ) {
+				return $filters;
 			}
+		}
+
+		/*
+		 * Prefer the label BuddyPress itself uses for this type in the site-wide
+		 * dropdown, so the option reads the same wherever a member meets it. Fall back
+		 * to the plugin's own action list if BuddyPress has no label for it.
+		 */
+		$label = '';
+
+		if ( function_exists( 'bp_activity_get_actions_for_context' ) ) {
+			foreach ( bp_activity_get_actions_for_context( 'activity' ) as $action ) {
+				if ( isset( $action['key'], $action['value'] ) && $default === $action['key'] ) {
+					$label = $action['value'];
+					break;
+				}
+			}
+		}
+
+		if ( '' === $label ) {
+			$labels = BP_Activity_Filter_Helper::get_activity_actions();
+			$label  = isset( $labels[ $default ] ) ? $labels[ $default ] : '';
+		}
+
+		if ( '' !== $label ) {
+			$filters[ $default ] = $label;
 		}
 
 		return $filters;
@@ -366,8 +435,15 @@ class BP_Activity_Filter_Frontend {
 
 		if ( 'profile' === $context ) {
 			$default_filter = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_profile_default', '-1' );
-		} else {
+		} elseif ( 'sitewide' === $context ) {
 			$default_filter = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_default', '0' );
+		} else {
+			// No default is configured for this screen (group streams, single activity,
+			// anywhere else). Applying the site-wide default here would filter a stream
+			// the setting was never meant to touch, and the dropdown on that screen is
+			// not synced, so the member would see a filtered stream above a control that
+			// says "Everything".
+			$default_filter = '';
 		}
 
 		/**
@@ -382,16 +458,30 @@ class BP_Activity_Filter_Frontend {
 	}
 
 	/**
-	 * Get current filter context
+	 * Get current filter context.
+	 *
+	 * Only two screens have a default configured: the site-wide activity directory and
+	 * a member's own activity. Everything else - group activity streams above all -
+	 * returns an empty context so no default is forced on it.
+	 *
+	 * This used to fall through to 'sitewide' for every other screen, which meant that
+	 * setting a site-wide default of, say, "Posts" silently emptied every group's
+	 * activity stream: the group query was filtered down to blog posts, while the
+	 * filter dropdown on that page still read "Everything".
 	 *
 	 * @since 4.0.0
-	 * @return string Context (profile, sitewide)
+	 * @return string Context: 'profile', 'sitewide', or '' when no default applies.
 	 */
 	private function get_filter_context() {
-		if ( function_exists( 'bp_is_user_activity' ) && bp_is_user_activity() && 'just-me' === bp_current_action() ) {
+		if ( function_exists( 'bp_is_user_activity' ) && bp_is_user_activity() ) {
 			return 'profile';
 		}
-		return 'sitewide';
+
+		if ( function_exists( 'bp_is_activity_directory' ) && bp_is_activity_directory() ) {
+			return 'sitewide';
+		}
+
+		return '';
 	}
 
 	/**
