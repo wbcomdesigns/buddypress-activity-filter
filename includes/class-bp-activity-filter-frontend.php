@@ -21,6 +21,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 class BP_Activity_Filter_Frontend {
 
 	/**
+	 * Cookie recording the default this browser has already applied.
+	 *
+	 * Not a preference - it exists purely so we can tell whether the site owner has
+	 * changed the default since the member last picked a filter of their own. See
+	 * get_member_preference().
+	 *
+	 * @since 3.2.1
+	 * @var string
+	 */
+	const DEFAULT_STAMP = 'bpaf-applied-default';
+
+	/**
 	 * Class instance.
 	 *
 	 * @since 4.0.0
@@ -69,7 +81,12 @@ class BP_Activity_Filter_Frontend {
 		// Also filter AJAX requests.
 		add_filter( 'bp_ajax_querystring', array( $this, 'apply_default_filter_ajax' ), 10, 2 );
 
-		// Set initial cookie and dropdown state (minimal JS just for UI sync).
+		// Retire a member's stored filter when the owner changes the default. This has
+		// to run in the head, BEFORE BuddyPress reads sessionStorage in initObjects(),
+		// or BP has already re-applied the stale filter by the time we could clear it.
+		add_action( 'wp_head', array( $this, 'reset_stored_filter_on_default_change' ), 1 );
+
+		// Reflect the applied filter in the dropdown (minimal JS just for UI sync).
 		add_action( 'wp_footer', array( $this, 'sync_dropdown_with_default' ), 999 );
 
 		// Remove hidden activities from dropdown (but don't interfere with filtering).
@@ -105,20 +122,96 @@ class BP_Activity_Filter_Frontend {
 			return $args;
 		}
 
-		// Check user preference first (from cookie).
-		if ( isset( $_COOKIE['bp-activity-filter'] ) && '0' !== $_COOKIE['bp-activity-filter'] && '-1' !== $_COOKIE['bp-activity-filter'] ) {
-			$args['action'] = sanitize_text_field( wp_unslash( $_COOKIE['bp-activity-filter'] ) );
+		// The member's own filter wins, unless the owner has changed the default since
+		// the member last saw it - then their remembered choice is stale.
+		$preference = $this->get_member_preference();
+		if ( '' !== $preference ) {
+			$args['action'] = $preference;
 
 			return $args;
 		}
 
-		// No user preference, apply admin default.
+		// No live preference, apply admin default.
 		$default_filter = $this->get_default_filter();
 		if ( $default_filter && '0' !== $default_filter && '-1' !== $default_filter ) {
 			$args['action'] = $default_filter;
 		}
 
 		return $args;
+	}
+
+	/**
+	 * The member's own remembered filter, or '' when there isn't a live one.
+	 *
+	 * Returns '' when the owner has changed the default since this browser last saw it.
+	 * A default a member's stored choice can outrank forever is not a default: BuddyPress
+	 * remembers a picked filter (cookie on Legacy, sessionStorage on Nouveau) and replays
+	 * it on every load, so before this check the owner's new default was never shown to
+	 * anyone who had ever touched the dropdown.
+	 *
+	 * @since 3.2.1
+	 * @return string Activity type, or '' to fall through to the admin default.
+	 */
+	private function get_member_preference() {
+		if ( $this->default_changed_since_last_seen() ) {
+			return '';
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI preference set by BuddyPress.
+		if ( ! isset( $_COOKIE['bp-activity-filter'] ) ) {
+			return '';
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI preference set by BuddyPress.
+		$preference = sanitize_text_field( wp_unslash( $_COOKIE['bp-activity-filter'] ) );
+
+		if ( '' === $preference || '0' === $preference || '-1' === $preference ) {
+			return '';
+		}
+
+		return $preference;
+	}
+
+	/**
+	 * True when the defaults have changed since this browser last applied them.
+	 *
+	 * The stamp is written client-side (see reset_stored_filter_on_default_change), so on
+	 * a first visit there is no stamp and this reports true - which is correct, since a
+	 * fresh visitor has no preference to protect and should get the current default.
+	 *
+	 * @since 3.2.1
+	 * @return bool
+	 */
+	private function default_changed_since_last_seen() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI stamp.
+		$stamp = isset( $_COOKIE[ self::DEFAULT_STAMP ] )
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only UI stamp.
+			? sanitize_text_field( wp_unslash( $_COOKIE[ self::DEFAULT_STAMP ] ) )
+			: '';
+
+		return $this->get_defaults_signature() !== $stamp;
+	}
+
+	/**
+	 * Signature of the whole default configuration, both screens together.
+	 *
+	 * Deliberately NOT just the default for the current screen. There are two independent
+	 * settings (site-wide and profile) but BuddyPress keeps only ONE remembered filter per
+	 * member, shared across both streams. Stamping only the current screen's default meant
+	 * that when the two settings happened to hold the same value, changing one looked
+	 * unchanged to the other, and the member's stale filter survived on that screen.
+	 *
+	 * Stamping the pair means any change to either default re-asserts both, which is what
+	 * "modify the default and it takes effect" has to mean when the memory is shared.
+	 *
+	 * @since 3.2.1
+	 * @return string
+	 */
+	private function get_defaults_signature() {
+		$sitewide = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_default', '0' );
+		$profile  = BP_Activity_Filter_Migration::get_option_with_fallback( 'bp_activity_filter_profile_default', '-1' );
+
+		return (string) $sitewide . '|' . (string) $profile;
 	}
 
 	/**
@@ -180,9 +273,10 @@ class BP_Activity_Filter_Frontend {
 			return $query_string;
 		}
 
-		// Check user preference from cookie.
-		if ( isset( $_COOKIE['bp-activity-filter'] ) && '0' !== $_COOKIE['bp-activity-filter'] && '-1' !== $_COOKIE['bp-activity-filter'] ) {
-			$args['action'] = sanitize_text_field( wp_unslash( $_COOKIE['bp-activity-filter'] ) );
+		// The member's own filter wins, unless the owner has changed the default since.
+		$preference = $this->get_member_preference();
+		if ( '' !== $preference ) {
+			$args['action'] = $preference;
 			return http_build_query( $args );
 		}
 
@@ -197,28 +291,96 @@ class BP_Activity_Filter_Frontend {
 	}
 
 	/**
+	 * Drop the member's remembered filter when the site owner changes the default.
+	 *
+	 * A default that a member's session can permanently outrank is not a default. When a
+	 * member picks a filter, BuddyPress remembers it in sessionStorage under "bp-activity"
+	 * and replays it on every subsequent page load, so the owner's new default was never
+	 * shown to anyone who had ever touched the dropdown - the exact "modify the default and
+	 * the old one persists" report.
+	 *
+	 * So we stamp the default we last applied. When the stored stamp no longer matches the
+	 * configured default, the owner has changed it since this member last looked: their
+	 * remembered filter is stale, and it is dropped so the new default applies. A member's
+	 * own choice still survives ordinary reloads, which is the behaviour they expect.
+	 *
+	 * This MUST run before BuddyPress Nouveau's initObjects() reads sessionStorage (it is
+	 * what re-applies the remembered filter and requests the stream). Hence wp_head at
+	 * priority 1, not DOMContentLoaded - by then BP has already asked for the stale stream.
+	 *
+	 * @since 3.2.1
+	 */
+	public function reset_stored_filter_on_default_change() {
+		if ( ! $this->is_stream_with_default() ) {
+			return;
+		}
+
+		?>
+		<script type="text/javascript">
+		(function () {
+			try {
+				var current = <?php echo wp_json_encode( $this->get_defaults_signature() ); ?>;
+				var STAMP   = <?php echo wp_json_encode( self::DEFAULT_STAMP ); ?>;
+				var stamped = null;
+
+				document.cookie.split( ';' ).forEach( function ( pair ) {
+					var bits = pair.split( '=' );
+					if ( bits[0].trim() === STAMP ) {
+						stamped = decodeURIComponent( bits.slice( 1 ).join( '=' ) );
+					}
+				} );
+
+				if ( stamped === current ) {
+					return; // Default unchanged - the member's own choice stands.
+				}
+
+				/*
+				 * The owner changed the default since this browser last applied one, so
+				 * whatever filter BuddyPress remembered for this member is stale. Drop it
+				 * from both places BP keeps it - sessionStorage on Nouveau, the cookie on
+				 * Legacy - and record the default we are now applying.
+				 */
+				var store = JSON.parse( window.sessionStorage.getItem( 'bp-activity' ) || '{}' );
+				delete store.filter;
+				window.sessionStorage.setItem( 'bp-activity', JSON.stringify( store ) );
+
+				document.cookie = 'bp-activity-filter=; path=/; max-age=0';
+				document.cookie = STAMP + '=' + encodeURIComponent( current ) + '; path=/; max-age=31536000; samesite=lax';
+			} catch ( e ) {}
+		})();
+		</script>
+		<?php
+	}
+
+	/**
+	 * True on the two streams this plugin applies a default to.
+	 *
+	 * @since 3.2.1
+	 * @return bool
+	 */
+	private function is_stream_with_default() {
+		if ( function_exists( 'bp_is_activity_directory' ) && bp_is_activity_directory() ) {
+			return true;
+		}
+
+		return function_exists( 'bp_is_user_activity' ) && bp_is_user_activity();
+	}
+
+	/**
 	 * Sync dropdown with server-side default (minimal JS just for UI)
 	 *
 	 * @since 4.0.0
 	 */
 	public function sync_dropdown_with_default() {
 		// Only on activity pages.
-		if ( ! function_exists( 'bp_is_activity_directory' ) || ! bp_is_activity_directory() ) {
-			if ( ! function_exists( 'bp_is_user_activity' ) || ! bp_is_user_activity() ) {
-				return;
-			}
+		if ( ! $this->is_stream_with_default() ) {
+			return;
 		}
 
-		// Determine which filter to use.
-		$filter_to_apply = '';
-
-		// Check if user has existing preference.
-		if ( isset( $_COOKIE['bp-activity-filter'] ) && '' !== $_COOKIE['bp-activity-filter'] ) {
-			$filter_to_apply = sanitize_text_field( wp_unslash( $_COOKIE['bp-activity-filter'] ) );
-		} else {
-			// No preference, use admin default.
-			$filter_to_apply = $this->get_default_filter();
-		}
+		// Show whatever the server actually applied: the member's live choice, or the
+		// admin default when they have none (or when theirs went stale on a change).
+		$preference      = $this->get_member_preference();
+		$filter_to_apply = '' !== $preference ? $preference : $this->get_default_filter();
 
 		// Only proceed if we have a filter to apply.
 		if ( ! $filter_to_apply || '0' === $filter_to_apply || '-1' === $filter_to_apply ) {
