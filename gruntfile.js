@@ -182,12 +182,101 @@ module.exports = function ( grunt ) {
 			done();
 		}
 	});
-	
+
+	/*
+	 * Compile PO to .l10n.php.
+	 *
+	 * This is NOT optional. WordPress 6.5+ loads languages/*.l10n.php in
+	 * preference to the .mo, so regenerating only the .mo leaves a stale
+	 * .l10n.php in place that silently wins - the translation update
+	 * appears to do nothing. Any task that rebuilds .mo must rebuild this
+	 * too, which is why compile-mo and compile-php are always paired below.
+	 */
+	grunt.registerTask( 'compile-php', 'Compile PO files to .l10n.php (WP 6.5+ loads these before .mo)', function() {
+		var done = this.async();
+		var shelljs = require('shelljs');
+
+		if ( ! shelljs.which('wp') ) {
+			grunt.log.error('wp-cli not found. Required for "wp i18n make-php".');
+			grunt.log.error('Install: https://wp-cli.org/  (or run: wp i18n make-php languages/)');
+			return done(false);
+		}
+
+		var result = shelljs.exec('wp i18n make-php languages/', {silent: true});
+
+		if (result.code !== 0) {
+			grunt.log.error('Failed to generate .l10n.php files.');
+			if (result.stderr) {
+				grunt.log.error(result.stderr);
+			}
+			return done(false);
+		}
+
+		grunt.log.ok('Generated .l10n.php files.');
+		done();
+	});
+
+	/*
+	 * Guard: every locale must carry the same msgid count as the POT.
+	 * A silent count drift means a locale was not merged, or that a
+	 * msgattrib flag dropped entries instead of clearing them.
+	 */
+	grunt.registerTask( 'verify-i18n', 'Assert every PO matches the POT entry count', function() {
+		var done = this.async();
+		var shelljs = require('shelljs');
+		var path = require('path');
+
+		var potFile = 'languages/bp-activity-filter.pot';
+		if ( ! grunt.file.exists( potFile ) ) {
+			grunt.log.error('POT file not found. Run "grunt pot" first.');
+			return done(false);
+		}
+
+		function msgidCount( file ) {
+			return parseInt( shelljs.exec( 'grep -c "^msgid " "' + file + '"', {silent: true} ).stdout.trim(), 10 );
+		}
+
+		var expected = msgidCount( potFile );
+		var errors   = 0;
+
+		grunt.file.expand('languages/*.po').forEach(function(poFile) {
+			var actual   = msgidCount( poFile );
+			var baseName = path.basename( poFile );
+
+			if ( actual !== expected ) {
+				grunt.log.error( baseName + ': ' + actual + ' msgids, expected ' + expected + ' - locale is out of sync' );
+				errors++;
+				return;
+			}
+
+			var check = shelljs.exec('msgfmt -c -o /dev/null "' + poFile + '"', {silent: true});
+			if ( check.code !== 0 ) {
+				grunt.log.error( baseName + ': msgfmt -c failed' );
+				if ( check.stderr ) {
+					grunt.log.error( check.stderr );
+				}
+				errors++;
+				return;
+			}
+
+			grunt.log.ok( baseName + ': ' + actual + ' msgids, msgfmt clean' );
+		});
+
+		if ( errors > 0 ) {
+			grunt.log.error( errors + ' locale(s) failed verification.' );
+			return done(false);
+		}
+
+		grunt.log.ok('All locales match the POT (' + expected + ' msgids).');
+		done();
+	});
+
 	// Register tasks
 	grunt.registerTask( 'default', [ 'checktextdomain', 'makepot' ] );
-	grunt.registerTask( 'translate', [ 'checktextdomain', 'makepot', 'update-po', 'compile-mo' ] );
+	grunt.registerTask( 'translate', [ 'checktextdomain', 'makepot', 'update-po', 'compile-mo', 'compile-php', 'verify-i18n' ] );
 	grunt.registerTask( 'pot', [ 'makepot' ] );
 	grunt.registerTask( 'po', [ 'update-po' ] );
-	grunt.registerTask( 'mo', [ 'compile-mo' ] );
-	grunt.registerTask( 'sync', [ 'makepot', 'update-po', 'compile-mo' ] );
+	grunt.registerTask( 'mo', [ 'compile-mo', 'compile-php' ] );
+	grunt.registerTask( 'verify', [ 'verify-i18n' ] );
+	grunt.registerTask( 'sync', [ 'makepot', 'update-po', 'compile-mo', 'compile-php', 'verify-i18n' ] );
 };
