@@ -3,7 +3,7 @@
  * Uninstall script for BuddyPress Activity Filter.
  *
  * @package BuddyPress_Activity_Filter
- * @since 4.0.0
+ * @since 3.1.0
  */
 
 // If uninstall not called from WordPress, then exit.
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Main uninstall cleanup function.
  *
- * @since 4.0.0
+ * @since 3.1.0
  */
 function bp_activity_filter_uninstall_cleanup() {
 	// Check if we should preserve data during uninstall.
@@ -38,6 +38,9 @@ function bp_activity_filter_uninstall_cleanup() {
 	// Remove activity meta (if BuddyPress is active).
 	bp_activity_filter_remove_activity_meta();
 
+	// Remove post meta left behind by the removed CPT activity feature.
+	bp_activity_filter_remove_post_meta();
+
 	// Clear object cache.
 	if ( function_exists( 'wp_cache_flush' ) ) {
 		wp_cache_flush();
@@ -52,7 +55,7 @@ function bp_activity_filter_uninstall_cleanup() {
 /**
  * Remove all plugin options from the database.
  *
- * @since 4.0.0
+ * @since 3.1.0
  */
 function bp_activity_filter_remove_options() {
 	// Current plugin options.
@@ -85,7 +88,7 @@ function bp_activity_filter_remove_options() {
 /**
  * Remove plugin-related user meta.
  *
- * @since 4.0.0
+ * @since 3.1.0
  */
 function bp_activity_filter_remove_user_meta() {
 	global $wpdb;
@@ -108,7 +111,7 @@ function bp_activity_filter_remove_user_meta() {
 /**
  * Remove plugin-related activity meta.
  *
- * @since 4.0.0
+ * @since 3.1.0
  */
 function bp_activity_filter_remove_activity_meta() {
 	global $wpdb;
@@ -132,10 +135,13 @@ function bp_activity_filter_remove_activity_meta() {
 		return;
 	}
 
-	// Activity meta keys to remove.
+	// Activity meta keys to remove. All four were written by the CPT activity
+	// feature removed in 4.0.0; sites that ran 3.x still carry these rows.
 	$activity_meta_keys = array(
 		'bp_activity_filter_cpt',
 		'bp_activity_filter_post_id',
+		'bp_activity_filter_created_time',
+		'bp_activity_filter_version',
 	);
 
 	// Remove activity meta safely.
@@ -145,6 +151,29 @@ function bp_activity_filter_remove_activity_meta() {
 			array( 'meta_key' => $meta_key ),
 			array( '%s' )
 		);
+	}
+}
+
+/**
+ * Remove plugin-related post meta.
+ *
+ * The CPT activity feature removed in 4.0.0 wrote these alongside the activity
+ * meta above. They live in wp_postmeta, so they survive even when BuddyPress is
+ * already gone - which is why this runs outside the bp_is_active() guard.
+ *
+ * @since 4.0.0
+ */
+function bp_activity_filter_remove_post_meta() {
+	// Post meta keys to remove.
+	$post_meta_keys = array(
+		'_bp_activity_filter_activity_id',
+		'_bp_activity_filter_recorded',
+	);
+
+	// delete_post_meta_by_key() is used rather than a direct DELETE so the
+	// post-meta cache is invalidated for any object cache still in play.
+	foreach ( $post_meta_keys as $meta_key ) {
+		delete_post_meta_by_key( $meta_key );
 	}
 }
 

@@ -16,7 +16,7 @@ $bpaf_profile_default_filter = BP_Activity_Filter_Migration::get_option_with_fal
 $bpaf_activity_actions       = BP_Activity_Filter_Helper::get_activity_actions();
 
 // Sentinel: tells the sanitizer which option keys this tab owns so saving
-// here never wipes the Hidden / CPT options. See Playbook 7.1 and
+// here never wipes the Hidden options. See Playbook 7.1 and
 // BP_Activity_Filter_Admin_Panel::tab_rendered_option().
 $bpaf_rendered_options = array(
 	'bp_activity_filter_default',

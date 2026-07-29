@@ -55,7 +55,7 @@ $bpaf_plugin_count = count( $bpaf_plugins );
 		<div class="bpaf-page-header__title">
 			<span class="dashicons dashicons-lightbulb" aria-hidden="true"></span>
 			<div>
-				<h1><?php esc_html_e( 'WB Plugins', 'bp-activity-filter' ); ?></h1>
+				<h1>WB Plugins</h1>
 				<p class="bpaf-page-header__subtitle">
 					<?php
 					echo esc_html(

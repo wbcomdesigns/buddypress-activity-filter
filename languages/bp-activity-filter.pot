@@ -1,641 +1,382 @@
-# Copyright (C) 2025 Wbcom Designs
+# Copyright (C) 2026 Wbcom Designs
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: BuddyPress Activity Filter 3.1.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-11 04:49:08+00:00\n"
+"Project-Id-Version: BuddyPress Activity Filter 4.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-activity-filter\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2025-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Varun Dubey\n"
-"Language-Team: Wbcom Designs\n"
-"Language: en\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Country: United States\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: "
-"__;_e;_x:1,2c;_ex:1,2c;_n:1,2;_nx:1,2,4c;_n_noop:1,2;_nx_noop:1,2,3c;esc_"
-"attr__;esc_html__;esc_attr_e;esc_html_e;esc_attr_x:1,2c;esc_html_x:1,2c;\n"
-"X-Poedit-Basepath: ../\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-Bookmarks: \n"
-"X-Textdomain-Support: yes\n"
-"X-Generator: grunt-wp-i18n 1.0.4\n"
+"POT-Creation-Date: 2026-07-29T09:30:51+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: bp-activity-filter\n"
 
-#: buddypress-activity-filter.php:129 buddypress-activity-filter.php:130
-#: buddypress-activity-filter.php:559
-msgid "BP Activity Filter"
-msgstr ""
-
-#: buddypress-activity-filter.php:288
-#. translators: %s: file path
-msgid "BuddyPress Activity Filter: Required file missing: %s"
-msgstr ""
-
-#: buddypress-activity-filter.php:333
-msgid "BuddyPress Activity Filter requires BuddyPress to be installed and active."
-msgstr ""
-
-#: buddypress-activity-filter.php:334
-msgid "Plugin Activation Error"
-msgstr ""
-
-#: buddypress-activity-filter.php:387
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:297
-msgid "Settings"
-msgstr ""
-
-#: buddypress-activity-filter.php:395
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:51
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:52
-msgid "Dashboard"
-msgstr ""
-
-#. Plugin Name of the plugin/theme
+#. Plugin Name of the plugin
+#: buddypress-activity-filter.php
 msgid "BuddyPress Activity Filter"
 msgstr ""
 
-#: buddypress-activity-filter.php:434
-#. translators: %s: BuddyPress plugin link
-msgid "This plugin requires %s to be installed and active."
-msgstr ""
-
-#: buddypress-activity-filter.php:453
-#. translators: 1: required version, 2: current version
-msgid ""
-"This plugin requires BuddyPress version %1$s or higher. You are running "
-"version %2$s."
-msgstr ""
-
-#: buddypress-activity-filter.php:470
-msgid ""
-"This plugin is not compatible with BuddyBoss due to similar built-in "
-"features. Please use BuddyBoss's native activity filtering instead."
-msgstr ""
-
-#: buddypress-activity-filter.php:512
-msgid "Cloning instances of this class is forbidden."
-msgstr ""
-
-#: buddypress-activity-filter.php:520
-msgid "Unserializing instances of this class is forbidden."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:109
-msgid "Save Settings"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:204
-msgid "Default Filters"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:208
-msgid "Hidden Activities"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:212
-msgid "Custom Post Types"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:216
-msgid "FAQ"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:277
-msgid "Default Activity Filters"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:278
-msgid ""
-"Configure the default activity filter for different contexts. These "
-"settings determine what type of activities are shown by default when users "
-"visit activity streams."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:285
-msgid "Site-wide Activity Default"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:291
-#: includes/class-bp-activity-filter-admin.php:313
-msgid "Everything"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:300
-msgid ""
-"Default filter applied to the main site-wide activity stream. Users can "
-"still change this using the activity filter dropdown."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:307
-msgid "Profile Activity Default"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:324
-msgid ""
-"Default filter applied to individual user profile activity streams. Some "
-"activity types like \"New Member\" are excluded as they don't typically "
-"appear on user profiles."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:345
-msgid "Posted a status update"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:346
-msgid "Replied to a status update"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:351
-msgid "Hidden Activity Types"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:352
-msgid ""
-"Select activity types to completely hide from all activity streams. Hidden "
-"activities will not appear in the activity feed or filter dropdown options."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:354
-msgid "Activity Types to Hide"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:358
-msgid ""
-"No activity types available. Make sure BuddyPress is properly installed and "
-"activated."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:366
-msgid "Core Activities (Always Available)"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:369
-msgid ""
-"These essential activity types cannot be hidden as they are required for "
-"basic BuddyPress functionality."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:387
-msgid "Other Activity Types"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:390
-msgid "Check the boxes below to HIDE these activity types from your site."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:441
-#: includes/class-bp-activity-filter-admin.php:489
-msgid "How it works:"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:465
-msgid "Custom Post Type Activities"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:467
-msgid ""
-"Enable automatic activity generation for custom post types when they are "
-"published. Only public custom post types with admin interface are available "
-"for selection."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:470
-msgid "Enable Post Types"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:475
-msgid "No eligible custom post types found."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:477
-msgid ""
-"Custom post types must be public, have admin UI enabled, and support posts "
-"to appear here. Built-in WordPress post types (posts, pages) are not shown "
-"as they have their own activity systems."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:490
-msgid ""
-"When a post of the selected custom post type is published, an activity "
-"entry will be automatically created showing the author, post type, and post "
-"title with a link. Existing posts will not generate activities - only new "
-"posts published after enabling this feature."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:525
-msgid "%d post"
-msgid_plural "%d posts"
-msgstr[0] ""
-msgstr[1] ""
-
-#: includes/class-bp-activity-filter-admin.php:539
-msgid "Custom Activity Label (optional):"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:548
-msgid ""
-"Leave empty to use the default post type name. This text will appear in "
-"activity entries like \"John published a new [label]: Post Title\""
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:564
-msgid "Global Settings"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:572
-msgid "Hide custom post type activities from site-wide activity stream"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:574
-msgid ""
-"When enabled, custom post type activities will only appear in the author's "
-"profile activity stream, not in the main site-wide activity feed. This "
-"helps reduce clutter in the main activity stream while still giving authors "
-"credit on their profiles."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:654
-msgid "Security check failed. Please try again."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:664
-msgid "You do not have sufficient permissions to access this page."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:693
-#: includes/class-wbcom-integration.php:271
-#: includes/shared-admin/class-wbcom-shared-loader.php:790
-msgid "Settings saved successfully."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:700
-msgid "No changes were made to the settings."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:710
-msgid "Error saving settings: %s"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:949
-msgid "Frequently Asked Questions"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:952
-msgid "What is BuddyPress Activity Filter?"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:953
-msgid ""
-"BuddyPress Activity Filter enhances the default BuddyPress activity stream "
-"by providing advanced filtering options. It allows users to filter "
-"activities by type, set default filters, and manage which activity types "
-"are visible."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:957
-msgid "How do I set a default filter for all activity streams?"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:958
-msgid ""
-"Navigate to the Default Filters tab and select your preferred default "
-"filter from the dropdown. This filter will be applied automatically when "
-"users visit the activity stream."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:962
-msgid "Can I set different default filters for profile pages?"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:963
-msgid ""
-"Yes! In the Default Filters tab, you can set a separate default filter "
-"specifically for user profile activity streams. This allows for more "
-"contextual filtering based on where activities are viewed."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:967
-msgid "How do I hide specific activity types from users?"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:968
-msgid ""
-"Use the Hidden Activities tab to select which activity types should be "
-"hidden from the filter dropdown. Hidden activities will not appear as "
-"filter options for users, though the activities themselves may still be "
-"visible in the stream."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:972
-msgid "What are Custom Post Type activities?"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:973
-msgid ""
-"When Custom Post Types are published on your site, BuddyPress can create "
-"activities for them. The Custom Post Types tab lets you control which CPT "
-"activities appear in the filter dropdown and how they are labeled."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:977
-msgid "Can I rename activity type labels in the filter dropdown?"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:978
-msgid ""
-"Yes! In the Custom Post Types tab, you can customize the display labels for "
-"each post type activity. This helps make filter options more user-friendly "
-"and relevant to your community."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:982
-msgid "Why are some activities not showing up in the filter?"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:983
-msgid ""
-"Check the Hidden Activities tab to ensure the activity type is not hidden. "
-"Also, some activity types may not have a filter option if they are system "
-"activities or if they have been disabled by other plugins."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:987
-msgid "Is this plugin compatible with BuddyBoss Platform?"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:988
-msgid ""
-"BuddyPress Activity Filter is designed specifically for BuddyPress. "
-"BuddyBoss Platform includes its own built-in activity filtering features, "
-"so this plugin is not needed and may not be fully compatible with BuddyBoss."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:992
-msgid "How do filters affect activity stream performance?"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:993
-msgid ""
-"The plugin is optimized for performance and uses BuddyPress core filtering "
-"mechanisms. Filters are applied at the database query level, ensuring "
-"efficient loading even with large activity streams."
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:997
-msgid "Where can I get support or report issues?"
-msgstr ""
-
-#: includes/class-bp-activity-filter-admin.php:1001
-msgid ""
-"For support, please visit our %1$ssupport forum%2$s or check the %3$splugin "
-"documentation%4$s. You can also report issues on the plugin's WordPress.org "
-"support page."
-msgstr ""
-
-#: includes/class-bp-activity-filter-cpt.php:348
-msgid ""
-"Has create_posts capability set to \"do_not_allow\" (managed by another "
-"plugin)"
-msgstr ""
-
-#: includes/class-bp-activity-filter-cpt.php:349
-msgid "Managed by a known plugin (e.g., BP Member Reviews, bbPress)"
-msgstr ""
-
-#: includes/class-bp-activity-filter-cpt.php:350
-msgid "Not a public post type"
-msgstr ""
-
-#: includes/class-bp-activity-filter-cpt.php:351
-msgid "No admin interface"
-msgstr ""
-
-#: includes/class-bp-activity-filter-cpt.php:352
-msgid "Does not support titles"
-msgstr ""
-
-#: includes/class-bp-activity-filter-cpt.php:357
-msgid "Custom Post Type Exclusions"
-msgstr ""
-
-#: includes/class-bp-activity-filter-cpt.php:358
-msgid ""
-"The following post types are excluded from activity generation to prevent "
-"conflicts:"
-msgstr ""
-
-#: includes/class-bp-activity-filter-cpt.php:371
-msgid ""
-"This is normal behavior and helps prevent duplicate activities. All other "
-"eligible custom post types are available in the settings below."
-msgstr ""
-
-#: includes/class-bp-activity-filter-cpt.php:422
-#. translators: 1: Author link, 2: Post type label, 3: Post link
-msgid "%1$s published a new %2$s: %3$s"
-msgstr ""
-
-#: includes/class-wbcom-integration.php:269
-#: includes/shared-admin/class-wbcom-shared-loader.php:788
-msgid "Loading..."
-msgstr ""
-
-#: includes/class-wbcom-integration.php:270
-#: includes/shared-admin/class-wbcom-shared-loader.php:789
-msgid "Error loading content."
-msgstr ""
-
-#. Author of the plugin/theme
-msgid "Wbcom Designs"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:116
-msgid "Overview"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:120
-msgid "Installed Plugins"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:124
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:224
-msgid "Premium Plugins"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:128
-msgid "Premium Themes"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:132
-msgid "News & Updates"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:180
-msgid "Welcome to Wbcom Designs Dashboard"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:182
-msgid ""
-"Your central hub for managing premium WordPress and BuddyPress solutions. "
-"At Wbcom Designs, we specialize in creating powerful community plugins, "
-"custom development services, and comprehensive support solutions. Our Care "
-"Plan ensures your site stays optimized and secure with priority support, "
-"regular updates, and expert maintenance."
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:195
-msgid "Don't Risk Your Website's Success"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:198
-msgid ""
-"WordPress updates can break your site, security vulnerabilities expose your "
-"data, and performance issues drive visitors away. Our Care Plan ensures all "
-"updates are tested before deployment, security is monitored 24/7, and your "
-"site stays optimized. Stop worrying about crashes and focus on growing your "
-"business."
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:207
-msgid "Schedule Free Consultation"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:221
-msgid "Our Services"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:223
-msgid "Get Care Plan"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:225
-msgid "Custom Development"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:226
-msgid "Get Support"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:231
-msgid "System Status"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:235
-msgid "WordPress Version"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:240
-msgid "BuddyPress"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:241
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:246
-msgid "Active"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:241
-msgid "Inactive"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:245
-msgid "Production Mode"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:246
-msgid "Debug On"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:261
-msgid "Installed Wbcom Plugins"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:270
-msgid "No Wbcom Plugins Found"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:271
-msgid "Looks like you haven't installed any Wbcom Designs plugins yet."
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:273
-msgid "Browse Premium Plugins"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:288
-msgid "Version:"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:318
-msgid "Premium BuddyPress Plugins"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:319
-msgid ""
-"Enhance your community with these powerful premium plugins designed "
-"specifically for BuddyPress."
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:391
-msgid "Browse All Premium Plugins"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:409
-msgid "Premium Community Themes"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:410
-msgid ""
-"Transform your vision with these powerful multi-purpose themes designed to "
-"create any type of community platform."
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:474
-msgid "Browse All Premium Themes"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:490
-msgid "Latest News from Wbcom Designs"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:491
-msgid ""
-"Stay updated with the latest plugin releases, updates, and WordPress "
-"community news."
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:497
-msgid "Loading latest news..."
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:507
-msgid "Visit Our Blog"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:790
-msgid "Not Active"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:824
-msgid "Welcome to Wbcom Designs!"
-msgstr ""
-
-#: includes/shared-admin/class-wbcom-shared-dashboard.php:825
-msgid "No Wbcom plugins are currently active. Activate plugins to see them here."
-msgstr ""
-
-#. Plugin URI of the plugin/theme
+#. Plugin URI of the plugin
+#: buddypress-activity-filter.php
 msgid "https://wordpress.org/plugins/bp-activity-filter/"
 msgstr ""
 
-#. Description of the plugin/theme
-msgid ""
-"Filter and manage BuddyPress activity streams with default filters and "
-"custom post type support."
+#. Description of the plugin
+#: buddypress-activity-filter.php
+msgid "Hide activity types from BuddyPress activity streams and set the default filter members see."
 msgstr ""
 
-#. Author URI of the plugin/theme
+#. Author of the plugin
+#: buddypress-activity-filter.php
+msgid "Wbcom Designs"
+msgstr ""
+
+#. Author URI of the plugin
+#: buddypress-activity-filter.php
 msgid "https://wbcomdesigns.com/"
+msgstr ""
+
+#. translators: %s: file path
+#: buddypress-activity-filter.php:180
+#, php-format
+msgid "BuddyPress Activity Filter: Required file missing: %s"
+msgstr ""
+
+#: buddypress-activity-filter.php:220
+msgid "BuddyPress Activity Filter requires BuddyPress to be installed and active."
+msgstr ""
+
+#: buddypress-activity-filter.php:221
+msgid "Plugin Activation Error"
+msgstr ""
+
+#: buddypress-activity-filter.php:273
+#: includes/admin/views/shell.php:66
+msgid "Settings"
+msgstr ""
+
+#. translators: %s: BuddyPress plugin link
+#: buddypress-activity-filter.php:340
+#, php-format
+msgid "This plugin requires %s to be installed and active."
+msgstr ""
+
+#. translators: 1: required version, 2: current version
+#: buddypress-activity-filter.php:364
+#, php-format
+msgid "This plugin requires BuddyPress version %1$s or higher. You are running version %2$s."
+msgstr ""
+
+#: buddypress-activity-filter.php:386
+msgid "This plugin is not compatible with BuddyBoss due to similar built-in features. Please use BuddyBoss's native activity filtering instead."
+msgstr ""
+
+#: buddypress-activity-filter.php:449
+msgid "Cloning instances of this class is forbidden."
+msgstr ""
+
+#: buddypress-activity-filter.php:462
+msgid "Unserializing instances of this class is forbidden."
+msgstr ""
+
+#: includes/admin/class-bp-activity-filter-admin-panel.php:77
+msgid "Default Filters"
+msgstr ""
+
+#: includes/admin/class-bp-activity-filter-admin-panel.php:82
+msgid "Hidden Activities"
+msgstr ""
+
+#: includes/admin/class-bp-activity-filter-admin-panel.php:87
+msgid "FAQ"
+msgstr ""
+
+#: includes/admin/class-bp-activity-filter-admin-panel.php:92
+msgid "Discover"
+msgstr ""
+
+#: includes/admin/class-bp-activity-filter-admin-panel.php:386
+msgid "Visible"
+msgstr ""
+
+#: includes/admin/class-bp-activity-filter-admin-panel.php:387
+msgid "Hidden"
+msgstr ""
+
+#: includes/admin/views/discover.php:28
+msgid "A free, fast community theme for BuddyPress, BuddyBoss and PeepSo with a modern layout and dark mode."
+msgstr ""
+
+#: includes/admin/views/discover.php:35
+msgid "The full community stack: activity feeds, member spaces, profiles, and private messaging on WordPress."
+msgstr ""
+
+#: includes/admin/views/discover.php:42
+msgid "Self-moderating forums and Q&A boards that stay fast well beyond 100,000 topics."
+msgstr ""
+
+#: includes/admin/views/discover.php:49
+msgid "A photo and video hub with albums, reactions, following, and private chat."
+msgstr ""
+
+#: includes/admin/views/discover.php:56
+msgid "Run community events with RSVPs, calendars, and front-end submissions."
+msgstr ""
+
+#: includes/admin/views/discover.php:63
+msgid "Reward members with points, badges, and leaderboards to keep engagement high."
+msgstr ""
+
+#: includes/admin/views/discover.php:70
+msgid "Searchable directories with ten listing types, ratings, maps, and front-end submissions."
+msgstr ""
+
+#: includes/admin/views/discover.php:77
+msgid "Add a job board with front-end listings, applications, and employer profiles."
+msgstr ""
+
+#: includes/admin/views/discover.php:84
+msgid "Create, sell, and auto-grade online courses, then hand out certificates automatically."
+msgstr ""
+
+#: includes/admin/views/discover.php:92
+msgid "More Free Tools from Wbcom Designs"
+msgstr ""
+
+#: includes/admin/views/discover.php:93
+msgid "Activity Filter keeps your BuddyPress stream focused. These free tools from Wbcom Designs build out the community around that stream: the theme and network itself, forums, media, events, gamification, directories, jobs, and courses."
+msgstr ""
+
+#: includes/admin/views/discover.php:109
+msgid "Get it free"
+msgstr ""
+
+#. translators: %s: product name.
+#: includes/admin/views/discover.php:114
+#, php-format
+msgid "%s (opens in a new tab)"
+msgstr ""
+
+#: includes/admin/views/faq.php:13
+msgid "What is BuddyPress Activity Filter?"
+msgstr ""
+
+#: includes/admin/views/faq.php:14
+msgid "It gives you control over the BuddyPress activity stream. You can hide activity types you do not want members to see, and choose which filter is selected by default."
+msgstr ""
+
+#: includes/admin/views/faq.php:17
+msgid "How do I set a default filter for all activity streams?"
+msgstr ""
+
+#: includes/admin/views/faq.php:18
+msgid "Open the Default Filters tab and pick a default from the site-wide dropdown. It applies automatically the first time someone loads the activity stream."
+msgstr ""
+
+#: includes/admin/views/faq.php:21
+msgid "Can I set a different default filter for profiles?"
+msgstr ""
+
+#: includes/admin/views/faq.php:22
+msgid "Yes. The Default Filters tab has a separate profile dropdown so member profile streams can default to something different from the site-wide stream."
+msgstr ""
+
+#: includes/admin/views/faq.php:25
+msgid "How do I hide specific activity types?"
+msgstr ""
+
+#: includes/admin/views/faq.php:26
+msgid "Use the Hidden Activities tab and check the types you want to hide. Hidden types are removed from streams and the filter dropdown. Core status updates and replies cannot be hidden."
+msgstr ""
+
+#: includes/admin/views/faq.php:29
+msgid "Does hiding a type delete those activities?"
+msgstr ""
+
+#: includes/admin/views/faq.php:30
+msgid "No. Hiding excludes the type from the activity query, so those entries stop appearing immediately and come back if you unhide the type. They stay visible on the WordPress Activity screen so you can still moderate them."
+msgstr ""
+
+#: includes/admin/views/faq.php:33
+msgid "Why are some activities missing from the filter?"
+msgstr ""
+
+#: includes/admin/views/faq.php:34
+msgid "Check the Hidden Activities tab to confirm the type is not hidden. Some system activity types may also be unavailable if another plugin has disabled them."
+msgstr ""
+
+#: includes/admin/views/faq.php:37
+msgid "Is this plugin compatible with BuddyBoss Platform?"
+msgstr ""
+
+#: includes/admin/views/faq.php:38
+msgid "No. This plugin is built for BuddyPress. BuddyBoss Platform has its own activity filtering, so this plugin is not needed and is not fully compatible with it."
+msgstr ""
+
+#: includes/admin/views/faq.php:41
+msgid "How do filters affect activity stream performance?"
+msgstr ""
+
+#: includes/admin/views/faq.php:42
+msgid "Filtering happens at the database query level using BuddyPress core mechanisms, so it stays efficient even on large activity streams."
+msgstr ""
+
+#: includes/admin/views/faq.php:49
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: includes/admin/views/faq.php:61
+msgid "Where can I get support or report issues?"
+msgstr ""
+
+#. translators: %1$s: opening link tag for support, %2$s: closing link tag, %3$s: opening link tag for docs, %4$s: closing link tag.
+#: includes/admin/views/faq.php:66
+#, php-format
+msgid "Visit our %1$ssupport forum%2$s or read the %3$splugin documentation%4$s."
+msgstr ""
+
+#. translators: %d: active Wbcom plugin count
+#: includes/admin/views/hub.php:64
+#, php-format
+msgid "%d Wbcom plugin active on this site."
+msgid_plural "%d Wbcom plugins active on this site."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/views/hub.php:84
+msgid "No Wbcom plugins attached to this hub yet"
+msgstr ""
+
+#: includes/admin/views/hub.php:86
+msgid "Activate one or more Wbcom plugins and they will appear here automatically."
+msgstr ""
+
+#: includes/admin/views/hub.php:101
+msgid "Open settings"
+msgstr ""
+
+#: includes/admin/views/hub.php:111
+msgid "About WB Plugins"
+msgstr ""
+
+#: includes/admin/views/hub.php:115
+msgid "This hub is the single entry point for every Wbcom Designs plugin installed on your site. Each plugin lives on its own page under this menu and keeps its own settings and data."
+msgstr ""
+
+#: includes/admin/views/hub.php:119
+msgid "Visit wbcomdesigns.com for more plugins and themes"
+msgstr ""
+
+#: includes/admin/views/settings-default.php:32
+msgid "Default Activity Filters"
+msgstr ""
+
+#: includes/admin/views/settings-default.php:33
+msgid "Choose what each activity stream shows by default. Members can still switch the filter themselves using the activity dropdown."
+msgstr ""
+
+#: includes/admin/views/settings-default.php:39
+msgid "Site-wide stream default"
+msgstr ""
+
+#: includes/admin/views/settings-default.php:44
+#: includes/admin/views/settings-default.php:64
+msgid "Everything"
+msgstr ""
+
+#: includes/admin/views/settings-default.php:53
+msgid "Applied to the main site-wide activity stream the first time a visitor loads it."
+msgstr ""
+
+#: includes/admin/views/settings-default.php:59
+msgid "Profile stream default"
+msgstr ""
+
+#: includes/admin/views/settings-default.php:75
+msgid "Applied to each member profile activity stream. Profile-irrelevant types such as \"New Member\" are left out of this list."
+msgstr ""
+
+#: includes/admin/views/settings-hidden.php:23
+msgid "Posted a status update"
+msgstr ""
+
+#: includes/admin/views/settings-hidden.php:24
+msgid "Replied to a status update"
+msgstr ""
+
+#: includes/admin/views/settings-hidden.php:36
+msgid "Hidden Activity Types"
+msgstr ""
+
+#: includes/admin/views/settings-hidden.php:37
+msgid "Hide an activity type to remove it from every stream and from the filter dropdown. Core status updates and replies stay visible."
+msgstr ""
+
+#: includes/admin/views/settings-hidden.php:43
+msgid "No activity types are available. Make sure BuddyPress is installed and active."
+msgstr ""
+
+#: includes/admin/views/settings-hidden.php:47
+msgid "Core activities (always visible)"
+msgstr ""
+
+#: includes/admin/views/settings-hidden.php:53
+msgid "Always visible"
+msgstr ""
+
+#: includes/admin/views/settings-hidden.php:59
+msgid "Other activity types"
+msgstr ""
+
+#: includes/admin/views/settings-hidden.php:60
+msgid "Check a box to hide that activity type from your site."
+msgstr ""
+
+#: includes/admin/views/settings-hidden.php:91
+msgid "Visible types appear in streams and the filter dropdown. Hidden types are removed entirely. Core types cannot be hidden."
+msgstr ""
+
+#: includes/admin/views/shell.php:30
+msgid "Hide activity types from your activity streams and set the default filter members see."
+msgstr ""
+
+#: includes/admin/views/shell.php:58
+msgid "Activity Filter"
+msgstr ""
+
+#: includes/admin/views/shell.php:59
+msgid "Plugin"
+msgstr ""
+
+#: includes/admin/views/shell.php:62
+msgid "Activity Filter navigation"
+msgstr ""
+
+#: includes/admin/views/shell.php:67
+msgid "Resources"
+msgstr ""
+
+#: includes/admin/views/shell.php:92
+msgid "Documentation"
+msgstr ""
+
+#: includes/admin/views/shell.php:94
+msgid "(opens in a new tab)"
+msgstr ""
+
+#: includes/admin/views/shell.php:110
+msgid "Save Settings"
+msgstr ""
+
+#. translators: %s: The activity type that has been disabled.
+#: includes/class-bp-activity-filter-frontend.php:637
+#, php-format
+msgid "Activity type \"%s\" has been disabled by administrator."
+msgstr ""
+
+#: includes/class-bp-activity-filter-helper.php:51
+msgid "New friendships"
 msgstr ""

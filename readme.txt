@@ -1,40 +1,42 @@
 === BuddyPress Activity Filter ===
 Contributors: wbcomdesigns, vapvarun
-Tags: buddypress, activity-filter, filter, buddypress-activity, hide-activity, default-activity, custom-post-type-activity
+Tags: buddypress, activity-filter, filter, buddypress-activity, hide-activity
 Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 6.9
 Tested up to: 7.0
 Requires PHP: 8.0
 Requires Plugins: buddypress
-Stable tag: 3.2.1
+Stable tag: 4.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Easily manage your BuddyPress Activity Stream by filtering specific activity types, setting default filters, and enabling public Custom Post Types (CPT) activities.
+Hide activity types from your BuddyPress activity streams and choose the default filter members see.
 
 == Description ==
 
-The **BuddyPress Activity Filter** plugin helps site administrators customize the activity feed by setting default activity types and hiding irrelevant content. It also allows you to include activities from Custom Post Types (CPT) in the BuddyPress activity stream.
+The **BuddyPress Activity Filter** plugin does two things, and does them completely:
+
+1. Hides activity types you do not want in the stream.
+2. Sets which filter is selected by default, site-wide and on member profiles.
+
+Hidden types are removed from the stream itself, not just the filter dropdown. That means activities recorded before you hid a type disappear too, across every stream scope - site-wide, profiles, groups, friends, mentions and favourites - including streams loaded over AJAX. Hidden activities remain visible in wp-admin, so you can still moderate them.
 
 ### Key Features
 
-- **Default Activity Filters**: Set different default filters for site-wide and profile-specific activity streams
-- **Hide Unwanted Activities**: Remove specific activity types from appearing in the activity feed
-- **Custom Post Type Support**: Enable activity generation for custom post types when published
-- **Clean & Lightweight**: Optimized code with minimal performance impact
-- **Theme Compatible**: Works with BuddyPress default theme and Nouveau theme package
-- **Easy Administration**: Simple settings interface with intuitive controls
-- **Security Hardened**: Built with WordPress security best practices
-- **Performance Optimized**: Efficient caching and minimal database queries
-- **Developer Friendly**: Extensive hooks and filters for customization
+- **Hide Unwanted Activities**: Remove specific activity types from every activity stream
+- **Default Activity Filters**: Set different default filters for site-wide and profile activity streams
+- **Complete Filtering**: Hidden types are excluded from the stream, the dropdown, and pagination counts
+- **Still Moderatable**: Hidden activities stay visible on the wp-admin Activity screen
+- **Core Types Protected**: Status updates and replies can never be hidden, so the stream is never empty
+- **Theme Compatible**: Works with the BuddyPress Legacy and Nouveau template packs
+- **Clean and Lightweight**: Four PHP classes, no custom tables, no cron, no AJAX handlers
+- **Developer Friendly**: Hooks and filters for customization
 
 ### Perfect For
 
 - Community sites wanting to streamline their activity feeds
-- Sites with custom post types that need activity integration
 - Administrators who want granular control over activity visibility
 - Communities looking to improve user experience with focused content
-- Developers needing customizable activity filtering solutions
 
 ### Configuration Options
 
@@ -44,14 +46,7 @@ The **BuddyPress Activity Filter** plugin helps site administrators customize th
 
 **Hidden Activities Tab:**
 - Select specific activity types to hide from all activity streams
-- Professional activity labels for better clarity
-- Bulk select/deselect options for efficient management
-
-**Custom Post Types Tab:**
-- Enable activity generation for any public custom post type
-- Customize activity labels for each post type
-- Automatic activity creation when CPT posts are published
-- Global settings for CPT activity visibility
+- Clear activity labels for better clarity
 
 ### Premium Extensions
 
@@ -119,8 +114,7 @@ Enhance your BuddyPress community with these premium add-ons:
 
 1. **Configure Default Filters**: Set your preferred defaults for site-wide and profile activities
 2. **Hide Unwanted Activities**: Select activity types to hide from the stream
-3. **Enable Custom Post Types**: Choose which custom post types should generate activities
-4. **Test Configuration**: Visit your activity stream to verify settings are working
+3. **Test Configuration**: Visit your activity stream to verify settings are working
 
 == Frequently Asked Questions ==
 
@@ -132,9 +126,9 @@ By default, "Everything" is shown in the activity feed. You can change this to a
 
 Yes! Use the "Hidden Activities" tab to select which activity types should never appear in the activity stream. This completely removes them from the feed and dropdown options.
 
-= How do Custom Post Type activities appear? =
+= Does hiding a type remove activities that already exist? =
 
-When you enable a custom post type, publishing a new post of that type will automatically create an activity entry showing the author, post type, and post title with a link. You can customize the activity label for each post type.
+They stop appearing in the stream, but nothing is deleted. Hiding works by excluding the type from the activity query, so older activities of that type disappear from the feed immediately and come back if you unhide the type. They also stay visible on the wp-admin Activity screen so you can still moderate them.
 
 = Will this work with my theme? =
 
@@ -144,9 +138,9 @@ Yes, the plugin is compatible with BuddyPress default themes and the Nouveau the
 
 No, the plugin only affects the display and filtering of activities. Existing activities remain unchanged in the database. The plugin works by modifying queries and display logic, not by deleting data.
 
-= Can I customize the activity text for custom post types? =
+= What happened to the Custom Post Types tab? =
 
-Yes, when enabling a custom post type, you can specify a custom label that will be used in the activity text instead of the default post type name. This allows for more user-friendly activity descriptions.
+It was removed in 4.0.0. The feature recorded every custom post type under the built-in `new_blog_post` activity type, which meant those activities could not be filtered or hidden separately - the opposite of what this plugin is for - and it never cleaned up activities when the underlying post was deleted. Rather than leave a half-working feature in place, it was removed so the plugin does one job completely. To put custom post types into the activity stream, use the BuddyPress Blogs component or a dedicated plugin.
 
 = Is this compatible with BuddyBoss? =
 
@@ -175,6 +169,21 @@ The plugin is optimized for performance with smart caching, minimal database que
 3. Discover tab linking to other free Wbcom Designs community plugins.
 
 == Changelog ==
+
+= 4.0.0 - July 2026 =
+
+This release narrows the plugin to what it does completely: hiding activity types and setting the default filter. The Custom Post Types feature has been removed.
+
+* Improve  - Removed the Custom Post Types tab and its activity generation. It recorded every custom post type under the built-in "new blog post" activity type, so those activities could not be hidden or filtered separately, and it never removed the activity when the post was deleted. Existing activities it created are left untouched and can be hidden or moderated as normal.
+* Fix      - Deleting the plugin now removes all of its data. Four activity meta keys and two post meta keys were left behind on every uninstall.
+* Fix      - Corrected the documented developer hooks. Four filters listed in the readme were never fired by the plugin, so code written against them silently did nothing.
+* Fix      - Removed a readme claim of bulk select and deselect controls on the Hidden Activities tab, which the screen has never had.
+* Fix      - Corrected the readme claim that activity actions are cached. The plugin performs no caching.
+* Fix      - Corrected the "Premium BuddyPress Plugins" heading, the "Hidden Activities" and "Other Activity Types" tab labels, and six other translation errors across the German, German formal, French and Dutch locale files.
+* Fix      - Rebuilt the German formal translation, which had been unmaintained since 2020 with most strings untranslated.
+* Fix      - Regenerated the translation template, which still declared version 3.1.0.
+* Dev      - Removed roughly 900 lines of code left unreachable by the above, including the whole post type eligibility and conflict detection subsystem.
+* Dev      - Corrected the @since tags throughout, which all read 4.0.0 while the plugin was at 3.2.1.
 
 = 3.2.1 =
 
@@ -246,65 +255,38 @@ The plugin is optimized for performance with smart caching, minimal database que
 Important bug fixes and performance improvements. This version fixes critical issues with activity filtering and prevention. Server-side filtering improves performance and reliability. Backup recommended before upgrading.
 
 = 4.0.0 =
-**Major Update - Please Backup Before Upgrading**
-
-This is a significant update with complete code rewrite for better performance, security, and maintainability. All existing functionality is preserved and enhanced. The plugin includes automatic migration tools to preserve your settings, but we recommend backing up your site before updating.
-
-**What's New:**
-* Modern OOP architecture with better performance
-* Enhanced admin interface with tabbed navigation
-* Improved security with comprehensive input validation
-* Better theme compatibility and mobile responsiveness
-* Advanced CPT integration with preview functionality
-* Smart migration system for seamless upgrades
-
-**After Updating:**
-* Review your settings in the new admin interface
-* Test activity filtering functionality
-* Check any custom code for compatibility
-* Clear any caching plugins if needed
+The Custom Post Types tab has been removed. If you used it to publish custom post types into the activity stream, that will stop when you update. Activities it already created are not deleted and still appear in the stream. Your Default Filters and Hidden Activities settings are unchanged. Everything else in this release is bug fixes.
 
 == Advanced Configuration ==
 
 ### Custom Hooks and Filters
 
-**Available Action Hooks:**
-* `bp_activity_filter_init` - Plugin initialization
-* `bp_activity_filter_settings_saved` - After settings save
-* `bp_activity_filter_cpt_activity_created` - When CPT activity is created
+This is the complete list. Every hook below is fired by the plugin and was verified against the source in 4.0.0.
 
-**Available Filter Hooks:**
-* `bp_activity_filter_default` - Modify default filter value
-* `bp_activity_filter_available_filters` - Customize available filters
-* `bp_activity_filter_query_args` - Modify activity query arguments
-* `bp_activity_filter_eligible_post_types` - Filter eligible CPTs
+**Action Hooks:**
+* `bp_activity_filter_init` - Fires after the plugin is fully initialized
 
-### Custom Post Type Configuration
+**Filter Hooks:**
+* `bp_activity_filter_default` - `( string $default_filter, string $context )` Modify the default filter. `$context` is `sitewide` or `profile`
+* `bp_activity_filter_activity_actions` - `( array $labels )` Modify the activity type labels offered in the admin
+* `bp_activity_filter_admin_tabs` - `( array $tabs )` Add or remove tabs in the settings screen
+* `bp_activity_filter_preserve_data_on_uninstall` - `( bool $preserve )` Return true to keep all plugin data when the plugin is deleted
 
 ```php
-// Enable activity for custom post type programmatically
-add_filter( 'bp_activity_filter_eligible_post_types', function( $post_types ) {
-    $post_types['my_custom_type'] = get_post_type_object( 'my_custom_type' );
-    return $post_types;
-});
+// Always default the site-wide stream to status updates.
+add_filter( 'bp_activity_filter_default', function( $default_filter, $context ) {
+    return 'sitewide' === $context ? 'activity_update' : $default_filter;
+}, 10, 2 );
 
-// Customize activity action text
-add_filter( 'bp_activity_filter_cpt_activity_action', function( $action, $post, $label ) {
-    if ( 'my_custom_type' === $post->post_type ) {
-        $action = sprintf( '%s shared a new %s', get_author_name(), $label );
-    }
-    return $action;
-}, 10, 3 );
+// Keep settings and hidden-type choices when the plugin is deleted.
+add_filter( 'bp_activity_filter_preserve_data_on_uninstall', '__return_true' );
 ```
 
-### Performance Optimization
+### Performance
 
-The plugin includes several performance optimizations:
-
-* **Query Caching**: Activity actions are cached to reduce database calls
-* **Smart Loading**: Scripts only load on relevant pages
-* **Minimal Footprint**: Optimized code with efficient algorithms
-* **Database Optimization**: Indexed queries and reduced overhead
+* **Smart Loading**: Admin CSS and JS are enqueued only on the plugin's own settings screen
+* **Minimal Footprint**: Four PHP classes, no custom database tables, no cron jobs, and no AJAX handlers
+* **No Extra Queries**: Hiding is applied as a WHERE condition on the activity query BuddyPress already runs, so it adds no additional queries
 
 ### Troubleshooting
 
@@ -312,7 +294,7 @@ The plugin includes several performance optimizations:
 
 1. **Activities not filtering**: Check BuddyPress version compatibility
 2. **Settings not saving**: Verify user permissions and nonce verification
-3. **Custom post types not showing**: Ensure post types meet eligibility criteria
+3. **A hidden type still appears**: Clear your browser cookies and site cache; BuddyPress remembers the last filter a member used
 4. **Theme conflicts**: Test with default BuddyPress theme
 
 **Debug Mode:**

@@ -2,8 +2,8 @@
 /**
  * Plugin Name: BuddyPress Activity Filter
  * Plugin URI: https://wordpress.org/plugins/bp-activity-filter/
- * Description: Filter and manage BuddyPress activity streams with default filters and custom post type support.
- * Version: 3.2.1
+ * Description: Hide activity types from BuddyPress activity streams and set the default filter members see.
+ * Version: 4.0.0
  * Author: Wbcom Designs
  * Author URI: https://wbcomdesigns.com/
  * License: GPL v2 or later
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define plugin constants.
 if ( ! defined( 'BP_ACTIVITY_FILTER_VERSION' ) ) {
-	define( 'BP_ACTIVITY_FILTER_VERSION', '3.2.1' );
+	define( 'BP_ACTIVITY_FILTER_VERSION', '4.0.0' );
 }
 
 if ( ! defined( 'BP_ACTIVITY_FILTER_PLUGIN_DIR' ) ) {
@@ -46,14 +46,14 @@ if ( ! defined( 'BP_ACTIVITY_FILTER_BASENAME' ) ) {
 /**
  * Main plugin class.
  *
- * @since 4.0.0
+ * @since 3.1.0
  */
 final class BP_Activity_Filter {
 
 	/**
 	 * Plugin instance.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @var BP_Activity_Filter|null Single instance of the plugin class.
 	 */
 	private static $instance = null;
@@ -61,7 +61,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Minimum required BuddyPress version.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @var string
 	 */
 	private $min_bp_version = '12.0.0';
@@ -69,7 +69,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Get plugin instance.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return BP_Activity_Filter The single instance of the plugin.
 	 */
 	public static function instance() {
@@ -82,7 +82,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Constructor.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	private function __construct() {
 		$this->setup_hooks();
@@ -91,7 +91,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Setup plugin hooks.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	private function setup_hooks() {
 		add_action( 'plugins_loaded', array( $this, 'init' ), 20 );
@@ -109,7 +109,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Initialize the plugin.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	public function init() {
 		// Check if BuddyPress is active.
@@ -142,7 +142,7 @@ final class BP_Activity_Filter {
 		/**
 		 * Fires after BuddyPress Activity Filter is fully initialized.
 		 *
-		 * @since 4.0.0
+		 * @since 3.1.0
 		 */
 		do_action( 'bp_activity_filter_init' );
 	}
@@ -150,7 +150,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Load plugin textdomain for internationalization.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	public function load_textdomain() {
 		// Translations are automatically loaded by WordPress since 4.6.
@@ -159,7 +159,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Include required files.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	private function includes() {
 		$include_files = array(
@@ -167,7 +167,6 @@ final class BP_Activity_Filter {
 			'includes/class-bp-activity-filter-migration.php',
 			'includes/admin/class-bp-activity-filter-admin-panel.php',
 			'includes/class-bp-activity-filter-frontend.php',
-			'includes/class-bp-activity-filter-cpt.php',
 		);
 
 		foreach ( $include_files as $file ) {
@@ -189,7 +188,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Initialize plugin components.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	private function init_components() {
 		// Initialize migration system first.
@@ -206,17 +205,12 @@ final class BP_Activity_Filter {
 		if ( class_exists( 'BP_Activity_Filter_Frontend' ) ) {
 			BP_Activity_Filter_Frontend::instance();
 		}
-
-		// Initialize CPT support.
-		if ( class_exists( 'BP_Activity_Filter_CPT' ) ) {
-			BP_Activity_Filter_CPT::instance();
-		}
 	}
 
 	/**
 	 * Plugin activation callback.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	public function activate() {
 		// Check for minimum requirements during activation.
@@ -234,7 +228,6 @@ final class BP_Activity_Filter {
 			'bp_activity_filter_default'         => '0',
 			'bp_activity_filter_profile_default' => '-1',
 			'bp_activity_filter_hidden'          => array(),
-			'bp_activity_filter_cpt_settings'    => array(),
 		);
 
 		foreach ( $default_options as $option => $value ) {
@@ -253,7 +246,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Plugin deactivation callback.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	public function deactivate() {
 		// Clean up transients.
@@ -269,7 +262,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Add plugin action links in the plugins list.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @param array $links Existing plugin action links.
 	 * @return array Modified plugin action links.
 	 */
@@ -287,7 +280,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Check if all plugin requirements are met.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return bool True if requirements are met, false otherwise.
 	 */
 	private function meets_requirements() {
@@ -297,7 +290,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Check if BuddyPress is active.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return bool True if BuddyPress is active, false otherwise.
 	 */
 	private function is_buddypress_active() {
@@ -307,7 +300,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Check if BuddyPress version is compatible.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return bool True if BuddyPress version meets minimum requirement, false otherwise.
 	 */
 	private function is_buddypress_version_compatible() {
@@ -322,7 +315,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Check if BuddyBoss is active.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return bool True if BuddyBoss is active, false otherwise.
 	 */
 	private function is_buddyboss_active() {
@@ -332,13 +325,13 @@ final class BP_Activity_Filter {
 	/**
 	 * Display admin notice when BuddyPress is not active.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	public function buddypress_required_notice() {
 		?>
 		<div class="notice notice-error">
 			<p>
-				<strong><?php esc_html_e( 'BuddyPress Activity Filter', 'bp-activity-filter' ); ?></strong>
+				<strong>BuddyPress Activity Filter</strong>
 			</p>
 			<p>
 				<?php
@@ -356,13 +349,13 @@ final class BP_Activity_Filter {
 	/**
 	 * Display admin notice when BuddyPress version is incompatible.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	public function buddypress_version_notice() {
 		?>
 		<div class="notice notice-error">
 			<p>
-				<strong><?php esc_html_e( 'BuddyPress Activity Filter', 'bp-activity-filter' ); ?></strong>
+				<strong>BuddyPress Activity Filter</strong>
 			</p>
 			<p>
 				<?php
@@ -381,13 +374,13 @@ final class BP_Activity_Filter {
 	/**
 	 * Display admin notice when BuddyBoss is active.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	public function buddyboss_incompatible_notice() {
 		?>
 		<div class="notice notice-error">
 			<p>
-				<strong><?php esc_html_e( 'BuddyPress Activity Filter', 'bp-activity-filter' ); ?></strong>
+				<strong>BuddyPress Activity Filter</strong>
 			</p>
 			<p>
 				<?php esc_html_e( 'This plugin is not compatible with BuddyBoss due to similar built-in features. Please use BuddyBoss\'s native activity filtering instead.', 'bp-activity-filter' ); ?>
@@ -399,7 +392,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Get the plugin version.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return string Plugin version string.
 	 */
 	public function get_version() {
@@ -409,7 +402,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Get the plugin directory path.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return string Plugin directory path.
 	 */
 	public function get_plugin_dir() {
@@ -419,7 +412,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Get the plugin URL.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return string Plugin URL.
 	 */
 	public function get_plugin_url() {
@@ -429,7 +422,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Handle plugin activation redirect.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	public function handle_activation_redirect() {
 		if ( get_transient( 'bp_activity_filter_activation_redirect' ) ) {
@@ -448,7 +441,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Prevent cloning of the singleton instance.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	public function __clone() {
 		_doing_it_wrong(
@@ -461,7 +454,7 @@ final class BP_Activity_Filter {
 	/**
 	 * Prevent unserializing of the singleton instance.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	public function __wakeup() {
 		_doing_it_wrong(
@@ -475,7 +468,7 @@ final class BP_Activity_Filter {
 /**
  * Get the main plugin instance.
  *
- * @since 4.0.0
+ * @since 3.1.0
  * @return BP_Activity_Filter The single instance of the plugin.
  */
 function bp_activity_filter() {

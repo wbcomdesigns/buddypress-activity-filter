@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 $bpaf_faqs = array(
 	array(
 		'q' => __( 'What is BuddyPress Activity Filter?', 'bp-activity-filter' ),
-		'a' => __( 'It enhances the default BuddyPress activity stream with advanced filtering. You can set default filters, hide activity types, and turn custom post types into activity entries.', 'bp-activity-filter' ),
+		'a' => __( 'It gives you control over the BuddyPress activity stream. You can hide activity types you do not want members to see, and choose which filter is selected by default.', 'bp-activity-filter' ),
 	),
 	array(
 		'q' => __( 'How do I set a default filter for all activity streams?', 'bp-activity-filter' ),
@@ -26,12 +26,8 @@ $bpaf_faqs = array(
 		'a' => __( 'Use the Hidden Activities tab and check the types you want to hide. Hidden types are removed from streams and the filter dropdown. Core status updates and replies cannot be hidden.', 'bp-activity-filter' ),
 	),
 	array(
-		'q' => __( 'What are Custom Post Type activities?', 'bp-activity-filter' ),
-		'a' => __( 'When a post of an enabled custom post type is published, the plugin can create an activity entry for it. The Custom Post Types tab controls which types are enabled and how they are labeled.', 'bp-activity-filter' ),
-	),
-	array(
-		'q' => __( 'Can I rename activity labels in the filter dropdown?', 'bp-activity-filter' ),
-		'a' => __( 'Yes. The Custom Post Types tab lets you set a custom label per post type so filter options read the way your community expects.', 'bp-activity-filter' ),
+		'q' => __( 'Does hiding a type delete those activities?', 'bp-activity-filter' ),
+		'a' => __( 'No. Hiding excludes the type from the activity query, so those entries stop appearing immediately and come back if you unhide the type. They stay visible on the WordPress Activity screen so you can still moderate them.', 'bp-activity-filter' ),
 	),
 	array(
 		'q' => __( 'Why are some activities missing from the filter?', 'bp-activity-filter' ),

@@ -26,8 +26,8 @@ $bpaf_version = defined( 'BP_ACTIVITY_FILTER_VERSION' ) ? BP_ACTIVITY_FILTER_VER
 		<div class="bpaf-page-header__title">
 			<span class="dashicons dashicons-filter" aria-hidden="true"></span>
 			<div>
-				<h1><?php esc_html_e( 'BuddyPress Activity Filter', 'bp-activity-filter' ); ?></h1>
-				<p class="bpaf-page-header__subtitle"><?php esc_html_e( 'Set default activity filters, hide activity types, and turn custom post types into activity stream entries.', 'bp-activity-filter' ); ?></p>
+				<h1>BuddyPress Activity Filter</h1>
+				<p class="bpaf-page-header__subtitle"><?php esc_html_e( 'Hide activity types from your activity streams and set the default filter members see.', 'bp-activity-filter' ); ?></p>
 			</div>
 		</div>
 		<div class="bpaf-page-header__actions">

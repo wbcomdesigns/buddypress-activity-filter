@@ -7,9 +7,9 @@
  * Follows the wp-plugin-development skill Part 6 card-panel pattern and
  * references/wbcom-wrapper-migration.md (Parts 5, 6, 7.1, 15).
  *
- * The legacy admin class (class-bp-activity-filter-admin.php) is retained
- * for its battle-tested sanitizer callbacks only; this class owns the
- * menu, settings registration, enqueue, and page rendering.
+ * This class owns the menu, settings registration, sanitizers, enqueue,
+ * and page rendering. The old BP_Activity_Filter_Admin class was deleted
+ * in 3.2.1 and its sanitizers moved here.
  *
  * @package BuddyPress_Activity_Filter
  * @since 3.2.1
@@ -66,29 +66,24 @@ class BP_Activity_Filter_Admin_Panel {
 	/**
 	 * Sidebar tabs rendered inside the one admin page. Single source of
 	 * truth for the nav. Tab slugs preserved from the legacy UI
-	 * (default | hidden | cpt | faq) so ?tab= deep-links keep working.
+	 * (default | hidden | faq) so ?tab= deep-links keep working.
 	 *
 	 * @since 3.2.1
 	 * @return array<string, array{label:string, icon:string, group:string}>
 	 */
 	public static function get_tabs() {
 		$tabs = array(
-			'default' => array(
+			'default'  => array(
 				'label' => __( 'Default Filters', 'bp-activity-filter' ),
 				'icon'  => 'dashicons-admin-settings',
 				'group' => 'settings',
 			),
-			'hidden'  => array(
+			'hidden'   => array(
 				'label' => __( 'Hidden Activities', 'bp-activity-filter' ),
 				'icon'  => 'dashicons-hidden',
 				'group' => 'settings',
 			),
-			'cpt'     => array(
-				'label' => __( 'Custom Post Types', 'bp-activity-filter' ),
-				'icon'  => 'dashicons-admin-post',
-				'group' => 'settings',
-			),
-			'faq'     => array(
+			'faq'      => array(
 				'label' => __( 'FAQ', 'bp-activity-filter' ),
 				'icon'  => 'dashicons-editor-help',
 				'group' => 'resources',
@@ -134,8 +129,8 @@ class BP_Activity_Filter_Admin_Panel {
 		// $GLOBALS['submenu']['wbcomplugins'].
 		if ( empty( $GLOBALS['admin_page_hooks']['wbcomplugins'] ) ) {
 			add_menu_page(
-				esc_html__( 'WB Plugins', 'bp-activity-filter' ),
-				esc_html__( 'WB Plugins', 'bp-activity-filter' ),
+				'WB Plugins',
+				'WB Plugins',
 				$cap,
 				'wbcomplugins',
 				array( $this, 'render_hub' ),
@@ -146,8 +141,8 @@ class BP_Activity_Filter_Admin_Panel {
 
 		add_submenu_page(
 			'wbcomplugins',
-			esc_html__( 'BuddyPress Activity Filter', 'bp-activity-filter' ),
-			esc_html__( 'BP Activity Filter', 'bp-activity-filter' ),
+			'BuddyPress Activity Filter',
+			'BP Activity Filter',
 			$cap,
 			self::MENU_SLUG,
 			array( $this, 'render_page' )
@@ -171,7 +166,7 @@ class BP_Activity_Filter_Admin_Panel {
 	}
 
 	/**
-	 * Register the four settings options under the preserved option group.
+	 * Register the three settings options under the preserved option group.
 	 *
 	 * Each option keeps its existing key, type, default, and sanitize
 	 * callback. Settings persist via the WordPress Settings API
@@ -207,16 +202,6 @@ class BP_Activity_Filter_Admin_Panel {
 				'default'           => array(),
 			)
 		);
-		register_setting(
-			self::OPTION_GROUP,
-			'bp_activity_filter_cpt_settings',
-			array(
-				'type'              => 'array',
-				'sanitize_callback' => array( $this, 'sanitize_cpt' ),
-				'default'           => array(),
-			)
-		);
-
 	}
 
 	/**
@@ -272,39 +257,6 @@ class BP_Activity_Filter_Admin_Panel {
 		}
 
 		return array_values( array_unique( $sanitized ) );
-	}
-
-	/**
-	 * Sanitize the per-CPT settings map.
-	 *
-	 * @since 3.2.1
-	 * @param mixed $input Raw value.
-	 * @return array Sanitized settings keyed by post type.
-	 */
-	private function sanitize_cpt_map( $input ) {
-		if ( ! is_array( $input ) ) {
-			return array();
-		}
-
-		$sanitized        = array();
-		$valid_post_types = get_post_types( array( 'public' => true ), 'names' );
-
-		foreach ( $input as $post_type => $settings ) {
-			$post_type = sanitize_text_field( $post_type );
-
-			if ( '_global' === $post_type ) {
-				$sanitized[ $post_type ] = array(
-					'hide_sitewide' => ! empty( $settings['hide_sitewide'] ),
-				);
-			} elseif ( in_array( $post_type, $valid_post_types, true ) ) {
-				$sanitized[ $post_type ] = array(
-					'enabled' => ! empty( $settings['enabled'] ),
-					'label'   => isset( $settings['label'] ) ? sanitize_text_field( $settings['label'] ) : '',
-				);
-			}
-		}
-
-		return $sanitized;
 	}
 
 	/*
@@ -397,22 +349,6 @@ class BP_Activity_Filter_Admin_Panel {
 	}
 
 	/**
-	 * Sanitize the per-CPT settings array.
-	 *
-	 * @since 3.2.1
-	 * @param mixed $input Raw value (null when its tab did not render).
-	 * @return array Sanitized value, or the stored value if not owned.
-	 */
-	public function sanitize_cpt( $input ) {
-		if ( ! $this->tab_rendered_option( 'bp_activity_filter_cpt_settings' ) ) {
-			$stored = get_option( 'bp_activity_filter_cpt_settings', array() );
-			return is_array( $stored ) ? $stored : array();
-		}
-
-		return $this->sanitize_cpt_map( $input );
-	}
-
-	/**
 	 * Enqueue admin assets only on our screen + the shared hub landing.
 	 *
 	 * @since 3.2.1
@@ -447,10 +383,8 @@ class BP_Activity_Filter_Admin_Panel {
 			'bpActivityFilterAdmin',
 			array(
 				'i18n' => array(
-					'visible'         => __( 'Visible', 'bp-activity-filter' ),
-					'hidden'          => __( 'Hidden', 'bp-activity-filter' ),
-					'confirmContinue' => __( 'Continue', 'bp-activity-filter' ),
-					'confirmCancel'   => __( 'Cancel', 'bp-activity-filter' ),
+					'visible' => __( 'Visible', 'bp-activity-filter' ),
+					'hidden'  => __( 'Hidden', 'bp-activity-filter' ),
 				),
 			)
 		);
@@ -514,10 +448,9 @@ class BP_Activity_Filter_Admin_Panel {
 
 		$page_url            = admin_url( 'admin.php?page=' . self::MENU_SLUG );
 		$view_map            = array(
-			'default' => 'settings-default',
-			'hidden'  => 'settings-hidden',
-			'cpt'     => 'settings-cpt',
-			'faq'     => 'faq',
+			'default'  => 'settings-default',
+			'hidden'   => 'settings-hidden',
+			'faq'      => 'faq',
 			'discover' => 'discover',
 		);
 		$view                = isset( $view_map[ $active ] ) ? $view_map[ $active ] : 'settings-default';

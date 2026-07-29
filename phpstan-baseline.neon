@@ -31,22 +31,10 @@ parameters:
 			path: includes/admin/views/discover.php
 
 		-
-			message: '#^Offset ''icon'' on array\{name\: string, logo\: ''buddynext\.svg'', icon\: ''groups'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''buddyx\.png'', icon\: ''admin\-appearance'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''eventonomy\.svg'', icon\: ''calendar\-alt'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''jetonomy\.svg'', icon\: ''format\-chat'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''learnomy\.svg'', icon\: ''welcome\-learn\-more'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''listora\.svg'', icon\: ''list\-view'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''mediaverse\.svg'', icon\: ''format\-gallery'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''wb\-gamification\.svg'', icon\: ''awards'', desc\: string, url\: ''https\:/…''\}\|array\{name\: string, logo\: ''wp\-career\-board\.svg'', icon\: ''businessman'', desc\: string, url\: ''https\:/…''\} in isset\(\) always exists and is not nullable\.$#'
+			message: '#^Offset ''icon'' on array\{name\: ''BuddyNext'', logo\: ''buddynext\.svg'', icon\: ''groups'', desc\: string, url\: ''https\:/…''\}\|array\{name\: ''BuddyX'', logo\: ''buddyx\.png'', icon\: ''admin\-appearance'', desc\: string, url\: ''https\:/…''\}\|array\{name\: ''Eventonomy'', logo\: ''eventonomy\.svg'', icon\: ''calendar\-alt'', desc\: string, url\: ''https\:/…''\}\|array\{name\: ''Jetonomy'', logo\: ''jetonomy\.svg'', icon\: ''format\-chat'', desc\: string, url\: ''https\:/…''\}\|array\{name\: ''Learnomy'', logo\: ''learnomy\.svg'', icon\: ''welcome\-learn\-more'', desc\: string, url\: ''https\:/…''\}\|array\{name\: ''Listora'', logo\: ''listora\.svg'', icon\: ''list\-view'', desc\: string, url\: ''https\:/…''\}\|array\{name\: ''Mediaverse'', logo\: ''mediaverse\.svg'', icon\: ''format\-gallery'', desc\: string, url\: ''https\:/…''\}\|array\{name\: ''WB Gamification'', logo\: ''wb\-gamification\.svg'', icon\: ''awards'', desc\: string, url\: ''https\:/…''\}\|array\{name\: ''WP Career Board'', logo\: ''wp\-career\-board\.svg'', icon\: ''businessman'', desc\: string, url\: ''https\:/…''\} in isset\(\) always exists and is not nullable\.$#'
 			identifier: isset.offset
 			count: 1
 			path: includes/admin/views/discover.php
-
-		-
-			message: '#^Call to function is_null\(\) with BP_Activity_Filter_CPT will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: includes/class-bp-activity-filter-cpt.php
-
-		-
-			message: '#^Parameter \#1 \$author_id of method BP_Activity_Filter_CPT\:\:get_author_link\(\) expects int, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: includes/class-bp-activity-filter-cpt.php
 
 		-
 			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
@@ -89,15 +77,3 @@ parameters:
 			identifier: identical.alwaysFalse
 			count: 2
 			path: includes/class-bp-activity-filter-frontend.php
-
-		-
-			message: '#^Offset ''plugin_check'' on array\{plugin_check\: Closure\(\)\: bool\} in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.offset
-			count: 1
-			path: includes/class-bp-activity-filter-helper.php
-
-		-
-			message: '#^Right side of && is always true\.$#'
-			identifier: booleanAnd.rightAlwaysTrue
-			count: 1
-			path: includes/class-bp-activity-filter-helper.php

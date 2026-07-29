@@ -5,7 +5,7 @@
  * This version works WITH BuddyPress instead of against it
  *
  * @package BuddyPress_Activity_Filter
- * @since 4.0.0
+ * @since 3.1.0
  */
 
 // Prevent direct access.
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Frontend class - MINIMAL INTERFERENCE APPROACH
  *
- * @since 4.0.0
+ * @since 3.1.0
  */
 class BP_Activity_Filter_Frontend {
 
@@ -35,7 +35,7 @@ class BP_Activity_Filter_Frontend {
 	/**
 	 * Class instance.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @var BP_Activity_Filter_Frontend|null Singleton instance.
 	 */
 	private static $instance = null;
@@ -43,7 +43,7 @@ class BP_Activity_Filter_Frontend {
 	/**
 	 * Get class instance.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return BP_Activity_Filter_Frontend Singleton instance.
 	 */
 	public static function instance() {
@@ -56,7 +56,7 @@ class BP_Activity_Filter_Frontend {
 	/**
 	 * Constructor.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	private function __construct() {
 		$this->setup_hooks();
@@ -65,7 +65,7 @@ class BP_Activity_Filter_Frontend {
 	/**
 	 * Setup frontend hooks - Server-side approach
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	private function setup_hooks() {
 		// Server-side default filter - runs BEFORE activities are queried.
@@ -106,7 +106,7 @@ class BP_Activity_Filter_Frontend {
 	/**
 	 * Apply default filter server-side.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @param array $args Activity query arguments.
 	 * @return array Modified arguments.
 	 */
@@ -271,7 +271,7 @@ class BP_Activity_Filter_Frontend {
 	 * The site admin's own Activity screen is left alone so hidden items remain
 	 * moderatable in the backend.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @param array $where_conditions Current WHERE conditions.
 	 * @param array $args             Parsed activity query arguments.
 	 * @return array WHERE conditions with hidden types excluded.
@@ -297,7 +297,7 @@ class BP_Activity_Filter_Frontend {
 	/**
 	 * Apply filter to AJAX requests.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @param string $query_string The query string.
 	 * @param string $object       The object type.
 	 * @return string Modified query string.
@@ -420,7 +420,7 @@ class BP_Activity_Filter_Frontend {
 	/**
 	 * Sync dropdown with server-side default (minimal JS just for UI)
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 */
 	public function sync_dropdown_with_default() {
 		// Only on activity pages.
@@ -504,7 +504,7 @@ class BP_Activity_Filter_Frontend {
 	 * Legacy template pack (which renders the HTML) and Nouveau (which re-reads
 	 * the raw array) see the same reduced set.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @param array  $filters Activity filter options, keyed by option value.
 	 * @param string $context The current context.
 	 * @return array Filter options without the hidden activity types.
@@ -550,7 +550,7 @@ class BP_Activity_Filter_Frontend {
 	 * Rather than take the choice away from the admin, add the missing option so the
 	 * control can represent the state the server actually applied.
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @param array $filters           Dropdown options, keyed by option value.
 	 * @param array $hidden_activities Types the admin has hidden.
 	 * @return array Options, including the active default.
@@ -607,7 +607,7 @@ class BP_Activity_Filter_Frontend {
 	/**
 	 * Prevent hidden activities from being saved (at the source).
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @param BP_Activity_Activity $activity The activity object.
 	 */
 	public function maybe_prevent_activity_save( $activity ) {
@@ -643,7 +643,7 @@ class BP_Activity_Filter_Frontend {
 	/**
 	 * Get default filter based on current context
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return string Default filter value
 	 */
 	private function get_default_filter() {
@@ -665,7 +665,7 @@ class BP_Activity_Filter_Frontend {
 		/**
 		 * Filter the default activity filter value.
 		 *
-		 * @since 4.0.0
+		 * @since 3.1.0
 		 *
 		 * @param string $default_filter Default filter value.
 		 * @param string $context        Filter context (profile, sitewide).
@@ -685,7 +685,7 @@ class BP_Activity_Filter_Frontend {
 	 * activity stream: the group query was filtered down to blog posts, while the
 	 * filter dropdown on that page still read "Everything".
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return string Context: 'profile', 'sitewide', or '' when no default applies.
 	 */
 	private function get_filter_context() {
@@ -703,7 +703,7 @@ class BP_Activity_Filter_Frontend {
 	/**
 	 * Get hidden activities list
 	 *
-	 * @since 4.0.0
+	 * @since 3.1.0
 	 * @return array List of hidden activity types
 	 */
 	private function get_hidden_activities() {
