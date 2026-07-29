@@ -30,40 +30,56 @@ module.exports = function ( grunt ) {
 				files: [{
 					src: [
 						'*.php',
-						'admin/**/*.php',
 						'includes/**/*.php',
 						'!node_modules/**',
-						'!tests/**',
 						'!vendor/**'
 					],
 					expand: true
 				}]
 			}
-		},
-		
-		// Generate POT file
-		makepot: {
-			target: {
-				options: {
-					cwd: '.',
-					domainPath: 'languages/',
-					exclude: [ 'node_modules', 'tests', 'vendor', '.git' ],
-					mainFile: 'buddypress-activity-filter.php',
-					potFilename: 'bp-activity-filter.pot',
-					potHeaders: {
-						poedit: true,
-						'Last-Translator': 'Varun Dubey',
-						'Language-Team': 'Wbcom Designs',
-						'report-msgid-bugs-to': '',
-						'x-poedit-keywordslist': true
-					},
-					type: 'wp-plugin',
-					updateTimestamp: true
-				}
-			}
 		}
 	});
 
+
+	/*
+	 * Generate the POT.
+	 *
+	 * This shells out to wp-cli rather than using grunt-wp-i18n so that
+	 * `grunt pot` and `bin/i18n.sh` produce byte-identical templates.
+	 * grunt-wp-i18n wrote its own header set (poedit keys, a hardcoded
+	 * Last-Translator), so whichever tool ran last rewrote the file and
+	 * the diff looked like real churn. One extractor, one output.
+	 *
+	 * Keep these flags in step with bin/i18n.sh.
+	 */
+	grunt.registerTask( 'makepot', 'Generate the POT file via wp-cli', function() {
+		var done = this.async();
+		var shelljs = require('shelljs');
+
+		if ( ! shelljs.which('wp') ) {
+			grunt.log.error('wp-cli not found. Required for "wp i18n make-pot".');
+			grunt.log.error('Install: https://wp-cli.org/');
+			return done(false);
+		}
+
+		var result = shelljs.exec(
+			'wp i18n make-pot . languages/bp-activity-filter.pot' +
+			' --slug=bp-activity-filter' +
+			' --exclude=audit,qa-reports,node_modules,bin',
+			{silent: true}
+		);
+
+		if ( result.code !== 0 ) {
+			grunt.log.error('Failed to generate the POT file.');
+			if ( result.stderr ) {
+				grunt.log.error( result.stderr );
+			}
+			return done(false);
+		}
+
+		grunt.log.ok('Generated languages/bp-activity-filter.pot');
+		done();
+	});
 
 	// Custom task to sync PO files with POT
 	grunt.registerTask( 'update-po', 'Update all PO files with the latest POT file', function() {
@@ -71,14 +87,14 @@ module.exports = function ( grunt ) {
 		var shelljs = require('shelljs');
 		var path = require('path');
 		
-		// Check if msgmerge is available
-		if (!shelljs.which('msgmerge')) {
-			grunt.log.error('msgmerge command not found. Please install gettext.');
+		// Check if the gettext tools are available
+		if (!shelljs.which('msgmerge') || !shelljs.which('msgattrib')) {
+			grunt.log.error('msgmerge/msgattrib not found. Please install gettext.');
 			grunt.log.error('On macOS: brew install gettext && brew link --force gettext');
 			grunt.log.error('On Ubuntu/Debian: sudo apt-get install gettext');
 			return done(false);
 		}
-		
+
 		var potFile = 'languages/bp-activity-filter.pot';
 		
 		// Check if POT file exists
@@ -106,9 +122,21 @@ module.exports = function ( grunt ) {
 			var backupFile = poFile + '.bak';
 			shelljs.cp(poFile, backupFile);
 			
-			// Update PO file with POT
-			var result = shelljs.exec('msgmerge -U "' + poFile + '" "' + potFile + '" --backup=none', {silent: false});
-			
+			// Update PO file with POT.
+			var result = shelljs.exec('msgmerge --previous -U "' + poFile + '" "' + potFile + '" --backup=none', {silent: false});
+
+			/*
+			 * Then drop obsolete (#~) entries. Without this, translations
+			 * for strings whose code was deleted linger in the file and
+			 * get re-reported as translation bugs even though no user can
+			 * reach them - four of the eight bugs filed against 3.2.1 were
+			 * exactly that. Use --no-obsolete, never --no-fuzzy: the
+			 * latter deletes whole entries instead of clearing the flag.
+			 */
+			if (result.code === 0) {
+				result = shelljs.exec('msgattrib --no-obsolete -o "' + poFile + '" "' + poFile + '"', {silent: true});
+			}
+
 			if (result.code !== 0) {
 				grunt.log.error('Failed to update ' + baseName);
 				// Restore backup
