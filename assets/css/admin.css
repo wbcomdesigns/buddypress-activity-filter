@@ -9,6 +9,25 @@
  */
 
 /* ═══════════════════════════════════════════════════════════
+   Box model
+   ═══════════════════════════════════════════════════════════ */
+
+/*
+ * WordPress admin sets border-box on a fixed list of elements, which leaves
+ * table cells and sectioning elements on the browser default of content-box.
+ * Any width:100% on those then adds its own padding and border on top and
+ * pushes the page sideways - it scrolled the whole settings screen at 390px
+ * twice, via .form-table cells and via the sidebar's 1px border. Scoped to
+ * our own wrapper so nothing leaks to other plugins on the same screen.
+ */
+.bpaf-admin,
+.bpaf-admin *,
+.bpaf-admin *::before,
+.bpaf-admin *::after {
+	box-sizing: border-box;
+}
+
+/* ═══════════════════════════════════════════════════════════
    Design Tokens
    ═══════════════════════════════════════════════════════════ */
 
@@ -993,10 +1012,37 @@
 		padding-bottom: 4px;
 	}
 
-	.bpaf-activity-row__label-wrap {
+	/*
+	 * Two different elements are the flex container here: __label-wrap on the
+	 * toggle rows, and the row itself on the locked core rows. Only the first
+	 * was listed, so core rows never wrapped and squeezed their label into a
+	 * three-line column at 390px.
+	 */
+	.bpaf-activity-row__label-wrap,
+	.bpaf-activity-row--locked {
 		flex-wrap: wrap;
 	}
 
+	/*
+	 * flex:1 gives the label a zero basis, so once the row wraps it still
+	 * collapses to the narrowest column it can and breaks a short label like
+	 * "Posted a status update" across three lines. Give it the whole first
+	 * line and let the status and key sit together underneath.
+	 */
+	.bpaf-activity-row__label {
+		/* Row gap is 10px and the leading icon is 18px, so this fills the rest
+		   of the first line beside the icon and pushes status and key onto the
+		   second. A flat 100% would bump the label below its own icon. */
+		flex-basis: calc(100% - 28px);
+	}
+
+	/* Toggle rows lead with a checkbox (25px) as well as the icon, plus a
+	   second 10px gap. */
+	.bpaf-activity-row__label-wrap .bpaf-activity-row__label {
+		flex-basis: calc(100% - 63px);
+	}
+
+	/* Drops the activity key onto its own line, below the label and status. */
 	.bpaf-activity-row__key {
 		order: 5;
 	}

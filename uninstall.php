@@ -63,16 +63,18 @@ function bp_activity_filter_remove_options() {
 		'bp_activity_filter_default',
 		'bp_activity_filter_profile_default',
 		'bp_activity_filter_hidden',
-		'bp_activity_filter_cpt_settings',
 		'bp_activity_filter_db_version',
 	);
 
-	// Legacy options from older versions.
+	// Options no longer written by this plugin. Still deleted, because sites
+	// upgrading from an earlier version carry the rows. The two cpt keys
+	// belong to the CPT activity feature removed in 4.0.0.
 	$legacy_options = array(
 		'bp-default-filter-name',
 		'bp-default-profile-filter-name',
 		'bp-hidden-filters-name',
 		'bp-cpt-filters-settings',
+		'bp_activity_filter_cpt_settings',
 	);
 
 	// Combine all options.

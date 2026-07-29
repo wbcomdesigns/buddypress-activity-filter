@@ -290,6 +290,19 @@ module.exports = function ( grunt ) {
 			grunt.log.ok( baseName + ': ' + actual + ' msgids, msgfmt clean' );
 		});
 
+		// A contaminated msgstr - one msgid carrying another's translation -
+		// keeps the msgid count correct and passes msgfmt -c, so it slips past
+		// both checks above. Same script bin/i18n.sh calls, so the two entry
+		// points cannot drift.
+		var collisions = shelljs.exec(
+			'python3 bin/check-po-collisions.py languages/*.po',
+			{silent: true}
+		);
+		if ( collisions.code !== 0 ) {
+			grunt.log.error( collisions.stderr || collisions.stdout );
+			errors++;
+		}
+
 		if ( errors > 0 ) {
 			grunt.log.error( errors + ' locale(s) failed verification.' );
 			return done(false);

@@ -95,7 +95,6 @@ final class BP_Activity_Filter {
 	 */
 	private function setup_hooks() {
 		add_action( 'plugins_loaded', array( $this, 'init' ), 20 );
-		add_action( 'init', array( $this, 'load_textdomain' ) );
 
 		// Activation/Deactivation hooks.
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
@@ -145,15 +144,6 @@ final class BP_Activity_Filter {
 		 * @since 3.1.0
 		 */
 		do_action( 'bp_activity_filter_init' );
-	}
-
-	/**
-	 * Load plugin textdomain for internationalization.
-	 *
-	 * @since 3.1.0
-	 */
-	public function load_textdomain() {
-		// Translations are automatically loaded by WordPress since 4.6.
 	}
 
 	/**

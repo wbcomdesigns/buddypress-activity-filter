@@ -182,6 +182,12 @@ This release narrows the plugin to what it does completely: hiding activity type
 * Fix      - Corrected the "Premium BuddyPress Plugins" heading, the "Hidden Activities" and "Other Activity Types" tab labels, and six other translation errors across the German, German formal, French and Dutch locale files.
 * Fix      - Rebuilt the German formal translation, which had been unmaintained since 2020 with most strings untranslated.
 * Fix      - Regenerated the translation template, which still declared version 3.1.0.
+* Fix      - Corrected labels that carried another string's translation. French showed the plugin name in place of the "Default Activity Filters" and "Hidden Activity Types" headings, and German showed it in place of "Default Activity Filters".
+* Fix      - The settings screen no longer scrolls sideways on phones. Table cells and the sidebar overflowed the card at 390px.
+* Fix      - Activity rows on the Hidden Activities tab no longer squeeze their label into a narrow column on phones.
+* Fix      - The settings screen no longer hides other plugins' admin notices, including WordPress update and Site Health warnings.
+* Dev      - Added a translation check that fails the build when two different strings share one translation, the fault behind the label errors above.
+* Dev      - The admin capability is now filterable through bp_activity_filter_admin_capability, applied to both the menu and the settings save.
 * Dev      - Removed roughly 900 lines of code left unreachable by the above, including the whole post type eligibility and conflict detection subsystem.
 * Dev      - Corrected the @since tags throughout, which all read 4.0.0 while the plugin was at 3.2.1.
 

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: BuddyPress Activity Filter\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-activity-"
 "filter\n"
-"POT-Creation-Date: 2026-07-29T09:30:51+00:00\n"
+"POT-Creation-Date: 2026-07-29T13:44:54+00:00\n"
 "PO-Revision-Date: 2026-07-29 00:00+0530\n"
 "Last-Translator: Varun Dubey <vapvarun@gmail.com>\n"
 "Language-Team: Varun Dubey <vapvarun@gmail.com>\n"
@@ -34,16 +34,12 @@ msgstr "https://wordpress.org/plugins/bp-activity-filter/"
 
 #. Description of the plugin
 #: buddypress-activity-filter.php
-#, fuzzy
-#| msgid ""
-#| "Filter and manage BuddyPress activity streams with default filters and "
-#| "custom post type support."
 msgid ""
 "Hide activity types from BuddyPress activity streams and set the default "
 "filter members see."
 msgstr ""
-"Filtern und verwalten Sie BuddyPress-Aktivitätsströme mit Standardfiltern "
-"und Unterstützung für benutzerdefinierte Beitragstypen."
+"Blenden Sie Aktivitätstypen aus BuddyPress-Aktivitätsströmen aus und legen "
+"Sie den Standardfilter fest, den Mitglieder sehen."
 
 #. Author of the plugin
 #: buddypress-activity-filter.php
@@ -56,34 +52,34 @@ msgid "https://wbcomdesigns.com/"
 msgstr "https://wbcomdesigns.com/plugins"
 
 #. translators: %s: file path
-#: buddypress-activity-filter.php:180
+#: buddypress-activity-filter.php:170
 #, php-format
 msgid "BuddyPress Activity Filter: Required file missing: %s"
 msgstr ""
 
-#: buddypress-activity-filter.php:220
+#: buddypress-activity-filter.php:210
 msgid ""
 "BuddyPress Activity Filter requires BuddyPress to be installed and active."
 msgstr ""
 "BuddyPress Activity Filter setzt voraus, dass BuddyPress installiert und "
 "aktiv ist."
 
-#: buddypress-activity-filter.php:221
+#: buddypress-activity-filter.php:211
 msgid "Plugin Activation Error"
 msgstr "Plugin-Aktivierungsfehler"
 
-#: buddypress-activity-filter.php:273 includes/admin/views/shell.php:66
+#: buddypress-activity-filter.php:263 includes/admin/views/shell.php:66
 msgid "Settings"
 msgstr "Einstellungen"
 
 #. translators: %s: BuddyPress plugin link
-#: buddypress-activity-filter.php:340
+#: buddypress-activity-filter.php:330
 #, php-format
 msgid "This plugin requires %s to be installed and active."
 msgstr "Dieses Plugin erfordert, dass %s installiert und aktiv ist."
 
 #. translators: 1: required version, 2: current version
-#: buddypress-activity-filter.php:364
+#: buddypress-activity-filter.php:354
 #, php-format
 msgid ""
 "This plugin requires BuddyPress version %1$s or higher. You are running "
@@ -92,7 +88,7 @@ msgstr ""
 "Dieses Plugin erfordert BuddyPress Version %1$s oder höher. Sie verwenden "
 "Version %2$s."
 
-#: buddypress-activity-filter.php:386
+#: buddypress-activity-filter.php:376
 msgid ""
 "This plugin is not compatible with BuddyBoss due to similar built-in "
 "features. Please use BuddyBoss's native activity filtering instead."
@@ -101,11 +97,11 @@ msgstr ""
 "enthält. Bitte verwenden Sie stattdessen die native Aktivitätsfilterung von "
 "BuddyBoss."
 
-#: buddypress-activity-filter.php:449
+#: buddypress-activity-filter.php:439
 msgid "Cloning instances of this class is forbidden."
 msgstr "Das Klonen von Instanzen dieser Klasse ist verboten."
 
-#: buddypress-activity-filter.php:462
+#: buddypress-activity-filter.php:452
 msgid "Unserializing instances of this class is forbidden."
 msgstr "Unserialisierte Instanzen dieser Klasse sind verboten."
 
@@ -125,11 +121,11 @@ msgstr "FAQ"
 msgid "Discover"
 msgstr ""
 
-#: includes/admin/class-bp-activity-filter-admin-panel.php:386
+#: includes/admin/class-bp-activity-filter-admin-panel.php:410
 msgid "Visible"
 msgstr ""
 
-#: includes/admin/class-bp-activity-filter-admin-panel.php:387
+#: includes/admin/class-bp-activity-filter-admin-panel.php:411
 msgid "Hidden"
 msgstr ""
 
@@ -357,16 +353,12 @@ msgid ""
 msgstr ""
 
 #: includes/admin/views/hub.php:101
-#, fuzzy
-#| msgid "Save Settings"
 msgid "Open settings"
-msgstr "Einstellungen speichern"
+msgstr "Einstellungen öffnen"
 
 #: includes/admin/views/hub.php:111
-#, fuzzy
-#| msgid "WB Plugins"
 msgid "About WB Plugins"
-msgstr "WB-Plugins"
+msgstr "Über WB Plugins"
 
 #: includes/admin/views/hub.php:115
 msgid ""
@@ -381,7 +373,7 @@ msgstr ""
 
 #: includes/admin/views/settings-default.php:32
 msgid "Default Activity Filters"
-msgstr "BP-Aktivitätsfilter"
+msgstr "Standard-Aktivitätsfilter"
 
 #: includes/admin/views/settings-default.php:33
 msgid ""
@@ -390,10 +382,8 @@ msgid ""
 msgstr ""
 
 #: includes/admin/views/settings-default.php:39
-#, fuzzy
-#| msgid "Site-wide Activity Default"
 msgid "Site-wide stream default"
-msgstr "Standortweite Aktivität Standard"
+msgstr "Standard für den seitenweiten Stream"
 
 #: includes/admin/views/settings-default.php:44
 #: includes/admin/views/settings-default.php:64
@@ -414,10 +404,8 @@ msgstr ""
 "Aktivitätsfilters ändern."
 
 #: includes/admin/views/settings-default.php:59
-#, fuzzy
-#| msgid "Profile Activity Default"
 msgid "Profile stream default"
-msgstr "BP-Aktivitätsfilter"
+msgstr "Standard für den Profil-Stream"
 
 #: includes/admin/views/settings-default.php:75
 msgid ""
@@ -484,34 +472,24 @@ msgid ""
 msgstr ""
 
 #: includes/admin/views/shell.php:30
-#, fuzzy
-#| msgid ""
-#| "Filter and manage BuddyPress activity streams with default filters and "
-#| "custom post type support."
 msgid ""
 "Hide activity types from your activity streams and set the default filter "
 "members see."
 msgstr ""
-"Filtern und verwalten Sie BuddyPress-Aktivitätsströme mit Standardfiltern "
-"und Unterstützung für benutzerdefinierte Beitragstypen."
+"Blenden Sie Aktivitätstypen aus Ihren Aktivitätsströmen aus und legen Sie "
+"den Standardfilter fest, den Mitglieder sehen."
 
 #: includes/admin/views/shell.php:58
-#, fuzzy
-#| msgid "BP Activity Filter"
 msgid "Activity Filter"
-msgstr "BP-Aktivitätsfilter"
+msgstr "Aktivitätsfilter"
 
 #: includes/admin/views/shell.php:59
-#, fuzzy
-#| msgid "WB Plugins"
 msgid "Plugin"
-msgstr "WB-Plugins"
+msgstr "Plugin"
 
 #: includes/admin/views/shell.php:62
-#, fuzzy
-#| msgid "BP Activity Filter"
 msgid "Activity Filter navigation"
-msgstr "BP-Aktivitätsfilter"
+msgstr "Aktivitätsfilter-Navigation"
 
 #: includes/admin/views/shell.php:67
 msgid "Resources"

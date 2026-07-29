@@ -10,7 +10,8 @@
 #   3. drop obsolete entries, so strings whose code was deleted stop being
 #      reported as translation bugs
 #   4. compile .mo AND .l10n.php
-#   5. assert every locale matches the POT and passes msgfmt -c
+#   5. assert every locale matches the POT, passes msgfmt -c, and has no two
+#      msgids sharing one translation (see bin/check-po-collisions.py)
 #
 # Step 4 is the one that bites. WordPress 6.5+ loads languages/*.l10n.php in
 # preference to the .mo, so rebuilding only the .mo leaves a stale .l10n.php
@@ -30,11 +31,14 @@ cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 SLUG="bp-activity-filter"
 POT="languages/${SLUG}.pot"
 
-for tool in wp msgmerge msgattrib msgfmt; do
+for tool in wp msgmerge msgattrib msgfmt python3; do
 	if ! command -v "$tool" >/dev/null 2>&1; then
 		echo "error: '$tool' not found." >&2
-		[ "$tool" = "wp" ] && echo "  install wp-cli: https://wp-cli.org/" >&2
-		[ "$tool" != "wp" ] && echo "  macOS: brew install gettext && brew link --force gettext" >&2
+		case "$tool" in
+			wp)      echo "  install wp-cli: https://wp-cli.org/" >&2 ;;
+			python3) echo "  macOS: brew install python" >&2 ;;
+			*)       echo "  macOS: brew install gettext && brew link --force gettext" >&2 ;;
+		esac
 		exit 1
 	fi
 done
@@ -86,6 +90,12 @@ for po in languages/*.po; do
 
 	[ "$failed" -eq 0 ] && echo "    ok   $name ($actual msgids, .mo + .l10n.php present)"
 done
+
+# A contaminated msgstr keeps the msgid count correct and passes msgfmt -c, so
+# it slips past every check above. This is the one that catches it.
+if ! python3 bin/check-po-collisions.py languages/*.po; then
+	failed=1
+fi
 
 if [ "$failed" -ne 0 ]; then
 	echo "i18n rebuild FAILED" >&2

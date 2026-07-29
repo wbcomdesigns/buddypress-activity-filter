@@ -168,7 +168,7 @@ class BP_Activity_Filter_Migration {
 			}
 
 			// Migrate the value with any necessary transformations.
-			$migrated_value = $this->transform_option_value( $legacy_key, $legacy_value );
+			$migrated_value = self::transform_option_value( $legacy_key, $legacy_value );
 
 			update_option( $new_key, $migrated_value );
 		}
@@ -182,7 +182,7 @@ class BP_Activity_Filter_Migration {
 	 * @param mixed  $value Option value.
 	 * @return mixed Transformed value.
 	 */
-	private function transform_option_value( $legacy_key, $value ) {
+	private static function transform_option_value( $legacy_key, $value ) {
 		switch ( $legacy_key ) {
 			case 'bp-hidden-filters-name':
 				// Ensure it's an array.
@@ -217,9 +217,11 @@ class BP_Activity_Filter_Migration {
 		if ( $legacy_key ) {
 			$legacy_value = get_option( $legacy_key, null );
 			if ( null !== $legacy_value ) {
-				// Transform legacy value if needed.
-				$instance          = new self();
-				$transformed_value = $instance->transform_option_value( $legacy_key, $legacy_value );
+				// Transform legacy value if needed. Static on purpose: this
+				// runs on the front end, and instantiating the class here
+				// would re-run setup_hooks() and register the admin_init
+				// migration listener a second time.
+				$transformed_value = self::transform_option_value( $legacy_key, $legacy_value );
 
 				// Save the transformed value to new option for future use.
 				update_option( $new_option_key, $transformed_value );

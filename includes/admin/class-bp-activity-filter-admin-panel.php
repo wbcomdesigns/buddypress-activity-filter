@@ -111,7 +111,30 @@ class BP_Activity_Filter_Admin_Panel {
 		add_action( 'admin_menu', array( $this, 'takeover_hub_landing' ), 999 );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
-		add_action( 'in_admin_header', array( $this, 'suppress_foreign_notices' ), 1 );
+		// options.php enforces its own capability, defaulting to
+		// manage_options. Keep it on the same filter as the menu.
+		add_filter( 'option_page_capability_' . self::OPTION_GROUP, array( __CLASS__, 'capability' ) );
+	}
+
+	/**
+	 * The capability required to see and save this plugin's settings.
+	 *
+	 * Filterable so multisite and managed client installs can delegate the
+	 * screen to a role below administrator. The same value gates the menu and
+	 * the Settings API save, so the two cannot disagree - a filter that only
+	 * moved the menu would hand the user a screen that rejects every save.
+	 *
+	 * @since 4.0.0
+	 * @return string Capability name.
+	 */
+	public static function capability() {
+		/**
+		 * Filters the capability required to manage Activity Filter settings.
+		 *
+		 * @since 4.0.0
+		 * @param string $capability Default 'manage_options'.
+		 */
+		return (string) apply_filters( 'bp_activity_filter_admin_capability', 'manage_options' );
 	}
 
 	/**
@@ -120,7 +143,7 @@ class BP_Activity_Filter_Admin_Panel {
 	 * @since 3.2.1
 	 */
 	public function add_menu() {
-		$cap = 'manage_options';
+		$cap = self::capability();
 
 		// First Wbcom plugin to load creates the shared WB Plugins hub.
 		// Whichever plugin wins the race provides the hub's landing
@@ -351,11 +374,12 @@ class BP_Activity_Filter_Admin_Panel {
 	/**
 	 * Enqueue admin assets only on our screen + the shared hub landing.
 	 *
+	 * Takes no $hook_suffix: the hub landing can be registered by any Wbcom
+	 * plugin, so the screen object is the reliable test, not the hook name.
+	 *
 	 * @since 3.2.1
-	 * @param string $hook_suffix Current admin page hook.
 	 */
-	public function enqueue_assets( $hook_suffix ) {
-		unset( $hook_suffix );
+	public function enqueue_assets() {
 		$screen = get_current_screen();
 		if ( ! $screen || ! $this->is_our_screen( $screen ) ) {
 			return;
@@ -388,20 +412,6 @@ class BP_Activity_Filter_Admin_Panel {
 				),
 			)
 		);
-	}
-
-	/**
-	 * Suppress 3rd-party admin notices on our screen.
-	 *
-	 * @since 3.2.1
-	 */
-	public function suppress_foreign_notices() {
-		$screen = get_current_screen();
-		if ( ! $screen || ! $this->is_our_screen( $screen ) ) {
-			return;
-		}
-		remove_all_actions( 'admin_notices' );
-		remove_all_actions( 'all_admin_notices' );
 	}
 
 	/**
