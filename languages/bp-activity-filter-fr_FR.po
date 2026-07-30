@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: BuddyPress Activity Filter\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-activity-"
 "filter\n"
-"POT-Creation-Date: 2026-07-29T13:44:54+00:00\n"
+"POT-Creation-Date: 2026-07-30T10:40:28+00:00\n"
 "PO-Revision-Date: 2025-07-29 01:21+0530\n"
 "Last-Translator: Varun Dubey <vapvarun@gmail.com>\n"
 "Language-Team: Varun Dubey <vapvarun@gmail.com>\n"
@@ -34,12 +34,16 @@ msgstr "https://wbcomdesigns.com/downloads/buddypress-activity-filter/"
 
 #. Description of the plugin
 #: buddypress-activity-filter.php
+#, fuzzy
+#| msgid ""
+#| "Filter and manage BuddyPress activity streams with default filters and "
+#| "custom post type support."
 msgid ""
 "Hide activity types from BuddyPress activity streams and set the default "
 "filter members see."
 msgstr ""
-"Masquez des types d'activité dans les flux d'activité BuddyPress et "
-"définissez le filtre par défaut vu par les membres."
+"Filtrez et gérez les flux d'activité BuddyPress avec des filtres par défaut "
+"et la prise en charge de types de messages personnalisés."
 
 #. Author of the plugin
 #: buddypress-activity-filter.php
@@ -355,12 +359,16 @@ msgid ""
 msgstr ""
 
 #: includes/admin/views/hub.php:101
+#, fuzzy
+#| msgid "Save Settings"
 msgid "Open settings"
-msgstr "Ouvrir les réglages"
+msgstr "Sauvegarder les paramètres"
 
 #: includes/admin/views/hub.php:111
+#, fuzzy
+#| msgid "WB Plugins"
 msgid "About WB Plugins"
-msgstr "À propos de WB Plugins"
+msgstr "Plugins WB"
 
 #: includes/admin/views/hub.php:115
 msgid ""
@@ -375,7 +383,7 @@ msgstr ""
 
 #: includes/admin/views/settings-default.php:32
 msgid "Default Activity Filters"
-msgstr "Filtres d'activité par défaut"
+msgstr ""
 
 #: includes/admin/views/settings-default.php:33
 msgid ""
@@ -384,8 +392,10 @@ msgid ""
 msgstr ""
 
 #: includes/admin/views/settings-default.php:39
+#, fuzzy
+#| msgid "Site-wide Activity Default"
 msgid "Site-wide stream default"
-msgstr "Valeur par défaut du flux global"
+msgstr "BuddyPress Filtrage des Activités"
 
 #: includes/admin/views/settings-default.php:44
 #: includes/admin/views/settings-default.php:64
@@ -406,8 +416,10 @@ msgstr ""
 "filtre d'activité."
 
 #: includes/admin/views/settings-default.php:59
+#, fuzzy
+#| msgid "Profile Activity Default"
 msgid "Profile stream default"
-msgstr "Valeur par défaut du flux de profil"
+msgstr "BuddyPress Filtrage des Activités"
 
 #: includes/admin/views/settings-default.php:75
 msgid ""
@@ -425,7 +437,7 @@ msgstr "A répondu à une mise à jour de statut"
 
 #: includes/admin/views/settings-hidden.php:36
 msgid "Hidden Activity Types"
-msgstr "Types d'activité masqués"
+msgstr ""
 
 #: includes/admin/views/settings-hidden.php:37
 msgid ""
@@ -473,24 +485,34 @@ msgid ""
 msgstr ""
 
 #: includes/admin/views/shell.php:30
+#, fuzzy
+#| msgid ""
+#| "Filter and manage BuddyPress activity streams with default filters and "
+#| "custom post type support."
 msgid ""
 "Hide activity types from your activity streams and set the default filter "
 "members see."
 msgstr ""
-"Masquez des types d'activité dans vos flux d'activité et définissez le "
-"filtre par défaut vu par les membres."
+"Filtrez et gérez les flux d'activité BuddyPress avec des filtres par défaut "
+"et la prise en charge de types de messages personnalisés."
 
 #: includes/admin/views/shell.php:58
+#, fuzzy
+#| msgid "BP Activity Filter"
 msgid "Activity Filter"
-msgstr "Filtrage des activités"
+msgstr "Filtrage des Activités"
 
 #: includes/admin/views/shell.php:59
+#, fuzzy
+#| msgid "WB Plugins"
 msgid "Plugin"
-msgstr "Extension"
+msgstr "Plugins WB"
 
 #: includes/admin/views/shell.php:62
+#, fuzzy
+#| msgid "BP Activity Filter"
 msgid "Activity Filter navigation"
-msgstr "Navigation du filtrage des activités"
+msgstr "Filtrage des Activités"
 
 #: includes/admin/views/shell.php:67
 msgid "Resources"

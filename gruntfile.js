@@ -219,28 +219,71 @@ module.exports = function ( grunt ) {
 	 * .l10n.php in place that silently wins - the translation update
 	 * appears to do nothing. Any task that rebuilds .mo must rebuild this
 	 * too, which is why compile-mo and compile-php are always paired below.
+	 *
+	 * It also must not be pointed straight at languages/. `wp i18n make-php`
+	 * includes fuzzy entries, while the msgfmt call in compile-mo above drops
+	 * them - so the two artifacts disagreed, and the one WordPress prefers was
+	 * the one carrying unreviewed machine guesses. Compile from a
+	 * fuzzy-stripped copy so both artifacts contain the same reviewed strings.
+	 *
+	 * --no-fuzzy is safe here only because it runs against a throwaway copy.
+	 * Against a .po it deletes whole entries instead of clearing the flag.
 	 */
 	grunt.registerTask( 'compile-php', 'Compile PO files to .l10n.php (WP 6.5+ loads these before .mo)', function() {
 		var done = this.async();
 		var shelljs = require('shelljs');
+		var path = require('path');
 
 		if ( ! shelljs.which('wp') ) {
 			grunt.log.error('wp-cli not found. Required for "wp i18n make-php".');
-			grunt.log.error('Install: https://wp-cli.org/  (or run: wp i18n make-php languages/)');
+			grunt.log.error('Install: https://wp-cli.org/  (or run: ./bin/i18n.sh)');
 			return done(false);
 		}
 
-		var result = shelljs.exec('wp i18n make-php languages/', {silent: true});
+		if ( ! shelljs.which('msgattrib') ) {
+			grunt.log.error('msgattrib not found. Please install gettext.');
+			grunt.log.error('On macOS: brew install gettext && brew link --force gettext');
+			return done(false);
+		}
 
-		if (result.code !== 0) {
-			grunt.log.error('Failed to generate .l10n.php files.');
-			if (result.stderr) {
-				grunt.log.error(result.stderr);
+		var stage = 'languages/.l10n-stage';
+		shelljs.rm('-rf', stage);
+		shelljs.mkdir('-p', stage);
+
+		var errors = 0;
+
+		grunt.file.expand('languages/*.po').forEach(function(poFile) {
+			var staged = path.join(stage, path.basename(poFile));
+			var strip = shelljs.exec(
+				'msgattrib --no-fuzzy --no-obsolete -o "' + staged + '" "' + poFile + '"',
+				{silent: true}
+			);
+			if (strip.code !== 0) {
+				grunt.log.error('Failed to strip fuzzy entries from ' + path.basename(poFile));
+				errors++;
 			}
+		});
+
+		if (errors === 0) {
+			var result = shelljs.exec('wp i18n make-php "' + stage + '/"', {silent: true});
+			if (result.code !== 0) {
+				grunt.log.error('Failed to generate .l10n.php files.');
+				if (result.stderr) {
+					grunt.log.error(result.stderr);
+				}
+				errors++;
+			} else {
+				shelljs.mv(path.join(stage, '*.l10n.php'), 'languages/');
+			}
+		}
+
+		shelljs.rm('-rf', stage);
+
+		if (errors > 0) {
 			return done(false);
 		}
 
-		grunt.log.ok('Generated .l10n.php files.');
+		grunt.log.ok('Generated .l10n.php files (fuzzy excluded).');
 		done();
 	});
 
@@ -302,6 +345,20 @@ module.exports = function ( grunt ) {
 			grunt.log.error( collisions.stderr || collisions.stdout );
 			errors++;
 		}
+
+		// Same question asked of the artifact WordPress actually loads. Every
+		// entry in there is served, so a shared translation is user-visible by
+		// definition, and it proves no fuzzy entry survived compilation.
+		grunt.file.expand('languages/*.l10n.php').forEach(function(l10nFile) {
+			var served = shelljs.exec(
+				'php bin/check-l10n-collisions.php "' + l10nFile + '"',
+				{silent: true}
+			);
+			if ( served.code !== 0 ) {
+				grunt.log.error( served.stderr || served.stdout );
+				errors++;
+			}
+		});
 
 		if ( errors > 0 ) {
 			grunt.log.error( errors + ' locale(s) failed verification.' );

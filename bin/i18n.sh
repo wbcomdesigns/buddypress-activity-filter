@@ -9,19 +9,32 @@
 #   2. merge every locale against it (keeping fuzzy matches as translator hints)
 #   3. drop obsolete entries, so strings whose code was deleted stop being
 #      reported as translation bugs
-#   4. compile .mo AND .l10n.php
-#   5. assert every locale matches the POT, passes msgfmt -c, and has no two
-#      msgids sharing one translation (see bin/check-po-collisions.py)
+#   4. compile .mo AND .l10n.php, with fuzzy entries excluded
+#   5. assert every locale matches the POT, passes msgfmt -c, and that no two
+#      msgids share one translation - in the .po and again in the compiled
+#      artifact (see bin/check-po-collisions.py)
 #
-# Step 4 is the one that bites. WordPress 6.5+ loads languages/*.l10n.php in
-# preference to the .mo, so rebuilding only the .mo leaves a stale .l10n.php
-# that silently wins and the update appears to do nothing.
+# These files are deliberately SYNCED, not translated. Wording belongs to
+# translators on translate.wordpress.org; this script's job is to keep the
+# structure honest so the plugin stays translation-ready.
 #
-# Step 3 uses --no-obsolete. Do NOT reach for --no-fuzzy: that deletes the
-# whole entry rather than clearing the flag, and every casual check still
-# passes afterwards.
+# Two things bite in step 4:
 #
-# Requires: wp-cli, gettext (msgmerge, msgattrib, msgfmt).
+# 1. WordPress 6.5+ loads languages/*.l10n.php in preference to the .mo, so
+#    rebuilding only the .mo leaves a stale .l10n.php that silently wins and
+#    the update appears to do nothing.
+#
+# 2. `wp i18n make-mo` and `make-php` include fuzzy entries, where GNU msgfmt
+#    drops them. Fuzzy is a machine guess, so shipping it puts wrong text on
+#    screen: fr_FR served the plugin name as two tab headings, and all four
+#    locales served "Open settings" as "Save settings". Step 4 therefore
+#    compiles from a fuzzy-stripped copy.
+#
+# Step 3 uses --no-obsolete on the .po. Never point --no-fuzzy at a .po: it
+# deletes whole entries rather than clearing the flag and every casual check
+# still passes. It is used in step 4 only, against a throwaway copy.
+#
+# Requires: wp-cli, gettext (msgmerge, msgattrib, msgfmt), python3, php.
 # Mirrors `grunt sync`, but runs without node/grunt installed.
 
 set -euo pipefail
@@ -31,7 +44,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 SLUG="bp-activity-filter"
 POT="languages/${SLUG}.pot"
 
-for tool in wp msgmerge msgattrib msgfmt python3; do
+for tool in wp msgmerge msgattrib msgfmt python3 php; do
 	if ! command -v "$tool" >/dev/null 2>&1; then
 		echo "error: '$tool' not found." >&2
 		case "$tool" in
@@ -54,10 +67,32 @@ for po in languages/*.po; do
 	echo "    $( basename "$po" )"
 done
 
-echo "==> Compiling .mo and .l10n.php"
+# Compile from fuzzy-stripped copies, never from the .po itself.
+#
+# `wp i18n make-mo` and `make-php` do NOT skip fuzzy entries - unlike GNU
+# msgfmt, which drops them per gettext convention. Compiling fr_FR directly
+# gave a 47-entry .mo where GNU msgfmt gave 27, and the extra 20 were fuzzy
+# carry-over: "Open settings" shipped as "Save settings", and two labels
+# shipped as the plugin name. Fuzzy means "a machine guessed this", so it must
+# reach translators but never users.
+#
+# --no-fuzzy is used ONLY on the throwaway copy. It deletes whole entries
+# rather than clearing the flag, which is exactly right for a compile input and
+# exactly wrong for the .po - never point it at languages/*.po.
+echo "==> Compiling .mo and .l10n.php (fuzzy excluded)"
 rm -f languages/*.mo languages/*.l10n.php
-wp i18n make-mo languages/ languages/ >/dev/null
-wp i18n make-php languages/ >/dev/null
+STAGE=$( mktemp -d )
+trap 'rm -rf "$STAGE"' EXIT
+
+for po in languages/*.po; do
+	msgattrib --no-fuzzy --no-obsolete -o "$STAGE/$( basename "$po" )" "$po"
+done
+
+# Destination omitted on purpose - make-mo rejects an explicit destination when
+# the source is a directory, and writes alongside the source instead.
+wp i18n make-mo "$STAGE/" >/dev/null
+wp i18n make-php "$STAGE/" >/dev/null
+mv "$STAGE"/*.mo "$STAGE"/*.l10n.php languages/
 
 echo "==> Verifying"
 expected=$( grep -c '^msgid ' "$POT" )
@@ -94,6 +129,12 @@ done
 # A contaminated msgstr keeps the msgid count correct and passes msgfmt -c, so
 # it slips past every check above. This is the one that catches it.
 if ! python3 bin/check-po-collisions.py languages/*.po; then
+	failed=1
+fi
+
+# Then the same question asked of the artifact WordPress actually loads. Same
+# script grunt verify-i18n calls, so the two entry points cannot drift.
+if ! php bin/check-l10n-collisions.php languages/*.l10n.php; then
 	failed=1
 fi
 
