@@ -27,7 +27,7 @@ $bpaf_version = defined( 'BP_ACTIVITY_FILTER_VERSION' ) ? BP_ACTIVITY_FILTER_VER
 			<span class="dashicons dashicons-filter" aria-hidden="true"></span>
 			<div>
 				<h1>BuddyPress Activity Filter</h1>
-				<p class="bpaf-page-header__subtitle"><?php esc_html_e( 'Hide activity types from your activity streams and set the default filter members see.', 'bp-activity-filter' ); ?></p>
+				<p class="bpaf-page-header__subtitle"><?php esc_html_e( 'Hide activity types from your activity streams and set the default filter members see.', 'buddypress-activity-filter' ); ?></p>
 			</div>
 		</div>
 		<div class="bpaf-page-header__actions">
@@ -55,16 +55,16 @@ $bpaf_version = defined( 'BP_ACTIVITY_FILTER_VERSION' ) ? BP_ACTIVITY_FILTER_VER
 					<span class="dashicons dashicons-filter"></span>
 				</span>
 				<div class="bpaf-settings-brand-text">
-					<p class="bpaf-settings-brand-name"><?php esc_html_e( 'Activity Filter', 'bp-activity-filter' ); ?></p>
-					<p class="bpaf-settings-brand-sub"><?php esc_html_e( 'Plugin', 'bp-activity-filter' ); ?></p>
+					<p class="bpaf-settings-brand-name"><?php esc_html_e( 'Activity Filter', 'buddypress-activity-filter' ); ?></p>
+					<p class="bpaf-settings-brand-sub"><?php esc_html_e( 'Plugin', 'buddypress-activity-filter' ); ?></p>
 				</div>
 			</div>
-			<nav class="bpaf-settings-sidebar-nav" aria-label="<?php esc_attr_e( 'Activity Filter navigation', 'bp-activity-filter' ); ?>">
+			<nav class="bpaf-settings-sidebar-nav" aria-label="<?php esc_attr_e( 'Activity Filter navigation', 'buddypress-activity-filter' ); ?>">
 				<?php
 				$bpaf_printed_groups = array();
 				$bpaf_group_labels   = array(
-					'settings'  => esc_html__( 'Settings', 'bp-activity-filter' ),
-					'resources' => esc_html__( 'Resources', 'bp-activity-filter' ),
+					'settings'  => esc_html__( 'Settings', 'buddypress-activity-filter' ),
+					'resources' => esc_html__( 'Resources', 'buddypress-activity-filter' ),
 				);
 				foreach ( $bpaf_tabs as $bpaf_slug => $bpaf_tab ) {
 					$bpaf_group = isset( $bpaf_tab['group'] ) ? $bpaf_tab['group'] : 'settings';
@@ -89,9 +89,9 @@ $bpaf_version = defined( 'BP_ACTIVITY_FILTER_VERSION' ) ? BP_ACTIVITY_FILTER_VER
 				<div class="bpaf-snav-divider" role="separator"></div>
 				<a href="https://docs.wbcomdesigns.com/doc_category/bp-activity-filter/" class="bpaf-snav-link" target="_blank" rel="noopener noreferrer">
 					<span class="dashicons dashicons-book" aria-hidden="true"></span>
-					<?php esc_html_e( 'Documentation', 'bp-activity-filter' ); ?>
+					<?php esc_html_e( 'Documentation', 'buddypress-activity-filter' ); ?>
 					<span class="dashicons dashicons-external bpaf-snav-link__ext" aria-hidden="true"></span>
-					<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'bp-activity-filter' ); ?></span>
+					<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'buddypress-activity-filter' ); ?></span>
 				</a>
 			</nav>
 		</aside>
@@ -107,7 +107,7 @@ $bpaf_version = defined( 'BP_ACTIVITY_FILTER_VERSION' ) ? BP_ACTIVITY_FILTER_VER
 					}
 					?>
 					<div class="bpaf-save-bar">
-						<?php submit_button( __( 'Save Settings', 'bp-activity-filter' ), 'primary bpaf-btn bpaf-btn-primary', 'submit', false ); ?>
+						<?php submit_button( __( 'Save Settings', 'buddypress-activity-filter' ), 'primary bpaf-btn bpaf-btn-primary', 'submit', false ); ?>
 					</div>
 				</form>
 			<?php else : ?>

@@ -1,13 +1,13 @@
 {
   "$schema": "https://wpmediaverse.com/schemas/wp-plugin-manifest-v2.json",
   "plugin": {
-    "slug": "bp-activity-filter",
+    "slug": "buddypress-activity-filter",
     "dir_slug": "buddypress-activity-filter",
     "name": "BuddyPress Activity Filter",
     "version": "4.0.0",
     "namespace": "(global classes, BP_Activity_Filter_* prefix; no PHP namespace)",
     "main_file": "buddypress-activity-filter.php",
-    "text_domain": "bp-activity-filter",
+    "text_domain": "buddypress-activity-filter",
     "requires_plugins": [
       "buddypress"
     ],

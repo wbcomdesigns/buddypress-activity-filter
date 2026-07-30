@@ -20,8 +20,8 @@ $bpaf_activity_actions = BP_Activity_Filter_Helper::get_activity_actions();
 
 // Core activities that must never be hidden.
 $bpaf_core_readonly = array(
-	'activity_update'  => __( 'Posted a status update', 'bp-activity-filter' ),
-	'activity_comment' => __( 'Replied to a status update', 'bp-activity-filter' ),
+	'activity_update'  => __( 'Posted a status update', 'buddypress-activity-filter' ),
+	'activity_comment' => __( 'Replied to a status update', 'buddypress-activity-filter' ),
 );
 
 // Sentinel: this tab owns the hidden-activities option only. Without it,
@@ -33,31 +33,31 @@ $bpaf_core_readonly = array(
 
 <div class="bpaf-card">
 	<div class="bpaf-card__head">
-		<p class="bpaf-card__title"><?php esc_html_e( 'Hidden Activity Types', 'bp-activity-filter' ); ?></p>
-		<p class="bpaf-card__desc"><?php esc_html_e( 'Hide an activity type to remove it from every stream and from the filter dropdown. Core status updates and replies stay visible.', 'bp-activity-filter' ); ?></p>
+		<p class="bpaf-card__title"><?php esc_html_e( 'Hidden Activity Types', 'buddypress-activity-filter' ); ?></p>
+		<p class="bpaf-card__desc"><?php esc_html_e( 'Hide an activity type to remove it from every stream and from the filter dropdown. Core status updates and replies stay visible.', 'buddypress-activity-filter' ); ?></p>
 	</div>
 	<div class="bpaf-card__body">
 		<?php if ( empty( $bpaf_activity_actions ) ) : ?>
 			<div class="bpaf-notice bpaf-notice--warn">
 				<span class="dashicons dashicons-warning" aria-hidden="true"></span>
-				<span><?php esc_html_e( 'No activity types are available. Make sure BuddyPress is installed and active.', 'bp-activity-filter' ); ?></span>
+				<span><?php esc_html_e( 'No activity types are available. Make sure BuddyPress is installed and active.', 'buddypress-activity-filter' ); ?></span>
 			</div>
 		<?php else : ?>
 
-			<p class="bpaf-field-group-label"><?php esc_html_e( 'Core activities (always visible)', 'bp-activity-filter' ); ?></p>
+			<p class="bpaf-field-group-label"><?php esc_html_e( 'Core activities (always visible)', 'buddypress-activity-filter' ); ?></p>
 			<ul class="bpaf-activity-list">
 				<?php foreach ( $bpaf_core_readonly as $bpaf_key => $bpaf_label ) : ?>
 					<li class="bpaf-activity-row bpaf-activity-row--locked">
 						<span class="dashicons dashicons-yes-alt" aria-hidden="true"></span>
 						<span class="bpaf-activity-row__label"><?php echo esc_html( $bpaf_label ); ?></span>
-						<span class="bpaf-activity-row__status"><?php esc_html_e( 'Always visible', 'bp-activity-filter' ); ?></span>
+						<span class="bpaf-activity-row__status"><?php esc_html_e( 'Always visible', 'buddypress-activity-filter' ); ?></span>
 						<code class="bpaf-activity-row__key"><?php echo esc_html( $bpaf_key ); ?></code>
 					</li>
 				<?php endforeach; ?>
 			</ul>
 
-			<p class="bpaf-field-group-label"><?php esc_html_e( 'Other activity types', 'bp-activity-filter' ); ?></p>
-			<p class="description bpaf-field-group-help"><?php esc_html_e( 'Check a box to hide that activity type from your site.', 'bp-activity-filter' ); ?></p>
+			<p class="bpaf-field-group-label"><?php esc_html_e( 'Other activity types', 'buddypress-activity-filter' ); ?></p>
+			<p class="description bpaf-field-group-help"><?php esc_html_e( 'Check a box to hide that activity type from your site.', 'buddypress-activity-filter' ); ?></p>
 
 			<ul class="bpaf-activity-list">
 				<?php
@@ -88,7 +88,7 @@ $bpaf_core_readonly = array(
 
 			<div class="bpaf-notice bpaf-notice--info">
 				<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>
-				<span><?php esc_html_e( 'Visible types appear in streams and the filter dropdown. Hidden types are removed entirely. Core types cannot be hidden.', 'bp-activity-filter' ); ?></span>
+				<span><?php esc_html_e( 'Visible types appear in streams and the filter dropdown. Hidden types are removed entirely. Core types cannot be hidden.', 'buddypress-activity-filter' ); ?></span>
 			</div>
 
 		<?php endif; ?>

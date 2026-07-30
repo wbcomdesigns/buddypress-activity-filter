@@ -74,22 +74,22 @@ class BP_Activity_Filter_Admin_Panel {
 	public static function get_tabs() {
 		$tabs = array(
 			'default'  => array(
-				'label' => __( 'Default Filters', 'bp-activity-filter' ),
+				'label' => __( 'Default Filters', 'buddypress-activity-filter' ),
 				'icon'  => 'dashicons-admin-settings',
 				'group' => 'settings',
 			),
 			'hidden'   => array(
-				'label' => __( 'Hidden Activities', 'bp-activity-filter' ),
+				'label' => __( 'Hidden Activities', 'buddypress-activity-filter' ),
 				'icon'  => 'dashicons-hidden',
 				'group' => 'settings',
 			),
 			'faq'      => array(
-				'label' => __( 'FAQ', 'bp-activity-filter' ),
+				'label' => __( 'FAQ', 'buddypress-activity-filter' ),
 				'icon'  => 'dashicons-editor-help',
 				'group' => 'resources',
 			),
 			'discover' => array(
-				'label' => __( 'Discover', 'bp-activity-filter' ),
+				'label' => __( 'Discover', 'buddypress-activity-filter' ),
 				'icon'  => 'dashicons-lightbulb',
 				'group' => 'resources',
 			),
@@ -407,8 +407,8 @@ class BP_Activity_Filter_Admin_Panel {
 			'bpActivityFilterAdmin',
 			array(
 				'i18n' => array(
-					'visible' => __( 'Visible', 'bp-activity-filter' ),
-					'hidden'  => __( 'Hidden', 'bp-activity-filter' ),
+					'visible' => __( 'Visible', 'buddypress-activity-filter' ),
+					'hidden'  => __( 'Hidden', 'buddypress-activity-filter' ),
 				),
 			)
 		);

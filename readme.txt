@@ -172,29 +172,10 @@ The plugin is optimized for performance with smart caching, minimal database que
 
 = 4.0.0 - July 2026 =
 
-This release narrows the plugin to what it does completely: hiding activity types and setting the default filter. The Custom Post Types feature has been removed.
-
-* Improve  - Removed the Custom Post Types tab and its activity generation. It recorded every custom post type under the built-in "new blog post" activity type, so those activities could not be hidden or filtered separately, and it never removed the activity when the post was deleted. Existing activities it created are left untouched and can be hidden or moderated as normal.
-* Fix      - Deleting the plugin now removes all of its data. Four activity meta keys and two post meta keys were left behind on every uninstall.
-* Fix      - Corrected the documented developer hooks. Four filters listed in the readme were never fired by the plugin, so code written against them silently did nothing.
-* Fix      - Removed a readme claim of bulk select and deselect controls on the Hidden Activities tab, which the screen has never had.
-* Fix      - Corrected the readme claim that activity actions are cached. The plugin performs no caching.
-* Fix      - Corrected the "Premium BuddyPress Plugins" heading, the "Hidden Activities" and "Other Activity Types" tab labels, and six other translation errors across the German, German formal, French and Dutch locale files.
-* Fix      - Rebuilt the German formal translation, which had been unmaintained since 2020 with most strings untranslated.
-* Fix      - Regenerated the translation template, which still declared version 3.1.0.
-* Fix      - Unreviewed machine-matched translations are no longer shipped. The compiled translation files included every fuzzy entry, so all four locales showed "Open settings" as "Save settings" and French showed the plugin name in place of two headings. Affected strings now fall back to English until a translator confirms them.
-* Fix      - Removed translations that had been carried onto the wrong string. French showed the plugin name in place of the "Default Activity Filters" and "Hidden Activity Types" headings, and German in place of "Default Activity Filters".
-* Fix      - The settings screen no longer scrolls sideways on phones. Table cells and the sidebar overflowed the card at 390px.
-* Fix      - Activity rows on the Hidden Activities tab no longer squeeze their label into a narrow column on phones.
-* Fix      - The settings screen no longer hides other plugins' admin notices, including WordPress update and Site Health warnings.
-* Dev      - Added a translation check that fails the build when two different strings share one translation, in the source files and again in the compiled files, which is the fault behind the label errors above.
-* Dev      - The admin capability is now filterable through bp_activity_filter_admin_capability, applied to both the menu and the settings save.
-* Dev      - Removed roughly 900 lines of code left unreachable by the above, including the whole post type eligibility and conflict detection subsystem.
-* Dev      - Corrected the @since tags throughout, which all read 4.0.0 while the plugin was at 3.2.1.
-
-= 3.2.1 =
+Everything released since 3.2.0. The plugin is narrowed to what it does completely: hiding activity types and setting the default filter. The Custom Post Types feature has been removed, and the settings screen has been rebuilt.
 
 * New      - Discover tab in the settings panel linking to nine free Wbcom Designs community tools.
+* Improve  - Removed the Custom Post Types tab and its activity generation. It recorded every custom post type under the built-in "new blog post" activity type, so those activities could not be hidden or filtered separately, and it never removed the activity when the post was deleted. Existing activities it created are left untouched and can be hidden or moderated as normal.
 * Improve  - Rebuilt the settings screen on the modern WB Plugins card panel with sidebar navigation, token-based styling, and a mobile-friendly layout, moved under the shared WB Plugins menu.
 * Improve  - Retired the legacy Wbcom shared-dashboard admin wrapper and its separate Wbcom Designs menu.
 * Fix      - The Default Filter setting now actually filters the activity stream. It was passing an argument BuddyPress does not read, so the stream stayed unfiltered.
@@ -202,13 +183,29 @@ This release narrows the plugin to what it does completely: hiding activity type
 * Fix      - A default filter that BuddyPress does not list for that screen is now added to the filter dropdown, so the control shows the filter the stream is actually using instead of falling back to "Everything".
 * Fix      - The site-wide default filter is no longer applied to group activity streams. Setting a default could empty a group's stream while its filter dropdown still read "Everything".
 * Fix      - Setting the default filter to "New friendships" no longer leaves the filter dropdown blank. BuddyPress lists friendships under a combined key, which the dropdown sync did not match.
-* Dev      - Removed dead code: an unused legacy JavaScript filter method, four unused helper methods, and the redundant admin class whose sanitizers now live in the settings panel.
 * Fix      - Hidden activity types are now excluded from the activity stream itself, not only from the filter dropdown. Activities recorded before a type was hidden are no longer listed, across the directory, member, group, friends, mentions and favorites streams. They remain visible in the WordPress admin Activity screen so they can still be moderated.
 * Fix      - Hidden activity types are now removed from the activity filter dropdown on Nouveau based themes such as BuddyX and Reign, not only on Legacy.
 * Fix      - Hiding "New friendships" now removes the friendships option from the filter dropdown, which BuddyPress renders under a combined key.
+* Fix      - Translations submitted on translate.wordpress.org can now be used. The text domain did not match the plugin slug, so WordPress looked for a language pack filename that WordPress.org never produces and no community translation could ever load. If you ship your own translation files for this plugin, rename them from bp-activity-filter-LOCALE to buddypress-activity-filter-LOCALE.
+* Fix      - Unreviewed machine-matched translations are no longer shipped. The compiled translation files included every fuzzy entry, so all four locales showed "Open settings" as "Save settings" and French showed the plugin name in place of two headings. Affected strings now fall back to English until a translator confirms them.
+* Fix      - Removed translations that had been carried onto the wrong string. French showed the plugin name in place of the "Default Activity Filters" and "Hidden Activity Types" headings, and German in place of "Default Activity Filters".
+* Fix      - Rebuilt the German formal translation, which had been unmaintained since 2020 with most strings untranslated.
+* Fix      - Regenerated the translation template, which still declared version 3.1.0.
+* Fix      - Deleting the plugin now removes all of its data. Four activity meta keys and two post meta keys were left behind on every uninstall.
+* Fix      - The settings screen no longer scrolls sideways on phones. Table cells and the sidebar overflowed the card at 390px.
+* Fix      - Activity rows on the Hidden Activities tab no longer squeeze their label into a narrow column on phones.
+* Fix      - The settings screen no longer hides other plugins' admin notices, including WordPress update and Site Health warnings.
+* Fix      - Corrected the documented developer hooks. Four filters listed in the readme were never fired by the plugin, so code written against them silently did nothing.
+* Fix      - Removed a readme claim of bulk select and deselect controls on the Hidden Activities tab, which the screen has never had.
+* Fix      - Corrected the readme claim that activity actions are cached. The plugin performs no caching.
 * Fix      - Corrected WordPress Coding Standards compliance across all PHP files.
 * Fix      - Added direct file access protection and output escaping throughout.
 * Fix      - Resolved Plugin Check compatibility warnings.
+* Dev      - The admin capability is now filterable through bp_activity_filter_admin_capability, applied to both the menu and the settings save.
+* Dev      - Added a translation check that fails the build when two different strings share one translation, in the source files and again in the compiled files, which is the fault behind the label errors above.
+* Dev      - Removed roughly 900 lines of code left unreachable by the Custom Post Types removal, including the whole post type eligibility and conflict detection subsystem.
+* Dev      - Removed dead code: an unused legacy JavaScript filter method, four unused helper methods, and the redundant admin class whose sanitizers now live in the settings panel.
+* Dev      - Corrected the @since tags throughout, which all read 4.0.0 while the plugin was at 3.2.1.
 * Compat   - Tested up to WordPress 7.0.
 
 = 3.2.0 =
@@ -316,7 +313,7 @@ define( 'WP_DEBUG_LOG', true );
 For support, documentation, and feature requests:
 
 - **Documentation**: [Plugin Documentation](https://docs.wbcomdesigns.com/doc_category/buddypress-activity-filter/)
-- **Support Forum**: [WordPress.org Support](https://wordpress.org/support/plugin/bp-activity-filter/)
+- **Support Forum**: [WordPress.org Support](https://wordpress.org/support/plugin/buddypress-activity-filter/)
 - **Premium Support**: [Wbcom Designs Support](https://wbcomdesigns.com/support/)
 - **GitHub**: [Development Repository](https://github.com/wbcomdesigns/buddypress-activity-filter)
 

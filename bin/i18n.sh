@@ -41,7 +41,7 @@ set -euo pipefail
 
 cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
-SLUG="bp-activity-filter"
+SLUG="buddypress-activity-filter"
 POT="languages/${SLUG}.pot"
 
 for tool in wp msgmerge msgattrib msgfmt python3 php; do
@@ -92,6 +92,20 @@ done
 # the source is a directory, and writes alongside the source instead.
 wp i18n make-mo "$STAGE/" >/dev/null
 wp i18n make-php "$STAGE/" >/dev/null
+
+# wp-cli writes these as a bare `<?php return array(...);` with no direct-access
+# guard, which Plugin Check reports as an error on every shipped locale. WP
+# include()s the file with ABSPATH already defined, so the guard is invisible at
+# runtime and only blocks a direct HTTP request.
+for l10n in "$STAGE"/*.l10n.php; do
+	{
+		echo '<?php'
+		echo 'if ( ! defined( "ABSPATH" ) ) { exit; }'
+		tail -n +2 "$l10n"
+	} > "$l10n.guarded"
+	mv "$l10n.guarded" "$l10n"
+done
+
 mv "$STAGE"/*.mo "$STAGE"/*.l10n.php languages/
 
 echo "==> Verifying"

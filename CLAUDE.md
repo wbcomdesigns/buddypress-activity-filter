@@ -9,7 +9,7 @@
 - **Version**: `4.0.0`
 - **Scope**: hide activity types + set the default filter. That is the whole plugin. The CPT activity-generation feature was removed in 4.0.0 (see below) — do not reintroduce it.
 - **Class prefix**: `BP_Activity_Filter_*` (global classes; no PHP namespace)
-- **Text domain**: `bp-activity-filter`
+- **Text domain**: `buddypress-activity-filter` (must equal the WP.org slug or language packs never load)
 - **Requires**: BuddyPress >= 12.0.0, PHP 8.0+. `Network: true`. Incompatible with BuddyBoss.
 - **Extends**: null (standalone free plugin; no Pro pair)
 

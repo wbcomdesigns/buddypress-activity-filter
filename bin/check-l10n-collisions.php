@@ -31,6 +31,17 @@ if ( 'cli' !== PHP_SAPI ) {
 	exit( 1 );
 }
 
+/*
+ * The compiled files carry a `defined( 'ABSPATH' ) || exit` guard, so including
+ * one outside WordPress exits the process. Without this stand-in the check
+ * printed nothing and exited 0 - passing by doing no work, which is the exact
+ * failure mode this script exists to catch. Stand in for WordPress's include
+ * context instead.
+ */
+if ( ! defined( 'ABSPATH' ) ) {
+	define( 'ABSPATH', __DIR__ . '/' );
+}
+
 if ( $argc < 2 ) {
 	fwrite( STDERR, "usage: check-l10n-collisions.php <file.l10n.php>...\n" );
 	exit( 2 );

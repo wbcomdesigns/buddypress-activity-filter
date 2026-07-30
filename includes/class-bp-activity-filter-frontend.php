@@ -634,7 +634,7 @@ class BP_Activity_Filter_Frontend {
 				$activity->errors->add(
 					'bp_activity_type_disabled',
 					/* translators: %s: The activity type that has been disabled. */
-					sprintf( __( 'Activity type "%s" has been disabled by administrator.', 'bp-activity-filter' ), $original_type )
+					sprintf( __( 'Activity type "%s" has been disabled by administrator.', 'buddypress-activity-filter' ), $original_type )
 				);
 			}
 		}

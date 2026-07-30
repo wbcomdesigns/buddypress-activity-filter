@@ -1,0 +1,48 @@
+# Files excluded from the distributed plugin zip.
+#
+# Honoured by `wp dist-archive` and most WP build tooling. This repo has no
+# packaging step of its own, so without this list the release zip is whatever
+# the working directory happens to contain - and Plugin Check hard-errors on
+# bin/i18n.sh ("application files are not permitted") plus every markdown file
+# and dotfile in the root.
+#
+# Rule of thumb: if WordPress does not read it at runtime, it does not ship.
+# vendor/ is dev-only here (phpstan and stubs); nothing in the plugin requires
+# an autoloader, so it must not ship either.
+
+# Version control and CI
+.git
+.gitignore
+.gitattributes
+.github
+.distignore
+
+# Build, test and analysis tooling
+bin
+gruntfile.js
+package.json
+package-lock.json
+node_modules
+composer.json
+composer.lock
+vendor
+phpstan.neon
+phpstan-baseline.neon
+phpcs.xml
+phpcs.xml.dist
+tests
+
+# Internal documentation and audit output. readme.txt is the customer-facing
+# changelog; these are working notes and must not reach users.
+audit
+qa-reports
+CLAUDE.md
+BUILD-LOG.md
+WRAPPER-AUDIT.md
+CHANGELOG.md
+*.md
+
+# Editor and OS noise
+.vscode
+.idea
+.DS_Store
