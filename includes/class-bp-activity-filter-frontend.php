@@ -168,7 +168,20 @@ class BP_Activity_Filter_Frontend {
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only UI filter set by BuddyPress; BP verifies its own nonce.
-		return '' !== trim( sanitize_text_field( wp_unslash( $_POST['filter'] ) ) );
+		$filter = trim( sanitize_text_field( wp_unslash( $_POST['filter'] ) ) );
+
+		if ( '' === $filter ) {
+			return false;
+		}
+
+		// A remembered choice for a type the site owner has since hidden is not a
+		// real choice any more - honouring it empties the stream (action=hidden AND
+		// type NOT IN hidden) while the dropdown falls back to Everything.
+		if ( $this->preference_is_hidden( $filter ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -211,7 +224,47 @@ class BP_Activity_Filter_Frontend {
 			return '';
 		}
 
+		// Type was hidden after the member last picked it: treat as no choice so the
+		// admin default (or Everything) can apply instead of an impossible empty stream.
+		if ( $this->preference_is_hidden( $preference ) ) {
+			return null;
+		}
+
 		return $preference;
+	}
+
+	/**
+	 * True when a remembered filter value is (or only covers) a hidden activity type.
+	 *
+	 * Handles both a single type (`friendship_created`) and BuddyPress's combined
+	 * friendship option key (`friendship_accepted,friendship_created`).
+	 *
+	 * @since 4.0.0
+	 * @param string $preference Cookie / POST / sessionStorage filter value.
+	 * @return bool
+	 */
+	private function preference_is_hidden( $preference ) {
+		$preference = trim( (string) $preference );
+
+		if ( '' === $preference || '0' === $preference || '-1' === $preference ) {
+			return false;
+		}
+
+		$hidden = $this->get_hidden_activities();
+
+		if ( empty( $hidden ) ) {
+			return false;
+		}
+
+		// Friendship hide expands the same way the dropdown does.
+		if ( in_array( 'friendship_created', $hidden, true ) ) {
+			$hidden[] = 'friendship_accepted';
+		}
+
+		$types = array_map( 'trim', explode( ',', $preference ) );
+
+		// Preference is hidden when every type it would show is on the hidden list.
+		return ! array_diff( $types, $hidden );
 	}
 
 	/**
@@ -310,8 +363,22 @@ class BP_Activity_Filter_Frontend {
 		// Parse existing query string.
 		wp_parse_str( $query_string, $args );
 
-		// If action/type already set, don't override.
-		if ( ! empty( $args['action'] ) || ! empty( $args['type'] ) ) {
+		// Nouveau replays the remembered filter as both action= and type= on every
+		// AJAX request. If that remembered type is now hidden, the early "already set"
+		// bail left action=friendship_created while the WHERE also said NOT IN
+		// friendship_created - empty stream, dropdown on Everything. Strip the stale
+		// hidden filter so the admin default can replace it.
+		$existing = '';
+		if ( ! empty( $args['action'] ) ) {
+			$existing = (string) $args['action'];
+		} elseif ( ! empty( $args['type'] ) ) {
+			$existing = (string) $args['type'];
+		}
+
+		if ( '' !== $existing && $this->preference_is_hidden( $existing ) ) {
+			unset( $args['action'], $args['type'] );
+		} elseif ( ! empty( $args['action'] ) || ! empty( $args['type'] ) ) {
+			// A real, still-visible filter is already set - do not override.
 			return $query_string;
 		}
 
@@ -338,26 +405,20 @@ class BP_Activity_Filter_Frontend {
 			return http_build_query( $args );
 		}
 
-		return $query_string;
+		return http_build_query( $args );
 	}
 
 	/**
-	 * Drop the member's remembered filter when the site owner changes the default.
+	 * Drop the member's remembered filter when it is no longer valid.
 	 *
-	 * A default that a member's session can permanently outrank is not a default. When a
-	 * member picks a filter, BuddyPress remembers it in sessionStorage under "bp-activity"
-	 * and replays it on every subsequent page load, so the owner's new default was never
-	 * shown to anyone who had ever touched the dropdown - the exact "modify the default and
-	 * the old one persists" report.
+	 * Two cases, both must run before BuddyPress Nouveau's initObjects() reads
+	 * sessionStorage (hence wp_head priority 1, not DOMContentLoaded):
 	 *
-	 * So we stamp the default we last applied. When the stored stamp no longer matches the
-	 * configured default, the owner has changed it since this member last looked: their
-	 * remembered filter is stale, and it is dropped so the new default applies. A member's
-	 * own choice still survives ordinary reloads, which is the behaviour they expect.
-	 *
-	 * This MUST run before BuddyPress Nouveau's initObjects() reads sessionStorage (it is
-	 * what re-applies the remembered filter and requests the stream). Hence wp_head at
-	 * priority 1, not DOMContentLoaded - by then BP has already asked for the stale stream.
+	 * 1. The site owner changed the default since this browser last applied one -
+	 *    the remembered filter is stale relative to the new default.
+	 * 2. The remembered filter is a type the owner has since hidden - honouring it
+	 *    empties the stream (action=hidden AND type NOT IN hidden) while the
+	 *    dropdown falls back to Everything because the option is gone.
 	 *
 	 * @since 3.2.1
 	 */
@@ -366,32 +427,50 @@ class BP_Activity_Filter_Frontend {
 			return;
 		}
 
+		$hidden = $this->get_hidden_activities();
+		if ( in_array( 'friendship_created', $hidden, true ) ) {
+			$hidden[] = 'friendship_accepted';
+		}
+		$hidden = array_values( array_unique( $hidden ) );
+
 		?>
 		<script type="text/javascript">
 		(function () {
 			try {
 				var current = <?php echo wp_json_encode( $this->get_defaults_signature() ); ?>;
 				var STAMP   = <?php echo wp_json_encode( self::DEFAULT_STAMP ); ?>;
+				var hidden  = <?php echo wp_json_encode( $hidden ); ?>;
 				var stamped = null;
+				var cookieFilter = null;
 
 				document.cookie.split( ';' ).forEach( function ( pair ) {
 					var bits = pair.split( '=' );
-					if ( bits[0].trim() === STAMP ) {
-						stamped = decodeURIComponent( bits.slice( 1 ).join( '=' ) );
+					var name = bits[0].trim();
+					var val  = decodeURIComponent( bits.slice( 1 ).join( '=' ) );
+					if ( name === STAMP ) {
+						stamped = val;
+					}
+					if ( name === 'bp-activity-filter' ) {
+						cookieFilter = val;
 					}
 				} );
 
-				if ( stamped === current ) {
-					return; // Default unchanged - the member's own choice stands.
+				var store = JSON.parse( window.sessionStorage.getItem( 'bp-activity' ) || '{}' );
+				var remembered = ( store && store.filter ) ? String( store.filter ) : ( cookieFilter || '' );
+
+				var defaultChanged = stamped !== current;
+				var rememberedHidden = false;
+				if ( remembered && hidden && hidden.length ) {
+					var parts = remembered.split( ',' ).map( function ( p ) { return p.trim(); } );
+					rememberedHidden = parts.every( function ( p ) {
+						return hidden.indexOf( p ) !== -1;
+					} );
 				}
 
-				/*
-				 * The owner changed the default since this browser last applied one, so
-				 * whatever filter BuddyPress remembered for this member is stale. Drop it
-				 * from both places BP keeps it - sessionStorage on Nouveau, the cookie on
-				 * Legacy - and record the default we are now applying.
-				 */
-				var store = JSON.parse( window.sessionStorage.getItem( 'bp-activity' ) || '{}' );
+				if ( ! defaultChanged && ! rememberedHidden ) {
+					return; // Remembered choice still valid.
+				}
+
 				delete store.filter;
 				window.sessionStorage.setItem( 'bp-activity', JSON.stringify( store ) );
 
@@ -465,7 +544,19 @@ class BP_Activity_Filter_Frontend {
 				try {
 					var bpState = JSON.parse(window.sessionStorage.getItem('bp-activity') || 'null');
 					if (bpState && bpState.filter) {
-						filterValue = bpState.filter;
+						var stored = String(bpState.filter);
+						var matchStored = Array.prototype.filter.call(dropdown.options, function(option) {
+							return option.value === stored || option.value.split(',').indexOf(stored) !== -1;
+						})[0];
+						// Only mirror a stored filter the dropdown can still show. A
+						// hidden type leaves no option, and keeping it made the control
+						// say Everything while the AJAX stream asked for the dead type.
+						if (matchStored) {
+							filterValue = stored;
+						} else {
+							delete bpState.filter;
+							window.sessionStorage.setItem('bp-activity', JSON.stringify(bpState));
+						}
 					}
 				} catch (e) {}
 
