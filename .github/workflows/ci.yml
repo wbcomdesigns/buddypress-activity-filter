@@ -16,7 +16,7 @@ jobs:
       matrix:
         php: ['8.1', '8.2', '8.3', '8.4']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
@@ -31,7 +31,7 @@ jobs:
     name: PHPStan (level 5)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -53,7 +53,7 @@ jobs:
     name: WordPress Coding Standards
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -61,12 +61,22 @@ jobs:
           php-version: '8.3'
           tools: composer, cs2pr
 
+      # phpcodesniffer-composer-installer is a Composer PLUGIN, and Composer 2.2+
+      # blocks plugins unless they are allow-listed. Without the config line the
+      # require aborts before WPCS is installed. It has to be allowed BEFORE the
+      # require, not after - it is what registers the WPCS standards with phpcs,
+      # so `--standard=WordPress-Extra` cannot resolve otherwise.
       - name: Install WPCS
         run: |
+          composer global config --no-plugins --no-interaction \
+            allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
           composer global require --no-interaction --no-progress \
             wp-coding-standards/wpcs:"^3.0" \
             dealerdirect/phpcodesniffer-composer-installer:"^1.0"
           echo "$(composer global config bin-dir --absolute)" >> "$GITHUB_PATH"
+
+      - name: Confirm the WordPress standards actually registered
+        run: phpcs -i | grep -q "WordPress-Extra"
 
       # -n = errors only. The tree is error-clean; the remaining warnings are
       # known and accepted (unused params, one WP_DEBUG-guarded error_log).
@@ -79,7 +89,7 @@ jobs:
     name: i18n integrity
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
