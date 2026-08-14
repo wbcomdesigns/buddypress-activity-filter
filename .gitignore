@@ -1,16 +1,11 @@
+# Dependencies. composer.json and composer.lock ARE tracked - CI needs both to
+# install the PHPStan gate. Do not add a blanket *.json rule here: it silently
+# swallowed composer.json, and a fresh clone could not run `composer install`.
 node_modules/
+vendor/
+
+# OS and editor noise
 .DS_Store
 error_log
-
-*.json
-.DS_Store
-
-# AutoVAP onboarding artifacts — keep tracked despite broad ignores above
-!CLAUDE.md
-!audit/
-!audit/**
-!audit/manifest.json
-!audit/manifest.summary.json
-
-# Composer dev dependencies (PHPStan + stubs). Not shipped.
-vendor/
+.vscode/
+.idea/

@@ -48,7 +48,7 @@ class BP_Activity_Filter_Helper {
 
 				// Update label for friendship_created to be clearer.
 				if ( 'friendship_created' === $key ) {
-					$action['value'] = __( 'New friendships', 'buddypress-activity-filter' );
+					$action['value'] = __( 'New friendships', 'bp-activity-filter' );
 				}
 
 				if ( ! isset( $labels[ $key ] ) ) {

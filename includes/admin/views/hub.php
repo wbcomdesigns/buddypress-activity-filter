@@ -65,7 +65,7 @@ $bpaf_plugin_count = count( $bpaf_plugins );
 								'%d Wbcom plugin active on this site.',
 								'%d Wbcom plugins active on this site.',
 								$bpaf_plugin_count,
-								'buddypress-activity-filter'
+								'bp-activity-filter'
 							),
 							$bpaf_plugin_count
 						)
@@ -81,9 +81,9 @@ $bpaf_plugin_count = count( $bpaf_plugins );
 			<span class="bpaf-empty-state__icon" aria-hidden="true">
 				<span class="dashicons dashicons-lightbulb"></span>
 			</span>
-			<p class="bpaf-empty-state__title"><?php esc_html_e( 'No Wbcom plugins attached to this hub yet', 'buddypress-activity-filter' ); ?></p>
+			<p class="bpaf-empty-state__title"><?php esc_html_e( 'No Wbcom plugins attached to this hub yet', 'bp-activity-filter' ); ?></p>
 			<p class="bpaf-empty-state__desc">
-				<?php esc_html_e( 'Activate one or more Wbcom plugins and they will appear here automatically.', 'buddypress-activity-filter' ); ?>
+				<?php esc_html_e( 'Activate one or more Wbcom plugins and they will appear here automatically.', 'bp-activity-filter' ); ?>
 			</p>
 		</div>
 	<?php else : ?>
@@ -98,7 +98,7 @@ $bpaf_plugin_count = count( $bpaf_plugins );
 						<span class="bpaf-hub-card__subtitle"><?php echo esc_html( $bpaf_p['page_title'] ); ?></span>
 					<?php endif; ?>
 					<span class="bpaf-hub-card__cta">
-						<?php esc_html_e( 'Open settings', 'buddypress-activity-filter' ); ?>
+						<?php esc_html_e( 'Open settings', 'bp-activity-filter' ); ?>
 						<span class="dashicons dashicons-arrow-right-alt" aria-hidden="true"></span>
 					</span>
 				</a>
@@ -108,15 +108,15 @@ $bpaf_plugin_count = count( $bpaf_plugins );
 
 	<div class="bpaf-card bpaf-card--spaced">
 		<div class="bpaf-card__head">
-			<p class="bpaf-card__title"><?php esc_html_e( 'About WB Plugins', 'buddypress-activity-filter' ); ?></p>
+			<p class="bpaf-card__title"><?php esc_html_e( 'About WB Plugins', 'bp-activity-filter' ); ?></p>
 		</div>
 		<div class="bpaf-card__body">
 			<p class="bpaf-card__body-lead">
-				<?php esc_html_e( 'This hub is the single entry point for every Wbcom Designs plugin installed on your site. Each plugin lives on its own page under this menu and keeps its own settings and data.', 'buddypress-activity-filter' ); ?>
+				<?php esc_html_e( 'This hub is the single entry point for every Wbcom Designs plugin installed on your site. Each plugin lives on its own page under this menu and keeps its own settings and data.', 'bp-activity-filter' ); ?>
 			</p>
 			<p>
 				<a href="https://wbcomdesigns.com/" target="_blank" rel="noopener noreferrer">
-					<?php esc_html_e( 'Visit wbcomdesigns.com for more plugins and themes', 'buddypress-activity-filter' ); ?>
+					<?php esc_html_e( 'Visit wbcomdesigns.com for more plugins and themes', 'bp-activity-filter' ); ?>
 				</a>
 			</p>
 		</div>

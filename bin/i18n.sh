@@ -41,7 +41,7 @@ set -euo pipefail
 
 cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
-SLUG="buddypress-activity-filter"
+SLUG="bp-activity-filter"
 POT="languages/${SLUG}.pot"
 
 for tool in wp msgmerge msgattrib msgfmt python3 php; do

@@ -545,6 +545,22 @@
 	color: var(--bpaf-admin-danger);
 }
 
+/*
+ * Conflict notice: the selected default filter is also hidden, so the stream it
+ * produces is empty. Shown under the offending select on the Default Filters
+ * tab. Colour is not the only signal - the sentence states the problem - so it
+ * still reads under a colour-vision deficiency or in high-contrast mode.
+ */
+.bpaf-admin .bpaf-description--warning {
+	margin-block-start: var(--bpaf-admin-gap-sm);
+	padding: var(--bpaf-admin-gap-sm) var(--bpaf-admin-gap-md);
+	border-inline-start: 3px solid var(--bpaf-admin-danger);
+	border-radius: var(--bpaf-admin-radius-sm);
+	background: var(--bpaf-admin-danger-light);
+	color: var(--bpaf-admin-danger);
+	font-weight: 500;
+}
+
 .bpaf-activity-row__label-wrap input[type="checkbox"] {
 	margin: 0;
 	flex-shrink: 0;

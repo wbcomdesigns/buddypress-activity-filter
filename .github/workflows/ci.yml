@@ -1,0 +1,131 @@
+name: CI
+
+# Runs on every branch, not just main/master. Release work happens on version
+# branches (4.0.0, 3.2.1, ...), and a gate that only fires after the merge is a
+# gate that never guarded the release.
+on:
+  push:
+  pull_request:
+
+jobs:
+  php-lint:
+    name: PHP Lint (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: none
+
+      - name: Check PHP syntax
+        run: find . -name "*.php" -not -path "./vendor/*" -not -path "./node_modules/*" | xargs -n1 php -l
+
+  phpstan:
+    name: PHPStan (level 5)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer
+
+      # Installs from the committed composer.json + composer.lock, so CI
+      # analyses with the same PHPStan, WordPress stubs and BuddyPress stubs
+      # the repo pins. Do not replace this with `composer require` - that
+      # resolves different versions than the ones the baseline was built against.
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
+
+  wpcs:
+    name: WordPress Coding Standards
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer, cs2pr
+
+      - name: Install WPCS
+        run: |
+          composer global require --no-interaction --no-progress \
+            wp-coding-standards/wpcs:"^3.0" \
+            dealerdirect/phpcodesniffer-composer-installer:"^1.0"
+          echo "$(composer global config bin-dir --absolute)" >> "$GITHUB_PATH"
+
+      # -n = errors only. The tree is error-clean; the remaining warnings are
+      # known and accepted (unused params, one WP_DEBUG-guarded error_log).
+      - name: Run PHPCS
+        run: |
+          phpcs --standard=WordPress-Extra --extensions=php \
+            --ignore=vendor,node_modules,build,languages -n .
+
+  i18n:
+    name: i18n integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: none
+
+      - name: Install gettext
+        run: sudo apt-get update && sudo apt-get install -y gettext
+
+      # The text domain must equal the WP.org SLUG (bp-activity-filter), not the
+      # GitHub repo name. WordPress builds the language-pack path from the
+      # domain; WordPress.org names the file from the slug. If these drift,
+      # every community translation silently stops loading and nothing else in
+      # this pipeline notices.
+      - name: Assert text domain matches the WP.org slug
+        run: |
+          SLUG="bp-activity-filter"
+          HEADER=$(grep -m1 '^ \* Text Domain:' buddypress-activity-filter.php | sed 's/.*Text Domain: *//' | tr -d '\r')
+          test "$HEADER" = "$SLUG" || { echo "::error::Text Domain header is '$HEADER', expected '$SLUG'"; exit 1; }
+          test -f "languages/${SLUG}.pot" || { echo "::error::languages/${SLUG}.pot missing"; exit 1; }
+          if grep -rq "'buddypress-activity-filter'" --include="*.php" . --exclude-dir=vendor; then
+            echo "::error::Found gettext calls using the repo name as the text domain"
+            exit 1
+          fi
+
+      - name: Assert every locale matches the POT
+        run: |
+          POT="languages/bp-activity-filter.pot"
+          expected=$(grep -c '^msgid ' "$POT")
+          fail=0
+          for po in languages/*.po; do
+            actual=$(grep -c '^msgid ' "$po")
+            [ "$actual" -eq "$expected" ] || { echo "::error::$po has $actual msgids, expected $expected"; fail=1; }
+            msgfmt -c -o /dev/null "$po" || fail=1
+            base="${po%.po}"
+            for artifact in "$base.mo" "$base.l10n.php"; do
+              [ -s "$artifact" ] || { echo "::error::missing or empty $artifact"; fail=1; }
+            done
+          done
+          exit $fail
+
+      # A msgstr carried onto the wrong msgid keeps the msgid count correct and
+      # passes msgfmt -c, so only these two catch it - once in source, once in
+      # the artifact WordPress actually loads.
+      - name: Check for translation collisions
+        run: |
+          python3 bin/check-po-collisions.py languages/*.po
+          php bin/check-l10n-collisions.php languages/*.l10n.php

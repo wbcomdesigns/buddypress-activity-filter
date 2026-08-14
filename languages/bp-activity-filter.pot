@@ -3,16 +3,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BuddyPress Activity Filter 4.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/buddypress-activity-filter\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bp-activity-filter\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-30T11:54:47+00:00\n"
+"POT-Creation-Date: 2026-08-14T08:47:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: buddypress-activity-filter\n"
+"X-Domain: bp-activity-filter\n"
 
 #. Plugin Name of the plugin
 #: buddypress-activity-filter.php
@@ -21,7 +21,7 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #: buddypress-activity-filter.php
-msgid "https://wordpress.org/plugins/buddypress-activity-filter/"
+msgid "https://wordpress.org/plugins/bp-activity-filter/"
 msgstr ""
 
 #. Description of the plugin
@@ -270,33 +270,48 @@ msgstr ""
 msgid "Visit wbcomdesigns.com for more plugins and themes"
 msgstr ""
 
-#: includes/admin/views/settings-default.php:32
+#: includes/admin/views/settings-default.php:60
 msgid "Default Activity Filters"
 msgstr ""
 
-#: includes/admin/views/settings-default.php:33
+#: includes/admin/views/settings-default.php:61
 msgid "Choose what each activity stream shows by default. Members can still switch the filter themselves using the activity dropdown."
 msgstr ""
 
-#: includes/admin/views/settings-default.php:39
+#: includes/admin/views/settings-default.php:67
 msgid "Site-wide stream default"
 msgstr ""
 
-#: includes/admin/views/settings-default.php:44
-#: includes/admin/views/settings-default.php:64
+#: includes/admin/views/settings-default.php:72
+#: includes/admin/views/settings-default.php:106
 msgid "Everything"
 msgstr ""
 
-#: includes/admin/views/settings-default.php:53
+#. translators: %s: activity type label.
+#: includes/admin/views/settings-default.php:81
+#: includes/admin/views/settings-default.php:122
+#, php-format
+msgid "%s (hidden)"
+msgstr ""
+
+#: includes/admin/views/settings-default.php:90
 msgid "Applied to the main site-wide activity stream the first time a visitor loads it."
 msgstr ""
 
-#: includes/admin/views/settings-default.php:59
+#: includes/admin/views/settings-default.php:94
+msgid "This type is hidden on the Hidden Activities tab, so the site-wide stream will show nothing. Pick a visible type, or make this one visible again."
+msgstr ""
+
+#: includes/admin/views/settings-default.php:101
 msgid "Profile stream default"
 msgstr ""
 
-#: includes/admin/views/settings-default.php:75
+#: includes/admin/views/settings-default.php:130
 msgid "Applied to each member profile activity stream. Profile-irrelevant types such as \"New Member\" are left out of this list."
+msgstr ""
+
+#: includes/admin/views/settings-default.php:134
+msgid "This type is hidden on the Hidden Activities tab, so member profile streams will show nothing. Pick a visible type, or make this one visible again."
 msgstr ""
 
 #: includes/admin/views/settings-hidden.php:23

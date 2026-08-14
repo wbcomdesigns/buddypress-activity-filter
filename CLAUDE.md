@@ -1,6 +1,6 @@
 # Plugin: BuddyPress Activity Filter
 
-> **READ FIRST:** [`audit/manifest.json`](audit/manifest.json) is the canonical inventory — 0 REST endpoints, 0 AJAX handlers, 0 tables, 0 CPTs, 0 cron, 0 WP-CLI, 0 shortcodes, 0 blocks; 5 fired hooks/filters, 4 options, 2 admin pages. This is a hooks/options-driven BuddyPress addon. Use the manifest before grepping. See also [`audit/FEATURE_AUDIT.md`](audit/FEATURE_AUDIT.md), [`audit/CODE_FLOWS.md`](audit/CODE_FLOWS.md), [`audit/ROLE_MATRIX.md`](audit/ROLE_MATRIX.md), and the wppqa baseline [`audit/wppqa-baseline-2026-06-05/SUMMARY.md`](audit/wppqa-baseline-2026-06-05/SUMMARY.md). Refresh via `/wp-plugin-onboard --refresh` after non-trivial changes.
+> **READ FIRST:** [`audit/manifest.json`](audit/manifest.json) is the canonical inventory — 0 REST endpoints, 0 AJAX handlers, 0 tables, 0 CPTs, 0 cron, 0 WP-CLI, 0 shortcodes, 0 blocks; 7 fired hooks/filters, 4 options, 2 admin pages. This is a hooks/options-driven BuddyPress addon. Use the manifest before grepping. See also [`audit/FEATURE_AUDIT.md`](audit/FEATURE_AUDIT.md), [`audit/CODE_FLOWS.md`](audit/CODE_FLOWS.md), [`audit/ROLE_MATRIX.md`](audit/ROLE_MATRIX.md), and the wppqa baseline [`audit/wppqa-baseline-2026-06-05/SUMMARY.md`](audit/wppqa-baseline-2026-06-05/SUMMARY.md). Refresh via `/wp-plugin-onboard --refresh` after non-trivial changes.
 
 > **Development conventions:** follow the **`/wp-plugin-development`** skill for ALL work here — the 16 critical admin rules, Part 6 (Admin UI: card-based page-shell + design tokens), escaping/security, and dev hygiene (no em-dash in i18n, Lucide over inline SVG/dashicons, no `alert()`/`confirm()`). The admin was migrated onto the card-panel in 3.2.1, so it now matches those conventions.
 
@@ -9,7 +9,7 @@
 - **Version**: `4.0.0`
 - **Scope**: hide activity types + set the default filter. That is the whole plugin. The CPT activity-generation feature was removed in 4.0.0 (see below) — do not reintroduce it.
 - **Class prefix**: `BP_Activity_Filter_*` (global classes; no PHP namespace)
-- **Text domain**: `buddypress-activity-filter` (must equal the WP.org slug or language packs never load)
+- **Text domain**: `bp-activity-filter` — must equal the **WP.org slug**, which is `bp-activity-filter`, NOT the GitHub repo name `buddypress-activity-filter`. WordPress builds the language-pack path from the domain and WordPress.org names the file from the slug; if they differ, no community translation can ever load. Verify against the live listing (`wordpress.org/plugins/bp-activity-filter/`, `translate.wordpress.org/projects/wp-plugins/bp-activity-filter/`) before changing it — the repo directory name is not the slug.
 - **Requires**: BuddyPress >= 12.0.0, PHP 8.0+. `Network: true`. Incompatible with BuddyBoss.
 - **Extends**: null (standalone free plugin; no Pro pair)
 
@@ -41,6 +41,12 @@ Removing it also deleted ~250 lines of post-type eligibility/conflict-detection 
 **Menu registration:** page slug `wbcom-activity-filter` under the shared `WB Plugins` menu, capability `manage_options`, registered by `BP_Activity_Filter_Admin_Panel::add_menu()`.
 
 **Settings save — read this before touching the sanitizers.** All options share one option group but are split across tabs. The Settings API calls `update_option()` for *every* option in the group on save, passing `null` for options the submitted tab did not render. Each tab view therefore emits a hidden `bp_activity_filter_rendered_options[]` sentinel listing the keys it owns, and every sanitize callback checks `tab_rendered_option()` first, returning the stored value untouched when it does not own the key. Remove that guard and saving one tab wipes the others. Sanitizers (`sanitize_filter_value()`, `sanitize_hidden_list()`) live in this class only — `sanitize_hidden_list()` is what makes `activity_update` / `activity_comment` unhideable.
+
+## The two settings interact — do not treat the tabs as independent
+
+Hiding a type and defaulting to a type are the plugin's only two features, and they can contradict each other: a default that is also hidden produces a permanently empty stream, because the hide rule strips it out of the very query the default filtered down to. `settings-default.php` therefore reads `bp_activity_filter_hidden` and omits hidden types from both selects.
+
+The one exception is deliberate: if a hidden type is **already** the stored default, it stays in the list, labelled `(hidden)`, with a warning. Dropping it would make the select fall back to its first option and rewrite the owner's setting on the next save — a worse surprise than showing them the conflict. Any change to either view must keep that behaviour.
 
 ## Settings options (group `bp_activity_filter_settings`)
 - `bp_activity_filter_default` (string `0`) — site-wide default filter

@@ -8,7 +8,7 @@ module.exports = function ( grunt ) {
 		// Check text domain
 		checktextdomain: {
 			options: {
-				text_domain: [ 'buddypress-activity-filter', 'buddypress' ], // Allowed text domains
+				text_domain: [ 'bp-activity-filter', 'buddypress' ], // Allowed text domains
 				keywords: [ // Translation function specifications
 					'__:1,2d',
 					'_e:1,2d',
@@ -63,8 +63,8 @@ module.exports = function ( grunt ) {
 		}
 
 		var result = shelljs.exec(
-			'wp i18n make-pot . languages/buddypress-activity-filter.pot' +
-			' --slug=buddypress-activity-filter' +
+			'wp i18n make-pot . languages/bp-activity-filter.pot' +
+			' --slug=bp-activity-filter' +
 			' --exclude=audit,qa-reports,node_modules,bin',
 			{silent: true}
 		);
@@ -77,7 +77,7 @@ module.exports = function ( grunt ) {
 			return done(false);
 		}
 
-		grunt.log.ok('Generated languages/buddypress-activity-filter.pot');
+		grunt.log.ok('Generated languages/bp-activity-filter.pot');
 		done();
 	});
 
@@ -95,7 +95,7 @@ module.exports = function ( grunt ) {
 			return done(false);
 		}
 
-		var potFile = 'languages/buddypress-activity-filter.pot';
+		var potFile = 'languages/bp-activity-filter.pot';
 		
 		// Check if POT file exists
 		if (!grunt.file.exists(potFile)) {
@@ -311,7 +311,7 @@ module.exports = function ( grunt ) {
 		var shelljs = require('shelljs');
 		var path = require('path');
 
-		var potFile = 'languages/buddypress-activity-filter.pot';
+		var potFile = 'languages/bp-activity-filter.pot';
 		if ( ! grunt.file.exists( potFile ) ) {
 			grunt.log.error('POT file not found. Run "grunt pot" first.');
 			return done(false);

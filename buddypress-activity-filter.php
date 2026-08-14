@@ -1,14 +1,14 @@
 <?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName -- Main plugin file.
 /**
  * Plugin Name: BuddyPress Activity Filter
- * Plugin URI: https://wordpress.org/plugins/buddypress-activity-filter/
+ * Plugin URI: https://wordpress.org/plugins/bp-activity-filter/
  * Description: Hide activity types from BuddyPress activity streams and set the default filter members see.
  * Version: 4.0.0
  * Author: Wbcom Designs
  * Author URI: https://wbcomdesigns.com/
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: buddypress-activity-filter
+ * Text Domain: bp-activity-filter
  * Domain Path: /languages
  * Requires at least: 6.9
  * Tested up to: 7.0
@@ -167,7 +167,7 @@ final class BP_Activity_Filter {
 				wp_die(
 					sprintf(
 						/* translators: %s: file path */
-						esc_html__( 'BuddyPress Activity Filter: Required file missing: %s', 'buddypress-activity-filter' ),
+						esc_html__( 'BuddyPress Activity Filter: Required file missing: %s', 'bp-activity-filter' ),
 						esc_html( $file )
 					)
 				);
@@ -207,8 +207,8 @@ final class BP_Activity_Filter {
 		if ( ! $this->meets_requirements() ) {
 			deactivate_plugins( BP_ACTIVITY_FILTER_BASENAME );
 			wp_die(
-				esc_html__( 'BuddyPress Activity Filter requires BuddyPress to be installed and active.', 'buddypress-activity-filter' ),
-				esc_html__( 'Plugin Activation Error', 'buddypress-activity-filter' ),
+				esc_html__( 'BuddyPress Activity Filter requires BuddyPress to be installed and active.', 'bp-activity-filter' ),
+				esc_html__( 'Plugin Activation Error', 'bp-activity-filter' ),
 				array( 'back_link' => true )
 			);
 		}
@@ -260,7 +260,7 @@ final class BP_Activity_Filter {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
 			esc_url( admin_url( 'admin.php?page=wbcom-activity-filter' ) ),
-			esc_html__( 'Settings', 'buddypress-activity-filter' )
+			esc_html__( 'Settings', 'bp-activity-filter' )
 		);
 
 		array_unshift( $links, $settings_link );
@@ -327,7 +327,7 @@ final class BP_Activity_Filter {
 				<?php
 				printf(
 					/* translators: %s: BuddyPress plugin link */
-					esc_html__( 'This plugin requires %s to be installed and active.', 'buddypress-activity-filter' ),
+					esc_html__( 'This plugin requires %s to be installed and active.', 'bp-activity-filter' ),
 					'<a href="' . esc_url( admin_url( 'plugin-install.php?s=buddypress&tab=search&type=term' ) ) . '"><strong>BuddyPress</strong></a>'
 				);
 				?>
@@ -351,7 +351,7 @@ final class BP_Activity_Filter {
 				<?php
 				printf(
 					/* translators: 1: required version, 2: current version */
-					esc_html__( 'This plugin requires BuddyPress version %1$s or higher. You are running version %2$s.', 'buddypress-activity-filter' ),
+					esc_html__( 'This plugin requires BuddyPress version %1$s or higher. You are running version %2$s.', 'bp-activity-filter' ),
 					esc_html( $this->min_bp_version ),
 					esc_html( buddypress()->version )
 				);
@@ -373,7 +373,7 @@ final class BP_Activity_Filter {
 				<strong>BuddyPress Activity Filter</strong>
 			</p>
 			<p>
-				<?php esc_html_e( 'This plugin is not compatible with BuddyBoss due to similar built-in features. Please use BuddyBoss\'s native activity filtering instead.', 'buddypress-activity-filter' ); ?>
+				<?php esc_html_e( 'This plugin is not compatible with BuddyBoss due to similar built-in features. Please use BuddyBoss\'s native activity filtering instead.', 'bp-activity-filter' ); ?>
 			</p>
 		</div>
 		<?php
@@ -436,7 +436,7 @@ final class BP_Activity_Filter {
 	public function __clone() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			esc_html__( 'Cloning instances of this class is forbidden.', 'buddypress-activity-filter' ),
+			esc_html__( 'Cloning instances of this class is forbidden.', 'bp-activity-filter' ),
 			'4.0.0'
 		);
 	}
@@ -449,7 +449,7 @@ final class BP_Activity_Filter {
 	public function __wakeup() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			esc_html__( 'Unserializing instances of this class is forbidden.', 'buddypress-activity-filter' ),
+			esc_html__( 'Unserializing instances of this class is forbidden.', 'bp-activity-filter' ),
 			'4.0.0'
 		);
 	}

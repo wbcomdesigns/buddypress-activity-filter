@@ -106,7 +106,7 @@ Enhance your BuddyPress community with these premium add-ons:
 ### Manual Installation
 
 1. Download the plugin ZIP file
-2. Upload to `/wp-content/plugins/buddypress-activity-filter/`
+2. Upload to `/wp-content/plugins/bp-activity-filter/`
 3. Activate the plugin through the 'Plugins' screen in WordPress
 4. Navigate to Settings > Activity Filter to configure your preferences
 
@@ -152,7 +152,7 @@ You can reset individual settings by changing them back to their defaults, or de
 
 = Can I filter activities programmatically? =
 
-Yes! The plugin provides numerous hooks and filters for developers. See the documentation for `bp_activity_filter_default`, `bp_activity_filter_available_filters`, and other developer hooks.
+Yes. The plugin fires seven filters and actions, listed in full under Advanced Configuration below. `bp_activity_filter_default` is the one to use for changing the default filter per context.
 
 = What happens during plugin updates? =
 
@@ -160,7 +160,7 @@ The plugin includes automatic migration tools that preserve your settings during
 
 = Does this plugin affect performance? =
 
-The plugin is optimized for performance with smart caching, minimal database queries, and efficient code. It adds negligible overhead to your site while providing significant functionality.
+Filtering happens server-side inside the query BuddyPress already runs, so the plugin adds no extra database queries to the activity stream. It performs no caching of its own and stores its settings in four options.
 
 == Screenshots ==
 
@@ -182,11 +182,11 @@ Everything released since 3.2.0. The plugin is narrowed to what it does complete
 * Fix      - Changing the default activity filter now takes effect for existing visitors. The old default was being written into each visitor's saved preference, which then overrode any later change by the site owner.
 * Fix      - A default filter that BuddyPress does not list for that screen is now added to the filter dropdown, so the control shows the filter the stream is actually using instead of falling back to "Everything".
 * Fix      - The site-wide default filter is no longer applied to group activity streams. Setting a default could empty a group's stream while its filter dropdown still read "Everything".
+* Fix      - An activity type you have hidden can no longer be chosen as a default filter. Choosing one emptied the stream for every visitor, with the filter dropdown still reading "Everything" and nothing explaining why. If a type is already set as a default when you hide it, it stays selected and is marked as hidden, with a warning telling you how to resolve it, rather than the setting being changed for you.
 * Fix      - Setting the default filter to "New friendships" no longer leaves the filter dropdown blank. BuddyPress lists friendships under a combined key, which the dropdown sync did not match.
 * Fix      - Hidden activity types are now excluded from the activity stream itself, not only from the filter dropdown. Activities recorded before a type was hidden are no longer listed, across the directory, member, group, friends, mentions and favorites streams. They remain visible in the WordPress admin Activity screen so they can still be moderated.
 * Fix      - Hidden activity types are now removed from the activity filter dropdown on Nouveau based themes such as BuddyX and Reign, not only on Legacy.
 * Fix      - Hiding "New friendships" now removes the friendships option from the filter dropdown, which BuddyPress renders under a combined key.
-* Fix      - Translations submitted on translate.wordpress.org can now be used. The text domain did not match the plugin slug, so WordPress looked for a language pack filename that WordPress.org never produces and no community translation could ever load. If you ship your own translation files for this plugin, rename them from bp-activity-filter-LOCALE to buddypress-activity-filter-LOCALE.
 * Fix      - Unreviewed machine-matched translations are no longer shipped. The compiled translation files included every fuzzy entry, so all four locales showed "Open settings" as "Save settings" and French showed the plugin name in place of two headings. Affected strings now fall back to English until a translator confirms them.
 * Fix      - Removed translations that had been carried onto the wrong string. French showed the plugin name in place of the "Default Activity Filters" and "Hidden Activity Types" headings, and German in place of "Default Activity Filters".
 * Fix      - Rebuilt the German formal translation, which had been unmaintained since 2020 with most strings untranslated.
@@ -274,7 +274,9 @@ This is the complete list. Every hook below is fired by the plugin and was verif
 * `bp_activity_filter_default` - `( string $default_filter, string $context )` Modify the default filter. `$context` is `sitewide` or `profile`
 * `bp_activity_filter_activity_actions` - `( array $labels )` Modify the activity type labels offered in the admin
 * `bp_activity_filter_admin_tabs` - `( array $tabs )` Add or remove tabs in the settings screen
+* `bp_activity_filter_admin_capability` - `( string $capability )` Change the capability required to see and save the settings screen. Applied to both the menu and the save
 * `bp_activity_filter_preserve_data_on_uninstall` - `( bool $preserve )` Return true to keep all plugin data when the plugin is deleted
+* `wbcom_hub_wrapper_helper_slugs` - `( array $slugs )` Shared across Wbcom plugins, not specific to this one. Filters which plugin slugs the WB Plugins hub landing treats as wrapper helpers
 
 ```php
 // Always default the site-wide stream to status updates.
@@ -312,8 +314,8 @@ define( 'WP_DEBUG_LOG', true );
 
 For support, documentation, and feature requests:
 
-- **Documentation**: [Plugin Documentation](https://docs.wbcomdesigns.com/doc_category/buddypress-activity-filter/)
-- **Support Forum**: [WordPress.org Support](https://wordpress.org/support/plugin/buddypress-activity-filter/)
+- **Documentation**: [Plugin Documentation](https://docs.wbcomdesigns.com/doc_category/bp-activity-filter/)
+- **Support Forum**: [WordPress.org Support](https://wordpress.org/support/plugin/bp-activity-filter/)
 - **Premium Support**: [Wbcom Designs Support](https://wbcomdesigns.com/support/)
 - **GitHub**: [Development Repository](https://github.com/wbcomdesigns/buddypress-activity-filter)
 

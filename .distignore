@@ -35,6 +35,7 @@ tests
 # Internal documentation and audit output. readme.txt is the customer-facing
 # changelog; these are working notes and must not reach users.
 audit
+docs
 qa-reports
 CLAUDE.md
 BUILD-LOG.md
