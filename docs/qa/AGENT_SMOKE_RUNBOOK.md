@@ -95,6 +95,26 @@ Enable `WP_DEBUG` + `WP_DEBUG_LOG` + `WP_DEBUG_DISPLAY=false` before Section A. 
 ### A.n-a.schema
 **N/A - report as skipped.** The plugin creates no custom tables. `bp_activity_filter_db_version` is a plain option, checked in Section B.
 
+### A.admin.uninstall-cleanup
+**What to verify:** deleting the plugin removes every key it ever wrote, and the documented opt-out keeps them.
+
+**Use `wp plugin uninstall`, never `wp plugin delete`.** `delete` removes the files "without deactivating or uninstalling" - it never loads `uninstall.php`, so every key survives and the run reads as a total cleanup failure when nothing is wrong. This wasted a cycle once; do not repeat it.
+
+Do it on a disposable copy so the working tree is never at risk:
+
+```bash
+rsync -a --exclude=.git --exclude=vendor --exclude=docs --exclude=audit \
+  buddypress-activity-filter/ bp-activity-filter/
+wp plugin activate bp-activity-filter
+wp plugin uninstall bp-activity-filter --deactivate
+```
+
+Copying to `bp-activity-filter/` is deliberate - that is the WP.org folder name, so this also proves uninstall works under the directory customers actually have.
+
+**Acceptance, 16 keys:** 9 options (`bp_activity_filter_default`, `_profile_default`, `_hidden`, `_db_version`, plus legacy `bp-default-filter-name`, `bp-default-profile-filter-name`, `bp-hidden-filters-name`, `bp-cpt-filters-settings`, `bp_activity_filter_cpt_settings`), 1 user meta (`bp_activity_filter_preference`), 4 activity meta (`bp_activity_filter_cpt`, `_post_id`, `_created_time`, `_version`), 2 post meta (`_bp_activity_filter_activity_id`, `_bp_activity_filter_recorded`). Seed all 16 first and assert 16/16 present, or the test can pass by finding nothing.
+
+**Then the opt-out:** re-seed, drop an mu-plugin adding `add_filter( 'bp_activity_filter_preserve_data_on_uninstall', '__return_true' )`, uninstall again, and assert every key SURVIVES. A one-directional test proves half the contract - the readme promises both.
+
 ---
 
 ## B - Upgrade from previous version
@@ -135,6 +155,18 @@ Each step is a contract, not a script. Verify the UI as a user would AND confirm
 
 ### C.member.hidden-types-not-in-dropdown
 **What to verify:** hidden types do not appear as options in the activity filter dropdown, on both Legacy and Nouveau templates.
+
+**Testing Legacy needs a theme swap, not just an option swap.** Reign ships its own `bp-nouveau` template overrides, so flipping `_bp_theme_package_id` to `legacy` under Reign tests Reign's broken state, not this plugin. Switch to a classic theme first:
+
+```bash
+wp theme activate storefront
+wp option update _bp_theme_package_id legacy
+# ... run the checks, then put it back ...
+wp theme activate reign-theme
+wp option update _bp_theme_package_id nouveau
+```
+
+Note the packs differ in a way that matters: Legacy's "Everything" option value is `-1`, Nouveau's is `0`. Assert on the selected LABEL and on the stream contents, not on a hardcoded `0`, or the Legacy run will look broken when it is fine.
 
 ### C.member.mobile
 **What to verify:** the stream and its filter dropdown are usable at 390px; no horizontal overflow.
