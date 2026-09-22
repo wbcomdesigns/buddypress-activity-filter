@@ -46,4 +46,4 @@ Change a setting back to "Everything" for the defaults, or untick hidden and cus
 
 ### Can I customise filtering in code?
 
-Yes. See [Hooks and Filters](developer-guide/hooks-and-filters.md) for the available actions and filters, including `bp_activity_filter_default` and the custom post type activity filters.
+Yes. See [Hooks and Filters](../developer-guide/hooks-and-filters.md) for the available actions and filters, including `bp_activity_filter_default` and the custom post type activity filters.
