@@ -332,7 +332,7 @@ We welcome contributions! Please see our [GitHub repository](https://github.com/
 
 == Privacy Policy ==
 
-This plugin does not collect or store any personal user data beyond what WordPress and BuddyPress already collect. Activity filtering preferences are stored locally in browser cookies and user meta fields as needed for functionality.
+This plugin does not collect or store any personal user data beyond what WordPress and BuddyPress already collect. A member's filter choice is remembered only in their own browser (a cookie and BuddyPress's session storage); the plugin writes no personal data to the database.
 
 == Credits ==
 

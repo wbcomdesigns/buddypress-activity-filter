@@ -40,7 +40,6 @@ qa-reports
 CLAUDE.md
 BUILD-LOG.md
 WRAPPER-AUDIT.md
-CHANGELOG.md
 *.md
 
 # Editor and OS noise

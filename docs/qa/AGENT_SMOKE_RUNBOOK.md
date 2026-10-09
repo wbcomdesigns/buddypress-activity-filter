@@ -111,7 +111,7 @@ wp plugin uninstall bp-activity-filter --deactivate
 
 Copying to `bp-activity-filter/` is deliberate - that is the WP.org folder name, so this also proves uninstall works under the directory customers actually have.
 
-**Acceptance, 16 keys:** 9 options (`bp_activity_filter_default`, `_profile_default`, `_hidden`, `_db_version`, plus legacy `bp-default-filter-name`, `bp-default-profile-filter-name`, `bp-hidden-filters-name`, `bp-cpt-filters-settings`, `bp_activity_filter_cpt_settings`), 1 user meta (`bp_activity_filter_preference`), 4 activity meta (`bp_activity_filter_cpt`, `_post_id`, `_created_time`, `_version`), 2 post meta (`_bp_activity_filter_activity_id`, `_bp_activity_filter_recorded`). Seed all 16 first and assert 16/16 present, or the test can pass by finding nothing.
+**Acceptance, 15 keys:** 9 options (`bp_activity_filter_default`, `_profile_default`, `_hidden`, `_db_version`, plus legacy `bp-default-filter-name`, `bp-default-profile-filter-name`, `bp-hidden-filters-name`, `bp-cpt-filters-settings`, `bp_activity_filter_cpt_settings`), 4 activity meta (`bp_activity_filter_cpt`, `_post_id`, `_created_time`, `_version`), 2 post meta (`_bp_activity_filter_activity_id`, `_bp_activity_filter_recorded`). Seed all 15 first and assert 15/15 present, or the test can pass by finding nothing.
 
 **Then the opt-out:** re-seed, drop an mu-plugin adding `add_filter( 'bp_activity_filter_preserve_data_on_uninstall', '__return_true' )`, uninstall again, and assert every key SURVIVES. A one-directional test proves half the contract - the readme promises both.
 

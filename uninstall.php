@@ -32,9 +32,6 @@ function bp_activity_filter_uninstall_cleanup() {
 	// Remove plugin options.
 	bp_activity_filter_remove_options();
 
-	// Remove user meta.
-	bp_activity_filter_remove_user_meta();
-
 	// Remove activity meta (if BuddyPress is active).
 	bp_activity_filter_remove_activity_meta();
 
@@ -84,29 +81,6 @@ function bp_activity_filter_remove_options() {
 	foreach ( $all_options as $option ) {
 		delete_option( $option );
 		delete_site_option( $option ); // For multisite networks.
-	}
-}
-
-/**
- * Remove plugin-related user meta.
- *
- * @since 3.1.0
- */
-function bp_activity_filter_remove_user_meta() {
-	global $wpdb;
-
-	// User meta keys to remove.
-	$user_meta_keys = array(
-		'bp_activity_filter_preference',
-	);
-
-	// Remove user meta safely.
-	foreach ( $user_meta_keys as $meta_key ) {
-		$wpdb->delete(
-			$wpdb->usermeta,
-			array( 'meta_key' => $meta_key ),
-			array( '%s' )
-		);
 	}
 }
 

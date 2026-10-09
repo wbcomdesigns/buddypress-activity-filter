@@ -65,7 +65,7 @@ _None._
 ## Meta keys
 Activity meta: `bp_activity_filter_cpt`, `bp_activity_filter_post_id`, `bp_activity_filter_created_time`, `bp_activity_filter_version`.
 Post meta: `_bp_activity_filter_activity_id`, `_bp_activity_filter_recorded`.
-User meta (uninstall-only): `bp_activity_filter_preference`.
+User meta: none (the plugin never writes user meta).
 
 ## Extension hooks (fired by this plugin)
 10 own filters/actions + consumes `wbcom_submenu_label`. See `audit/manifest.json#/hooks_fired`.

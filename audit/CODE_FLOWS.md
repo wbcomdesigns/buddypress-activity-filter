@@ -90,7 +90,7 @@ Migration::get_option_with_fallback() — single read path used by Frontend/CPT/
 ```
 uninstall.php (WP_UNINSTALL_PLUGIN guard)
    apply_filters('bp_activity_filter_preserve_data_on_uninstall', false)
-   -> delete options (current + legacy), user meta, activity meta (raw $wpdb->delete on usermeta + bp_activity_meta)
+   -> delete options (current + legacy), activity meta (raw $wpdb->delete on bp_activity_meta), post meta
 ```
 
 ## Permissions

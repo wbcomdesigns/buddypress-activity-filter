@@ -203,6 +203,11 @@ class BP_Activity_Filter_Frontend {
 	 * A stale choice (the owner changed the default since this browser last applied one)
 	 * counts as no choice, so the new default wins.
 	 *
+	 * Only the Legacy template pack writes the `bp-activity-filter` cookie. Nouveau keeps
+	 * the choice in sessionStorage and sends it with every stream request as $_POST['filter']
+	 * (see member_chose_filter_this_request()), and renders no stream in the page HTML - so
+	 * on Nouveau this returns null and nothing is lost.
+	 *
 	 * @since 3.2.1
 	 * @return string|null Activity type, '' for Everything, or null for no choice.
 	 */
@@ -579,8 +584,8 @@ class BP_Activity_Filter_Frontend {
 				// default. Writing the default into it turned the admin's setting into a
 				// permanent per-visitor preference: once a visitor had loaded the page,
 				// their cookie pinned the old value and the site owner could never change
-				// the default for them again. BuddyPress sets this cookie itself when the
-				// member actually picks a filter, which is the only time it should be set.
+				// the default for them again. BuddyPress (Legacy pack) sets this cookie itself
+				// when the member actually picks a filter, which is the only time it should be set.
 				dropdown.value = selected.value;
 			}, 50);
 		});

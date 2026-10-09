@@ -166,12 +166,6 @@
       "key": "_bp_activity_filter_recorded",
       "purpose": "Timestamp post had activity recorded",
       "written_at": "(removed in 4.0.0; cleaned by uninstall.php)"
-    },
-    {
-      "scope": "user_meta",
-      "key": "bp_activity_filter_preference",
-      "purpose": "Cleaned up on uninstall (no writer in current code)",
-      "written_at": "(none found; uninstall-only)"
     }
   ],
   "capabilities": [
