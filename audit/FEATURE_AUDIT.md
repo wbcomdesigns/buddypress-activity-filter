@@ -1,71 +1,81 @@
-# Feature Audit — BuddyPress Activity Filter 3.2.1
+# Feature Audit - BuddyPress Activity Filter 4.0.0
 
-> Derived from `audit/manifest.json`. Branch `3.2.1`. Small plugin (13 PHP files), hooks/options driven. No REST, no AJAX, no DB tables, no CPTs, no cron, no WP-CLI, no shortcodes, no blocks.
+> Derived from `audit/manifest.json`, checked against the source. Branch `4.0.0`. Small plugin (hooks/options driven). No REST, no AJAX, no DB tables, no CPTs, no cron, no WP-CLI, no shortcodes, no blocks. Scope: hide activity types and set the default filter.
 
-## 1. Frontend behaviour (no tabs/templates — pure BP hook integration)
+## 1. Frontend behaviour (pure BuddyPress hook integration, no templates)
 
-| Feature | Mechanism | Source |
+All in `includes/class-bp-activity-filter-frontend.php` (`BP_Activity_Filter_Frontend`, singleton). Hooks registered in `setup_hooks()`.
+
+| Feature | Mechanism | Hook (line) |
 |---|---|---|
-| Site-wide default filter | Filters `bp_after_has_activities_parse_args` to inject `type` from cookie or `bp_activity_filter_default` | `class-bp-activity-filter-frontend.php:60` |
-| AJAX stream default filter | Filters `bp_ajax_querystring` for `activity` object | `:63` |
-| Dropdown sync (UI only) | Inline JS in `wp_footer` sets `#activity-filter-by` to cookie/default | `:66` |
-| Hide types from dropdown | Filters `bp_get_activity_show_filters` (Nouveau array + legacy HTML) | `:69` |
-| Prevent hidden activity save | `bp_activity_before_save` @1 blanks type/component | `:73` |
-| Remove creation hooks | `bp_init` @999 `remove_action` for friendship/new_member/profile activities | `:77` |
-| CPT activity generation | `transition_post_status` @999 creates BP activity on publish of enabled public CPT | `class-bp-activity-filter-cpt.php:76` |
+| Default filter on the loop | Sets `action` (never `type`) from member preference, else the stored default; skipped when `filter_query`/`action`/`type` already set | `bp_after_has_activities_parse_args` :72 |
+| Hide types from every stream | Adds `a.type NOT IN (...)` under key `bp_activity_filter_hidden` (works on scoped streams, unlike `filter_query`) | `bp_activity_get_where_conditions` :79 |
+| Default filter on AJAX streams | Rewrites the activity querystring; drops a remembered filter that is now hidden | `bp_ajax_querystring` :82 |
+| Reset stale remembered filter | Inline JS clears sessionStorage `bp-activity` filter and cookie `bp-activity-filter` when the defaults signature changed or the remembered type is hidden; stamps cookie `bpaf-applied-default` | `wp_head` @1 :87 |
+| Dropdown sync (UI only) | Inline JS sets `#activity-filter-by` to the member preference or default | `wp_footer` @999 :90 |
+| Hide types from the dropdown | Removes hidden options (matches comma keys such as `friendship_accepted,friendship_created`); re-adds a hidden stored default so the select does not rewrite it | `bp_get_activity_show_filters_options` :96 |
+| Prevent hidden activity save | Blanks `type` and `component`, adds WP_Error `bp_activity_type_disabled` | `bp_activity_before_save` @1 :103 |
 
-Core protected types (never hideable): `activity_update`, `activity_comment`.
+Member choice precedence (`get_member_preference()` :214): null = no choice (use admin default); empty string = member chose Everything (no filter, admin default NOT applied); a type = apply it. A preference is ignored when the defaults changed since last seen or the type is now hidden.
 
-## 2. AJAX handlers
-_None._ (See `static_analysis.dead_localized_data` — a nonce/ajaxUrl is localized but no handler exists.)
+Context (`get_filter_context()` :787): `profile` on member activity, `sitewide` on the activity directory, otherwise no default.
 
-## 3. REST endpoints
-_None._
+Core protected types (never hideable, stripped in `get_hidden_activities()` :805 and in the sanitizer): `activity_update`, `activity_comment`.
 
-## 4. Admin pages / settings
+## 2. Settings screen (card panel)
 
-| Page | Slug | Parent | Cap | Registered by |
-|---|---|---|---|---|
-| BuddyPress Activity Filter | `wbcom-activity-filter` | `wbcom-designs` | `manage_options` | shared loader `add_plugin_submenus()` (admin_menu @10) |
-| Wbcom Designs (dashboard) | `wbcom-designs` | top-level | `manage_options` | `ensure_main_menu()` / shared loader `create_main_menu()` (admin_menu @5, guarded) |
+`BP_Activity_Filter_Admin_Panel` (`includes/admin/class-bp-activity-filter-admin-panel.php`), rendered through `views/shell.php`. Tabs come from `get_tabs()` (:74), filterable via `bp_activity_filter_admin_tabs` (:97).
 
-Settings page tabs: **Default Filters**, **Hidden Activities**, **Custom Post Types**, **FAQ** (`?tab=` query arg, default `default`).
+| Tab | Group | View | Owns / content |
+|---|---|---|---|
+| `default` (Default Filters) | settings | `views/settings-default.php` | `bp_activity_filter_default` (site-wide select) and `bp_activity_filter_profile_default` (profile select; `new_member` and `updated_profile` left out). Hidden types are omitted unless already the stored value, then labelled "(hidden)" with a warning |
+| `hidden` (Hidden Activities) | settings | `views/settings-hidden.php` | `bp_activity_filter_hidden`. Core types listed read-only as always visible; every other type is a checkbox (checked = hidden) |
+| `faq` (FAQ) | resources | `views/faq.php` | Static Q&A, no form |
+| `discover` (Discover) | resources | `views/discover.php` | Static product cards, no form |
 
-Options (group `bp_activity_filter_settings`):
-- `bp_activity_filter_default` (string, `0`)
-- `bp_activity_filter_profile_default` (string, `-1`)
-- `bp_activity_filter_hidden` (array, `[]`)
-- `bp_activity_filter_cpt_settings` (array, `[]`)
-- `bp_activity_filter_db_version` (string, internal — not registered)
+Settings tabs post to `options.php` (option group `bp_activity_filter_settings`) with a Save Settings bar. Each settings view emits hidden `bp_activity_filter_rendered_options[]` sentinels; every sanitizer checks `tab_rendered_option()` (:313) and returns the stored value when its tab did not render the key, so saving one tab never wipes the other. Unknown tab slugs fall back to the first tab (`render_page()` :450).
 
-Legacy options migrated on `admin_init`: `bp-default-filter-name`, `bp-default-profile-filter-name`, `bp-hidden-filters-name`, `bp-cpt-filters-settings`.
+Menu: submenu `wbcom-activity-filter` ("BP Activity Filter") under the shared `wbcomplugins` ("WB Plugins") hub (`add_menu()` :145). The hub top-level menu is created only if no other Wbcom plugin registered it, and `takeover_hub_landing()` (:182, `admin_menu` @999) reclaims the hub landing render. Hub view `views/hub.php` lists peer plugins and has the `wbcom_hub_wrapper_helper_slugs` filter (:24).
 
-## 5. Shortcodes / 6. Content types / 10. Cron / 11. DB tables / WP-CLI
-_None._
+Admin assets (`enqueue_assets()` :382): `assets/css/admin.css` and `assets/js/admin.js` (handle `bp-activity-filter-admin`, dep `jquery`), only on the plugin screen and the hub landing (`is_our_screen()` :425). Localized data is `bpActivityFilterAdmin.i18n { visible, hidden }`; no nonce, no ajaxUrl.
 
-## 7. JS modules
-- Inline footer JS (dropdown sync) — `frontend.php`.
-- `assets/js/admin.js` — checkbox state + form validation; **NOT enqueued**.
-- `includes/shared-admin/wbcom-shared-admin.js` — enqueued on Wbcom pages.
+Plugins list action link "Settings" (`plugin_action_links()` :259, site and network). Activation redirect to the settings page via transient `bp_activity_filter_activation_redirect` (`handle_activation_redirect()` :417, `admin_init` :473).
 
-## 8. CSS modules
-- `includes/shared-admin/wbcom-shared-tabs.css` + `wbcom-shared-admin.css` (enqueued).
-- Heavy inline `<style>` and inline `style=` attributes in admin tab renderers.
-- `assets/css/admin.css` — exists but **NOT enqueued**.
+## 3. Options
 
-## 9. Email templates
-_None._
+| Option | Type / default | Registered | Sanitizer |
+|---|---|---|---|
+| `bp_activity_filter_default` | string `0` | yes | `sanitize_default()` |
+| `bp_activity_filter_profile_default` | string `-1` | yes | `sanitize_profile_default()` |
+| `bp_activity_filter_hidden` | array `[]` | yes | `sanitize_hidden()` (drops core types, unknown types, duplicates) |
+| `bp_activity_filter_db_version` | string `0` | no (internal) | n/a |
 
-## 12. Integrations
-- **BuddyPress** (required, >= 12.0.0) — all components gated on BP presence.
-- **BuddyBoss** — explicitly incompatible (admin notice + bail).
-- **Wbcom shared admin system** — INTERMEDIATE dashboard wrapper; also auto-detects `wbcom_integrate_plugin()` from wbcom-essential / `WBCOM_ESSENTIAL_URL` for shared tab CSS.
-- CPT eligibility excludes bbPress (`forum`/`topic`/`reply`) and BP Member Reviews (`review`) when those plugins are active; excludes Elementor UI CPTs.
+Values are validated against `BP_Activity_Filter_Helper::get_activity_actions()` plus `0` and `-1`. Reads of the two defaults go through `BP_Activity_Filter_Migration::get_option_with_fallback()`.
 
-## Meta keys
-Activity meta: `bp_activity_filter_cpt`, `bp_activity_filter_post_id`, `bp_activity_filter_created_time`, `bp_activity_filter_version`.
-Post meta: `_bp_activity_filter_activity_id`, `_bp_activity_filter_recorded`.
-User meta: none (the plugin never writes user meta).
+## 4. Migration
 
-## Extension hooks (fired by this plugin)
-10 own filters/actions + consumes `wbcom_submenu_label`. See `audit/manifest.json#/hooks_fired`.
+`BP_Activity_Filter_Migration` (`admin_init` :66 -> `maybe_migrate()`): fresh install with no legacy options just stamps `bp_activity_filter_db_version`; otherwise, when the stored version is below the plugin version, copies `bp-default-filter-name`, `bp-default-profile-filter-name`, `bp-hidden-filters-name` into the new keys (never overwriting a non-empty new value), adds any missing defaults, then stamps the version. On the front end `get_option_with_fallback()` lazily does the same per key.
+
+## 5. Public extension points
+
+| Hook | Type | Where |
+|---|---|---|
+| `bp_activity_filter_init` | action | `buddypress-activity-filter.php:146` |
+| `bp_activity_filter_activity_actions` | filter (array $labels) | `includes/class-bp-activity-filter-helper.php:67` |
+| `bp_activity_filter_default` | filter (string $default_filter, string $context) | `includes/class-bp-activity-filter-frontend.php:769` |
+| `bp_activity_filter_admin_tabs` | filter (array $tabs) | `includes/admin/class-bp-activity-filter-admin-panel.php:97` |
+| `bp_activity_filter_admin_capability` | filter (string $capability, default `manage_options`) | `includes/admin/class-bp-activity-filter-admin-panel.php:137` |
+| `bp_activity_filter_preserve_data_on_uninstall` | filter (bool, default false) | `uninstall.php:26` |
+| `wbcom_hub_wrapper_helper_slugs` | filter (shared hub namespace) | `includes/admin/views/hub.php:24` |
+
+## 6. Uninstall
+
+`uninstall.php`: unless `bp_activity_filter_preserve_data_on_uninstall` returns true, deletes the four current options plus legacy keys (`bp-default-filter-name`, `bp-default-profile-filter-name`, `bp-hidden-filters-name`, `bp-cpt-filters-settings`, `bp_activity_filter_cpt_settings`) with `delete_option` and `delete_site_option`; deletes four activity-meta keys (`bp_activity_filter_cpt`, `bp_activity_filter_post_id`, `bp_activity_filter_created_time`, `bp_activity_filter_version`) when the BP activity component and `bp_activity_meta` table exist; deletes post-meta keys `_bp_activity_filter_activity_id` and `_bp_activity_filter_recorded` with `delete_post_meta_by_key()` (runs even if BuddyPress is gone); flushes the object cache.
+
+## 7. Requirements and guards
+
+BuddyPress >= 12.0.0, PHP 8.0+ (header: WordPress 6.9+, `Requires Plugins: buddypress`, `Network: true`). `BP_Activity_Filter::init()` bails with an admin notice when BuddyPress is missing, too old, or BuddyBoss is active. Activation refuses without BuddyPress and seeds the three default options.
+
+## Removed in 4.0.0
+
+The custom post type activity generation feature (with its settings and class) was removed, and the old `BP_Activity_Filter_Admin` class is gone. Uninstall still cleans the rows older versions wrote.

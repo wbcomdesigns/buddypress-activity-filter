@@ -1,32 +1,27 @@
 # Default Filters
 
-Default filters decide which activity type loads automatically when a member arrives at an activity stream, before they touch the filter dropdown. You set two independent defaults: one for the site-wide activity directory and one for member profile activity streams.
+**Included in Free**
 
-## The two settings
+Set which filter is selected the first time a visitor opens an activity stream. Members can still change it with the dropdown.
 
-| Setting | Option key | Default value |
+## Settings
+
+Go to **WB Plugins > BP Activity Filter > Default Filters**.
+
+| Setting | Default | Applies to |
 | --- | --- | --- |
-| Site-wide Activity Default | `bp_activity_filter_default` | `0` (Everything) |
-| Profile Activity Default | `bp_activity_filter_profile_default` | `-1` (Everything) |
+| Site-wide stream default | Everything | The main site-wide activity stream |
+| Profile stream default | Everything | Each member's profile activity stream |
 
-The value `0` (site-wide) and `-1` (profile) both mean "Everything", so out of the box no default filtering is applied. Choosing any specific activity type, such as status updates or new blog posts, makes that type the default view.
+The profile list leaves out "New Member" and "Updated Profile", which make no sense on a profile.
 
-On the Profile default dropdown, the `new_member` and `updated_profile` types are intentionally left out, because those activities do not normally belong on an individual member profile stream.
+## What to know
 
-## How the default is applied
+- The site-wide default is not applied to group activity streams.
+- If you choose a filter that BuddyPress does not list for that screen, the plugin adds it to the dropdown so the control matches the stream.
+- Hidden types are not offered as defaults. See [Hidden Activities](hidden-activities.md).
+- A member's own filter choice is remembered in their browser (a cookie or BuddyPress session storage) and wins over your default on later visits. Changing your default affects visitors who have not picked a filter.
 
-Filtering runs server-side. The plugin hooks the BuddyPress activity query arguments (`bp_after_has_activities_parse_args`) and the activity AJAX query string (`bp_ajax_querystring`) so the default is honoured on the first page load and on subsequent "Load More" and AJAX requests.
+## Change the default in code
 
-The order of precedence is:
-
-1. If the request already specifies an activity type or action, the plugin leaves it alone.
-2. If the member has a saved preference in the `bp-activity-filter` cookie (and it is not "Everything"), that preference is used.
-3. Otherwise the admin default for the current context (site-wide or profile) is applied.
-
-This means a member who picks a filter from the dropdown keeps their choice, stored in a browser cookie, while first-time and cookieless visitors see the admin default.
-
-## Context detection
-
-The profile default is applied only on a member's own activity stream (the "just-me" view of a user activity page). Everywhere else the site-wide default is used.
-
-Developers can override the resolved default with the `bp_activity_filter_default` filter. See [Hooks and Filters](../developer-guide/hooks-and-filters.md).
+Use the `bp_activity_filter_default` filter. See [Hooks and Filters](../developer-guide/hooks-and-filters.md).

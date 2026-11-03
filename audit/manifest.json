@@ -226,7 +226,7 @@
         "string $default_filter",
         "string $context"
       ],
-      "where": "includes/class-bp-activity-filter-frontend.php:673",
+      "where": "includes/class-bp-activity-filter-frontend.php:769",
       "consumed_by": []
     },
     {
@@ -374,7 +374,6 @@
     "manager": "BP_Activity_Filter::init() gates all component init",
     "sub_classes": [
       "BP_Activity_Filter_Frontend",
-      "BP_Activity_Filter_CPT",
       "BP_Activity_Filter_Helper"
     ],
     "incompatible_with": "BuddyBoss Platform (admin notice + bail)"
@@ -412,10 +411,20 @@
   },
   "cron": [],
   "wp_cli": [],
-  "storage_drivers": [],
+  "storage_drivers": {
+    "client_side": {
+      "cookies": [
+        "bp-activity-filter (BuddyPress member filter choice, read at includes/class-bp-activity-filter-frontend.php:220)",
+        "bpaf-applied-default (DEFAULT_STAMP, frontend.php:33)"
+      ],
+      "session_storage": [
+        "bp-activity (BuddyPress Nouveau filter state, adjusted in the wp_head priority 1 script)"
+      ]
+    }
+  },
   "security": {
     "uploads_gate": "n/a (no uploads)",
-    "settings_save_nonce": "bp_activity_filter_save_settings (verified in save_settings) + manage_options cap check",
+    "settings_save_nonce": "Settings API: settings_fields() nonce checked by options.php; capability via option_page_capability_* filtered by BP_Activity_Filter_Admin_Panel::capability() (bp_activity_filter_admin_capability, default manage_options)",
     "ajax_endpoints": "none",
     "signing_entry_points": [],
     "always_sign_filter": null,

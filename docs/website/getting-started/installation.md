@@ -1,8 +1,10 @@
 # Installation
 
-Install BuddyPress first, then add this plugin.
+**Included in Free**
 
-## Install from the WordPress dashboard
+Install and activate BuddyPress first, then add this plugin.
+
+## Install from the dashboard
 
 1. Go to **Plugins > Add New**.
 2. Search for "BuddyPress Activity Filter".
@@ -12,18 +14,19 @@ Install BuddyPress first, then add this plugin.
 
 1. Download the plugin ZIP file.
 2. Upload the extracted folder to `/wp-content/plugins/`.
-3. Go to **Plugins** in the dashboard and activate **BuddyPress Activity Filter**.
+3. Activate **BuddyPress Activity Filter** on the **Plugins** screen.
 
-## After activation
+## What activation does
 
-- If BuddyPress is not active, or the active BuddyPress version is below 12.0.0, an admin notice explains what is needed and the plugin features stay inactive until the requirement is met.
-- On successful activation, the plugin sets its default options (site-wide default, profile default, hidden activities, and custom post type settings) and redirects once to the Wbcom Designs dashboard.
-- A **Settings** link and a **Dashboard** link are added to the plugin's row on the Plugins screen.
+- If BuddyPress is missing or older than 12.0.0, activation stops with an error.
+- Activation only adds default settings that do not exist yet: site-wide default "Everything", profile default "Everything" and no hidden types. It never resets settings you already saved, so deactivating and reactivating changes nothing.
 
 ## Open the settings
 
-Go to **Wbcom Designs > BP Activity Filter** (`admin.php?page=wbcom-activity-filter`). From there, use the Default Filters, Hidden Activities, and Custom Post Types tabs to configure the plugin. See [Configuring the Plugin](../usage/configuring-the-plugin.md) for a walkthrough.
+Go to **WB Plugins > BP Activity Filter**. See [Configuring the Plugin](../usage/configuring-the-plugin.md).
 
 ## Uninstall
 
-Deleting the plugin runs its uninstall routine, which removes the plugin options (current and legacy), the `bp_activity_filter_preference` user meta, and the plugin's activity meta keys. To keep this data on uninstall, return `true` from the `bp_activity_filter_preserve_data_on_uninstall` filter before deleting.
+Deleting the plugin removes its settings. This covers the four plugin options, the older option names from earlier versions, and leftover activity and post meta written by the removed Custom Post Types feature. Your activities are not deleted.
+
+To keep everything, return `true` from `bp_activity_filter_preserve_data_on_uninstall` before you delete the plugin. See [Hooks and Filters](../developer-guide/hooks-and-filters.md).

@@ -1,10 +1,9 @@
 === BuddyPress Activity Filter ===
 Contributors: wbcomdesigns, vapvarun
 Tags: buddypress, activity-filter, filter, buddypress-activity, hide-activity
-Donate link: https://wbcomdesigns.com/donate/
 Requires at least: 6.9
-Tested up to: 7.0
-Requires PHP: 8.0
+Tested up to: 7.1
+Requires PHP: 8.1
 Requires Plugins: buddypress
 Stable tag: 4.0.0
 License: GPLv2 or later
@@ -34,64 +33,41 @@ Hidden types are removed from the stream itself, not just the filter dropdown. T
 
 ### Perfect For
 
-- Community sites wanting to streamline their activity feeds
-- Administrators who want granular control over activity visibility
-- Communities looking to improve user experience with focused content
+- Communities that want a focused stream, for example hiding "changed their profile photo" or "became a registered member" entries
+- Sites where most members should land on one kind of activity, such as status updates, by default
+- Administrators who want to tidy the stream without deleting anything
 
 ### Configuration Options
 
-**Default Filters Tab:**
-- Site-wide Activity Default: Set the default filter for main activity streams
-- Profile Activity Default: Set the default filter for user profile activity pages
+Settings live under **WB Plugins > BP Activity Filter**.
 
-**Hidden Activities Tab:**
-- Select specific activity types to hide from all activity streams
-- Clear activity labels for better clarity
+**Default Filters tab:**
+- Site-wide activity default: the filter selected when members open the main activity directory
+- Profile activity default: the filter selected on member profile activity pages
 
-### Premium Extensions
+**Hidden Activities tab:**
+- Tick the activity types to remove from every activity stream
+- Status updates and replies are always available and cannot be hidden
 
-Enhance your BuddyPress community with these premium add-ons:
+### Documentation
 
-- **[BuddyPress Hashtags](https://wbcomdesigns.com/downloads/buddypress-hashtags/)** - Add hashtag functionality to activities
-- **[BuddyPress Polls](https://wbcomdesigns.com/downloads/buddypress-polls/)** - Create and participate in polls
-- **[BuddyPress Quotes](https://wbcomdesigns.com/downloads/buddypress-quotes/)** - Share quotes with beautiful backgrounds
-- **[BuddyPress Status & Reactions](https://wbcomdesigns.com/downloads/buddypress-status/)** - Custom statuses and emoji reactions
-- **[BuddyPress Sticky Post](https://wbcomdesigns.com/downloads/buddypress-sticky-post/)** - Pin important activities
-- **[WP Stories](https://wbcomdesigns.com/downloads/wp-stories/)** - Add Instagram-like stories feature
+Full guides for setup, settings and developer hooks: [BuddyPress Activity Filter documentation](https://docs.wbcomdesigns.com/bp-family/buddypress-activity-filter/).
 
-### Use Cases
+### For Developers
 
-1. **Corporate Communities**: Hide member registration activities, focus on business updates
-2. **Educational Sites**: Highlight course activities, hide profile updates
-3. **E-commerce Communities**: Show product activities, hide friendship notifications
-4. **News Sites**: Display article publications as activities automatically
-5. **Developer Communities**: Filter technical discussions by post type
+- Seven documented hooks, listed under Advanced Configuration below
+- Settings saved with nonce and capability checks; the capability is filterable
+- No custom tables, no cron jobs, no AJAX handlers and no caching layer
+- Translation ready, with German, German (formal), French and Dutch included
 
-### Developer Features
+== More from Wbcom Designs ==
 
-- **Clean Architecture**: Modern OOP design with singleton patterns
-- **Extensive Hooks**: Over 15 action and filter hooks for customization
-- **Backward Compatibility**: Automatic migration from older versions
-- **Performance Optimized**: Smart caching and minimal database impact
-- **Security First**: Nonce verification, input sanitization, and capability checks
-- **Theme Agnostic**: Works with any BuddyPress-compatible theme
-- **Documentation**: Comprehensive inline documentation and code comments
+Free and premium tools from the team behind BuddyPress Activity Filter:
 
-### Security & Performance
-
-- **Input Sanitization**: All user inputs are properly sanitized and validated
-- **Nonce Protection**: CSRF protection on all admin forms and AJAX requests
-- **Capability Checks**: Proper permission verification for all admin functions
-- **SQL Injection Prevention**: Use of WordPress database abstraction layer
-- **XSS Protection**: Output escaping and content filtering
-- **Performance Caching**: Intelligent caching of frequently accessed data
-
-### Internationalization
-
-- **Translation Ready**: Full support for translation and localization
-- **RTL Support**: Right-to-left language compatibility
-- **Professional Labels**: User-friendly activity type descriptions
-- **Context-Aware Strings**: Proper string contexts for accurate translations
+* **[BuddyNext](https://buddynext.com/features/)** - A complete community platform for WordPress with feeds, groups, messaging and moderation built in.
+* **[BuddyX](https://buddyxtheme.com/features/)** - A free community theme for BuddyPress with a clean activity stream layout and dark mode.
+* **[MediaVerse](https://wpmediaverse.com/features/)** - Photo and video galleries, albums and media uploads for community members.
+* **[Jetonomy](https://jetonomy.org/features/)** - Q&A forums and discussion spaces that sit alongside your activity stream.
 
 == Installation ==
 
@@ -101,14 +77,14 @@ Enhance your BuddyPress community with these premium add-ons:
 2. Navigate to Plugins > Add New
 3. Search for "BuddyPress Activity Filter"
 4. Click "Install Now" and then "Activate"
-5. Go to Settings > Activity Filter to configure
+5. Go to WB Plugins > BP Activity Filter to configure
 
 ### Manual Installation
 
 1. Download the plugin ZIP file
 2. Upload to `/wp-content/plugins/bp-activity-filter/`
 3. Activate the plugin through the 'Plugins' screen in WordPress
-4. Navigate to Settings > Activity Filter to configure your preferences
+4. Go to WB Plugins > BP Activity Filter to configure your preferences
 
 ### Post-Installation Setup
 
@@ -132,7 +108,7 @@ They stop appearing in the stream, but nothing is deleted. Hiding works by exclu
 
 = Will this work with my theme? =
 
-Yes, the plugin is compatible with BuddyPress default themes and the Nouveau theme package. It also works with most third-party BuddyPress themes including Youzify, Kleo, and other popular community themes.
+It works with both BuddyPress template packs, Legacy and Nouveau. Hidden types are removed from the filter dropdown on Nouveau based themes such as BuddyX, BuddyX Pro and Reign as well as on Legacy themes. If a theme replaces the activity stream with its own markup, test hiding one type before relying on it.
 
 = Does this affect existing activities? =
 
@@ -148,7 +124,7 @@ No, BuddyBoss has similar built-in features, so this plugin is not compatible an
 
 = How do I reset to default settings? =
 
-You can reset individual settings by changing them back to their defaults, or deactivate and reactivate the plugin to restore all default values. The plugin also includes migration tools for upgrading from older versions.
+Set both defaults back to "Everything" on the Default Filters tab and untick every type on the Hidden Activities tab, then save. Deactivating and reactivating does not reset anything: activation only adds settings that are missing.
 
 = Can I filter activities programmatically? =
 
@@ -164,13 +140,13 @@ Filtering happens server-side inside the query BuddyPress already runs, so the p
 
 == Screenshots ==
 
-1. Front-end activity filter dropdown above the stream, listing every activity type members can filter by.
-2. Default Filters settings: choose what the site-wide and profile activity streams show by default.
-3. Discover tab linking to other free Wbcom Designs community plugins.
+1. The activity filter on the front end: "Updates" is the default, and hidden types such as New Members and Friendships are gone from the list.
+2. Default Filters tab: choose what the site-wide and profile activity streams show first.
+3. Hidden Activities tab: tick the types to remove from every stream. Status updates and replies always stay visible.
 
 == Changelog ==
 
-= 4.0.0 - July 2026 =
+= 4.0.0 - November 2026 =
 
 Everything released since 3.2.0. The plugin is narrowed to what it does completely: hiding activity types and setting the default filter. The Custom Post Types feature has been removed, and the settings screen has been rebuilt.
 
@@ -191,6 +167,7 @@ Everything released since 3.2.0. The plugin is narrowed to what it does complete
 * Fix      - Removed translations that had been carried onto the wrong string. French showed the plugin name in place of the "Default Activity Filters" and "Hidden Activity Types" headings, and German in place of "Default Activity Filters".
 * Fix      - Rebuilt the German formal translation, which had been unmaintained since 2020 with most strings untranslated.
 * Fix      - Regenerated the translation template, which still declared version 3.1.0.
+* Fix      - Deactivating or deleting the plugin no longer empties the whole site object cache, which on sites with Redis or Memcached forced every cached page and query to rebuild.
 * Fix      - Deleting the plugin now removes all of its data. Four activity meta keys and two post meta keys were left behind on every uninstall.
 * Fix      - The settings screen no longer scrolls sideways on phones. Table cells and the sidebar overflowed the card at 390px.
 * Fix      - Activity rows on the Hidden Activities tab no longer squeeze their label into a narrow column on phones.
@@ -206,7 +183,8 @@ Everything released since 3.2.0. The plugin is narrowed to what it does complete
 * Dev      - Removed roughly 900 lines of code left unreachable by the Custom Post Types removal, including the whole post type eligibility and conflict detection subsystem.
 * Dev      - Removed dead code: an unused legacy JavaScript filter method, four unused helper methods, and the redundant admin class whose sanitizers now live in the settings panel.
 * Dev      - Corrected the @since tags throughout, which all read 4.0.0 while the plugin was at 3.2.1.
-* Compat   - Tested up to WordPress 7.0.
+* Dev      - Raised the minimum PHP version to 8.1.
+* Compat   - Tested up to WordPress 7.1.
 
 = 3.2.0 =
 * **Major Fix**: Hidden activity types are now properly prevented from being created
@@ -259,7 +237,7 @@ Everything released since 3.2.0. The plugin is narrowed to what it does complete
 Important bug fixes and performance improvements. This version fixes critical issues with activity filtering and prevention. Server-side filtering improves performance and reliability. Backup recommended before upgrading.
 
 = 4.0.0 =
-The Custom Post Types tab has been removed. If you used it to publish custom post types into the activity stream, that will stop when you update. Activities it already created are not deleted and still appear in the stream. Your Default Filters and Hidden Activities settings are unchanged. Everything else in this release is bug fixes.
+The Custom Post Types tab is removed, so custom post types no longer post to the activity stream. Activities it already created stay. Default Filters and Hidden Activities settings are unchanged. Requires PHP 8.1.
 
 == Advanced Configuration ==
 
@@ -314,7 +292,7 @@ define( 'WP_DEBUG_LOG', true );
 
 For support, documentation, and feature requests:
 
-- **Documentation**: [Plugin Documentation](https://docs.wbcomdesigns.com/doc_category/bp-activity-filter/)
+- **Documentation**: [Plugin Documentation](https://docs.wbcomdesigns.com/bp-family/buddypress-activity-filter/)
 - **Support Forum**: [WordPress.org Support](https://wordpress.org/support/plugin/bp-activity-filter/)
 - **Premium Support**: [Wbcom Designs Support](https://wbcomdesigns.com/support/)
 - **GitHub**: [Development Repository](https://github.com/wbcomdesigns/buddypress-activity-filter)

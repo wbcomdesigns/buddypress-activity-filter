@@ -1,25 +1,29 @@
 # Overview
 
-BuddyPress Activity Filter gives site administrators control over what appears in the BuddyPress activity stream. It sets the filter that loads by default, hides activity types you do not want members to see, and can turn published custom post types into activity entries.
+**Included in Free**
 
-The plugin works with the BuddyPress activity component. Filtering is applied server-side, before activities are queried, so the correct set of activities loads on the first page view and on "Load More" requests without relying on client-side scripts to re-query the feed.
+BuddyPress Activity Filter does two things. It hides the activity types you do not want members to see, and it sets which filter is selected by default on the site-wide and profile activity streams.
 
 ## What the plugin does
 
-- **Sets a default filter** for the site-wide activity directory and, separately, for individual member profile activity streams.
-- **Hides selected activity types** so they no longer appear in the stream, in the filter dropdown, or get created in the first place.
-- **Publishes custom post types as activities**, creating an activity entry when a post of an enabled type is published.
+- **Hides activity types** from every activity stream, from the filter dropdown, and from activity streams loaded over AJAX. This includes activities recorded before you hid the type. Nothing is deleted, and hidden activities stay visible in **Activity** in wp-admin so you can still moderate them.
+- **Sets the default filter** for the site-wide activity stream and, separately, for member profile streams. The site-wide default is not applied to group streams.
 
-## Where it runs
+Status updates and replies can never be hidden, so a stream is never empty.
 
-- **Admin settings** live under the Wbcom Designs menu at **Wbcom Designs > BP Activity Filter** (`admin.php?page=wbcom-activity-filter`). The screen is organised into tabs: Default Filters, Hidden Activities, Custom Post Types, and FAQ.
-- **Frontend behaviour** applies to the BuddyPress activity directory and member profile activity pages.
+## Where to find it
+
+Open **WB Plugins > BP Activity Filter** in wp-admin. The screen has four tabs: Default Filters, Hidden Activities, FAQ and Discover.
 
 ## What it does not change
 
-The plugin affects how activities are displayed, filtered, and created going forward. It does not delete or rewrite existing activities in the database. Turning a custom post type on generates activities only for posts published after the setting is enabled; existing posts are not backfilled.
+The plugin never deletes or rewrites activities. Unhide a type and its activities return to the stream.
 
-## Compatibility notes
+## Custom post type activities were removed
 
-- Built for BuddyPress. The plugin checks for BuddyPress on load and shows an admin notice if it is missing.
-- Not compatible with BuddyBoss. BuddyBoss ships equivalent built-in filtering, so the plugin detects it and displays a notice rather than running alongside it.
+Version 4.0.0 removed the Custom Post Types tab and the activities it generated. Activities it already created are not deleted. They stay in the stream, and you can hide them or moderate them like any other activity. Your Default Filters and Hidden Activities settings are unchanged.
+
+## Compatibility
+
+- Works with the BuddyPress Legacy and Nouveau template packs.
+- BuddyBoss is not supported. The plugin shows a notice and does not run.

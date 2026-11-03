@@ -16,6 +16,7 @@
 .gitattributes
 .github
 .distignore
+.wordpress-org
 
 # Build, test and analysis tooling
 bin

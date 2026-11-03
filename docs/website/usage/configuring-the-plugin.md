@@ -1,40 +1,30 @@
 # Configuring the Plugin
 
-All settings live under **Wbcom Designs > BP Activity Filter** (`admin.php?page=wbcom-activity-filter`). The screen has four tabs. Each configuration tab has its own **Save Settings** button that saves only that tab.
+**Included in Free**
 
-Saving requires the `manage_options` capability and passes a nonce check.
+All settings live at **WB Plugins > BP Activity Filter** (`admin.php?page=wbcom-activity-filter`). By default only administrators (the `manage_options` capability) can see and save them. A developer can change this with the `bp_activity_filter_admin_capability` filter.
 
-## Default Filters tab
+## Tabs
 
-Set the activity type that loads by default.
+| Tab | What it does |
+| --- | --- |
+| Default Filters | Choose the filter selected by default on the site-wide and profile streams. |
+| Hidden Activities | Choose activity types to remove from every stream. |
+| FAQ | Short answers inside wp-admin. |
+| Discover | Links to other free Wbcom Designs tools. It has no settings. |
 
-1. **Site-wide Activity Default** - the default for the main activity directory. "Everything" is the out-of-the-box value.
-2. **Profile Activity Default** - the default for member profile activity streams. "Everything" is the out-of-the-box value.
-3. Click **Save Settings**.
+## Set up the plugin
 
-A member who later picks a filter from the dropdown keeps their own choice; the default applies to visitors who have not chosen one. See [Default Filters](../features/default-filters.md).
-
-## Hidden Activities tab
-
-Choose which activity types to remove from the community.
-
-1. Review the **Core Activities** group at the top. Status updates and replies are always visible and cannot be hidden.
-2. In **Other Activity Types**, tick the box next to any type you want to hide. Ticked (red) means hidden; unticked (green) means visible.
-3. Click **Save Settings**.
-
-Hidden types are removed from the filter dropdown and, where possible, prevented from being created. See [Hidden Activities](../features/hidden-activities.md).
-
-## Custom Post Types tab
-
-Turn published custom post types into activity entries.
-
-1. For each listed post type, tick **enabled** to generate an activity when a post of that type is published.
-2. Optionally set a **Custom Activity Label** to control the wording in the activity sentence. Leave it empty to use the post type's own singular name.
-3. Optionally tick the global option to **hide custom post type activities from the site-wide stream** while still showing them on author profiles.
+1. Open **Hidden Activities** and tick the types to hide.
+2. Click **Save Settings**.
+3. Open **Default Filters** and pick a default for each stream.
 4. Click **Save Settings**.
+5. Visit your activity page and check the dropdown and the stream.
 
-If no eligible post types exist, the tab explains why. If some post types are excluded, an admin notice lists them with the reason. See [Custom Post Type Activities](../features/custom-post-type-activities.md).
+Each tab saves on its own. Saving one tab does not change the other.
 
-## FAQ tab
+## Order matters
 
-The FAQ tab provides in-dashboard answers to common questions and links to support and documentation. It has no settings to save. A wider FAQ is in [Frequently Asked Questions](../faq.md).
+A type you hide cannot be chosen as a default, because the stream would be empty. If a default is already set to a type you then hide, it stays selected, is marked "(hidden)" and shows a warning. Pick a visible type to fix it.
+
+See [Default Filters](../features/default-filters.md) and [Hidden Activities](../features/hidden-activities.md).
