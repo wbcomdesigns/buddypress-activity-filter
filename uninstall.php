@@ -38,11 +38,6 @@ function bp_activity_filter_uninstall_cleanup() {
 	// Remove post meta left behind by the removed CPT activity feature.
 	bp_activity_filter_remove_post_meta();
 
-	// Clear object cache.
-	if ( function_exists( 'wp_cache_flush' ) ) {
-		wp_cache_flush();
-	}
-
 	// Log uninstall if debug mode is enabled.
 	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 		error_log( 'BuddyPress Activity Filter: Plugin data cleaned up during uninstall.' );

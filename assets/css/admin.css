@@ -54,6 +54,9 @@
 	--bpaf-admin-warn-light: #fef9c3;
 	--bpaf-admin-danger: #dc2626;
 	--bpaf-admin-danger-light: #fee2e2;
+	--bpaf-admin-success-text: #166534;
+	--bpaf-admin-info-text: #1e3a8a;
+	--bpaf-admin-warn-text: #92400e;
 
 	--bpaf-admin-radius: 8px;
 	--bpaf-admin-radius-sm: 6px;
@@ -136,7 +139,7 @@
 	display: inline-block;
 	padding: 4px 10px;
 	background: var(--bpaf-admin-accent);
-	color: #fff;
+	color: var(--bpaf-admin-white);
 	border-radius: 999px;
 	font-size: 11px;
 	font-weight: 600;
@@ -182,12 +185,12 @@
 	height: 32px;
 	border-radius: var(--bpaf-admin-radius-sm);
 	background: var(--bpaf-admin-accent);
-	color: #fff;
+	color: var(--bpaf-admin-white);
 	flex-shrink: 0;
 }
 
 .bpaf-settings-brand-icon .dashicons {
-	color: #fff;
+	color: var(--bpaf-admin-white);
 	width: 18px;
 	height: 18px;
 	font-size: 18px;
@@ -512,7 +515,7 @@
 }
 
 .bpaf-activity-row--locked .bpaf-activity-row__label {
-	color: #166534;
+	color: var(--bpaf-admin-success-text);
 }
 
 .bpaf-activity-row--locked .bpaf-activity-row__status {
@@ -603,13 +606,13 @@
 .bpaf-notice--info {
 	background: var(--bpaf-admin-accent-light);
 	border-color: rgba(37, 99, 235, 0.2);
-	color: #1e3a8a;
+	color: var(--bpaf-admin-info-text);
 }
 
 .bpaf-notice--warn {
 	background: var(--bpaf-admin-warn-light);
 	border-color: rgba(245, 158, 11, 0.3);
-	color: #92400e;
+	color: var(--bpaf-admin-warn-text);
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -727,7 +730,7 @@
 .bpaf-btn-primary,
 .bpaf-admin .button-primary.bpaf-btn-primary {
 	background: var(--bpaf-admin-accent);
-	color: #fff;
+	color: var(--bpaf-admin-white);
 	border-color: var(--bpaf-admin-accent);
 }
 
@@ -737,7 +740,7 @@
 .bpaf-admin .button-primary.bpaf-btn-primary:focus {
 	background: var(--bpaf-admin-accent-hover);
 	border-color: var(--bpaf-admin-accent-hover);
-	color: #fff;
+	color: var(--bpaf-admin-white);
 }
 
 .bpaf-btn:focus-visible {

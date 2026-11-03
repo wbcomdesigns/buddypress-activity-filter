@@ -11,8 +11,8 @@
  * Text Domain: bp-activity-filter
  * Domain Path: /languages
  * Requires at least: 6.9
- * Tested up to: 7.0
- * Requires PHP: 8.0
+ * Tested up to: 7.1
+ * Requires PHP: 8.1
  * Requires Plugins: buddypress
  * Network: true
  *
@@ -241,9 +241,6 @@ final class BP_Activity_Filter {
 	public function deactivate() {
 		// Clean up transients.
 		delete_transient( 'bp_activity_filter_activation_redirect' );
-
-		// Clear any object cache.
-		wp_cache_flush();
 
 		// Flush rewrite rules.
 		flush_rewrite_rules();
