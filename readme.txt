@@ -55,7 +55,7 @@ Full guides for setup, settings and developer hooks: [BuddyPress Activity Filter
 
 ### For Developers
 
-- Seven documented hooks, listed under Advanced Configuration below
+- Seven documented hooks, each with an example in the [developer guide](https://docs.wbcomdesigns.com/bp-family/buddypress-activity-filter/)
 - Settings saved with nonce and capability checks; the capability is filterable
 - No custom tables, no cron jobs, no AJAX handlers and no caching layer
 - Translation ready, with German, German (formal), French and Dutch included
@@ -128,7 +128,7 @@ Set both defaults back to "Everything" on the Default Filters tab and untick eve
 
 = Can I filter activities programmatically? =
 
-Yes. The plugin fires seven filters and actions, listed in full under Advanced Configuration below. `bp_activity_filter_default` is the one to use for changing the default filter per context.
+Yes. The plugin fires seven filters and actions, listed with examples in the [developer guide](https://docs.wbcomdesigns.com/bp-family/buddypress-activity-filter/). `bp_activity_filter_default` is the one to use for changing the default filter per context.
 
 = What happens during plugin updates? =
 
@@ -238,55 +238,6 @@ Important bug fixes and performance improvements. This version fixes critical is
 
 = 4.0.0 =
 The Custom Post Types tab is removed, so custom post types no longer post to the activity stream. Activities it already created stay. Default Filters and Hidden Activities settings are unchanged. Requires PHP 8.1.
-
-== Advanced Configuration ==
-
-### Custom Hooks and Filters
-
-This is the complete list. Every hook below is fired by the plugin and was verified against the source in 4.0.0.
-
-**Action Hooks:**
-* `bp_activity_filter_init` - Fires after the plugin is fully initialized
-
-**Filter Hooks:**
-* `bp_activity_filter_default` - `( string $default_filter, string $context )` Modify the default filter. `$context` is `sitewide` or `profile`
-* `bp_activity_filter_activity_actions` - `( array $labels )` Modify the activity type labels offered in the admin
-* `bp_activity_filter_admin_tabs` - `( array $tabs )` Add or remove tabs in the settings screen
-* `bp_activity_filter_admin_capability` - `( string $capability )` Change the capability required to see and save the settings screen. Applied to both the menu and the save
-* `bp_activity_filter_preserve_data_on_uninstall` - `( bool $preserve )` Return true to keep all plugin data when the plugin is deleted
-* `wbcom_hub_wrapper_helper_slugs` - `( array $slugs )` Shared across Wbcom plugins, not specific to this one. Filters which plugin slugs the WB Plugins hub landing treats as wrapper helpers
-
-```php
-// Always default the site-wide stream to status updates.
-add_filter( 'bp_activity_filter_default', function( $default_filter, $context ) {
-    return 'sitewide' === $context ? 'activity_update' : $default_filter;
-}, 10, 2 );
-
-// Keep settings and hidden-type choices when the plugin is deleted.
-add_filter( 'bp_activity_filter_preserve_data_on_uninstall', '__return_true' );
-```
-
-### Performance
-
-* **Smart Loading**: Admin CSS and JS are enqueued only on the plugin's own settings screen
-* **Minimal Footprint**: Four PHP classes, no custom database tables, no cron jobs, and no AJAX handlers
-* **No Extra Queries**: Hiding is applied as a WHERE condition on the activity query BuddyPress already runs, so it adds no additional queries
-
-### Troubleshooting
-
-**Common Issues:**
-
-1. **Activities not filtering**: Check BuddyPress version compatibility
-2. **Settings not saving**: Verify user permissions and nonce verification
-3. **A hidden type still appears**: Clear your browser cookies and site cache; BuddyPress remembers the last filter a member used
-4. **Theme conflicts**: Test with default BuddyPress theme
-
-**Debug Mode:**
-Enable WordPress debug mode to see detailed error messages:
-```php
-define( 'WP_DEBUG', true );
-define( 'WP_DEBUG_LOG', true );
-```
 
 == Support ==
 
