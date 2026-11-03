@@ -1,0 +1,57 @@
+{
+  "product": "BuddyPress Activity Filter",
+  "slug": "bp-activity-filter",
+  "sections": [
+    {
+      "name": "Getting Started",
+      "folder": "getting-started",
+      "description": "What the plugin does, what it needs, and how to install it.",
+      "pages": [
+        { "slug": "overview" },
+        { "slug": "requirements" },
+        { "slug": "installation" }
+      ]
+    },
+    {
+      "name": "Usage",
+      "folder": "usage",
+      "description": "Set up the plugin from the WB Plugins menu.",
+      "pages": [
+        { "slug": "configuring-the-plugin" }
+      ]
+    },
+    {
+      "name": "Features",
+      "folder": "features",
+      "description": "Set default filters and hide activity types.",
+      "pages": [
+        { "slug": "default-filters" },
+        { "slug": "hidden-activities" }
+      ]
+    },
+    {
+      "name": "Developer Guide",
+      "folder": "developer-guide",
+      "description": "Hooks, filters and options for developers.",
+      "pages": [
+        { "slug": "hooks-and-filters" }
+      ]
+    },
+    {
+      "name": "FAQ",
+      "folder": "faq",
+      "description": "Quick answers to common questions.",
+      "pages": [
+        { "slug": "faq" }
+      ]
+    },
+    {
+      "name": "Troubleshooting",
+      "folder": "troubleshooting",
+      "description": "Fix common problems.",
+      "pages": [
+        { "slug": "troubleshooting" }
+      ]
+    }
+  ]
+}
