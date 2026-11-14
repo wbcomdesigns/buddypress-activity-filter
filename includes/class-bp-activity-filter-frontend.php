@@ -134,7 +134,11 @@ class BP_Activity_Filter_Frontend {
 			return $args;
 		}
 
-		// No preference at all, apply admin default.
+		// No preference at all, apply admin default - but only to the plain stream.
+		if ( $this->is_search_or_foreign_scope( $args ) ) {
+			return $args;
+		}
+
 		$default_filter = $this->get_default_filter();
 		if ( $default_filter && '0' !== $default_filter && '-1' !== $default_filter ) {
 			$args['action'] = $default_filter;
@@ -403,7 +407,11 @@ class BP_Activity_Filter_Frontend {
 			return http_build_query( $args );
 		}
 
-		// No preference at all, use admin default.
+		// No preference at all, use admin default - but only on the plain stream.
+		if ( $this->is_search_or_foreign_scope( $args ) ) {
+			return http_build_query( $args );
+		}
+
 		$default_filter = $this->get_default_filter();
 		if ( $default_filter && '0' !== $default_filter && '-1' !== $default_filter ) {
 			$args['action'] = $default_filter;
@@ -488,6 +496,65 @@ class BP_Activity_Filter_Frontend {
 	}
 
 	/**
+	 * True when the request is a search or a scope BuddyPress does not own.
+	 *
+	 * The admin default sets the starting filter of the plain activity stream only
+	 * (owner decision, Nov 2026). A search - including a BuddyPress Hashtags #tag
+	 * view - or another plugin's scope (such as the Followed Hashtags tab, scope=hashtag)
+	 * asks for every matching item, so applying "Updates" there hid blog posts and
+	 * forum topics carrying the tag. A member's own dropdown choice is not affected.
+	 *
+	 * @since 4.0.1
+	 * @param array $args Parsed activity query args.
+	 * @return bool
+	 */
+	private function is_search_or_foreign_scope( $args ) {
+		$search = isset( $args['search_terms'] ) ? (string) $args['search_terms'] : '';
+		// phpcs:disable WordPress.Security.NonceVerification -- Read-only detection of the stream being requested; BP verifies its own nonce.
+		if ( '' === trim( $search ) && isset( $_POST['search_terms'] ) ) {
+			$search = sanitize_text_field( wp_unslash( $_POST['search_terms'] ) );
+		}
+		// BuddyPress Hashtags links a #tag as ?activity_search=%23tag and adds
+		// search_terms in its own bp_ajax_querystring callback, after this one runs.
+		if ( '' === trim( $search ) && isset( $_GET['activity_search'] ) ) {
+			$search = sanitize_text_field( wp_unslash( $_GET['activity_search'] ) );
+		}
+
+		$scope = isset( $args['scope'] ) ? (string) $args['scope'] : '';
+		if ( '' === $scope && isset( $_POST['scope'] ) ) {
+			$scope = sanitize_text_field( wp_unslash( $_POST['scope'] ) );
+		}
+		// phpcs:enable WordPress.Security.NonceVerification
+
+		if ( '' !== trim( $search ) ) {
+			return true;
+		}
+
+		if ( '' === $scope ) {
+			return false;
+		}
+
+		/**
+		 * Scopes the admin default applies to.
+		 *
+		 * @since 4.0.1
+		 * @param string[] $scopes BuddyPress core activity scopes.
+		 */
+		$default_scopes = (array) apply_filters(
+			'bp_activity_filter_default_scopes',
+			array( 'all', 'just-me', 'friends', 'groups', 'favorites', 'mentions', 'following' )
+		);
+
+		foreach ( explode( ',', $scope ) as $one ) {
+			if ( ! in_array( trim( $one ), $default_scopes, true ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * True on the two streams this plugin applies a default to.
 	 *
 	 * @since 3.2.1
@@ -495,10 +562,15 @@ class BP_Activity_Filter_Frontend {
 	 */
 	private function is_stream_with_default() {
 		if ( function_exists( 'bp_is_activity_directory' ) && bp_is_activity_directory() ) {
-			return true;
+			return ! $this->is_search_or_foreign_scope( array() );
 		}
 
-		return function_exists( 'bp_is_user_activity' ) && bp_is_user_activity();
+		if ( ! function_exists( 'bp_is_user_activity' ) || ! bp_is_user_activity() ) {
+			return false;
+		}
+
+		// On a profile the tab is the scope (just-me, friends, ... or a plugin's own tab).
+		return ! $this->is_search_or_foreign_scope( array( 'scope' => (string) bp_current_action() ) );
 	}
 
 	/**
