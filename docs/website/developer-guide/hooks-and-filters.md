@@ -21,6 +21,7 @@ add_action( 'bp_activity_filter_init', function () {
 | Filter | Arguments | Purpose |
 | --- | --- | --- |
 | `bp_activity_filter_default` | `string $default_filter`, `string $context` (`sitewide` or `profile`) | Change the default filter. |
+| `bp_activity_filter_default_scopes` | `string[] $scopes` | Activity scopes the default applies to. Default: BuddyPress's own scopes (`all`, `just-me`, `friends`, `groups`, `favorites`, `mentions`, `following`). Add a plugin's scope to apply the default there too. |
 | `bp_activity_filter_activity_actions` | `array $labels` | Change the activity type labels offered in the settings. |
 | `bp_activity_filter_admin_tabs` | `array $tabs` | Add or remove settings tabs. |
 | `bp_activity_filter_admin_capability` | `string $capability` | Who can see and save settings. Default `manage_options`. Applies to the menu and the save. |

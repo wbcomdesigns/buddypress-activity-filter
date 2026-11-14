@@ -226,7 +226,17 @@
         "string $default_filter",
         "string $context"
       ],
-      "where": "includes/class-bp-activity-filter-frontend.php:769",
+      "where": "includes/class-bp-activity-filter-frontend.php:841",
+      "consumed_by": []
+    },
+    {
+      "name": "bp_activity_filter_default_scopes",
+      "type": "filter",
+      "args_count": 1,
+      "args_signature": [
+        "string[] $scopes"
+      ],
+      "where": "includes/class-bp-activity-filter-frontend.php:543",
       "consumed_by": []
     },
     {
