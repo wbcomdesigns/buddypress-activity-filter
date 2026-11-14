@@ -3,7 +3,7 @@
  * Plugin Name: BuddyPress Activity Filter
  * Plugin URI: https://wordpress.org/plugins/bp-activity-filter/
  * Description: Hide activity types from BuddyPress activity streams and set the default filter members see.
- * Version: 4.0.0
+ * Version: 4.0.1
  * Author: Wbcom Designs
  * Author URI: https://wbcomdesigns.com/
  * License: GPL v2 or later
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define plugin constants.
 if ( ! defined( 'BP_ACTIVITY_FILTER_VERSION' ) ) {
-	define( 'BP_ACTIVITY_FILTER_VERSION', '4.0.0' );
+	define( 'BP_ACTIVITY_FILTER_VERSION', '4.0.1' );
 }
 
 if ( ! defined( 'BP_ACTIVITY_FILTER_PLUGIN_DIR' ) ) {

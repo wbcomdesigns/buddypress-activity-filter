@@ -146,6 +146,11 @@ Filtering happens server-side inside the query BuddyPress already runs, so the p
 
 == Changelog ==
 
+= 4.0.1 - November 2026 =
+
+* Fix      - The default filter now sets the starting view of the activity stream only. Hashtag views, searches and tabs added by other plugins, such as Followed Hashtags, show every matching post again instead of only the default type.
+* Dev      - Added the bp_activity_filter_default_scopes filter to choose which activity scopes the default applies to.
+
 = 4.0.0 - November 2026 =
 
 Everything released since 3.2.0. The plugin is narrowed to what it does completely: hiding activity types and setting the default filter. The Custom Post Types feature has been removed, and the settings screen has been rebuilt.
