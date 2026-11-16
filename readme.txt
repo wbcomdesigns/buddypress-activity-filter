@@ -71,6 +71,8 @@ Free and premium tools from the team behind BuddyPress Activity Filter:
 
 == Installation ==
 
+Requires BuddyPress 12.0 or higher with the Activity component active.
+
 ### Automatic Installation
 
 1. Go to your WordPress admin dashboard
