@@ -6,7 +6,7 @@
 
 ## Quick reference
 - **Main file**: `buddypress-activity-filter.php`
-- **Version**: `4.0.0`
+- **Version**: `4.0.1`
 - **Scope**: hide activity types + set the default filter. That is the whole plugin. The CPT activity-generation feature was removed in 4.0.0 (see below) — do not reintroduce it.
 - **Class prefix**: `BP_Activity_Filter_*` (global classes; no PHP namespace)
 - **Text domain**: `bp-activity-filter` — must equal the **WP.org slug**, which is `bp-activity-filter`, NOT the GitHub repo name `buddypress-activity-filter`. WordPress builds the language-pack path from the domain and WordPress.org names the file from the slug; if they differ, no community translation can ever load. Verify against the live listing (`wordpress.org/plugins/bp-activity-filter/`, `translate.wordpress.org/projects/wp-plugins/bp-activity-filter/`) before changing it — the repo directory name is not the slug.

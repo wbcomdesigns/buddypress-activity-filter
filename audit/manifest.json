@@ -4,7 +4,7 @@
     "slug": "bp-activity-filter",
     "dir_slug": "buddypress-activity-filter",
     "name": "BuddyPress Activity Filter",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "namespace": "(global classes, BP_Activity_Filter_* prefix; no PHP namespace)",
     "main_file": "buddypress-activity-filter.php",
     "text_domain": "bp-activity-filter",
@@ -226,7 +226,7 @@
         "string $default_filter",
         "string $context"
       ],
-      "where": "includes/class-bp-activity-filter-frontend.php:841",
+      "where": "includes/class-bp-activity-filter-frontend.php:893",
       "consumed_by": []
     },
     {
@@ -236,7 +236,7 @@
       "args_signature": [
         "string[] $scopes"
       ],
-      "where": "includes/class-bp-activity-filter-frontend.php:543",
+      "where": "includes/class-bp-activity-filter-frontend.php:569",
       "consumed_by": []
     },
     {
@@ -298,7 +298,7 @@
     {
       "hook": "admin_init",
       "type": "action",
-      "where": "buddypress-activity-filter.php:473"
+      "where": "buddypress-activity-filter.php:471"
     },
     {
       "hook": "admin_init",
@@ -500,8 +500,8 @@
   },
   "generated": {
     "at": "2026-07-29T00:00:00+05:30",
-    "from": "targeted manual delta against 4.0.0 source (per CLAUDE.md: delta now, full /wp-plugin-onboard --refresh at release)",
-    "branch": "4.0.0",
+    "from": "targeted manual delta against 4.0.1 source (per CLAUDE.md: delta now, full /wp-plugin-onboard --refresh at release)",
+    "branch": "4.0.1",
     "scan_scope": "manual_delta",
     "scan_path": ".",
     "php_file_count": 15,
