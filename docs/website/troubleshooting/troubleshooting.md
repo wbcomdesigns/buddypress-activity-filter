@@ -15,6 +15,7 @@
 ## The default filter is not applied
 
 - The site-wide default does not apply to group streams.
+- The default only sets the starting view of the plain stream. A search, a hashtag view and tabs added by other plugins show every matching item on purpose. To apply it to another plugin's scope, add that scope with `bp_activity_filter_default_scopes`.
 - A member's own choice, remembered in their browser, wins over your default. Test in a private window or another account.
 - The default is a hidden type. The stream would be empty, so the setting shows "(hidden)" and a warning. Pick a visible type.
 - The profile list leaves out "New Member" and "Updated Profile".
@@ -41,5 +42,5 @@ Check `wp-content/debug.log`.
 
 ## Support
 
-- Documentation: https://docs.wbcomdesigns.com/
+- Documentation: https://docs.wbcomdesigns.com/bp-family/buddypress-activity-filter/
 - Support: https://wbcomdesigns.com/support/
