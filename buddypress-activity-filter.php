@@ -118,17 +118,18 @@ final class BP_Activity_Filter {
 			return;
 		}
 
+		// Check if BuddyBoss is active (incompatible). Before the version check: BuddyBoss
+		// reports its own 2.x version, which would read as an outdated BuddyPress.
+		if ( $this->is_buddyboss_active() ) {
+			add_action( 'admin_notices', array( $this, 'buddyboss_incompatible_notice' ) );
+			add_action( 'network_admin_notices', array( $this, 'buddyboss_incompatible_notice' ) );
+			return;
+		}
+
 		// Check BuddyPress version compatibility.
 		if ( ! $this->is_buddypress_version_compatible() ) {
 			add_action( 'admin_notices', array( $this, 'buddypress_version_notice' ) );
 			add_action( 'network_admin_notices', array( $this, 'buddypress_version_notice' ) );
-			return;
-		}
-
-		// Check if BuddyBoss is active (incompatible).
-		if ( $this->is_buddyboss_active() ) {
-			add_action( 'admin_notices', array( $this, 'buddyboss_incompatible_notice' ) );
-			add_action( 'network_admin_notices', array( $this, 'buddyboss_incompatible_notice' ) );
 			return;
 		}
 

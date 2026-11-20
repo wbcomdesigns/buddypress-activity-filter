@@ -189,6 +189,22 @@ class BP_Activity_Filter_Frontend {
 	}
 
 	/**
+	 * True when the posted filter is the site default synced into the dropdown, not a pick.
+	 *
+	 * Nouveau reads the dropdown on every request, so once sync_dropdown_with_default()
+	 * selects the default it is POSTed as `filter` exactly like a member's choice. The
+	 * sync script adds `baf_synced=1` only while the member has no stored choice and the
+	 * dropdown still shows the default; a real pick lands in sessionStorage and drops it.
+	 *
+	 * @since 4.0.1
+	 * @return bool
+	 */
+	private function posted_filter_is_synced_default() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only marker; it can only widen the requester's own query, BP verifies its own nonce.
+		return isset( $_POST['baf_synced'], $_POST['filter'] ) && '1' === $_POST['baf_synced'];
+	}
+
+	/**
 	 * What the member has chosen for themselves, if anything.
 	 *
 	 * Three distinct answers, and they must stay distinct:
@@ -382,6 +398,16 @@ class BP_Activity_Filter_Frontend {
 			$existing = (string) $args['action'];
 		} elseif ( ! empty( $args['type'] ) ) {
 			$existing = (string) $args['type'];
+		}
+
+		// The dropdown sync script marks requests whose filter is only the synced site
+		// default (the member never picked it). Nouveau posts that filter on every request
+		// and builds type= / action= from $_POST['filter'] itself, after this callback, so
+		// on a search or another plugin's scope drop it at the source. A real pick is never
+		// marked and is untouched.
+		if ( $this->posted_filter_is_synced_default() && $this->is_search_or_foreign_scope( $args ) ) {
+			unset( $_POST['filter'], $_REQUEST['filter'], $args['action'], $args['type'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Drops the synced default from this request only; BP verifies its own nonce.
+			return http_build_query( $args );
 		}
 
 		if ( '' !== $existing && $this->preference_is_hidden( $existing ) ) {
@@ -659,6 +685,32 @@ class BP_Activity_Filter_Frontend {
 				// the default for them again. BuddyPress (Legacy pack) sets this cookie itself
 				// when the member actually picks a filter, which is the only time it should be set.
 				dropdown.value = selected.value;
+
+				/*
+				 * Nouveau POSTs the dropdown value on every request and writes it into
+				 * sessionStorage itself, so the synced default looks exactly like a member's
+				 * pick to the server and to storage. Only a change event on the dropdown (our own
+				 * assignment fires none) is a pick: remember it, and mark every other request that carries
+				 * the dropdown value, so a search or another plugin's tab is not narrowed.
+				 */
+				var PICKED = 'baf-picked';
+				dropdown.addEventListener('change', function() {
+					try { window.sessionStorage.setItem(PICKED, dropdown.value); } catch (e) {}
+				});
+
+				if (!window.jQuery) {
+					return;
+				}
+				window.jQuery.ajaxPrefilter(function(opts) {
+					if (typeof opts.data !== 'string' || opts.data.indexOf('action=activity_filter') === -1) {
+						return;
+					}
+					var picked = null;
+					try { picked = window.sessionStorage.getItem(PICKED); } catch (e) {}
+					if (dropdown.value === selected.value && picked !== dropdown.value) {
+						opts.data += '&baf_synced=1';
+					}
+				});
 			}, 50);
 		});
 		</script>
