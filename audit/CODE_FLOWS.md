@@ -91,7 +91,7 @@ Frontend::setup_hooks() :70
       skip if AJAX and member_chose_filter_this_request()
       get_member_preference(): null -> fall through; '' (Everything) -> no filter; type -> args['action']
       else get_default_filter(): context profile|sitewide, option via Migration::get_option_with_fallback,
-           apply_filters('bp_activity_filter_default', $value, $context)  :769
+           apply_filters('bp_activity_filter_default', $value, $context)  :893
            '0'/'-1'/empty -> no filter, otherwise args['action'] = value
  2 bp_activity_get_where_conditions :79 -> exclude_hidden_from_query()
       front end + AJAX only; adds "a.type NOT IN (hidden...)" under key bp_activity_filter_hidden

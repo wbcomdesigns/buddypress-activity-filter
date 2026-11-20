@@ -1,8 +1,8 @@
 {
   "name": "BuddyPress Activity Filter",
   "slug": "bp-activity-filter",
-  "version": "4.0.0",
-  "branch": "4.0.0",
+  "version": "4.0.1",
+  "branch": "4.0.1",
   "counts": {
     "rest": 0,
     "ajax": 0,

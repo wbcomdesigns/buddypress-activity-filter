@@ -3,7 +3,7 @@
  * Plugin Name: BuddyPress Activity Filter
  * Plugin URI: https://wordpress.org/plugins/bp-activity-filter/
  * Description: Hide activity types from BuddyPress activity streams and set the default filter members see.
- * Version: 4.0.0
+ * Version: 4.0.1
  * Author: Wbcom Designs
  * Author URI: https://wbcomdesigns.com/
  * License: GPL v2 or later
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define plugin constants.
 if ( ! defined( 'BP_ACTIVITY_FILTER_VERSION' ) ) {
-	define( 'BP_ACTIVITY_FILTER_VERSION', '4.0.0' );
+	define( 'BP_ACTIVITY_FILTER_VERSION', '4.0.1' );
 }
 
 if ( ! defined( 'BP_ACTIVITY_FILTER_PLUGIN_DIR' ) ) {
@@ -118,17 +118,18 @@ final class BP_Activity_Filter {
 			return;
 		}
 
+		// Check if BuddyBoss is active (incompatible). Before the version check: BuddyBoss
+		// reports its own 2.x version, which would read as an outdated BuddyPress.
+		if ( $this->is_buddyboss_active() ) {
+			add_action( 'admin_notices', array( $this, 'buddyboss_incompatible_notice' ) );
+			add_action( 'network_admin_notices', array( $this, 'buddyboss_incompatible_notice' ) );
+			return;
+		}
+
 		// Check BuddyPress version compatibility.
 		if ( ! $this->is_buddypress_version_compatible() ) {
 			add_action( 'admin_notices', array( $this, 'buddypress_version_notice' ) );
 			add_action( 'network_admin_notices', array( $this, 'buddypress_version_notice' ) );
-			return;
-		}
-
-		// Check if BuddyBoss is active (incompatible).
-		if ( $this->is_buddyboss_active() ) {
-			add_action( 'admin_notices', array( $this, 'buddyboss_incompatible_notice' ) );
-			add_action( 'network_admin_notices', array( $this, 'buddyboss_incompatible_notice' ) );
 			return;
 		}
 

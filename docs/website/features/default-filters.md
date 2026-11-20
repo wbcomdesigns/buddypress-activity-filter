@@ -18,6 +18,7 @@ The profile list leaves out "New Member" and "Updated Profile", which make no se
 ## What to know
 
 - The site-wide default is not applied to group activity streams.
+- The default only sets the starting filter of the plain stream. A search, a hashtag view (BuddyPress Hashtags) and tabs added by other plugins, such as Followed Hashtags, show every matching item. A filter the member picks in the dropdown still applies there.
 - If you choose a filter that BuddyPress does not list for that screen, the plugin adds it to the dropdown so the control matches the stream.
 - Hidden types are not offered as defaults. See [Hidden Activities](hidden-activities.md).
 - A member's own filter choice is remembered in their browser (a cookie or BuddyPress session storage) and wins over your default on later visits. Changing your default affects visitors who have not picked a filter.

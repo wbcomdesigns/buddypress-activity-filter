@@ -134,7 +134,11 @@ class BP_Activity_Filter_Frontend {
 			return $args;
 		}
 
-		// No preference at all, apply admin default.
+		// No preference at all, apply admin default - but only to the plain stream.
+		if ( $this->is_search_or_foreign_scope( $args ) ) {
+			return $args;
+		}
+
 		$default_filter = $this->get_default_filter();
 		if ( $default_filter && '0' !== $default_filter && '-1' !== $default_filter ) {
 			$args['action'] = $default_filter;
@@ -182,6 +186,22 @@ class BP_Activity_Filter_Frontend {
 		}
 
 		return true;
+	}
+
+	/**
+	 * True when the posted filter is the site default synced into the dropdown, not a pick.
+	 *
+	 * Nouveau reads the dropdown on every request, so once sync_dropdown_with_default()
+	 * selects the default it is POSTed as `filter` exactly like a member's choice. The
+	 * sync script adds `baf_synced=1` only while the member has no stored choice and the
+	 * dropdown still shows the default; a real pick lands in sessionStorage and drops it.
+	 *
+	 * @since 4.0.1
+	 * @return bool
+	 */
+	private function posted_filter_is_synced_default() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only marker; it can only widen the requester's own query, BP verifies its own nonce.
+		return isset( $_POST['baf_synced'], $_POST['filter'] ) && '1' === $_POST['baf_synced'];
 	}
 
 	/**
@@ -380,6 +400,16 @@ class BP_Activity_Filter_Frontend {
 			$existing = (string) $args['type'];
 		}
 
+		// The dropdown sync script marks requests whose filter is only the synced site
+		// default (the member never picked it). Nouveau posts that filter on every request
+		// and builds type= / action= from $_POST['filter'] itself, after this callback, so
+		// on a search or another plugin's scope drop it at the source. A real pick is never
+		// marked and is untouched.
+		if ( $this->posted_filter_is_synced_default() && $this->is_search_or_foreign_scope( $args ) ) {
+			unset( $_POST['filter'], $_REQUEST['filter'], $args['action'], $args['type'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Drops the synced default from this request only; BP verifies its own nonce.
+			return http_build_query( $args );
+		}
+
 		if ( '' !== $existing && $this->preference_is_hidden( $existing ) ) {
 			unset( $args['action'], $args['type'] );
 		} elseif ( ! empty( $args['action'] ) || ! empty( $args['type'] ) ) {
@@ -403,7 +433,11 @@ class BP_Activity_Filter_Frontend {
 			return http_build_query( $args );
 		}
 
-		// No preference at all, use admin default.
+		// No preference at all, use admin default - but only on the plain stream.
+		if ( $this->is_search_or_foreign_scope( $args ) ) {
+			return http_build_query( $args );
+		}
+
 		$default_filter = $this->get_default_filter();
 		if ( $default_filter && '0' !== $default_filter && '-1' !== $default_filter ) {
 			$args['action'] = $default_filter;
@@ -488,6 +522,65 @@ class BP_Activity_Filter_Frontend {
 	}
 
 	/**
+	 * True when the request is a search or a scope BuddyPress does not own.
+	 *
+	 * The admin default sets the starting filter of the plain activity stream only
+	 * (owner decision, Nov 2026). A search - including a BuddyPress Hashtags #tag
+	 * view - or another plugin's scope (such as the Followed Hashtags tab, scope=hashtag)
+	 * asks for every matching item, so applying "Updates" there hid blog posts and
+	 * forum topics carrying the tag. A member's own dropdown choice is not affected.
+	 *
+	 * @since 4.0.1
+	 * @param array $args Parsed activity query args.
+	 * @return bool
+	 */
+	private function is_search_or_foreign_scope( $args ) {
+		$search = isset( $args['search_terms'] ) ? (string) $args['search_terms'] : '';
+		// phpcs:disable WordPress.Security.NonceVerification -- Read-only detection of the stream being requested; BP verifies its own nonce.
+		if ( '' === trim( $search ) && isset( $_POST['search_terms'] ) ) {
+			$search = sanitize_text_field( wp_unslash( $_POST['search_terms'] ) );
+		}
+		// BuddyPress Hashtags links a #tag as ?activity_search=%23tag and adds
+		// search_terms in its own bp_ajax_querystring callback, after this one runs.
+		if ( '' === trim( $search ) && isset( $_GET['activity_search'] ) ) {
+			$search = sanitize_text_field( wp_unslash( $_GET['activity_search'] ) );
+		}
+
+		$scope = isset( $args['scope'] ) ? (string) $args['scope'] : '';
+		if ( '' === $scope && isset( $_POST['scope'] ) ) {
+			$scope = sanitize_text_field( wp_unslash( $_POST['scope'] ) );
+		}
+		// phpcs:enable WordPress.Security.NonceVerification
+
+		if ( '' !== trim( $search ) ) {
+			return true;
+		}
+
+		if ( '' === $scope ) {
+			return false;
+		}
+
+		/**
+		 * Scopes the admin default applies to.
+		 *
+		 * @since 4.0.1
+		 * @param string[] $scopes BuddyPress core activity scopes.
+		 */
+		$default_scopes = (array) apply_filters(
+			'bp_activity_filter_default_scopes',
+			array( 'all', 'just-me', 'friends', 'groups', 'favorites', 'mentions', 'following' )
+		);
+
+		foreach ( explode( ',', $scope ) as $one ) {
+			if ( ! in_array( trim( $one ), $default_scopes, true ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * True on the two streams this plugin applies a default to.
 	 *
 	 * @since 3.2.1
@@ -495,10 +588,15 @@ class BP_Activity_Filter_Frontend {
 	 */
 	private function is_stream_with_default() {
 		if ( function_exists( 'bp_is_activity_directory' ) && bp_is_activity_directory() ) {
-			return true;
+			return ! $this->is_search_or_foreign_scope( array() );
 		}
 
-		return function_exists( 'bp_is_user_activity' ) && bp_is_user_activity();
+		if ( ! function_exists( 'bp_is_user_activity' ) || ! bp_is_user_activity() ) {
+			return false;
+		}
+
+		// On a profile the tab is the scope (just-me, friends, ... or a plugin's own tab).
+		return ! $this->is_search_or_foreign_scope( array( 'scope' => (string) bp_current_action() ) );
 	}
 
 	/**
@@ -587,6 +685,32 @@ class BP_Activity_Filter_Frontend {
 				// the default for them again. BuddyPress (Legacy pack) sets this cookie itself
 				// when the member actually picks a filter, which is the only time it should be set.
 				dropdown.value = selected.value;
+
+				/*
+				 * Nouveau POSTs the dropdown value on every request and writes it into
+				 * sessionStorage itself, so the synced default looks exactly like a member's
+				 * pick to the server and to storage. Only a change event on the dropdown (our own
+				 * assignment fires none) is a pick: remember it, and mark every other request that carries
+				 * the dropdown value, so a search or another plugin's tab is not narrowed.
+				 */
+				var PICKED = 'baf-picked';
+				dropdown.addEventListener('change', function() {
+					try { window.sessionStorage.setItem(PICKED, dropdown.value); } catch (e) {}
+				});
+
+				if (!window.jQuery) {
+					return;
+				}
+				window.jQuery.ajaxPrefilter(function(opts) {
+					if (typeof opts.data !== 'string' || opts.data.indexOf('action=activity_filter') === -1) {
+						return;
+					}
+					var picked = null;
+					try { picked = window.sessionStorage.getItem(PICKED); } catch (e) {}
+					if (dropdown.value === selected.value && picked !== dropdown.value) {
+						opts.data += '&baf_synced=1';
+					}
+				});
 			}, 50);
 		});
 		</script>

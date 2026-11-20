@@ -62,7 +62,7 @@ Values are validated against `BP_Activity_Filter_Helper::get_activity_actions()`
 |---|---|---|
 | `bp_activity_filter_init` | action | `buddypress-activity-filter.php:146` |
 | `bp_activity_filter_activity_actions` | filter (array $labels) | `includes/class-bp-activity-filter-helper.php:67` |
-| `bp_activity_filter_default` | filter (string $default_filter, string $context) | `includes/class-bp-activity-filter-frontend.php:769` |
+| `bp_activity_filter_default` | filter (string $default_filter, string $context) | `includes/class-bp-activity-filter-frontend.php:893` |
 | `bp_activity_filter_admin_tabs` | filter (array $tabs) | `includes/admin/class-bp-activity-filter-admin-panel.php:97` |
 | `bp_activity_filter_admin_capability` | filter (string $capability, default `manage_options`) | `includes/admin/class-bp-activity-filter-admin-panel.php:137` |
 | `bp_activity_filter_preserve_data_on_uninstall` | filter (bool, default false) | `uninstall.php:26` |

@@ -5,7 +5,7 @@ Requires at least: 6.9
 Tested up to: 7.1
 Requires PHP: 8.1
 Requires Plugins: buddypress
-Stable tag: 4.0.0
+Stable tag: 4.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,7 +55,7 @@ Full guides for setup, settings and developer hooks: [BuddyPress Activity Filter
 
 ### For Developers
 
-- Seven documented hooks, each with an example in the [developer guide](https://docs.wbcomdesigns.com/bp-family/buddypress-activity-filter/)
+- Eight documented hooks, each with an example in the [developer guide](https://docs.wbcomdesigns.com/bp-family/buddypress-activity-filter/)
 - Settings saved with nonce and capability checks; the capability is filterable
 - No custom tables, no cron jobs, no AJAX handlers and no caching layer
 - Translation ready, with German, German (formal), French and Dutch included
@@ -70,6 +70,8 @@ Free and premium tools from the team behind BuddyPress Activity Filter:
 * **[Jetonomy](https://jetonomy.org/features/)** - Q&A forums and discussion spaces that sit alongside your activity stream.
 
 == Installation ==
+
+Requires BuddyPress 12.0 or higher with the Activity component active.
 
 ### Automatic Installation
 
@@ -128,7 +130,7 @@ Set both defaults back to "Everything" on the Default Filters tab and untick eve
 
 = Can I filter activities programmatically? =
 
-Yes. The plugin fires seven filters and actions, listed with examples in the [developer guide](https://docs.wbcomdesigns.com/bp-family/buddypress-activity-filter/). `bp_activity_filter_default` is the one to use for changing the default filter per context.
+Yes. The plugin fires eight filters and actions, listed with examples in the [developer guide](https://docs.wbcomdesigns.com/bp-family/buddypress-activity-filter/). `bp_activity_filter_default` is the one to use for changing the default filter per context.
 
 = What happens during plugin updates? =
 
@@ -145,6 +147,13 @@ Filtering happens server-side inside the query BuddyPress already runs, so the p
 3. Hidden Activities tab: tick the types to remove from every stream. Status updates and replies always stay visible.
 
 == Changelog ==
+
+= 4.0.1 - November 2026 =
+
+* Fix      - The default filter now sets the starting view of the activity stream only. Hashtag views, searches and tabs added by other plugins, such as Followed Hashtags, show every matching post again instead of only the default type.
+* Fix      - Searching the activity stream or opening another plugin's tab no longer gets narrowed by the default filter when you load more or switch tabs without reloading the page.
+* Fix      - BuddyBoss sites now see the not-compatible notice instead of a misleading BuddyPress version notice.
+* Dev      - Added the bp_activity_filter_default_scopes filter to choose which activity scopes the default applies to.
 
 = 4.0.0 - November 2026 =
 
