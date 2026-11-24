@@ -9,3 +9,6 @@ vendor/
 error_log
 .vscode/
 .idea/
+
+# Build output (bin/build-release.sh)
+dist/
